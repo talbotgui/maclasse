@@ -10,6 +10,13 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 
 ## Projet
 
+- [Description générale](projet-01-descriptionGenerale.md) — SPA Angular 21 offline, mono-utilisateur, ZIP chiffré AES-GCM, périmètre fonctionnel complet
+- [Modèles de données](projet-02-modelesDonnees.md) — Structure JSON : enseignant, classe, élèves, référentiels, projets, cahier journal, PPI, bulletins
+- [Écrans](projet-03-ecrans.md) — Navigation entête fixe, démarrage, accueil, compétences, élèves, projets, EDT, cahier journal + UNDO/REDO
+- [Composants partagés](projet-04-composantsPartages.md) — Composants formulaire (ControlValueAccessor), affichage, riches (sélecteur compétences, mini-calendrier), popins
+- [Services](projet-05-services.md) — DonneesService (signal+undo/redo), ContextService, services métier par domaine, ChiffrementService
+- [Éléments techniques](projet-06-elementsTechniques.md) — DonneesChargeesGarde, mcAutoFocus, DateUtils, pattern Commande, FormatDatePipe, localStorage thème
+
 ## Règles de code
 
 - [Conventions Angular & TypeScript](feedback-01-angular.md) — standalone, Signals, OnPush, input()/output() public vs protected, RGAA

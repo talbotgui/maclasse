@@ -1,0 +1,80 @@
+
+---
+2026-06-09 21:17:29 [Sans titre] Analyse les éléments auxquels tu as accès et décrit moi ce que tu as trouvé
+---
+2026-06-09 21:19:26 [Analyze available session elements] comment sais-tu ce que contient le répertoire interditAclaude ?
+---
+2026-06-09 21:25:45 [Analyze available session elements] On va analyser ensemble un besoin métier décrivant une application WEB. Tu vas enregistrer les éléments, au fur et à mesure, dans ta mémoire, dans des fichiers dont le nom est préfixé par projet-xx-yyyy avec xx un index sur deux chiffres et yyyy le sujet du fichier (par exemple, descriptionGenerale, detailsDesServices, detailsDesEcrans, ...)
+Pose des questions pour compléter et détailler le besoin fonctionnel et la solution technique jusqu'à être en mesure de décrire les écrans (contenu, organisation, rendu visuel, interaction homme-machine), les composants mutualisés (composant unitaire correspondant à un composant graphique simple et composant riche réutilisé dans plusleurs écrans), les services métiers (méthodes stateless de manipulation de données), les services de contexte (méthodes statefull conservant des états), les modèles de données et les autres composants purement technique (gardes, classes utilitaires, ...).
+Aucune génération de code n'est prévue pour le moment
+---
+2026-06-09 21:32:23 [Analyze available session elements] L'application a pour nom "MaClasse". Elle permet à un enseignant de gérer tous les aspects de la vie quotidienne de sa classe : des référentiels de données propres à sa façon de travailler (son nom/prénom, le niveau de sa classe, les valeurs possibles de ses notes, les compétences en vigueur au sein de l'éducation nationale, ...), sa liste d'élève, ses projets pédagogiques, son emploi du temps et celui de ses élèves, son cahier journal, son tableau de bord de progression, ses PPI et ses bulletins.
+Un seul enseignant travaille sur l'application. Il apporte son jeu de données via un upload de document zippé&chiffré (il saisit le mot de passe au chargement du fichier).
+Aucune API ne doit être utilisée dans l'application. Aucune ressource n'est interrogée par l'application.
+Aucune application existante n'est disponible mais le fichier public/donnees-defaut contient un fichier JSON avec un jeu de données utilisable comme base de travail (mais certainement à affiner)
+---
+2026-06-09 21:42:20 [Analyze available session elements] 1. AES-GCM et sauvegarde en retéléchargeant le ZIP chiffré avec le même mot de passe que celui fourni au chargement (ou popin de sauvegarde avec champ de saisie pour la première sauvegarde)
+2. un jeu de données d'exemple
+3. les compétences seront peut-être personnalisables à long terme. Donc elles doivent être dans le fichier de l'enseignant
+4. entièrement personnalisable
+5. regarde à un objet du tableau des élèves dans le fichier public/donnees-defaut.json
+6. le contenu du PPI (projet pédagogique individuel) est un export, dans un format prédéfini, des compétences travaillé avec un élève précis. A chaque compétence, est associé un constat rédigé à une date donnée (saisie libre), des actions à mener à l'avenir rédigé à cette même date (saisie libre), une évaluation et encore un constat et actions à rédiger à la date de mise à jour du PPI.
+7. le détail du contenu du bulletin sera défini plus tard mais il contient a minima une évaluation par compétence associé à une appréciation (saisie libre) publique et une appréciation (saisie libre) privée
+8. le tableau de bord rassemble les données du PPI, du bulletin et des projets pédagogiques pour afficher, pour un élève donné, toutes les compétences à travailler
+---
+2026-06-09 21:55:32 [Analyze available session elements] 1. il faut maximiser l'espace disponible pour le travail mais rester très simple (pas de menu qui se masque). J'imagine un entête avec un logo, un titre, une liste de bouton de menu donnant accès aux écrans et un bouton de changement de thème visuel (des jeux de couleurs différents)
+2. au démarrage de l'application, le menu n'est pas visible et un popin propose le chargement d'un fichier de données (upload+saisie du mot de passe) ou la création d'un nouveau fichier de données (à partir du jeu de données de public/donnees-defaut.json). Une fois des données chargées, le menu s'affiche et un écran d'accueil donne quelques informations utiles comme un résumé de la journée (date du jour et un résumé du cahier journal du jour )
+3. un écran pour consulter/rechercher des compétences, un écran pour la liste des élèves, un écran pour la liste des projets, un écran pour les emplois du temps, un écran pour le cahier journal. Les autres seront à concevoir dans un second temps.
+4. déjà répondu dans la question 2.
+5. vue à la journée
+6. l'emploi du temps est un référentiel qui permet d'initialiser un jour du cahier journal. Une fois initialisé, il est possible de faire vivre le cahier journal indépendamment de l'emploi du temps
+7. l'écran des élèves (comme celui des projets) se composera d'un cadre latéral gauche avec un bouton de création, un filtre de recherche et la liste filtrable des prénoms+noms des élèves. Au clic sur un élève, dans le cadre de droite, s'affichent les détails en lecture seule. Un bouton SUPPRIMER permet, après confirmation, de supprimer l'élève. Un bouton MODIFIER permet d'afficher les informations dans un formulaire. En modification, un bouton ANNULER permet d'annuler toutes les saisies faites. Un bouton ENREGISTRER prend les données du formulaire pour mettre à jour le JSON.
+8. les absences sont des rendez-vous récurrents (semaine paire/impaires/lesDeux + jour + heure de début + heure de fin +...)
+
+Attention, l'application doit permettre de faire de l'UNDO/REDO. Donc toute modification des données doit passer par un service dédié (à concevoir plus tard)
+---
+2026-06-09 22:04:14 [Analyze available session elements] 1. grille hebdo. Il faut que, dans le référentiel, soit listés les jours ouvrés de la semaine (certaines classes travaillent le mercredi ou le samedi ou aucun des deux). On ne gère pas la parité
+2. un bouton permet d'initialiser une journée vide. Un autre permet d'initialiser une journée depuis l'emploi du temps. Si la journée existe déjà, les boutons ne sont pas actifs
+3. naviguer dans le cahier journal passe par un calendrier miniature dans la colonne latérale gauche ou les boutons J-7, J-1, J+1, J+7 
+4. l'écran des compétences propose un cadre latérale droit avec une recherche textuelle et des chips de filtrage par domaine (le premier niveau des compétences). Pas de fonctionnalités d'édition pour le moment.
+5. une vue allégée de la journée avec la liste des temps de classe et, pour chacun, l'heure de début, l'heure de fin, le nombre d'élèves et le(s) domaine(s) des compétences associées
+6. un jeu de couleur par défaut à base de bleu et blanc et un jeu noir et blanc (contraste le plus marqué). Attention à bien utilisé des variables CSS pour chaque couleur au niveau de la balise du DOM la plus haute possible pour ne rien répété dans le code.
+7. aucune frappe ou perte de focus de champ ne déclenche une modification des données. Seule une action sur un bouton ENREGISTRER modifie le JSON avec le contenu du formulaire
+---
+2026-06-09 22:10:25 [Analyze available session elements] 1. grille éditable pour tous les temps de la journée. Donc formulaire très dense
+2. pas de glisser-déposer mais des flèches. Ajout en milieu de journée possible
+3. type dédié pour les récréation et paus déjeuner
+4. sorties récurrentes d'élèves saisies dans la fiche de l'élève. Donc, dans l'écran de l'emploi du temps, un warning s'affiche, à la sauvegarde, si un temps de l'emploi du temps est incohérent avec un absence (sans bloqué la sauvegarde). Même comportement dans le cahier journal
+5. ajoute les horaires de début et fin de journée
+6. ajoute le bouton de sauvegarde dans l'entête à côté des autres. Ainsi que les boutons ANNULER et REFAIRE (désactivé si rien n'est annulable/refaisable)
+---
+2026-06-09 22:16:14 [Analyze available session elements] 1.ok
+2. ok
+3. pas de popin de confirmation mais un système de bouton. Au clic sur un bouton "SUPPRIMER", il se masque et s'affichent les boutons ANNULER et CONFIRMER
+4. un composant de popin par besoin fonctionnel mais si des comportements sont mutualisables, un héritage est possible (créer un répertoire popin et des sous-répertoires pour chaque popin)
+5. ok
+6. les données manipulées et les filtres proposés sont différents à chaque écran. Le contenu des cadres de droite sont différents à chaque écran. Donc pas de composant riche pour ça. Mais des CSS mutualisés pour obtenir des rendus similaires
+7. ok
+
+J'imaginai aussi des composants simples/unitaires pour les éléments graphique comme input, textarea, checkbox, ... pour éviter des CSS mutualisés verbeuses. Est-ce une bonne idée ?
+---
+2026-06-09 22:17:54 [Analyze available session elements] sauvegarde et passe aux services
+---
+2026-06-09 22:23:55 [Analyze available session elements] Chaque donnée principale (EDT, CJ, élève, compétence, projet) dispose de son service dédié contenant les algo de validation, manipulation des données.
+Le service DonneesService porte le JSON mais embarque les fonctionnalités UNDO/REDO. Aucune méthode publique ne permet d'altérer directement les données.
+Les fonctionnalités prévues dans CohérenceAbsenceService devraient être dans CahierJournalService et EmploiDuTempsService.
+
+1. passe par un service métier spécifique
+2. un seul signal
+3. un service ContextService contient les données globale à l'application (pas des données propres à un écran)
+4. contrôle de cohérence des absences à l'ouverture et avant la sauvegarde d'un EDT et d'un cahier journal
+---
+2026-06-09 22:25:50 [Analyze available session elements] le thème, le dernier élève sélectionné dans un écran (pour que ce même élève soit déjà sélectionné au changement d'écran), le dernier jour sélectionné (pour revenir sur le dernier jour consulté quand se charge l'écran du cahier journal)
+---
+2026-06-09 22:29:46 [Analyze available session elements] 1. pas d'accent dans un nom de classe et tout en français (donc DonneesChargeesGarde). Pas d'autre garde prévue
+2. ok
+3. ok
+4. pas de CompetenceUtils mais enrichit ComptenceService
+5. ok
+6. au moins un pipe de formatage de date
+7. persiste uniquement le thème sélectionné dans le localstorage.

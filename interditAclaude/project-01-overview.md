@@ -17,7 +17,12 @@ related:
 
 **How to apply:** Toutes les décisions d'architecture doivent tenir compte du mode SPA offline-first. Toute persistance passe par `JsonHistoriqueService`.
 
-## Règle 2 - Stack technique
+## Règle 2 - Utilisateurs
+
+L'application est utilisée par un enseignant sans compétence technique particulière. 
+L'ergonomie de l'application doit donc être simple et compréhensible.
+
+## Règle 3 - Stack technique
 
 - Angular 21.2 (standalone, Signals, control flow natif)
 - TypeScript 5.9 strict

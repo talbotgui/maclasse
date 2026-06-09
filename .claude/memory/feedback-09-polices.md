@@ -10,7 +10,7 @@ Ne jamais charger de polices depuis un CDN externe (Google Fonts, Bunny Fonts, c
 **Why:** L'application est offline-first ; une dépendance réseau pour les polices casserait le rendu hors ligne. C'est aussi une règle de confidentialité (pas de requêtes vers des tiers).
 
 **How to apply:**
-- Toutes les polices sont dans `Sources/public/fonts/` (servi automatiquement via le glob `public/**/*` dans angular.json).
+- Toutes les polices sont dans `public/fonts/` (servi automatiquement via le glob `public/**/*` dans angular.json).
 - Déclarer chaque police avec `@font-face` dans `styles.scss`, url `/fonts/<fichier>.woff2`.
 - Pour les polices variables : `font-weight: 100 900` + `format('woff2-variations')`.
 - Pour les polices à sous-ensembles (latin, latin-ext) : un bloc `@font-face` par fichier avec `unicode-range` approprié.

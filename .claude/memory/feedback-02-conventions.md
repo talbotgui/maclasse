@@ -28,7 +28,7 @@ Toute méthode commence par un verbe à l'infinitif
 
 ## Règle 2 — Organisation des répertoires
 
-Toute nouvelle artefact doit être placé dans le répertoire correspondant à sa nature, sous `Sources/src/app/`.
+Toute nouvelle artefact doit être placé dans le répertoire correspondant à sa nature, sous `src/app/`.
 
 **Why:** Conventions établies dès la création du projet et appliquées uniformément sur toute la base de code.
 

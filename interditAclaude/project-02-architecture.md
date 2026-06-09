@@ -12,16 +12,16 @@ related:
 
 ## Règle 1 - Introduction à l'architecture
 
-Application SPA Angular 21 pour enseignants du primaire. Données dans un fichier JSON chiffré (AES-256-GCM, zippé, base64) téléversé/téléchargé par l'enseignant.
+Application SPA Angular 21. Les données manipulées seront dans un fichier JSON chiffré (AES-256-GCM, zippé, base64) téléversé/téléchargé par l'enseignant.
 
 **Why:** Application desktop-only sans backend, données privées de l'enseignant.
 
-**How to apply:** Toute persistance passe par `JsonHistoriqueService` (load/save du fichier). Pas d'API.
+**How to apply:** Toute persistance passe par un service dédié. Pas d'API.
 
 ## Règle 2 -  Services
 
-- `JsonHistoriqueService` : source de vérité, pattern Redux, undo/redo. Dans `/Sources/src/app/services/json-historique.service.ts`
-- `CahierJournalService` : gestion du cahier journal (CRUD séances, navigation dates). Dans `/Sources/src/app/services/cahier-journal.service.ts`
+- `JsonHistoriqueService` : source de vérité contenant les données JSON manipuler et les méthodes de modification (pattern Redux, undo/redo). Dans `/src/app/services/json-historique.service.ts`
+- `CahierJournalService` : gestion du cahier journal (CRUD séances, navigation dates). Dans `/src/app/services/cahier-journal.service.ts`
 - `ContexteService` : états UI partagés entre composants (filtres, sélections, vue active, élève sélectionné…)
 - `CompetenceService` : logique métier des compétences (filtrage, recherche)
 - `ChiffrementService` : WebCrypto AES-256-GCM, zip/unzip, base64

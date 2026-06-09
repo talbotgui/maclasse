@@ -9,7 +9,7 @@ related:
   - feedback-07-html
 ---
 
-Tous les composants partagés sont dans `Sources/src/app/composants/`, les directives dans `Sources/src/app/directives/`.
+Tous les composants partagés sont dans `src/app/composants/`, les directives dans `src/app/directives/`.
 
 **Why:** Éviter de recréer ce qui existe déjà et respecter les contrats d'interface définis.
 

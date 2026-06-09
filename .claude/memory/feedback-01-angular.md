@@ -71,4 +71,4 @@ related:
 
 **Why:** Conventions définies par l'utilisateur pour ce projet. Elles garantissent la maintenabilité, la performance et l'accessibilité de l'app.
 
-**How to apply:** S'appliquent à chaque fichier TS/HTML/SCSS créé ou modifié dans `Sources/src/`.
+**How to apply:** S'appliquent à chaque fichier TS/HTML/SCSS créé ou modifié dans `src/`.

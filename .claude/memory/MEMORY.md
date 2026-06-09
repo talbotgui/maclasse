@@ -10,16 +10,6 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 
 ## Projet
 
-- [Vue d'ensemble](project-01-overview.md) — SPA Angular pour enseignant·e du primaire (CP–CM2), offline-first, pas de backend
-- [Architecture](project-02-architecture.md) — Services, composants, écrans, navigation, données chiffrées AES-256-GCM
-- [Modèles de données](project-03-modeles.md) — Schéma DonneesEnseignant, Eleve, SeanceJournaliere, NoeudCompetence…
-- [JsonHistoriqueService](project-04-json-historique-pattern.md) — Source de vérité, pattern Redux, API publique, 10 types de modifications
-- [Composants partagés et directives](project-05-composants-partages.md) — SelecteurCompetences, BarreActionsDetail, Separateur, BarreSuperieure, BoutonTheme
-- [SCSS — variables et classes utilitaires](project-06-scss.md) — 16 variables CSS, 9 thèmes, catalogue classes mc-*
-- [Scripts npm et workflow](project-07-npm.md) — Commandes, versions des dépendances, répertoire Sources/
-- [ContexteService](project-08-contexte-service.md) — 5 signaux globaux (thème, sauvegarde, données chargées, période)
-- [Sonar](project-09-sonar.md) — Exclusion ClaudeDesign/, pas de quality gates personnalisés
-
 ## Règles de code
 
 - [Conventions Angular & TypeScript](feedback-01-angular.md) — standalone, Signals, OnPush, input()/output() public vs protected, RGAA

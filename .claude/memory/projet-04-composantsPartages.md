@@ -56,6 +56,15 @@ Ces composants wrappent les éléments natifs HTML pour centraliser le style et 
 - Permet la sélection mono ou multi-compétences
 - Utilisé dans : Cahier journal (séance), Projets (période), PPI, Bulletin
 
+### `mc-eleves-concernes`
+
+- Composant de sélection du périmètre d'élèves concernés par une séance ou un créneau
+- Trois modes exclusifs via `mc-radio-group` : *Toute la classe* / *Par groupe* / *Élèves spécifiques*
+- En mode groupe : chips des groupes du référentiel (sélection multiple)
+- En mode élèves : chips des élèves de la classe (sélection multiple)
+- Expose `input()` pour la valeur initiale et `output()` sur changement
+- Utilisé dans : Cahier journal (formulaire séance), Emploi du temps (formulaire créneau)
+
 ### `mc-mini-calendrier`
 
 - Calendrier mensuel miniature navigable (mois précédent/suivant)
@@ -78,7 +87,9 @@ Répertoire `popin/` avec une classe de base commune (`PopinBase` ou directive p
 |---|---|---|
 | `popin-demarrage` | Automatique au lancement sans données | Choix : charger ZIP+mdp / nouveau fichier depuis défaut |
 | `popin-sauvegarde` | Clic SAUVEGARDER (première fois) | Saisie du mot de passe de chiffrement |
-| `popin-warnings-absences` | Sauvegarde EDT ou cahier journal avec incohérences | Liste des conflits détectés (non bloquant, bouton Fermer) |
+| `popin-warnings-absences` | Clic sur triangle orange (EDT ou CJ) | Liste des conflits de la séance/créneau concerné (non bloquant, bouton Fermer) |
+| `popin-avertissement` | Formulaire non enregistré + action de navigation | Message d'avertissement + boutons ANNULER / CONFIRMER (Élèves, Projets) |
+| `popin-export-competences` | Clic "Envoyer vers un projet" ou "Envoyer vers une séance" | Deux `mc-select` en cascade (projet/jour puis période/séance) + ANNULER / CONFIRMER |
 
 ---
 

@@ -79,7 +79,7 @@ related:
 
 - Affichage complet de la fiche élève en lecture seule
 - Bouton **MODIFIER** → passe en mode édition
-- Bouton **SUPPRIMER** → popin de confirmation avant suppression
+- Bouton **SUPPRIMER** → `mc-bouton-destruction` (masque SUPPRIMER, affiche ANNULER + CONFIRMER)
 
 #### Mode édition / création
 
@@ -101,10 +101,10 @@ related:
 
 ## Écran Emploi du temps
 
-- Vue en **grille hebdomadaire éditable** — formulaire dense, un créneau par cellule
-- Les colonnes correspondent aux **jours ouvrés configurés dans le référentiel** (ex. lun–ven, ou avec mercredi/samedi si travaillés)
-- Pas de gestion de parité de semaine
-- Les horaires de début et fin de journée sont définis dans le référentiel EDT
+- Sélection de l'EDT actif via `mc-select` + bouton CRÉER
+- Vue en **grille hebdomadaire éditable** — colonnes = jours ouvrés, lignes = créneaux libres triés par heure
+- Chaque EDT a une fréquence (paire / impaire / les deux) et des dates de début/fin optionnelles
+- Deux EDT ne peuvent pas se chevaucher (même plage de dates ET même parité) — warning dans l'écran
 - Types de créneau : séance pédagogique, récréation (type dédié), pause déjeuner (type dédié)
 - **Warning non bloquant** à la sauvegarde si un créneau EDT est incohérent avec une absence récurrente d'élève
 
@@ -129,7 +129,7 @@ related:
 
 #### Journée existante
 
-- Liste ordonnée des séances de la journée (heure début/fin, discipline, titre, statut, élèves concernés)
+- Liste ordonnée des séances de la journée (heure début/fin, disciplines, titre, élèves concernés)
 - Types de séance : pédagogique, récréation (type dédié), pause déjeuner (type dédié)
 - **Réorganisation** : flèches haut/bas (pas de glisser-déposer)
 - **Ajout** d'une séance possible en milieu de journée (insertion à une position donnée)

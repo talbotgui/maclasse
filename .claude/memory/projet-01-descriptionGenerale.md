@@ -22,7 +22,7 @@ related:
 
 | Domaine | Description |
 |---|---|
-| Référentiels | Identité enseignant, niveau de classe, barème de notes (personnalisable), compétences EN, périodes, groupes, statuts, jours fériés |
+| Référentiels | Identité enseignant, niveau de classe, barème de notes = `statutsAcquisition` (personnalisable : libellé, glyphe, couleur), compétences EN, périodes, groupes, statuts élève, jours fériés, config EDT |
 | Élèves | Fiche élève complète, contacts, absences, cursus, notes administratives |
 | Projets pédagogiques | Projets par période avec compétences associées et liste d'élèves |
 | Cahier journal | Séances journalières avec horaires, discipline, compétences, déroulement |

@@ -40,6 +40,7 @@ Données globales transverses, non liées à un écran spécifique :
 | `eleveSelectionne` | `signal<string \| null>` | ID du dernier élève sélectionné (conservé au changement d'écran) |
 | `jourCourantCahierJournal` | `signal<string \| null>` | ISO date du dernier jour consulté dans le cahier journal |
 | `panierCompetences` | `signal<string[]>` | IDs des compétences dans le panier (écran Compétences), persisté entre les accès |
+| `motDePasse` | `string \| null` | Mot de passe saisi au chargement, conservé pour la sauvegarde (jamais persisté en localStorage) |
 
 ---
 
@@ -70,22 +71,28 @@ Chaque service expose des méthodes pures de manipulation et validation. Les mut
 
 ### `EmploiDuTempsService`
 
-- CRUD créneaux EDT → via commande à `DonneesService`
-- Validation d'un créneau (chevauchement, cohérence horaires)
+- CRUD des EDT eux-mêmes (créer, modifier nom/dates/fréquence, supprimer) → via commande à `DonneesService`
+- CRUD des créneaux d'un EDT → via commande à `DonneesService`
+- Validation d'un créneau (chevauchement horaire dans le même jour)
+- **Contrôle de chevauchement d'EDT** : deux EDT ne peuvent pas avoir des plages de dates ET des fréquences qui se chevauchent — warning non bloquant affiché dans l'écran
 - **Contrôle de cohérence absences** :
   - Déclenché à l'**ouverture** de l'écran EDT
-  - Déclenché **avant la sauvegarde** de l'EDT
+  - Déclenché au clic sur le triangle warning d'un créneau
   - Retourne la liste des conflits (créneau EDT ↔ absence récurrente d'un élève)
 
 ### `CahierJournalService`
 
 - CRUD séances dans une journée → via commande à `DonneesService`
 - Initialisation d'une journée vide
-- Initialisation d'une journée depuis l'emploi du temps (copie des créneaux EDT du jour)
+- **Initialisation depuis l'EDT** : sélectionne l'EDT applicable à une date donnée selon l'algorithme :
+  1. Filtrer les EDT dont la plage de dates contient la date (ou sans date = toujours applicable)
+  2. Parmi eux, garder ceux dont la fréquence correspond à la parité de la semaine (ou fréquence = lesDeux)
+  3. Copier les créneaux du jour de semaine correspondant
 - Réorganisation des séances (déplacement vers le haut/bas)
+- Validation : un élève ne peut pas être affecté à deux séances simultanées
 - **Contrôle de cohérence absences** :
   - Déclenché à l'**ouverture** de l'écran cahier journal
-  - Déclenché **avant la sauvegarde** d'une journée
+  - Déclenché au clic sur le triangle warning d'une séance
   - Retourne la liste des conflits (séance ↔ absence récurrente d'un élève concerné)
 
 ### `ChiffrementService`

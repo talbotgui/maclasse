@@ -15,7 +15,7 @@ related:
 ### `DonneesChargeesGarde`
 
 - Bloque l'accès à tout écran applicatif si aucune donnée n'est chargée en mémoire
-- Redirige vers la popin de démarrage (chargement ou création de fichier)
+- Redirige vers `/demarrage` si aucune donnée n'est chargée en mémoire
 - Seul garde prévu dans l'application
 
 ---
@@ -46,7 +46,9 @@ related:
 
 ## Pattern Commande (UNDO/REDO)
 
-Interface et implémentations pour toutes les mutations transitant par `DonneesService`.
+`DonneesService` est **agnostique du type de donnée modifiée** : il ne connaît que l'interface `Commande` et appelle `executer()` ou `annuler()` sans se soucier de ce qui change dans le JSON.
+
+Chaque **service métier** est responsable d'instancier la commande appropriée avec les bonnes données avant de la soumettre à `DonneesService`.
 
 ### Interface `Commande`
 
@@ -57,18 +59,16 @@ interface Commande {
 }
 ```
 
-### Implémentations prévues (une par type de mutation)
+### Implémentations génériques (indépendantes du type d'entité)
 
-- `CommandeSauvegarderEleve` (création + modification)
-- `CommandeSupprimerEleve`
-- `CommandeSauvegarderProjet`
-- `CommandeSupprimerProjet`
-- `CommandeSauvegarderCreneauEdt`
-- `CommandeSupprimerCreneauEdt`
-- `CommandeInitialiserJournee`
-- `CommandeSauvegarderSeance`
-- `CommandeSupprimerSeance`
-- `CommandeDeplacerSeance` (réorganisation haut/bas)
+| Classe | Rôle |
+|---|---|
+| `CommandeCreation` | Ajoute un élément dans un tableau du JSON (élève, EDT, séance, projet…) |
+| `CommandeModification` | Remplace un élément existant dans le JSON |
+| `CommandeSuppression` | Retire un élément d'un tableau du JSON |
+| `CommandeDeplacement` | Déplace un élément dans un tableau (réorganisation des séances) |
+
+> Il n'existe pas de commande spécifique par type d'entité (pas de `CommandeSauvegarderEleve`, `CommandeSauvegarderEdt`, etc.).
 
 ---
 
@@ -91,5 +91,38 @@ interface Commande {
 | Thème actif | `localStorage` | Préférence visuelle, indépendante du fichier de données |
 | Dernier élève sélectionné | `ContextService` (mémoire session) | Perdu à la fermeture — non critique |
 | Dernier jour CJ consulté | `ContextService` (mémoire session) | Perdu à la fermeture — non critique |
+| Panier compétences | `ContextService` (mémoire session) | Perdu à la fermeture — non critique |
+| Mot de passe | `ContextService` (mémoire session) | **Jamais persisté** (sécurité) — perdu à la fermeture |
 
 > Toutes les données métier sont exclusivement portées par le fichier ZIP chiffré.
+
+---
+
+## Routing Angular
+
+Toutes les routes fonctionnelles sont protégées par `DonneesChargeesGarde` qui redirige vers `/demarrage` si aucune donnée n'est chargée.
+
+| Route | Composant | Garde |
+|---|---|---|
+| `/` | Redirige vers `/accueil` | — |
+| `/demarrage` | `EcranDemarrageComponent` | Aucune (toujours accessible) |
+| `/accueil` | `EcranAccueilComponent` | `DonneesChargeesGarde` |
+| `/competences` | `EcranCompetencesComponent` | `DonneesChargeesGarde` |
+| `/eleves` | `EcranElevesComponent` | `DonneesChargeesGarde` |
+| `/projets` | `EcranProjetsComponent` | `DonneesChargeesGarde` |
+| `/emploi-du-temps` | `EcranEmploiDuTempsComponent` | `DonneesChargeesGarde` |
+| `/cahier-journal` | `EcranCahierJournalComponent` | `DonneesChargeesGarde` |
+
+---
+
+## Responsivité (mobile)
+
+Règle générale : les colonnes s'empilent verticalement sur petit écran (gauche en haut, centre au milieu, droite en bas).
+
+| Écran | Ordre d'empilement mobile |
+|---|---|
+| Démarrage | Zone Nouveau → Zone Charger |
+| Élèves / Projets | Filtre+liste → Détail/formulaire |
+| Compétences | Filtres → Arbre → Panier |
+| Emploi du temps | Sélecteur EDT + grille → Formulaire |
+| Cahier journal | Navigation calendrier → Liste séances → Formulaire |

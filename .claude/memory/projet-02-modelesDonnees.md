@@ -16,6 +16,7 @@ related:
   enseignant: Enseignant,
   classe: Classe,
   referentiels: Referentiels,
+  emploisDuTemps: EmploiDuTemps[],
   projets: Projet[],
   cahierJournal: JourneeJournal[],
   ppi: Ppi[],           // à construire
@@ -60,7 +61,7 @@ related:
   accueil: string,              // texte libre
   inclusion: string | null,     // texte libre
   contacts: Contact[],
-  absences: Absence[],
+  absencesRecurrentes: AbsenceRecurrente[],
   cursus: CursusAnnee[],
   notesDroitImage: string,      // texte libre
   notesAutorisationBaignade: string, // texte libre
@@ -96,15 +97,16 @@ related:
 
 ```
 {
-  competences: Competence[],        // arbre hiérarchique (id, libelle, enfants?)
+  competences: Competence[],              // arbre hiérarchique (id, libelle, enfants?)
   periodes: Periode[],
-  statutsAcquisition: StatutAcquisition[],
+  statutsAcquisition: StatutAcquisition[], // barème de notes personnalisable (A/EC/NA/NE par défaut)
   statutsEleve: StatutEleve[],
   typesContact: TypeContact[],
   groupes: Groupe[],
   joursFeries: JourFerie[],
   raisonsAbsence: RaisonAbsence[],
-  frequencesAbsence: FrequenceAbsence[]
+  frequencesAbsence: FrequenceAbsence[],
+  configEmploiDuTemps: ConfigEmploiDuTemps
 }
 ```
 
@@ -195,7 +197,7 @@ related:
 }
 ```
 
-> La racine du JSON contient `emploisDuTemps: EmploiDuTemps[]`.
+> `emploisDuTemps: EmploiDuTemps[]` est dans la structure racine du JSON (voir plus haut).
 
 ---
 

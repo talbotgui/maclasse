@@ -202,3 +202,15 @@ J'hésite sur la façon de sélectionner un des emplois du temps
 8. oui
 ---
 2026-06-10 21:27:27 [Analyze available session elements] J'ai fait une erreur. Un créneau d'emploi du temps peut contenir plusieurs disciplines. Une séance de cahier journal peut contenir des compétences de plusieurs disciplines
+---
+2026-06-10 21:37:39 [Analyze available session elements] les éléments en mémoire sont-ils cohérents ? Contienent-ils des erreurs ou des lacunes ? Que manque-t-il encore pour compléter la description de l'application (hormis les écrans de la phase 2) ?
+---
+2026-06-10 21:51:24 [Analyze available session elements] corrige les points 1 à 4
+5. pas de popin de suppression mais bien mc-bouton-desctruction
+6. supprime le statut
+corrige le point 7 à 11
+12. le service UNDO/REDO permet de modifier un JSON sans s'intéresser au type de la donnée modifiée. Donc il ne doit pas exister de commande de sauvegarde d'un emploi du temps. Le composant TS de l'écran appelle un service métier. Le service métier instancie une commande de création/modification/suppression d'un objet du JSON avec les bonnes données. Revérifie ce point très structurant dans l'ensemble de la mémoire
+corrige le point 13
+14. la sélection se fait en fonction de la date de début, de la date de fin et de la parité de la semaine. Deux emploi du temps ne peuvent pas se chevaucher (en date et, en plus, en parité) car un avertissement s'affiche dans l'écran des EDT
+15. propose des routes
+16. les colonnes répondent au pb de 'responsibilité' : elles s'affichent les unes sous les autres (gauche en haut, puis milieu puis droite)

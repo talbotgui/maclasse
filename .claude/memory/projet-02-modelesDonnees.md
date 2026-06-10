@@ -163,6 +163,42 @@ related:
 }
 ```
 
+## EmploiDuTemps
+
+```
+{
+  id: string,
+  nom: string,              // obligatoire
+  dateDebut: string | null, // ISO date
+  dateFin: string | null,   // ISO date
+  frequence: 'paire' | 'impaire' | 'lesDeux',
+  creneaux: CreneauEdt[]
+}
+```
+
+### CreneauEdt
+
+```
+{
+  id: string,
+  jour: JourSemaine,        // ex: 'lundi', 'mardi'...
+  heureDebut: string,       // "HH:MM"
+  heureFin: string,         // "HH:MM"
+  type: 'pedagogique' | 'recreation' | 'pauseDejeuner',
+  disciplinesIds?: string[], // si type pédagogique — plusieurs disciplines possibles
+  titre?: string,           // si type pédagogique
+  elevesConcernes?: {       // si type pédagogique
+    type: 'classe' | 'groupes' | 'eleves',
+    groupes: string[],
+    elevesIds: string[]
+  }
+}
+```
+
+> La racine du JSON contient `emploisDuTemps: EmploiDuTemps[]`.
+
+---
+
 ## Projet
 
 ```
@@ -180,6 +216,8 @@ related:
 ```
 {
   periodeNom: string,
+  debut: string,            // ISO date — tri ascendant des périodes
+  fin: string,              // ISO date
   description: string,
   competencesIds: string[]  // IDs de compétences travaillées
 }
@@ -201,16 +239,15 @@ related:
   id: string,
   heureDebut: string,   // "HH:MM"
   heureFin: string,     // "HH:MM"
-  disciplineId: string, // ref: competences (domaine)
-  titre: string,
-  statut: 'prevu' | 'realise' | ...,
-  objectifs: string[],
-  competencesIds: string[],
-  deroulement: string[],
-  ressources: string[],
-  description: string,
-  type?: string,          // ex: "repos" pour récréation/pause
-  elevesConcernes: {
+  type: 'pedagogique' | 'recreation' | 'pauseDejeuner',
+  disciplinesIds?: string[], // si type pédagogique — plusieurs disciplines possibles
+  titre?: string,            // si type pédagogique
+  objectifs?: string,     // textarea libre, si type pédagogique
+  competencesIds?: string[], // si type pédagogique
+  deroulement?: string,   // textarea libre, si type pédagogique
+  ressources?: string,    // textarea libre, si type pédagogique
+  description?: string,   // si type pédagogique
+  elevesConcernes?: {     // si type pédagogique
     type: 'classe' | 'groupes' | 'eleves',
     groupes: string[],
     elevesIds: string[]

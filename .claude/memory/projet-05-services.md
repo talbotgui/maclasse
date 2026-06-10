@@ -39,6 +39,7 @@ Données globales transverses, non liées à un écran spécifique :
 | `themeActif` | `signal<string>` | Identifiant du thème visuel actif (ex. `'defaut'`, `'contraste'`) |
 | `eleveSelectionne` | `signal<string \| null>` | ID du dernier élève sélectionné (conservé au changement d'écran) |
 | `jourCourantCahierJournal` | `signal<string \| null>` | ISO date du dernier jour consulté dans le cahier journal |
+| `panierCompetences` | `signal<string[]>` | IDs des compétences dans le panier (écran Compétences), persisté entre les accès |
 
 ---
 

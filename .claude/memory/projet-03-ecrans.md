@@ -55,13 +55,11 @@ related:
 
 ## Écran Compétences
 
-- **Lecture seule** (pas d'édition dans la phase actuelle)
-- Layout : colonne latérale gauche + zone principale droite
-- Colonne gauche :
-  - Champ de recherche textuelle (filtre en temps réel sur libellé)
-  - Chips de filtrage par domaine (= premier niveau de l'arbre des compétences)
-- Zone droite :
-  - Affichage de l'arbre filtré des compétences
+- **Lecture seule** (pas d'édition dans cette version)
+- Layout : 3 colonnes — filtres à gauche | arbre au centre | panier à droite
+- Colonne gauche : recherche textuelle + chips de filtrage par domaine (niveau 1 de l'arbre)
+- Zone centrale : arbre repliable, filtre masque les non-correspondants et déploie les ancêtres
+- Colonne droite : panier de compétences sélectionnées, persisté dans `ContextService`, export vers ProjetPeriode ou séance via popin
 
 ---
 
@@ -144,6 +142,7 @@ related:
 - PPI (Projet Pédagogique Individuel)
 - Bulletins
 - Tableau de bord de progression
+- Paramétrage de la classe (identité enseignant, jours ouvrés, jours fériés, référentiels)
 
 ---
 

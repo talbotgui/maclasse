@@ -13,6 +13,13 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [Description générale](projet-01-descriptionGenerale.md) — SPA Angular 21 offline, mono-utilisateur, ZIP chiffré AES-GCM, périmètre fonctionnel complet
 - [Modèles de données](projet-02-modelesDonnees.md) — Structure JSON : enseignant, classe, élèves, référentiels, projets, cahier journal, PPI, bulletins
 - [Écrans](projet-03-ecrans.md) — Navigation entête fixe, démarrage, accueil, compétences, élèves, projets, EDT, cahier journal + UNDO/REDO
+- [Écran démarrage — détail](projet-07-ecran-demarrage.md) — Popin obligatoire : zone Nouveau + zone Charger ZIP/mdp, entête partiel
+- [Écran accueil — détail](projet-08-ecran-accueil.md) — Date du jour + résumé séances CJ (sans récréation/pause), lecture seule
+- [Écran élèves — détail](projet-09-ecran-eleves.md) — Liste filtrée (texte + chips groupe), fiche sections, formulaire inline, popin avertissement
+- [Écran projets — détail](projet-10-ecran-projets.md) — Même pattern qu'élèves, chips filtrage par domaine, périodes avec mc-selecteur-competences
+- [Écran compétences — détail](projet-11-ecran-competences.md) — 3 colonnes : filtres gauche, arbre centre, panier droit avec export vers projet/séance
+- [Écran emploi du temps — détail](projet-12-ecran-emploi-du-temps.md) — Multi-EDT (select+créer), grille hebdo, colonne droite contextuelle (EDT ou créneau), warning triangle absences
+- [Écran cahier journal — détail](projet-13-ecran-cahier-journal.md) — Navigation mini-calendrier+J±1/7, liste séances avec "+" intercalaire et flèches, formulaire droite contextuel
 - [Composants partagés](projet-04-composantsPartages.md) — Composants formulaire (ControlValueAccessor), affichage, riches (sélecteur compétences, mini-calendrier), popins
 - [Services](projet-05-services.md) — DonneesService (signal+undo/redo), ContextService, services métier par domaine, ChiffrementService
 - [Éléments techniques](projet-06-elementsTechniques.md) — DonneesChargeesGarde, mcAutoFocus, DateUtils, pattern Commande, FormatDatePipe, localStorage thème

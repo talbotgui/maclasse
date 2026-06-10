@@ -78,3 +78,127 @@ Les fonctionnalités prévues dans CohérenceAbsenceService devraient être dans
 5. ok
 6. au moins un pipe de formatage de date
 7. persiste uniquement le thème sélectionné dans le localstorage.
+---
+2026-06-10 19:54:47 [Analyze available session elements] Je souhaite maintenant détailler les fonctionnalités de chaque écran, bouton par bouton, champs, libellé et évènement. Commençons par ce qui s'affiche au chargement de l'application quand aucune donnée n'est encore chargée.
+---
+2026-06-10 20:12:16 [Analyze available session elements] 1. entête visible
+2. titre affiché : un message de bienvenu. Que me proposes-tu ?
+3. charger et nouveau sont deux zones distinctes côte à côte en mode PC et l'une sous l'autre en mode mobile. charger à droite ou dessous.
+4. zone "charger" : titre "Sélectionner la dernière version des données de votre classe"
+5. mot de passe affiché dans le cadre
+6. oui pour le bouton "afficher/masquer le mot de passe avec un logo d'oeil"
+7. affichage du message d'erreur en haut du formulaire
+8. bouton "charger"
+9. zone "nouveau" : uniquement le bouton de création
+10. bouton libellé "Créer ma classe à partir d'un jeu de données d'exemple"
+---
+2026-06-10 20:15:13 [Analyze available session elements] Message de bienvenue : "Bienvenue dans MaClasse — gérez votre classe, à votre façon."
+1. quel libellé proposes-tu au dessus du bouton de création ?
+2. transition immédiate et affichage de l'écran d'accueil
+3. mot de passe conservé en mémoire pour la sauvegarde
+4. le bouton de thème est actif tout le temps
+---
+2026-06-10 20:16:10 [Analyze available session elements] Option A : "Première utilisation ? Créez votre espace de classe."
+Tout le reste est bon
+---
+2026-06-10 20:18:08 [Analyze available session elements] passons à l'accueil
+---
+2026-06-10 20:22:35 [Analyze available session elements] 1. l'écran actif est visible car le bouton associé est d'une couleur légèrement différente
+2. le résumé du cahier journal et la date
+3. "Aucun journal pour aujourd'hui"
+4. pas de créneau de récréation et pause déjeuner
+5. le nombre d'élèves de chaque séance
+6. les domaines de compétence en simple texte
+7. pas de lien
+8. "Aujourd'hui — lundi 9 juin 2026"
+
+Information utile : il peux exister plusieurs séances sur un même créneau horaire. Mais un élève ne peut pas participer à plus d'une séance en même temps
+---
+2026-06-10 20:23:29 [Analyze available session elements] passons à l'écran des élèves
+---
+2026-06-10 20:30:05 [Analyze available session elements] 1. juste prénom et nom
+2. le filtre textuel se déclenche à la frappe. En plus du filtre, juste en dessous, sont présents des chips (un par groupe d'élèves). Au clic (sélection/désélection), la liste des élèves est filtrée.
+3. à l'ouverture de l'écran, la zone droite est vide
+4. chaque section fait l'objet d'un séparateur léger et d'un titre.
+5. toutes les données sont affichées sauf l'identifiant
+6. même organisation en lecture qu'en modification
+7. aucun champ n'est obligatoire
+8. un bouton Ajouter et un bouton Supprimer sont présents
+9. mêmes boutons
+10. mêmes boutons
+11. au clic sur un autre élève ou au changement d'écran, avertissement
+12. suppression uniquement en lecture seule
+---
+2026-06-10 20:37:51 [Analyze available session elements] 1. les sections sont, dans l'ordre : Identité, Contacts, Absences récurrentes, Cursus, Notes administratives
+2. chaque contact, absence ou cursus, en mode lecture, est affiché sous forme d'un résumé en une seule ligne
+3. tous les contacts, absences et cursus sont éditables
+4. l'avertissement est affiché dans une vraie popin modale
+5. les boutons MODIFIER et SUPPRIMER sont présents en haut à droite, dans un bandeau contenant le prénom et le nom (modification directe à la frappe dans les champs de saisie)
+6. les boutons ANNULER et ENREGISTRER sont présents en haut à droite, dans le même bandeau.
+7. avertissement aussi au clic sur le bouton CREER (bouton présent au dessus du champ textuel de filtrage.
+8. tous les groupes du référentiel sont utilisés pour les chips de filtrage par groupe
+---
+2026-06-10 20:39:26 [Analyze available session elements] passons à l'écran des projets dont la structure et les choix doivent être similaires à l'écran des élèves
+---
+2026-06-10 20:50:47 [Analyze available session elements] 1. filtre textuel et chips de filtrage par domaine de compétence filtrant sur les domaines des compétences associées au projets
+2. "informations générales" et "périodes"
+3. en lecture, la liste des élèves est une liste de prénom+nom séparés par une virgule. En formulaire, chaque élève est un chip.
+4. en lecture, une période se résume avec le nom de la période et la liste des compétences sélectionnées (libellé complet)
+5. comopsant mc-selecteur-competences
+6. l'ordre des périodes est par la date de début ascendante
+7. oui
+---
+2026-06-10 20:52:15 [Analyze available session elements] ajoute une date de début et une date de fin à ProjetPeriode
+---
+2026-06-10 20:53:17 [Analyze available session elements] passons à l'écran des compétences
+---
+2026-06-10 20:59:23 [Analyze available session elements] 1. tous les noeuds sont repliés par défaut
+2. tous les noeuds sont repliables/dépliables manuellement (clic et clavier entrer/espace/fleches)
+3. les noeuds correspondant au filtre textuel doivent être affichés (ainsi que leurs ascendants). Les autres sont masqués
+4. une colonne à droite est nécessaire (à ajouter). Au clic sur une compétence, elle est ajoutée à une liste (un panier) dans la colonne de droite. Une icône de suppression permet de retirer la compétence de la colonne de droite. En bas de la colonne de droite, deux boutons permettent d'envoyer les compétences du panier dans un ProjetPeriode ou une séance de cahier journal (à détailler plus loin)
+5. non
+6. filtres cumulatifs (comme dans les autres écrans)
+7. pas de bouton "réinitialiser les filtres" (comme dans les autres écrans)
+---
+2026-06-10 21:02:55 [Analyze available session elements] 1. colonne de filtrage à gauche (comme sur les autres écran), arbre au centre et panier à droite.
+2. le panier est conservé entre deux accès à l'écran
+3. pas de doublon de compétence dans le panier
+4. dans le panier, le libellé long de la compétence est utilisé
+5. au clic sur un bouton, afficher, dans un popin, avec deux listes déroulantes  : le projet ou le jour puis, en dessous, la période du projet ou la séance
+6. boutons désactivés si le panier est vide
+---
+2026-06-10 21:04:46 [Analyze available session elements] maintenant, l'emploi du temps
+---
+2026-06-10 21:11:07 [Analyze available session elements] 1. jours en colonnes et les créneaux horaires en lignes
+2. créneau libres avec son heure de début et heure de fin
+3. les créneaux s'affichent simplement les uns sous les autres (trié par l'heure de début).
+4. un bouton AJOUTER sur la colonne du jour
+5. chaque créneau est en lecture seule. L'édition se fait dans la colonne de droite
+6. début, fin, type, discipline (si c'est une séance et pas une récréation ou une pause déjeuner - même condition pour les autres informations suivantes), titre, groupes ou élèves concernés
+7. il existera un écran de paramétrage de la classe avec les informations de l'enseignant, les jours ouvrés de la semaine, les jours fériés et tous les référentiels
+8. les conflits d'une séance sont un petit logo triangle orange tabulable et clicable ouvrant une modale listant les problèmes
+---
+2026-06-10 21:13:40 [Analyze available session elements] 1. pas de mode de lecture intermédiaire. Donc les boutons SUPPRIMER, ANNULER et ENREGISTRER ont visibles
+2. oui
+3. oui
+4. logo sur la(es) séance(s) contenant une incohérence
+5. oui
+6. plus tard mais mentionne le dans la liste des écrans pour en pas l'oublier
+---
+2026-06-10 21:16:53 [Analyze available session elements] l'écran des emplois du temps n'est pas fini. L'application doit gérer plusieurs emploi du temps. Un emploi du temps a un nom (obligatoire), une date de début (optionnel), une date de fin (optionnel) et une fréquence (semaine paire, impaire ou les deux). Un bouton AJOUTER/SUPPRIMER existent.
+J'hésite sur la façon de sélectionner un des emplois du temps
+---
+2026-06-10 21:19:07 [Analyze available session elements] option B La colonne droite sert aussi à éditer l'EDT
+---
+2026-06-10 21:20:27 [Analyze available session elements] maintenant cahier journal
+---
+2026-06-10 21:24:06 [Analyze available session elements] 1. édition de séance dans la colonne de droite. Dans la zone centrale, tout est en lecture seule
+2. oui
+3. supprime le statut de la séance du modèle de données
+4. objectifs, deroulement et ressources seront des textes éditables dans des textarea
+5. oui
+6. l'idée du bouton + en intercalaire est bonne. A utiliser dans l'écran du cahier journal et de l'emploi du temps
+7. flèches toujours visibles (règle RGAA)
+8. oui
+---
+2026-06-10 21:27:27 [Analyze available session elements] J'ai fait une erreur. Un créneau d'emploi du temps peut contenir plusieurs disciplines. Une séance de cahier journal peut contenir des compétences de plusieurs disciplines

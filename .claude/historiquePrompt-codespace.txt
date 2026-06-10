@@ -214,3 +214,7 @@ corrige le point 13
 14. la sélection se fait en fonction de la date de début, de la date de fin et de la parité de la semaine. Deux emploi du temps ne peuvent pas se chevaucher (en date et, en plus, en parité) car un avertissement s'affiche dans l'écran des EDT
 15. propose des routes
 16. les colonnes répondent au pb de 'responsibilité' : elles s'affichent les unes sous les autres (gauche en haut, puis milieu puis droite)
+---
+2026-06-10 22:01:24 [Analyze available session elements] corrige l'incohérence fonctionnelle de l'écran des EDT et déplace la création et la sélection d'un EDT dans une colonne à gauche (pour l'homogénéité des écrans)
+---
+2026-06-10 22:04:08 [Analyze available session elements] La saisie des groupes, dans la fiche d'un élève, doit passer par un chip.

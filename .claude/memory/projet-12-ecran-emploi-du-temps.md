@@ -1,41 +1,52 @@
 ---
 name: projet-12-ecran-emploi-du-temps
-description: Spécification détaillée de l'écran Emploi du temps — multi-EDT, grille hebdomadaire éditable, colonne droite contextuelle
+description: Spécification détaillée de l'écran Emploi du temps — colonne gauche liste EDT, grille hebdomadaire centrale, formulaire contextuel droit
 metadata:
   type: project
-  updated: 2026-06-09
+  updated: 2026-06-10
 related:
   - projet-03-ecrans
   - projet-02-modelesDonnees
   - projet-05-services
   - projet-04-composantsPartages
+  - projet-09-ecran-eleves
 ---
 
 ## Layout général
 
-Trois zones :
-- **Barre de sélection** (haut) : sélection et création d'un EDT
-- **Zone principale** : grille hebdomadaire de l'EDT sélectionné
-- **Colonne droite** : formulaire contextuel (EDT ou créneau selon la sélection)
+Trois colonnes — homogène avec les autres écrans :
+- **Colonne gauche** : liste des EDT + bouton CRÉER
+- **Zone centrale** : grille hebdomadaire de l'EDT sélectionné
+- **Colonne droite** : formulaire contextuel (propriétés EDT ou créneau)
 
 ---
 
-## Barre de sélection (haut)
+## Colonne gauche — Liste des EDT
 
-| Élément | Détail |
-|---|---|
-| `mc-select` | Liste de tous les EDT (affiche le nom). Sélection charge la grille et le formulaire EDT dans la colonne droite |
-| Bouton **CRÉER** | Crée un nouvel EDT vide, le sélectionne dans le `mc-select`, ouvre son formulaire dans la colonne droite |
+### Bouton CRÉER
+
+- Positionné en haut de la colonne
+- Crée un EDT vide, le sélectionne dans la liste, ouvre ses propriétés dans la colonne droite
+
+### Liste des EDT
+
+- Affiche pour chaque EDT : **nom** + **fréquence** (paire / impaire / les deux) + plage de dates si renseignée
+- Clic sur un EDT → charge sa grille dans la zone centrale + ouvre ses propriétés dans la colonne droite
+- **Icône warning ⚠** sur un EDT si son chevauchement avec un autre EDT est détecté (même plage de dates ET même parité)
+  - Tabulable et cliquable (RGAA)
+  - Au clic : ouvre `popin-warnings-absences` listant le ou les EDT en conflit
 
 ---
 
-## Zone principale — Grille hebdomadaire
+## Zone centrale — Grille hebdomadaire
+
+Affichée uniquement quand un EDT est sélectionné dans la colonne gauche.
 
 ### Structure
 
 - **Colonnes** : jours ouvrés (`referentiels.configEmploiDuTemps.joursOuvres`)
 - **Lignes** : créneaux de l'EDT sélectionné, triés par heure de début ascendante
-- Créneaux libres (pas de lignes horaires fixes)
+- Créneaux libres (pas de lignes horaires fixes prédéfinies)
 
 ### En-tête de colonne (par jour)
 
@@ -46,7 +57,7 @@ Trois zones :
 
 ### Bouton intercalaire "+"
 
-- Un bouton **+** visible en permanence entre chaque créneau de la colonne (RGAA : toujours visible)
+- Visible en permanence entre chaque créneau de la colonne (RGAA)
 - Au clic : crée un créneau vide inséré à cette position, l'ouvre dans la colonne droite
 
 ### Cellule de créneau (lecture seule dans la grille)
@@ -55,36 +66,33 @@ Trois zones :
 |---|---|
 | Heure début – heure fin | Toujours |
 | Type | Toujours (pédagogique / récréation / pause déjeuner) |
-| Titre | Type pédagogique uniquement |
-| Disciplines | Type pédagogique uniquement |
-| Icône warning ⚠ | Si conflit avec absence récurrente d'un élève |
+| Titre | Type pédagogique |
+| Disciplines | Type pédagogique |
+| Icône warning ⚠ | Si conflit avec une absence récurrente d'un élève |
 
-#### Icône warning (triangle orange)
+#### Icône warning créneau (triangle orange)
 
 - Tabulable et cliquable (RGAA)
 - Au clic : ouvre `popin-warnings-absences` listant les conflits du créneau
-- Calculé à l'**ouverture** de l'écran et **avant la sauvegarde** (`EmploiDuTempsService`)
-
-### Sélection d'un créneau
-
-- Clic sur une cellule → charge le formulaire du créneau dans la colonne droite
-- Le formulaire EDT (colonne droite) est remplacé par le formulaire du créneau
+- Calculé à l'**ouverture** de l'écran et au **chargement d'un EDT** dans la grille
 
 ---
 
 ## Colonne droite — Formulaire contextuel
 
-### État 1 : formulaire de l'EDT actif
+Vide si aucun EDT n'est sélectionné. Pas de mode lecture intermédiaire — toujours en mode formulaire.
 
-Affiché quand aucun créneau n'est sélectionné (ou après ANNULER/ENREGISTRER d'un créneau).
+### État 1 : propriétés de l'EDT sélectionné
+
+Affiché au clic sur un EDT dans la colonne gauche, ou après ANNULER/ENREGISTRER d'un créneau.
 
 #### Boutons d'action
 
 | Bouton | Comportement |
 |---|---|
 | **ENREGISTRER** | Soumet la commande à `DonneesService` |
-| **ANNULER** | Abandonne les saisies, restaure les valeurs de l'EDT |
-| **SUPPRIMER** | `mc-bouton-destruction` : supprime l'EDT entier (créneaux inclus) |
+| **ANNULER** | Restaure les valeurs initiales de l'EDT |
+| **SUPPRIMER** | `mc-bouton-destruction` : supprime l'EDT et tous ses créneaux |
 
 #### Champs
 
@@ -99,15 +107,15 @@ Affiché quand aucun créneau n'est sélectionné (ou après ANNULER/ENREGISTRER
 
 ### État 2 : formulaire d'un créneau
 
-Affiché au clic sur une cellule de la grille ou sur un bouton AJOUTER.
+Affiché au clic sur une cellule ou sur un bouton AJOUTER / intercalaire "+".
 
 #### Boutons d'action
 
 | Bouton | Comportement |
 |---|---|
-| **ENREGISTRER** | Soumet la commande à `DonneesService`, revient au formulaire EDT |
-| **ANNULER** | Abandonne les saisies, revient au formulaire EDT |
-| **SUPPRIMER** | `mc-bouton-destruction` : supprime le créneau, revient au formulaire EDT |
+| **ENREGISTRER** | Soumet la commande à `DonneesService`, revient à l'état 1 (propriétés EDT) |
+| **ANNULER** | Abandonne les saisies, revient à l'état 1 |
+| **SUPPRIMER** | `mc-bouton-destruction` : supprime le créneau, revient à l'état 1 |
 
 #### Champs
 
@@ -118,7 +126,7 @@ Affiché au clic sur une cellule de la grille ou sur un bouton AJOUTER.
 | Type | `mc-select` (pédagogique / récréation / pause déjeuner) | Toujours |
 | Disciplines | Chips sélectionnables (un chip par domaine de niveau 1) — sélection multiple | Type pédagogique |
 | Titre | `mc-input` | Type pédagogique |
-| Élèves concernés | `type: 'classe' \| 'groupes' \| 'eleves'` + sélection | Type pédagogique |
+| Élèves concernés | `mc-eleves-concernes` | Type pédagogique |
 
 ---
 

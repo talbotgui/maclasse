@@ -83,7 +83,7 @@ Même organisation en lecture et en modification. Chaque section est séparée p
 | Date de naissance | Date formatée | `mc-input` type date |
 | Date d'arrivée | Date formatée | `mc-input` type date |
 | Niveau | Valeur texte | `mc-input` texte |
-| Groupes | Liste des groupes | `mc-checkbox` par groupe du référentiel |
+| Groupes | Liste des groupes | Chips sélectionnables/désélectionnables (un chip par groupe du référentiel) |
 | Statut | Libellé du statut | `mc-select` (valeurs issues de `referentiels.statutsEleve`) |
 | Bilans | Texte libre | `mc-textarea` |
 | Accueil | Texte libre | `mc-textarea` |

@@ -101,10 +101,11 @@ related:
 
 ## Écran Emploi du temps
 
-- Sélection de l'EDT actif via `mc-select` + bouton CRÉER
-- Vue en **grille hebdomadaire éditable** — colonnes = jours ouvrés, lignes = créneaux libres triés par heure
+- Layout 3 colonnes : liste des EDT à gauche | grille hebdomadaire au centre | formulaire contextuel à droite
+- Colonne gauche : bouton CRÉER + liste des EDT (nom, fréquence, dates) avec icône warning si chevauchement
 - Chaque EDT a une fréquence (paire / impaire / les deux) et des dates de début/fin optionnelles
-- Deux EDT ne peuvent pas se chevaucher (même plage de dates ET même parité) — warning dans l'écran
+- Deux EDT ne peuvent pas se chevaucher (même plage de dates ET même parité) — warning sur l'EDT dans la liste
+- Colonne droite contextuelle : propriétés EDT (état 1) ou formulaire créneau (état 2), sans mode lecture intermédiaire
 - Types de créneau : séance pédagogique, récréation (type dédié), pause déjeuner (type dédié)
 - **Warning non bloquant** à la sauvegarde si un créneau EDT est incohérent avec une absence récurrente d'élève
 

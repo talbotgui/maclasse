@@ -18,7 +18,7 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [Écran élèves — détail](projet-09-ecran-eleves.md) — Liste filtrée (texte + chips groupe), fiche sections, formulaire inline, popin avertissement
 - [Écran projets — détail](projet-10-ecran-projets.md) — Même pattern qu'élèves, chips filtrage par domaine, périodes avec mc-selecteur-competences
 - [Écran compétences — détail](projet-11-ecran-competences.md) — 3 colonnes : filtres gauche, arbre centre, panier droit avec export vers projet/séance
-- [Écran emploi du temps — détail](projet-12-ecran-emploi-du-temps.md) — Multi-EDT (select+créer), grille hebdo, colonne droite contextuelle (EDT ou créneau), warning triangle absences
+- [Écran emploi du temps — détail](projet-12-ecran-emploi-du-temps.md) — 3 colonnes : liste EDT gauche, grille hebdo centre, formulaire contextuel droit (EDT ou créneau)
 - [Écran cahier journal — détail](projet-13-ecran-cahier-journal.md) — Navigation mini-calendrier+J±1/7, liste séances avec "+" intercalaire et flèches, formulaire droite contextuel
 - [Composants partagés](projet-04-composantsPartages.md) — Composants formulaire (ControlValueAccessor), affichage, riches (sélecteur compétences, mini-calendrier), popins
 - [Services](projet-05-services.md) — DonneesService (signal+undo/redo), ContextService, services métier par domaine, ChiffrementService

@@ -112,6 +112,7 @@ Toutes les routes fonctionnelles sont protégées par `DonneesChargeesGarde` qui
 | `/projets` | `EcranProjetsComponent` | `DonneesChargeesGarde` |
 | `/emploi-du-temps` | `EcranEmploiDuTempsComponent` | `DonneesChargeesGarde` |
 | `/cahier-journal` | `EcranCahierJournalComponent` | `DonneesChargeesGarde` |
+| `/parametrage` | `EcranParametrageComponent` | `DonneesChargeesGarde` |
 
 ---
 

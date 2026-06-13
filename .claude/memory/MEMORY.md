@@ -20,6 +20,7 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [Écran compétences — détail](projet-11-ecran-competences.md) — 3 colonnes : filtres gauche, arbre centre, panier droit avec export vers projet/séance
 - [Écran emploi du temps — détail](projet-12-ecran-emploi-du-temps.md) — 3 colonnes : liste EDT gauche, grille hebdo centre, formulaire contextuel droit (EDT ou créneau)
 - [Écran cahier journal — détail](projet-13-ecran-cahier-journal.md) — Navigation mini-calendrier+J±1/7, liste séances avec "+" intercalaire et flèches, formulaire droite contextuel
+- [Écran paramétrage — détail](projet-14-ecran-parametrage.md) — 10 sections (enseignant, référentiels), SUPPRIMER désactivé+tooltip si valeur utilisée
 - [Composants partagés](projet-04-composantsPartages.md) — Composants formulaire (ControlValueAccessor), affichage, riches (sélecteur compétences, mini-calendrier), popins
 - [Services](projet-05-services.md) — DonneesService (signal+undo/redo), ContextService, services métier par domaine, ChiffrementService
 - [Éléments techniques](projet-06-elementsTechniques.md) — DonneesChargeesGarde, mcAutoFocus, DateUtils, pattern Commande, FormatDatePipe, localStorage thème

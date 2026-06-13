@@ -143,7 +143,13 @@ related:
 - PPI (Projet Pédagogique Individuel)
 - Bulletins
 - Tableau de bord de progression
-- Paramétrage de la classe (identité enseignant, jours ouvrés, jours fériés, référentiels)
+
+## Écran Paramétrage (spécifié, à implémenter)
+
+- Layout 2 colonnes : liste fixe de 10 sections à gauche | contenu à droite
+- Sections formulaire simple : Enseignant & Classe, Semaine & Horaires
+- Sections liste éditable : Périodes, Barème d'évaluation, Groupes, Statuts élève, Types de contact, Raisons/Fréquences d'absence, Jours fériés
+- Bouton SUPPRIMER désactivé (tooltip + ARIA) si la valeur est utilisée dans les données
 
 ---
 

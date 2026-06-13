@@ -218,3 +218,7 @@ corrige le point 13
 2026-06-10 22:01:24 [Analyze available session elements] corrige l'incohérence fonctionnelle de l'écran des EDT et déplace la création et la sélection d'un EDT dans une colonne à gauche (pour l'homogénéité des écrans)
 ---
 2026-06-10 22:04:08 [Analyze available session elements] La saisie des groupes, dans la fiche d'un élève, doit passer par un chip.
+---
+2026-06-13 13:45:06 [Analyze available session elements] Propose moi la description d'un écran supplémentaire permettant de manipuler les données de l'enseignant, les données de référence et des autres données pas encore manipulables.
+---
+2026-06-13 13:48:37 [Analyze available session elements] Cela me convient mais je pense que le bouton SUPPRIMER ne doit pas être actif si la donnée de référence est utilisée. Un tooltip sur le bouton (et un message ARIA) doit indiquer que le bouton est désactivé car la donnée est utilisée.

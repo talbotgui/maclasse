@@ -44,7 +44,7 @@ Ces composants wrappent les éléments natifs HTML pour centraliser le style et 
 | `mc-chip-filtre` | Chip cliquable avec état actif/inactif, libellé | Filtrage par domaine (Compétences), potentiellement Projets |
 | `mc-badge-statut` | Affiche un statut d'acquisition (A/EC/NA/NE) avec glyphe, couleur texte et fond | PPI, Bulletin, Tableau de bord |
 | `mc-champ-recherche` | Input texte avec icône loupe et bouton reset | Élèves, Projets, Compétences |
-| `mc-bouton-destruction` | Bouton SUPPRIMER qui se masque au clic pour afficher ANNULER + CONFIRMER (pas de popin) | Fiche élève, fiche projet, séance cahier journal |
+| `mc-bouton-destruction` | Bouton SUPPRIMER qui se masque au clic pour afficher ANNULER + CONFIRMER (pas de popin). Accepte un `input() disabled` : quand désactivé, affiche un tooltip et un `aria-describedby` expliquant pourquoi (ex. "valeur utilisée") | Fiche élève, fiche projet, séance CJ, référentiels paramétrage |
 
 ---
 

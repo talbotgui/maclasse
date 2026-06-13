@@ -95,6 +95,17 @@ Chaque service expose des méthodes pures de manipulation et validation. Les mut
   - Déclenché au clic sur le triangle warning d'une séance
   - Retourne la liste des conflits (séance ↔ absence récurrente d'un élève concerné)
 
+### `ReferentielService`
+
+- Expose des méthodes `estUtilise(type, id)` pour chaque type de référentiel :
+  - Groupe utilisé par un élève ou une séance/créneau EDT ?
+  - StatutAcquisition utilisé par un PPI ou un bulletin ?
+  - StatutEleve utilisé par un élève ?
+  - TypeContact utilisé par un contact d'élève ?
+  - Période utilisée par un projet ou un bulletin ?
+- Ces méthodes sont appelées par l'écran Paramétrage pour activer/désactiver les boutons `mc-bouton-destruction`
+- CRUD des référentiels → via commande à `DonneesService`
+
 ### `ChiffrementService`
 
 - Chiffrement AES-GCM via Web Crypto API (encrypt / decrypt)

@@ -254,3 +254,11 @@ M. Ajoute un bouton IMPRIMER dans la fiche élève, la fiche projet, le cahier j
 N. Ajoute une recherche globale dans l'entête. La liste des résulats prend la forme d'une autocomplétion. Chaque résultat est au format "TYPE - titre" comme par exemple "Elève - LUKE Lucky" ou "Projet - compostage".
 
 O. Dupliquer une journée complète est une bonne idée. Ajoute un bouton dédié affichant un input de type date dans la colonne de droite.
+---
+2026-06-13 19:33:36 [Analyze available session elements] Quelle est la prochaine étape avant de générer le code de l'application ?
+---
+2026-06-13 19:39:10 [Analyze available session elements] 1. Crée un fichier projet-15-architectureApplicative dans la mémoire avec ta proposition. N'oublie pas d'utiliser le français.
+
+2. Des maquettes vont être fournies pour détailler le rendu graphique des écrans.
+
+3. Vérifie et corrige le fichier "donnees-defaut.json" vis-à-vis de la description du projet

@@ -24,6 +24,7 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [Composants partagés](projet-04-composantsPartages.md) — Composants formulaire (ControlValueAccessor), mc-mini-calendrier (weekends+fériés+non ouvrés grisés), popins
 - [Services](projet-05-services.md) — DonneesService (aDonneesModifiees), ContextService, SauvegardeAutoService, RechercheGlobaleService, services métier
 - [Éléments techniques](projet-06-elementsTechniques.md) — DonneesChargeesGarde, pattern Commande (5 types), @media print, recherche globale, routing
+- [Architecture applicative](projet-15-architectureApplicative.md) — Structure dossiers, nommage fichiers/classes, ordre d'implémentation en 10 étapes
 
 ## Règles de code
 

@@ -43,7 +43,6 @@
             "adressePostale": "12 rue des Fleurs, 75010 Paris"
           }
         ],
-        "absences": [],
         "cursus": [
           {
             "annee": 2024,
@@ -61,7 +60,9 @@
         "notesDroitImage": "Signé par René Martinot (père) le 05/09/2024. Autorisation complète sans restriction.",
         "notesAutorisationBaignade": "Signé par Patricia Martinot (mère) le 05/09/2024.",
         "notesPPA": null,
-        "notesESS": null
+        "notesESS": null,
+        "absencesRecurrentes": [],
+        "absencesPonctuelles": []
       },
       {
         "id": "a2b3c4d5-e6f7-8901-bcde-f12345678901",
@@ -88,7 +89,6 @@
             "adressePostale": "3 allée des Marronniers, 75008 Paris"
           }
         ],
-        "absences": [],
         "cursus": [
           {
             "annee": 2024,
@@ -100,7 +100,9 @@
         "notesDroitImage": "Signé par Anne Gratin (mère) le 03/09/2024.",
         "notesAutorisationBaignade": "Non autorisé.",
         "notesPPA": null,
-        "notesESS": null
+        "notesESS": null,
+        "absencesRecurrentes": [],
+        "absencesPonctuelles": []
       },
       {
         "id": "b3c4d5e6-f7a8-9012-cdef-123456789012",
@@ -133,15 +135,6 @@
             "adressePostale": "7 rue du Château, 59000 Lille"
           }
         ],
-        "absences": [
-          {
-            "raison": "O",
-            "jour": 5,
-            "frequence": "CS",
-            "heureDebut": "08:30",
-            "heureFin": "10:00"
-          }
-        ],
         "cursus": [
           {
             "annee": 2024,
@@ -165,7 +158,18 @@
         "notesDroitImage": "Refus écrit de la famille du 05/09/2024.",
         "notesAutorisationBaignade": "Non autorisé — allergie cutanée (attestation médicale du Dr Morin, 02/09/2024).",
         "notesPPA": null,
-        "notesESS": "ESS du 15/01/2026."
+        "notesESS": "ESS du 15/01/2026.",
+        "absencesRecurrentes": [
+          {
+            "id": "ar-O-5",
+            "libelle": "Orthophoniste",
+            "jour": "vendredi",
+            "heureDebut": "08:30",
+            "heureFin": "10:00",
+            "paritesSemaine": "lesDeux"
+          }
+        ],
+        "absencesPonctuelles": []
       },
       {
         "id": "c4d5e6f7-a8b9-0123-defa-234567890123",
@@ -198,7 +202,6 @@
             "adressePostale": "14 rue des Roses, 69000 Lyon"
           }
         ],
-        "absences": [],
         "cursus": [
           {
             "annee": 2024,
@@ -210,7 +213,9 @@
         "notesDroitImage": "Signé par Arlette Zimmermann (mère) le 02/09/2024.",
         "notesAutorisationBaignade": "Signé par Arlette Zimmermann (mère) le 02/09/2024.",
         "notesPPA": null,
-        "notesESS": null
+        "notesESS": null,
+        "absencesRecurrentes": [],
+        "absencesPonctuelles": []
       },
       {
         "id": "d5e6f7a8-b9c0-1234-efab-345678901234",
@@ -243,7 +248,6 @@
             "adressePostale": "Au Restaurant des Amis, 75005 Paris"
           }
         ],
-        "absences": [],
         "cursus": [
           {
             "annee": 2024,
@@ -267,7 +271,9 @@
         "notesDroitImage": "Signé par la famille Dubouchon le 04/09/2024.",
         "notesAutorisationBaignade": "Signé par la famille Dubouchon le 04/09/2024.",
         "notesPPA": null,
-        "notesESS": null
+        "notesESS": null,
+        "absencesRecurrentes": [],
+        "absencesPonctuelles": []
       },
       {
         "id": "e6f7a8b9-c0d1-2345-fabc-456789012345",
@@ -300,7 +306,6 @@
             "adressePostale": "Au Restaurant des Amis, 75005 Paris"
           }
         ],
-        "absences": [],
         "cursus": [
           {
             "annee": 2024,
@@ -312,7 +317,9 @@
         "notesDroitImage": "Signé par la famille Dubouchon le 04/09/2024.",
         "notesAutorisationBaignade": "Signé par la famille Dubouchon le 04/09/2024.",
         "notesPPA": null,
-        "notesESS": null
+        "notesESS": null,
+        "absencesRecurrentes": [],
+        "absencesPonctuelles": []
       },
       {
         "id": "f7a8b9c0-d1e2-3456-abcd-567890123456",
@@ -352,7 +359,6 @@
             "adressePostale": "8 rue des Marguerites, 75015 Paris"
           }
         ],
-        "absences": [],
         "cursus": [
           {
             "annee": 2024,
@@ -370,7 +376,9 @@
         "notesDroitImage": "Signé par Émile Dupont (grand-père) le 05/09/2024. Accord général avec restrictions : pas de diffusion sur réseaux sociaux.",
         "notesAutorisationBaignade": "Signé par Émile Dupont (grand-père) le 05/09/2024.",
         "notesPPA": null,
-        "notesESS": null
+        "notesESS": null,
+        "absencesRecurrentes": [],
+        "absencesPonctuelles": []
       },
       {
         "id": "a8b9c0d1-e2f3-4567-bcde-678901234567",
@@ -412,15 +420,6 @@
             "adressePostale": "8 avenue du Bois, 75016 Paris"
           }
         ],
-        "absences": [
-          {
-            "raison": "I",
-            "jour": 3,
-            "frequence": "CS",
-            "heureDebut": "08:30",
-            "heureFin": "16:30"
-          }
-        ],
         "cursus": [
           {
             "annee": 2024,
@@ -444,7 +443,18 @@
         "notesDroitImage": "Signé par père (Grand Tonnerre) le 12/01/2025. Usage interne uniquement — pas de diffusion publique.",
         "notesAutorisationBaignade": "Non autorisé (contre-indication médicale).",
         "notesPPA": "PPA établi le 12/11/2024, révisé le 14/03/2026.",
-        "notesESS": "ESS du 05/11/2024. Prochaine ESS prévue fin P5."
+        "notesESS": "ESS du 05/11/2024. Prochaine ESS prévue fin P5.",
+        "absencesRecurrentes": [
+          {
+            "id": "ar-I-3",
+            "libelle": "Inclusion",
+            "jour": "mercredi",
+            "heureDebut": "08:30",
+            "heureFin": "16:30",
+            "paritesSemaine": "lesDeux"
+          }
+        ],
+        "absencesPonctuelles": []
       },
       {
         "id": "b9c0d1e2-f3a4-5678-cdef-789012345678",
@@ -470,7 +480,6 @@
             "adressePostale": "5 rue du Moulin, 75012 Paris"
           }
         ],
-        "absences": [],
         "cursus": [
           {
             "annee": 2024,
@@ -494,7 +503,9 @@
         "notesDroitImage": "Signé par Hélène Martin (mère) le 02/09/2024. Autorisation complète.",
         "notesAutorisationBaignade": "Signé par Hélène Martin (mère) le 02/09/2024.",
         "notesPPA": null,
-        "notesESS": null
+        "notesESS": null,
+        "absencesRecurrentes": [],
+        "absencesPonctuelles": []
       },
       {
         "id": "c0d1e2f3-a4b5-6789-defa-890123456789",
@@ -527,7 +538,6 @@
             "adressePostale": "18 bd Haussmann, 75009 Paris"
           }
         ],
-        "absences": [],
         "cursus": [
           {
             "annee": 2024,
@@ -545,7 +555,9 @@
         "notesDroitImage": "Signé par Marco Lombardi (père) le 03/09/2024.",
         "notesAutorisationBaignade": "Signé par Marco Lombardi (père) le 03/09/2024.",
         "notesPPA": null,
-        "notesESS": null
+        "notesESS": null,
+        "absencesRecurrentes": [],
+        "absencesPonctuelles": []
       },
       {
         "id": "d1e2f3a4-b5c6-7890-efab-901234567890",
@@ -578,15 +590,6 @@
             "adressePostale": "4 impasse des Ânes, 75020 Paris"
           }
         ],
-        "absences": [
-          {
-            "raison": "O",
-            "jour": 5,
-            "frequence": "SI",
-            "heureDebut": "13:30",
-            "heureFin": "14:30"
-          }
-        ],
         "cursus": [
           {
             "annee": 2024,
@@ -598,7 +601,18 @@
         "notesDroitImage": "Signé par les deux parents le 02/09/2024.",
         "notesAutorisationBaignade": "Signé par les deux parents le 02/09/2024.",
         "notesPPA": null,
-        "notesESS": null
+        "notesESS": null,
+        "absencesRecurrentes": [
+          {
+            "id": "ar-O-5",
+            "libelle": "Orthophoniste",
+            "jour": "vendredi",
+            "heureDebut": "13:30",
+            "heureFin": "14:30",
+            "paritesSemaine": "impaire"
+          }
+        ],
+        "absencesPonctuelles": []
       }
     ]
   },
@@ -9357,17 +9371,58 @@
       }
     ],
     "joursFeries": [
-      "2025-11-01",
-      "2025-11-11",
-      "2025-12-25",
-      "2026-01-01",
-      "2026-04-06",
-      "2026-05-01",
-      "2026-05-08",
-      "2026-05-14",
-      "2026-05-25",
-      "2026-07-14"
-    ]
+      {
+        "nom": "Toussaint",
+        "date": "2025-11-01"
+      },
+      {
+        "nom": "Armistice 1918",
+        "date": "2025-11-11"
+      },
+      {
+        "nom": "Noël",
+        "date": "2025-12-25"
+      },
+      {
+        "nom": "Jour de l'An",
+        "date": "2026-01-01"
+      },
+      {
+        "nom": "Lundi de Pâques",
+        "date": "2026-04-06"
+      },
+      {
+        "nom": "Fête du Travail",
+        "date": "2026-05-01"
+      },
+      {
+        "nom": "Victoire 1945",
+        "date": "2026-05-08"
+      },
+      {
+        "nom": "Ascension",
+        "date": "2026-05-14"
+      },
+      {
+        "nom": "Lundi de Pentecôte",
+        "date": "2026-05-25"
+      },
+      {
+        "nom": "Fête Nationale",
+        "date": "2026-07-14"
+      }
+    ],
+    "configEmploiDuTemps": {
+      "joursOuvres": [
+        "lundi",
+        "mardi",
+        "mercredi",
+        "jeudi",
+        "vendredi"
+      ],
+      "heureDebutJournee": "08:30",
+      "heureFinJournee": "16:30"
+    }
   },
   "cahierJournal": [
     {
@@ -9377,146 +9432,132 @@
           "id": "aa000001-0000-4000-8000-000000000001",
           "heureDebut": "08:30",
           "heureFin": "09:30",
-          "disciplineId": "F",
           "titre": "Lecture – Compréhension de texte",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "FC2-27",
             "FC2-28",
             "FC2-30"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Extrait de roman jeunesse : identifier le schéma narratif.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "F"
+          ]
         },
         {
           "id": "aa000001-0000-4000-8000-000000000002",
           "heureDebut": "09:30",
           "heureFin": "10:30",
-          "disciplineId": "M",
           "titre": "Numération – Les grands nombres",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "MC2-95",
             "MC2-97",
             "MC2-98"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Lire, écrire et comparer des entiers jusqu'au milliard.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "M"
+          ]
         },
         {
           "id": "aa000001-0000-4000-8000-000000000003",
           "heureDebut": "10:30",
           "heureFin": "10:45",
-          "disciplineId": "",
-          "titre": "Récréation",
-          "statut": "prevu",
-          "objectifs": [],
-          "competencesIds": [],
-          "deroulement": [],
-          "ressources": [],
-          "type": "repos",
-          "elevesConcernes": {
-            "type": "classe",
-            "groupes": [],
-            "elevesIds": []
-          }
+          "type": "recreation"
         },
         {
           "id": "aa000001-0000-4000-8000-000000000004",
           "heureDebut": "10:45",
           "heureFin": "11:45",
-          "disciplineId": "F",
           "titre": "Grammaire – Le groupe nominal",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "FC2-296",
             "FC2-141",
             "FC2-311"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Identifier le déterminant, le nom noyau et les expansions.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "F"
+          ]
         },
         {
           "id": "aa000001-0000-4000-8000-000000000005",
           "heureDebut": "12:00",
           "heureFin": "13:30",
-          "disciplineId": "",
-          "titre": "Pause déjeuner",
-          "statut": "prevu",
-          "objectifs": [],
-          "competencesIds": [],
-          "deroulement": [],
-          "ressources": [],
-          "type": "repos",
-          "elevesConcernes": {
-            "type": "classe",
-            "groupes": [],
-            "elevesIds": []
-          }
+          "type": "pauseDejeuner"
         },
         {
           "id": "aa000001-0000-4000-8000-000000000006",
           "heureDebut": "13:30",
           "heureFin": "14:30",
-          "disciplineId": "M",
           "titre": "Géométrie – Les figures planes",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "MC2-227",
             "MC2-228",
             "MC2-229"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Propriétés du carré, rectangle, losange et parallélogramme.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "M"
+          ]
         },
         {
           "id": "aa000001-0000-4000-8000-000000000007",
           "heureDebut": "14:30",
           "heureFin": "15:30",
-          "disciplineId": "F",
           "titre": "Orthographe – Les homophones grammaticaux",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "FC2-172",
             "FC2-141"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "a/à, et/est, on/ont, son/sont.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "F"
+          ]
         }
       ]
     },
@@ -9527,144 +9568,130 @@
           "id": "aa000002-0000-4000-8000-000000000001",
           "heureDebut": "08:30",
           "heureFin": "09:30",
-          "disciplineId": "M",
           "titre": "Calcul mental – Multiplication et division",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "MC2-72",
             "MC2-116",
             "MC2-117"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Tables de multiplication, doubles et moitiés.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "M"
+          ]
         },
         {
           "id": "aa000002-0000-4000-8000-000000000002",
           "heureDebut": "09:30",
           "heureFin": "10:30",
-          "disciplineId": "F",
           "titre": "Production d'écrits – Rédiger un récit",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "FC2-182",
             "FC2-195"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Écrire la suite d'une histoire en respectant la cohérence narrative.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "F"
+          ]
         },
         {
           "id": "aa000002-0000-4000-8000-000000000003",
           "heureDebut": "10:30",
           "heureFin": "10:45",
-          "disciplineId": "",
-          "titre": "Récréation",
-          "statut": "prevu",
-          "objectifs": [],
-          "competencesIds": [],
-          "deroulement": [],
-          "ressources": [],
-          "type": "repos",
-          "elevesConcernes": {
-            "type": "classe",
-            "groupes": [],
-            "elevesIds": []
-          }
+          "type": "recreation"
         },
         {
           "id": "aa000002-0000-4000-8000-000000000004",
           "heureDebut": "10:45",
           "heureFin": "11:45",
-          "disciplineId": "M",
           "titre": "Fractions – Introduction",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "MC2-58",
             "MC2-59",
             "MC2-60"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Notion de partage égal, fractions simples.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "M"
+          ]
         },
         {
           "id": "aa000002-0000-4000-8000-000000000005",
           "heureDebut": "12:00",
           "heureFin": "13:30",
-          "disciplineId": "",
-          "titre": "Pause déjeuner",
-          "statut": "prevu",
-          "objectifs": [],
-          "competencesIds": [],
-          "deroulement": [],
-          "ressources": [],
-          "type": "repos",
-          "elevesConcernes": {
-            "type": "classe",
-            "groupes": [],
-            "elevesIds": []
-          }
+          "type": "pauseDejeuner"
         },
         {
           "id": "aa000002-0000-4000-8000-000000000006",
           "heureDebut": "13:30",
           "heureFin": "14:30",
-          "disciplineId": "F",
           "titre": "Vocabulaire – Familles de mots",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "FC2-229",
             "FC2-255"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Radical, préfixe, suffixe ; enrichir le lexique.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "F"
+          ]
         },
         {
           "id": "aa000002-0000-4000-8000-000000000007",
           "heureDebut": "14:30",
           "heureFin": "15:30",
-          "disciplineId": "M",
           "titre": "Problèmes – Situations multiplicatives",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "MC2-88",
             "MC2-89"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Résoudre des problèmes à étapes impliquant la multiplication.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "M"
+          ]
         }
       ]
     },
@@ -9675,146 +9702,132 @@
           "id": "aa000004-0000-4000-8000-000000000001",
           "heureDebut": "08:30",
           "heureFin": "09:30",
-          "disciplineId": "F",
           "titre": "Dictée préparée",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "FC2-108",
             "FC2-172"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Révision des règles travaillées en début de semaine.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "F"
+          ]
         },
         {
           "id": "aa000004-0000-4000-8000-000000000002",
           "heureDebut": "09:30",
           "heureFin": "10:30",
-          "disciplineId": "M",
           "titre": "Opérations – Pose et calcul",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "MC2-109",
             "MC2-111",
             "MC2-112"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Multiplication posée à deux chiffres, division euclidienne.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "M"
+          ]
         },
         {
           "id": "aa000004-0000-4000-8000-000000000003",
           "heureDebut": "10:30",
           "heureFin": "10:45",
-          "disciplineId": "",
-          "titre": "Récréation",
-          "statut": "prevu",
-          "objectifs": [],
-          "competencesIds": [],
-          "deroulement": [],
-          "ressources": [],
-          "type": "repos",
-          "elevesConcernes": {
-            "type": "classe",
-            "groupes": [],
-            "elevesIds": []
-          }
+          "type": "recreation"
         },
         {
           "id": "aa000004-0000-4000-8000-000000000004",
           "heureDebut": "10:45",
           "heureFin": "11:45",
-          "disciplineId": "F",
           "titre": "Conjugaison – Les temps du passé",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "FC2-307",
             "FC2-319",
             "FC2-320"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Imparfait et passé composé : emploi et formation.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "F"
+          ]
         },
         {
           "id": "aa000004-0000-4000-8000-000000000005",
           "heureDebut": "12:00",
           "heureFin": "13:30",
-          "disciplineId": "",
-          "titre": "Pause déjeuner",
-          "statut": "prevu",
-          "objectifs": [],
-          "competencesIds": [],
-          "deroulement": [],
-          "ressources": [],
-          "type": "repos",
-          "elevesConcernes": {
-            "type": "classe",
-            "groupes": [],
-            "elevesIds": []
-          }
+          "type": "pauseDejeuner"
         },
         {
           "id": "aa000004-0000-4000-8000-000000000006",
           "heureDebut": "13:30",
           "heureFin": "14:30",
-          "disciplineId": "M",
           "titre": "Mesures – Longueurs et périmètres",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "MC2-137",
             "MC2-140",
             "MC2-196",
             "MC2-198"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Unités de longueur, conversions, calcul de périmètre.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "M"
+          ]
         },
         {
           "id": "aa000004-0000-4000-8000-000000000007",
           "heureDebut": "14:30",
           "heureFin": "15:30",
-          "disciplineId": "F",
           "titre": "Lecture autonome – Album de littérature",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "FC2-35",
             "FC2-27"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Lecture silencieuse et carnet de lecteur.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "F"
+          ]
         }
       ]
     },
@@ -9825,146 +9838,132 @@
           "id": "aa000005-0000-4000-8000-000000000001",
           "heureDebut": "08:30",
           "heureFin": "09:30",
-          "disciplineId": "M",
           "titre": "Évaluation – Numération et calcul",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "MC2-95",
             "MC2-47",
             "MC2-109"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Bilan de la semaine.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "M"
+          ]
         },
         {
           "id": "aa000005-0000-4000-8000-000000000002",
           "heureDebut": "09:30",
           "heureFin": "10:30",
-          "disciplineId": "F",
           "titre": "Lecture – Débat littéraire",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "FC2-195",
             "FC2-207",
             "FC3-76"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Partager ses impressions sur le roman en cours.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "F"
+          ]
         },
         {
           "id": "aa000005-0000-4000-8000-000000000003",
           "heureDebut": "10:30",
           "heureFin": "10:45",
-          "disciplineId": "",
-          "titre": "Récréation",
-          "statut": "prevu",
-          "objectifs": [],
-          "competencesIds": [],
-          "deroulement": [],
-          "ressources": [],
-          "type": "repos",
-          "elevesConcernes": {
-            "type": "classe",
-            "groupes": [],
-            "elevesIds": []
-          }
+          "type": "recreation"
         },
         {
           "id": "aa000005-0000-4000-8000-000000000004",
           "heureDebut": "10:45",
           "heureFin": "11:45",
-          "disciplineId": "M",
           "titre": "Synthèse – Ce que j'ai appris cette semaine",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "MC2-47",
             "MC2-72",
             "MC2-88"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Retour réflexif sur les notions mathématiques de la semaine.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "M"
+          ]
         },
         {
           "id": "aa000005-0000-4000-8000-000000000005",
           "heureDebut": "12:00",
           "heureFin": "13:30",
-          "disciplineId": "",
-          "titre": "Pause déjeuner",
-          "statut": "prevu",
-          "objectifs": [],
-          "competencesIds": [],
-          "deroulement": [],
-          "ressources": [],
-          "type": "repos",
-          "elevesConcernes": {
-            "type": "classe",
-            "groupes": [],
-            "elevesIds": []
-          }
+          "type": "pauseDejeuner"
         },
         {
           "id": "aa000005-0000-4000-8000-000000000006",
           "heureDebut": "13:30",
           "heureFin": "14:30",
-          "disciplineId": "F",
           "titre": "Rédaction – Bilan personnel de la semaine",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "FC2-182",
             "FC2-219"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Écrire un court texte sur ses réussites et difficultés.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "F"
+          ]
         },
         {
           "id": "aa000005-0000-4000-8000-000000000007",
           "heureDebut": "14:30",
           "heureFin": "15:30",
-          "disciplineId": "M",
           "titre": "Jeux mathématiques",
-          "statut": "prevu",
-          "objectifs": [],
+          "objectifs": "",
           "competencesIds": [
             "MC2-24",
             "MC2-34",
             "MC2-85"
           ],
-          "deroulement": [],
-          "ressources": [],
+          "deroulement": "",
+          "ressources": "",
           "description": "Activités de logique et résolution de problèmes originaux.",
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
             "elevesIds": []
-          }
+          },
+          "type": "pedagogique",
+          "disciplinesIds": [
+            "M"
+          ]
         }
       ]
     }
@@ -9995,7 +9994,9 @@
             "F-1-1-1-1",
             "F-1-1-1-2",
             "AP111"
-          ]
+          ],
+          "debut": "2025-09-02",
+          "fin": "2025-10-17"
         },
         {
           "periodeNom": "Période 2",
@@ -10004,7 +10005,9 @@
             "F-1-1-2-1",
             "AP112",
             "AP133"
-          ]
+          ],
+          "debut": "2025-11-04",
+          "fin": "2025-12-19"
         },
         {
           "periodeNom": "Période 3",
@@ -10013,7 +10016,9 @@
             "EMC-2",
             "EMC-4",
             "F-1-1-1-1"
-          ]
+          ],
+          "debut": "2026-01-05",
+          "fin": "2026-02-06"
         },
         {
           "periodeNom": "Période 4",
@@ -10022,7 +10027,9 @@
             "JF72111",
             "JF72112",
             "F-1-1-2-1"
-          ]
+          ],
+          "debut": "2026-02-23",
+          "fin": "2026-04-10"
         },
         {
           "periodeNom": "Période 5",
@@ -10031,7 +10038,9 @@
             "AP121",
             "AP131",
             "F-1-1-1-2"
-          ]
+          ],
+          "debut": "2026-04-27",
+          "fin": "2026-07-04"
         }
       ]
     },
@@ -10053,7 +10062,9 @@
           "competencesIds": [
             "QLMC21111",
             "QLMC21113"
-          ]
+          ],
+          "debut": "2025-09-02",
+          "fin": "2025-10-17"
         },
         {
           "periodeNom": "Période 2",
@@ -10062,7 +10073,9 @@
             "QLMC21112",
             "M-1-1-1-1",
             "M-1-1-1-3"
-          ]
+          ],
+          "debut": "2025-11-04",
+          "fin": "2025-12-19"
         },
         {
           "periodeNom": "Période 3",
@@ -10070,7 +10083,9 @@
           "competencesIds": [
             "QLMC21114",
             "JF81113"
-          ]
+          ],
+          "debut": "2026-01-05",
+          "fin": "2026-02-06"
         },
         {
           "periodeNom": "Période 4",
@@ -10079,7 +10094,9 @@
             "JF81111",
             "JF81112",
             "M-1-1-1-2"
-          ]
+          ],
+          "debut": "2026-02-23",
+          "fin": "2026-04-10"
         },
         {
           "periodeNom": "Période 5",
@@ -10089,7 +10106,9 @@
             "QLMC21112",
             "QLMC21113",
             "JF81114"
-          ]
+          ],
+          "debut": "2026-04-27",
+          "fin": "2026-07-04"
         }
       ]
     },
@@ -10112,7 +10131,9 @@
           "competencesIds": [
             "JF411",
             "JF412"
-          ]
+          ],
+          "debut": "2025-09-02",
+          "fin": "2025-10-17"
         },
         {
           "periodeNom": "Période 2",
@@ -10121,7 +10142,9 @@
             "EM111",
             "EM112",
             "EM113"
-          ]
+          ],
+          "debut": "2025-11-04",
+          "fin": "2025-12-19"
         },
         {
           "periodeNom": "Période 3",
@@ -10131,7 +10154,9 @@
             "AP113",
             "AP131",
             "JF215"
-          ]
+          ],
+          "debut": "2026-01-05",
+          "fin": "2026-02-06"
         },
         {
           "periodeNom": "Période 4",
@@ -10140,7 +10165,9 @@
             "EM114",
             "EM115",
             "EPESC213"
-          ]
+          ],
+          "debut": "2026-02-23",
+          "fin": "2026-04-10"
         },
         {
           "periodeNom": "Période 5",
@@ -10150,9 +10177,17 @@
             "EMC-2",
             "EMC-4",
             "JF4131"
-          ]
+          ],
+          "debut": "2026-04-27",
+          "fin": "2026-07-04"
         }
       ]
     }
-  ]
+  ],
+  "configuration": {
+    "delaiSauvegardeAutoMinutes": 2
+  },
+  "emploisDuTemps": [],
+  "ppi": [],
+  "bulletins": []
 }

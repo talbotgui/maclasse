@@ -76,7 +76,9 @@ related:
   notesDroitImage: string,      // texte libre
   notesAutorisationBaignade: string, // texte libre
   notesPPA: string | null,      // texte libre
-  notesESS: string | null       // texte libre
+  notesESS: string | null,      // texte libre
+  manualite: 'D' | 'G' | 'A',
+  dispositifsMedicaus: string   // texte libre
 }
 ```
 

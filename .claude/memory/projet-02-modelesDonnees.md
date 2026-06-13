@@ -13,6 +13,7 @@ related:
 ```
 {
   version: string,
+  configuration: ConfigApplication,
   enseignant: Enseignant,
   classe: Classe,
   referentiels: Referentiels,
@@ -21,6 +22,14 @@ related:
   cahierJournal: JourneeJournal[],
   ppi: Ppi[],           // à construire
   bulletins: Bulletin[] // à construire
+}
+```
+
+## ConfigApplication
+
+```
+{
+  delaiSauvegardeAutoMinutes: number  // délai entre deux sauvegardes automatiques (défaut : 2)
 }
 ```
 
@@ -62,6 +71,7 @@ related:
   inclusion: string | null,     // texte libre
   contacts: Contact[],
   absencesRecurrentes: AbsenceRecurrente[],
+  absencesPonctuelles: AbsencePonctuelle[],
   cursus: CursusAnnee[],
   notesDroitImage: string,      // texte libre
   notesAutorisationBaignade: string, // texte libre
@@ -162,6 +172,16 @@ related:
   heureDebut: string,       // "HH:MM"
   heureFin: string,         // "HH:MM"
   paritesSemaine: 'paire' | 'impaire' | 'lesDeux'
+}
+```
+
+### AbsencePonctuelle (dans Eleve)
+
+```
+{
+  id: string,
+  date: string,             // ISO date (ex: "2026-06-09")
+  justification: string     // texte libre
 }
 ```
 

@@ -130,6 +130,14 @@ Affiché au clic sur une cellule ou sur un bouton AJOUTER / intercalaire "+".
 
 ---
 
+## Bouton IMPRIMER
+
+- Positionné dans la colonne droite (ou en haut de la zone centrale)
+- Déclenche l'impression via le navigateur (`window.print()`)
+- **La colonne gauche n'est pas imprimée** (masquée via `@media print`)
+
+---
+
 ## Référentiel EDT
 
-Les jours ouvrés et horaires de début/fin de journée sont configurés dans l'**écran de paramétrage de la classe** (phase 2).
+Les jours ouvrés et horaires de début/fin de journée sont configurés dans l'**écran de paramétrage** (section Semaine & Horaires).

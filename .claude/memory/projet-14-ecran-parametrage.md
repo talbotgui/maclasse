@@ -40,6 +40,7 @@ Liste fixe cliquable (pas de CRÉER, pas de filtre, pas de SUPPRIMER) :
 8. Raisons d'absence
 9. Fréquences d'absence
 10. Jours fériés
+11. Préférences
 
 La section active est mise en évidence (même convention que le bouton de navigation actif dans l'entête).
 
@@ -157,3 +158,15 @@ Ces sections affichent une liste d'éléments éditables inline.
 | Date | `mc-input` type date |
 
 > Utilisé par : logique de navigation du cahier journal (jours non travaillés)
+
+---
+
+## Zone droite — Section Préférences
+
+Section formulaire simple (ENREGISTRER / ANNULER) portant les paramètres de l'application.
+
+| Champ | Composant | Détail |
+|---|---|---|
+| Délai de sauvegarde automatique | `mc-input` type number | En minutes, valeur par défaut 2. Persiste dans `donnees.configuration.delaiSauvegardeAutoMinutes` |
+
+> La sauvegarde automatique se déclenche après le premier clic manuel sur SAUVEGARDER, toutes les N minutes, uniquement si des modifications ont eu lieu depuis la dernière sauvegarde.

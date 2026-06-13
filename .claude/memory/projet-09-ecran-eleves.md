@@ -40,8 +40,8 @@ Deux colonnes côte à côte :
 
 ### Liste des élèves
 
-- Affiche **prénom + nom** uniquement
-- Triée alphabétiquement
+- Affiche au format **NOM Prénom** (nom en majuscules)
+- Triée par **nom de famille** ascendant
 - Au clic sur un élève :
   - Si aucun formulaire non enregistré ouvert → affiche la fiche en lecture seule dans la colonne droite + mémorise l'élève dans `ContextService`
   - Si formulaire non enregistré ouvert → affiche la **popin d'avertissement**
@@ -112,6 +112,21 @@ Même organisation en lecture et en modification. Chaque section est séparée p
 - Bouton **AJOUTER** : crée une nouvelle entrée de cursus vide
 - Chaque entrée dispose d'un bouton **SUPPRIMER** (`mc-bouton-destruction`)
 
+### Section Absences ponctuelles
+
+- **Lecture** : chaque absence sur **une ligne résumée** (ex. "09/06/2026 — Maladie")
+- **Formulaire** : chaque absence éditable inline (date + justification)
+
+| Champ | Mode lecture | Mode formulaire |
+|---|---|---|
+| Date | Date formatée (ex. "09/06/2026") | `mc-input` type date |
+| Justification | Texte libre | `mc-textarea` |
+
+- Bouton **AJOUTER** : crée une nouvelle absence ponctuelle vide
+- Chaque absence dispose d'un bouton **SUPPRIMER** (`mc-bouton-destruction`)
+
+> Ces absences sont utilisées dans le cahier journal pour désactiver le chip d'un élève dans `mc-eleves-concernes` si cet élève est absent le jour de la séance.
+
 ### Section Notes administratives
 
 | Champ | Mode lecture | Mode formulaire |
@@ -120,6 +135,15 @@ Même organisation en lecture et en modification. Chaque section est séparée p
 | Autorisation baignade | Texte libre | `mc-textarea` |
 | PPA | Texte libre | `mc-textarea` |
 | ESS | Texte libre | `mc-textarea` |
+
+---
+
+## Bouton IMPRIMER
+
+- Positionné dans la colonne droite (bandeau ou bas de fiche)
+- Déclenche l'impression via le navigateur (`window.print()`)
+- **La colonne gauche n'est pas imprimée** (masquée via `@media print`)
+- Uniquement disponible en mode lecture seule
 
 ---
 

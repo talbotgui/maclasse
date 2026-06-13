@@ -69,6 +69,9 @@ Ces composants wrappent les éléments natifs HTML pour centraliser le style et 
 
 - Calendrier mensuel miniature navigable (mois précédent/suivant)
 - Met en évidence les jours ayant une entrée dans le cahier journal
+- **Grise** les jours weekend (samedi/dimanche)
+- **Grise** les jours fériés (issus de `referentiels.joursFeries`)
+- **Grise** les jours non ouvrés (non présents dans `referentiels.configEmploiDuTemps.joursOuvres`)
 - Émet la date sélectionnée via `output()`
 - Utilisé dans : Cahier journal (colonne gauche)
 

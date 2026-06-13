@@ -77,7 +77,7 @@ Liste ordonnée des séances, séparées par des boutons intercalaires **+**.
 
 - Tabulable et cliquable (RGAA)
 - Au clic : ouvre `popin-warnings-absences` listant les conflits
-- Calculé à l'**ouverture** de l'écran et **avant la sauvegarde** (`CahierJournalService`)
+- Calculé à l'**ENREGISTRER** d'une séance (warning non bloquant, affiché après enregistrement)
 
 ---
 
@@ -89,7 +89,7 @@ Affiché au clic sur une séance ou sur un bouton intercalaire "+". Vide à l'ou
 
 | Bouton | Comportement |
 |---|---|
-| **ENREGISTRER** | Soumet la commande à `DonneesService`, ferme le formulaire |
+| **ENREGISTRER** | Soumet la commande à `DonneesService`, ferme le formulaire ; déclenche le contrôle des absences récurrentes (warning non bloquant) |
 | **ANNULER** | Abandonne les saisies, ferme le formulaire |
 | **SUPPRIMER** | `mc-bouton-destruction` : supprime la séance, ferme le formulaire |
 
@@ -107,7 +107,40 @@ Affiché au clic sur une séance ou sur un bouton intercalaire "+". Vide à l'ou
 | Déroulement | `mc-textarea` | Type pédagogique |
 | Ressources | `mc-textarea` | Type pédagogique |
 | Compétences | `mc-selecteur-competences` | Type pédagogique |
-| Élèves concernés | `type: 'classe' \| 'groupes' \| 'eleves'` + sélection | Type pédagogique |
+| Élèves concernés | `mc-eleves-concernes` — en mode élèves, le chip d'un élève ayant une `AbsencePonctuelle` pour ce jour est **désactivé** | Type pédagogique |
+
+### Duplication de séance
+
+Dans la colonne droite, sous le formulaire de séance :
+- Bouton **DUPLIQUER VERS UN AUTRE JOUR**
+- Affiche un `mc-input` type date pour choisir le jour cible
+- Au clic sur **CONFIRMER DUPLICATION** : copie la séance courante (telle qu'enregistrée) vers le jour sélectionné via `CahierJournalService`
+- Si aucune journée n'existe pour le jour cible, elle est créée automatiquement
+
+---
+
+## Bas de la zone centrale — Actions globales de journée
+
+### Bouton SUPPRIMER LA JOURNÉE
+
+- Positionné en bas de la liste des séances (zone centrale)
+- `mc-bouton-destruction` : supprime l'intégralité de la journée (toutes les séances)
+- Uniquement visible si une journée existe pour le jour courant
+
+### Duplication de journée
+
+- Bouton **DUPLIQUER LA JOURNÉE VERS UN AUTRE JOUR** en bas de la zone centrale
+- Affiche un `mc-input` type date pour choisir le jour cible
+- Copie l'intégralité des séances de la journée courante vers le jour sélectionné via `CahierJournalService`
+- Si une journée existe déjà pour le jour cible, elle est remplacée (après confirmation `mc-bouton-destruction`)
+
+---
+
+## Bouton IMPRIMER
+
+- Positionné en haut ou bas de la zone centrale
+- Déclenche l'impression via le navigateur (`window.print()`)
+- **La colonne gauche n'est pas imprimée** (masquée via `@media print`)
 
 ---
 

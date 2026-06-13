@@ -116,6 +116,24 @@ Toutes les routes fonctionnelles sont protégées par `DonneesChargeesGarde` qui
 
 ---
 
+## Impression (@media print)
+
+- Les écrans Élèves, Projets, Emploi du temps et Cahier journal ont un bouton **IMPRIMER**
+- L'impression passe par le mécanisme natif du navigateur (`window.print()`)
+- Une règle CSS `@media print` **masque la colonne gauche** (navigation + filtres) et les champs et boutons de l'entête dans tous ces écrans
+- Définie dans les styles globaux ou par écran selon le layout
+
+---
+
+## Composant de recherche globale
+
+- Présent dans l'entête (visible uniquement après chargement des données)
+- Autocomplétion : liste de résultats filtrés en temps réel via `RechercheGlobaleService`
+- Format d'affichage : *"TYPE — titre"* (ex. "Élève — MARTIN Paul", "Projet — compostage")
+- Au clic sur un résultat : navigation via Angular Router vers la route de l'élément, avec sélection automatique de l'élément dans l'écran cible
+
+---
+
 ## Responsivité (mobile)
 
 Règle générale : les colonnes s'empilent verticalement sur petit écran (gauche en haut, centre au milieu, droite en bas).

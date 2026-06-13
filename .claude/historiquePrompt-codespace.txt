@@ -222,3 +222,35 @@ corrige le point 13
 2026-06-13 13:45:06 [Analyze available session elements] Propose moi la description d'un écran supplémentaire permettant de manipuler les données de l'enseignant, les données de référence et des autres données pas encore manipulables.
 ---
 2026-06-13 13:48:37 [Analyze available session elements] Cela me convient mais je pense que le bouton SUPPRIMER ne doit pas être actif si la donnée de référence est utilisée. Un tooltip sur le bouton (et un message ARIA) doit indiquer que le bouton est désactivé car la donnée est utilisée.
+---
+2026-06-13 13:54:33 [Analyze available session elements] Analyse la description de l'application et propose moi des corrections, améliorations ou fonctionnalités supplémentaires
+---
+2026-06-13 14:14:42 [Analyze available session elements] A. au clic sur le bouton de chargement des données, désactive le bouton (pour bloquer le double-clic) et affiche un spinner dans le libellé du bouton le temps que le fichier soit chargé.
+
+B. ok
+
+C. Ajoute, dans la page de l'élève, la liste des absences ponctuelles avec une date (saisie de date) et une justification (textarea). Utilise la liste des absences ponctuelles (comme celle des absences récurrentes) dans le cahier journal pour désactiver le chip d'un élève dans une séance.
+
+D. ajouter un bouton VIDER LA LISTE pour vider la liste. Vide la liste après avoir envoyer vers un projet ou une séance
+
+E. N'indique pas que des modifications ne sont pas sauvegardées mais, après le premier clic sur le bouton de sauvegarde, déclenche une sauvegarde toutes les 2mn si des modifications ont été faites. Le délai de 2mn doit être une donnée de paramétrage.
+
+F. Indique la date et heure de la dernière sauvegarde en tooltip du bouton de sauvegarde.
+
+G. Ajoute un bouton SUPPRIMER LA JOURNEE dans le cahier journal
+
+H. Un bouton dupliquer est une bonne idée. Sur le modèle de l'écran des compétences, un cadre, dans la colonne de droite, permet de sélectionner le jour ciblé par la duplication.
+
+I. Affiche la liste des élèves au format "NOM Prénom" et tri par nom.
+
+J. Un input de type date est une bonne idée pour choisir le jour ciblé
+
+K. ok pour griser les jours fériés et les weekends dans le mini calendrier du CJ. Mais grise aussi les jours non ouvré (cf. paramétrage)
+
+L. non
+
+M. Ajoute un bouton IMPRIMER dans la fiche élève, la fiche projet, le cahier journal et l'emploi du temps. La colonne de gauche n'est pas imprimée. Utilise une CSS "@media print" pour l'impression via le navigateur
+
+N. Ajoute une recherche globale dans l'entête. La liste des résulats prend la forme d'une autocomplétion. Chaque résultat est au format "TYPE - titre" comme par exemple "Elève - LUKE Lucky" ou "Projet - compostage".
+
+O. Dupliquer une journée complète est une bonne idée. Ajoute un bouton dédié affichant un input de type date dans la colonne de droite.

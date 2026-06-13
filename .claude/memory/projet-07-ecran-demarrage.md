@@ -63,8 +63,11 @@ Toujours visible, même sans données chargées.
 
 ### Comportement du bouton CHARGER
 
-- Désactivé si le champ fichier ou le mot de passe est vide
-- En cas d'erreur : affiche le message d'erreur en haut du formulaire, reste sur la popin
+- **Désactivé** si le champ fichier ou le mot de passe est vide
+- **Au clic** (si fichier et mot de passe renseignés) :
+  - Le bouton est immédiatement **désactivé** (évite le double-clic)
+  - Le libellé du bouton est remplacé par un **spinner + texte "Chargement…"** (pendant le déchiffrement AES-GCM)
+- En cas d'erreur : affiche le message d'erreur en haut du formulaire, réactive le bouton, reste sur la popin
 - En cas de succès :
   - Données chargées dans `DonneesService`
   - Mot de passe conservé en mémoire dans `ContextService` (pour la sauvegarde ultérieure)

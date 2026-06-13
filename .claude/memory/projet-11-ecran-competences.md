@@ -72,9 +72,17 @@ Pour chaque compétence dans le panier :
 | Libellé | Libellé long complet de la compétence |
 | Icône suppression | Retire la compétence du panier |
 
-### Boutons d'export (en bas de la colonne)
+### Boutons d'action (en bas de la colonne)
 
-Les deux boutons sont **désactivés** si le panier est vide.
+#### Bouton "VIDER LA LISTE"
+
+- Vide intégralement le panier (sans confirmation)
+- Toujours visible, désactivé si le panier est vide
+
+#### Boutons d'export
+
+Les deux boutons d'export sont **désactivés** si le panier est vide.  
+Après un export confirmé, le panier est **automatiquement vidé**.
 
 #### Bouton "Envoyer vers un projet"
 
@@ -82,12 +90,12 @@ Au clic, ouvre une **popin** contenant :
 1. Liste déroulante `mc-select` — *Choisir un projet* (liste de tous les projets)
 2. Liste déroulante `mc-select` — *Choisir une période* (périodes du projet sélectionné)
 - Bouton **ANNULER** : ferme la popin sans action
-- Bouton **CONFIRMER** : ajoute les compétences du panier à la `ProjetPeriode` sélectionnée (sans doublon) via `ProjetService`
+- Bouton **CONFIRMER** : ajoute les compétences du panier à la `ProjetPeriode` sélectionnée (sans doublon) via `ProjetService`, puis **vide le panier**
 
 #### Bouton "Envoyer vers une séance"
 
 Au clic, ouvre une **popin** contenant :
-1. Liste déroulante `mc-select` — *Choisir un jour* (jours ayant une entrée dans le cahier journal)
-2. Liste déroulante `mc-select` — *Choisir une séance* (séances du jour sélectionné)
+1. `mc-input` type date — *Choisir un jour* (date libre, ex. "2026-06-09")
+2. Liste déroulante `mc-select` — *Choisir une séance* (séances pédagogiques du jour sélectionné, si entrée CJ existante)
 - Bouton **ANNULER** : ferme la popin sans action
-- Bouton **CONFIRMER** : ajoute les compétences du panier à la séance sélectionnée (sans doublon) via `CahierJournalService`
+- Bouton **CONFIRMER** : ajoute les compétences du panier à la séance sélectionnée (sans doublon) via `CahierJournalService`, puis **vide le panier**

@@ -16,10 +16,18 @@ related:
 
 - Logo + titre de l'application
 - Boutons de navigation vers chaque écran (visibles uniquement après chargement des données)
-- Bouton **SAUVEGARDER** (re-télécharge le ZIP chiffré ; popin de saisie du mot de passe si première sauvegarde)
+- **Champ de recherche globale** : autocomplétion en temps réel, résultats au format *"TYPE — titre"* (ex. "Élève — MARTIN Paul", "Projet — compostage") ; au clic sur un résultat, navigue vers l'écran concerné et sélectionne l'élément (visible uniquement après chargement)
+- Bouton **SAUVEGARDER** (re-télécharge le ZIP chiffré ; popin de saisie du mot de passe si première sauvegarde) — **tooltip : date et heure de la dernière sauvegarde**
 - Bouton **ANNULER** (undo) — désactivé si la pile undo est vide
 - Bouton **REFAIRE** (redo) — désactivé si la pile redo est vide
 - Bouton de changement de thème visuel (bascule entre les thèmes disponibles)
+
+### Sauvegarde automatique
+
+- Après le **premier clic sur SAUVEGARDER**, une sauvegarde automatique se déclenche **toutes les N minutes** (N configuré dans Paramétrage > Préférences, défaut : 2 minutes), **uniquement si des modifications ont été effectuées** depuis la dernière sauvegarde
+- Le délai est lu depuis `donnees.configuration.delaiSauvegardeAutoMinutes`
+- La sauvegarde automatique utilise le mot de passe déjà conservé en mémoire (`ContextService.motDePasse`) — aucune popin supplémentaire
+- Le tooltip du bouton SAUVEGARDER est mis à jour après chaque sauvegarde (manuelle ou automatique)
 
 ### Thèmes visuels
 

@@ -100,3 +100,12 @@ Mêmes comportements que l'écran Élèves : popin d'avertissement si formulaire
 | Date de fin | `mc-input` type date |
 | Description | `mc-textarea` |
 | Compétences | `mc-selecteur-competences` (arbre filtrable, sélection multiple) |
+
+---
+
+## Bouton IMPRIMER
+
+- Positionné dans la colonne droite (bandeau ou bas de fiche)
+- Déclenche l'impression via le navigateur (`window.print()`)
+- **La colonne gauche n'est pas imprimée** (masquée via `@media print`)
+- Uniquement disponible en mode lecture seule

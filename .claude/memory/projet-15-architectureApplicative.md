@@ -77,7 +77,11 @@ maclasse/
         ├── utilitaires/
         │   └── date.utils.ts               # DateUtils (J±1, J±7, parité, formatage)
         │
-        ├── composants/               # Composants mc-* partagés (≥ 2 écrans)
+        ├── composants/               # Composants mc-* partagés (≥ 2 écrans ou usage global)
+        │   ├── mc-entete/            # En-tête de l'application (instancié dans app.ts)
+        │   │   ├── mc-entete.component.ts
+        │   │   ├── mc-entete.component.html
+        │   │   └── mc-entete.component.scss
         │   ├── mc-input/
         │   │   ├── mc-input.component.ts
         │   │   ├── mc-input.component.html
@@ -222,9 +226,11 @@ Dans cet ordre (des plus simples aux plus complexes) :
 
 `ecran-demarrage` → `ecran-accueil` → `ecran-parametrage` → `ecran-eleves` → `ecran-projets` → `ecran-competences` → `ecran-emploi-du-temps` → `ecran-cahier-journal`
 
-### Étape 9 — Entête
+### Étape 9 — Composant d'en-tête
 
-- Intégration de l'entête dans `app.ts` : navigation, SAUVEGARDER, ANNULER/REFAIRE, recherche globale, thème
+- `composants/mc-entete/` (voir [[projet-04-composantsPartages]] pour le détail)
+- Intégration de `<mc-entete>` dans `app.ts`
+- Couvre : navigation, SAUVEGARDER (+ tooltip), ANNULER/REFAIRE, recherche globale, bascule de thème
 
 ---
 

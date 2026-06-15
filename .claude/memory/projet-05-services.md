@@ -60,7 +60,8 @@ Chaque service expose des méthodes pures de manipulation et validation. Les mut
 
 - Parcours de l'arbre des compétences
 - Recherche textuelle dans les libellés (tous niveaux)
-- Filtrage par domaine (niveau 1 de l'arbre)
+- `obtenirDomaines(): Competence[]` — retourne les nœuds de **niveau 1** (disciplines/domaines, ex. Français, Mathématiques). C'est la source de vérité pour `disciplinesIds` dans `Seance` et `CreneauEdt`.
+- `obtenirDomaineParId(id: string): Competence | undefined` — résout un ID discipline en libellé
 - Résolution d'un ID compétence en libellé complet + chemin dans l'arbre
 
 ### `ProjetService`

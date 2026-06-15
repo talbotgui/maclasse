@@ -72,15 +72,50 @@ interface Commande {
 
 ---
 
-## Pipes Angular
+## Tuyaux (Pipes)
 
-### `FormatDatePipe`
+### `FormatDateTuyau`
 
 - Formate une ISO date en libellé français lisible
 - Exemples : `"2026-06-09"` → `"lundi 9 juin 2026"` ou `"09/06/2026"` selon le contexte
 - Utilisé dans les templates du cahier journal, de l'accueil, des fiches élèves
 
-> D'autres pipes pourront être ajoutés (ex. résolution d'un ID compétence en libellé) au fil des besoins.
+> D'autres tuyaux pourront être ajoutés (ex. résolution d'un ID compétence en libellé) au fil des besoins.
+
+---
+
+## Gestion des versions du JSON
+
+### Format de version
+
+`"ANNÉE.MOIS_RENTREE.PATCH"` — exemple : `"2026.09.1"` (première version, rentrée septembre 2026, patch 1).
+
+La version est stockée à la racine du JSON : `donnees.version`.
+
+### Comportements à l'ouverture
+
+`ChiffrementService` extrait la version après déchiffrement. `DonneesService` applique la migration avant de charger les données en mémoire.
+
+| Cas | Comportement |
+|---|---|
+| Version identique à l'app | Chargement direct |
+| Version antérieure | Migrations séquentielles appliquées en mémoire (le fichier ne change qu'à la prochaine sauvegarde) |
+| Version inconnue / future | Erreur bloquante — affiche `LIBELLES.demarrage.erreurVersionIncompatible` |
+
+### Migrations
+
+```typescript
+// Table de migrations (à compléter au fil des versions)
+const MIGRATIONS: Array<{
+  de: string;
+  vers: string;
+  migrer: (donnees: DonneesApplication) => DonneesApplication;
+}> = [
+  // { de: '2026.09.1', vers: '2026.09.2', migrer: ... }
+];
+```
+
+Les migrations sont appliquées dans l'ordre jusqu'à atteindre la version courante de l'application.
 
 ---
 

@@ -96,6 +96,40 @@ Répertoire `popin/` avec une classe de base commune (`PopinBase` ou directive p
 
 ---
 
+## Composant d'en-tête
+
+### `mc-entete`
+
+Emplacement : `composants/mc-entete/` (partagé conceptuellement avec tous les écrans, instancié une seule fois dans `app.ts`).
+
+**Aucun `input()` ni `output()`** — injecte directement les services nécessaires :
+
+| Service injecté | Usage |
+|---|---|
+| `DonneesService` | Signals `peutAnnuler`, `peutRefaire`, `aDonneesModifiees` |
+| `ContexteService` | `themeActif`, `motDePasse` |
+| `SauvegardeAutoService` | `dateDerniereSauvegarde` (tooltip du bouton SAUVEGARDER) |
+| `ChiffrementService` | Sauvegarde manuelle |
+| `RechercheGlobaleService` | Filtrage temps réel des résultats de recherche |
+| `Router` | Navigation au clic sur un résultat de recherche |
+
+**Zones internes :**
+
+| Zone | Contenu | Condition d'affichage |
+|---|---|---|
+| Logo | Logo + "MaClasse" | Toujours |
+| Navigation | Boutons d'écrans (`routerLink`, état actif via `routerLinkActive`) | Données chargées |
+| Recherche | Champ `mc-champ-recherche` + liste d'autocomplétion | Données chargées |
+| Actions | SAUVEGARDER (tooltip horodatage) + ANNULER + REFAIRE | Données chargées |
+| Thème | Bouton bascule thème (cycle parmi les 5 thèmes) | Toujours |
+
+SAUVEGARDER :
+- Premier clic → ouvre `popin-sauvegarde` (saisie du mot de passe)
+- Clics suivants → sauvegarde directe (mot de passe déjà en `ContexteService.motDePasse`)
+- Tooltip : `LIBELLES.entete.tooltipDerniereSauvegarde` + horodatage, ou `LIBELLES.entete.tooltipAucuneSauvegarde`
+
+---
+
 ## CSS mutualisés (non composants)
 
 - **Layout liste+détail** : classes CSS utilitaires (`mc-layout-liste-detail`, `mc-colonne-gauche`, `mc-colonne-droite`) appliquées dans les écrans Élèves et Projets pour obtenir un rendu visuel homogène sans composant dédié

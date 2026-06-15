@@ -25,6 +25,8 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [Services](projet-05-services.md) — DonneesService (aDonneesModifiees), ContextService, SauvegardeAutoService, RechercheGlobaleService, services métier
 - [Éléments techniques](projet-06-elementsTechniques.md) — DonneesChargeesGarde, pattern Commande (5 types), @media print, recherche globale, routing
 - [Architecture applicative](projet-15-architectureApplicative.md) — Structure dossiers, nommage fichiers/classes, ordre d'implémentation en 9 étapes
+- [Thèmes visuels](projet-16-themes.md) — 14 variables CSS par thème, 5 thèmes : Océan (défaut), Forêt, Crépuscule, Terre, Contraste
+- [Libellés UI](projet-17-libelles.md) — Structure de libelles.ts : LIBELLES as const, organisé par domaine fonctionnel (commun, entete, navigation, écrans, popins, aria)
 
 ## Règles de code
 

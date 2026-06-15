@@ -17,7 +17,7 @@ Toute méthode commence par un verbe à l'infinitif
 **Why:** Choix délibéré du développeur pour la cohérence et la lisibilité dans un projet 100% français.
 
 **How to apply:**
-- Noms de classes : `BarreSuperieure`, `PageCompetences`, `ContexteService`, `ChiffrementService`
+- Noms de classes : `BarreSuperieure`, `EcranCompetences`, `ContexteService`, `ChiffrementService`
 - Noms de fichiers : `barre-superieure.ts`, `contexte.service.ts`, `donnees-chargees.garde.ts`
 - Noms de méthodes : `filtrerCompetences()`, `chargerFichier()`, `reinitialiser()`
 - Noms de propriétés/variables : `competencesSelectionnees`, `vueActive`, `requeteRecherche`
@@ -58,15 +58,15 @@ Un fichier par domaine métier. Pas de logique — uniquement des interfaces, ty
 
 Classes avec méthodes statiques uniquement — jamais de fonctions standalone. Un fichier par thème fonctionnel.
 
-### 2.7/ Pages — `pages/`
+### 2.7/ Écrans (routes) — `ecrans/`
 
-Un répertoire par page (route). La page elle-même (`xxx.ts/html/scss`) et ses composants propres dans des sous-répertoires
+Un répertoire par écran (route). Le composant principal (`ecran-xxx.ts/html/scss`) et ses sous-composants propres dans des sous-répertoires.
 
-**Règle de préfixe pour les sous-composants d'une page :** utiliser un préfixe abrégé dérivé du composant parent (`fe-` pour fiche-eleve, `fp-` pour fiche-projet, `ds-` pour detail-seance). Cela évite les collisions de noms et rend l'appartenance immédiatement lisible.
+**Règle de préfixe pour les sous-composants d'un écran :** utiliser un préfixe abrégé dérivé du composant parent (`fe-` pour fiche-eleve, `fp-` pour fiche-projet, `ds-` pour detail-seance). Cela évite les collisions de noms et rend l'appartenance immédiatement lisible.
 
 ### Composants partagés — `composants/`
 
-Composants réutilisables entre plusieurs pages. Chaque composant dans son propre répertoire. Ses sous-composants directs sont des sous-répertoires du même répertoire.
+Composants réutilisables entre plusieurs écrans. Chaque composant dans son propre répertoire. Ses sous-composants directs sont des sous-répertoires du même répertoire.
 
-**Critère de partage :** un composant va dans `composants/` uniquement s'il est utilisé par au moins deux pages différentes. Sinon, il va dans le répertoire de sa page.
+**Critère de partage :** un composant va dans `composants/` uniquement s'il est utilisé par au moins deux écrans différents. Sinon, il va dans le répertoire de son écran.
 

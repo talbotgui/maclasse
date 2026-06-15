@@ -262,3 +262,24 @@ O. Dupliquer une journée complète est une bonne idée. Ajoute un bouton dédi�
 2. Des maquettes vont être fournies pour détailler le rendu graphique des écrans.
 
 3. Vérifie et corrige le fichier "donnees-defaut.json" vis-à-vis de la description du projet
+---
+2026-06-15 19:36:43 [Analyze available session elements] existe-t-il d'autres incohérences ou améliorations possibles dans la description du projet ou dans les feedbacks ?
+---
+2026-06-15 19:51:55 [Analyze available session elements] A/
+Remplacer le répertoire "pages" par "écrans".
+Utiliser les répertoires "app/directives/" et "app/composants" à la place de "app/partage".
+Placer ComposantBase dans app/composant-base.ts
+
+B/
+Retire la règle bloquant l'usage de TestBed. C'est une bonne idée.
+
+C/
+Corrige les références
+
+D/
+Corrige
+
+E/
+Place libelles.ts à côté du fichier app.ts
+Que proposes-tu pour traiter le "lazy loading" ?
+Supprime la référence à NgOptimisedImage

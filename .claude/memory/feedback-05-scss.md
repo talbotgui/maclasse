@@ -5,7 +5,7 @@ metadata:
   type: feedback
   updated: 2026-06-05
 related:
-  - project-06-scss
+  - projet-06-elementsTechniques
 ---
 
 ## Règle 1 - Généralité SCAA

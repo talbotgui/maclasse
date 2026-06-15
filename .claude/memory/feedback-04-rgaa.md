@@ -6,7 +6,7 @@ metadata:
   updated: 2026-06-05
 related:
   - feedback-01-angular
-  - project-05-composants-partages
+  - projet-04-composantsPartages
 ---
 
 ## Règle 1 — Focus automatique sur les modales
@@ -15,7 +15,7 @@ related:
 
 **Why:** Exigence RGAA (accessibilité). Sans cela, les utilisateurs clavier et lecteurs d'écran restent piégés derrière la modale.
 
-**How to apply:** Utiliser la directive `mcAutoFocus` (sélecteur `[mcAutoFocus]`, dans `src/app/directives/auto-focus.directive.ts`) sur le premier `<input>`, `<button>` ou élément focusable de chaque modale. Cette règle s'applique à TOUTE nouvelle modale créée dans le projet.
+**How to apply:** Utiliser la directive `mcAutoFocus` (sélecteur `[mcAutoFocus]`, dans `src/app/directives/mc-auto-focus.directive.ts`) sur le premier `<input>`, `<button>` ou élément focusable de chaque modale. Cette règle s'applique à TOUTE nouvelle modale créée dans le projet.
 
 ## Règle 2 — Balises natives plutôt que rôles ARIA
 

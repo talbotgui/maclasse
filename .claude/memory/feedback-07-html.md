@@ -5,7 +5,7 @@ metadata:
   type: feedback
   updated: 2026-06-05
 related:
-  - project-05-composants-partages
+  - projet-04-composantsPartages
 ---
 
 ## Règle 1 - ID

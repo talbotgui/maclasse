@@ -102,17 +102,30 @@ interface Commande {
 
 Toutes les routes fonctionnelles sont protégées par `DonneesChargeesGarde` qui redirige vers `/demarrage` si aucune donnée n'est chargée.
 
+Tous les composants d'écran sont chargés en **lazy loading** via `loadComponent` (import dynamique). Le bundle initial ne contient que `app.ts`, `app.routes.ts`, les gardes et les services — les écrans sont chargés à la première navigation.
+
+```typescript
+// Exemple de route lazy
+{
+  path: 'eleves',
+  loadComponent: () =>
+    import('./ecrans/eleves/ecran-eleves.component')
+      .then(m => m.EcranElevesComponent),
+  canActivate: [DonneesChargeesGarde]
+}
+```
+
 | Route | Composant | Garde |
 |---|---|---|
 | `/` | Redirige vers `/accueil` | — |
-| `/demarrage` | `EcranDemarrageComponent` | Aucune (toujours accessible) |
-| `/accueil` | `EcranAccueilComponent` | `DonneesChargeesGarde` |
-| `/competences` | `EcranCompetencesComponent` | `DonneesChargeesGarde` |
-| `/eleves` | `EcranElevesComponent` | `DonneesChargeesGarde` |
-| `/projets` | `EcranProjetsComponent` | `DonneesChargeesGarde` |
-| `/emploi-du-temps` | `EcranEmploiDuTempsComponent` | `DonneesChargeesGarde` |
-| `/cahier-journal` | `EcranCahierJournalComponent` | `DonneesChargeesGarde` |
-| `/parametrage` | `EcranParametrageComponent` | `DonneesChargeesGarde` |
+| `/demarrage` | `EcranDemarrageComponent` (lazy) | Aucune (toujours accessible) |
+| `/accueil` | `EcranAccueilComponent` (lazy) | `DonneesChargeesGarde` |
+| `/competences` | `EcranCompetencesComponent` (lazy) | `DonneesChargeesGarde` |
+| `/eleves` | `EcranElevesComponent` (lazy) | `DonneesChargeesGarde` |
+| `/projets` | `EcranProjetsComponent` (lazy) | `DonneesChargeesGarde` |
+| `/emploi-du-temps` | `EcranEmploiDuTempsComponent` (lazy) | `DonneesChargeesGarde` |
+| `/cahier-journal` | `EcranCahierJournalComponent` (lazy) | `DonneesChargeesGarde` |
+| `/parametrage` | `EcranParametrageComponent` (lazy) | `DonneesChargeesGarde` |
 
 ---
 

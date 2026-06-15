@@ -11,6 +11,7 @@ Tout composant partagé (dans `src/app/composants/`) doit étendre `ComposantBas
 
 **How to apply:**
 - Tout nouveau composant dans `composants/` commence par `export class MonComposant extends ComposantBase`.
-- Importer `ComposantBase` depuis `'../../composant-base'` (chemin relatif depuis le sous-répertoire du composant).
+- Importer `ComposantBase` depuis `'../../composant-base'` (chemin relatif depuis `src/app/composants/mc-xxx/`).
 - Dans les templates, utiliser directement `LIBELLES.section.cle` — pas de redéclaration dans le `.ts`.
 - Si le composant utilise `LIBELLES` pour une valeur par défaut d'`input()`, conserver l'import direct de `LIBELLES` depuis `'../../libelles'` (les valeurs par défaut sont évaluées au niveau module, pas à l'instance). L'héritage reste obligatoire malgré ce double import.
+- `libelles.ts` est situé dans `src/app/libelles.ts`, au même niveau que `app.ts` et `composant-base.ts`.

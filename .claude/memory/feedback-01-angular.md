@@ -40,7 +40,6 @@ related:
 - Préférer les templates inline pour les petits composants
 - Chemins templates/styles relatifs au fichier TS du composant (pas absolus)
 - Interdire `@HostBinding` et `@HostListener` — utiliser l'objet `host` du décorateur
-- Utiliser `NgOptimizedImage` pour toutes les images statiques (pas pour les base64 inline)
 
 ## Angular — État & réactivité
 

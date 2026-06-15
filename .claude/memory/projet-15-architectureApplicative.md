@@ -14,7 +14,7 @@ related:
 
 ## Principe général
 
-Application Angular 21 **standalone** : pas de `NgModule`. Chaque composant, directive et pipe est déclaré `standalone: true`. Les services sont `providedIn: 'root'`.
+Application Angular 21 **standalone** : pas de `NgModule`. Chaque composant, directive et tuyau est déclaré `standalone: true` (valeur par défaut depuis Angular v20, ne pas écrire `standalone: true` explicitement). Les services sont `providedIn: 'root'`.
 
 ---
 
@@ -36,9 +36,11 @@ maclasse/
         ├── app.html
         ├── app.scss
         ├── app.config.ts             # ApplicationConfig (routes, providers)
-        ├── app.routes.ts             # Routes + DonneesChargeesGarde
+        ├── app.routes.ts             # Routes avec loadComponent (lazy) + DonneesChargeesGarde
+        ├── composant-base.ts         # ComposantBase — expose LIBELLES dans les templates
+        ├── libelles.ts               # Constantes de libellés UI centralisées
         │
-        ├── modeles/                  # Interfaces et types TypeScript
+        ├── modeles/                  # Interfaces et types TypeScript (pas de logique)
         │   ├── donnees-application.modele.ts   # Structure racine du JSON
         │   ├── eleve.modele.ts
         │   ├── projet.modele.ts
@@ -48,12 +50,12 @@ maclasse/
         │   └── commande.modele.ts    # Interface Commande (executer/annuler)
         │
         ├── services/
-        │   ├── avecEtat/
-        │   │   |── donnees.service.ts
+        │   ├── avecEtat/             # Services portant un état (signal)
+        │   │   ├── donnees.service.ts
         │   │   └── contexte.service.ts
-        │   └── sansEtat/
-        │       ├── sauvegarde-auto.service.ts
+        │   └── sansEtat/             # Services stateless (algorithmes, I/O)
         │       ├── chiffrement.service.ts
+        │       ├── sauvegarde-auto.service.ts
         │       ├── recherche-globale.service.ts
         │       ├── eleve.service.ts
         │       ├── projet.service.ts
@@ -75,33 +77,23 @@ maclasse/
         ├── utilitaires/
         │   └── date.utils.ts               # DateUtils (J±1, J±7, parité, formatage)
         │
-        ├── partage/
-        │   ├── composant-base.ts           # ComposantBase (LIBELLES accessible dans templates)
-        │   │
-        │   ├── composants/                 # Composants mc-* réutilisables
-        │   │   ├── mc-input/
-        │   │   │   ├── mc-input.component.ts
-        │   │   │   ├── mc-input.component.html
-        │   │   │   └── mc-input.component.scss
-        │   │   ├── mc-textarea/
-        │   │   ├── mc-checkbox/
-        │   │   ├── mc-select/
-        │   │   ├── mc-radio-group/
-        │   │   ├── mc-champ-heure/
-        │   │   ├── mc-chip-filtre/
-        │   │   ├── mc-badge-statut/
-        │   │   ├── mc-champ-recherche/
-        │   │   ├── mc-bouton-destruction/
-        │   │   ├── mc-mini-calendrier/
-        │   │   ├── mc-selecteur-competences/
-        │   │   └── mc-eleves-concernes/
-        │   │
-        │   ├── directives/
-        │   │   └── mc-auto-focus.directive.ts
-        │   │
-        │   ├── pipes/
-        │   │   └── format-date.pipe.ts
-        │   │
+        ├── composants/               # Composants mc-* partagés (≥ 2 écrans)
+        │   ├── mc-input/
+        │   │   ├── mc-input.component.ts
+        │   │   ├── mc-input.component.html
+        │   │   └── mc-input.component.scss
+        │   ├── mc-textarea/
+        │   ├── mc-checkbox/
+        │   ├── mc-select/
+        │   ├── mc-radio-group/
+        │   ├── mc-champ-heure/
+        │   ├── mc-chip-filtre/
+        │   ├── mc-badge-statut/
+        │   ├── mc-champ-recherche/
+        │   ├── mc-bouton-destruction/
+        │   ├── mc-mini-calendrier/
+        │   ├── mc-selecteur-competences/
+        │   ├── mc-eleves-concernes/
         │   └── popins/
         │       ├── popin-demarrage/
         │       ├── popin-sauvegarde/
@@ -109,8 +101,17 @@ maclasse/
         │       ├── popin-avertissement/
         │       └── popin-export-competences/
         │
+        ├── directives/
+        │   └── mc-auto-focus.directive.ts
+        │
+        ├── tuyaux/
+        │   └── format-date.tuyau.ts
+        │
         └── ecrans/
             ├── demarrage/
+            │   ├── ecran-demarrage.component.ts
+            │   ├── ecran-demarrage.component.html
+            │   └── ecran-demarrage.component.scss
             ├── accueil/
             ├── eleves/
             ├── projets/
@@ -130,15 +131,28 @@ maclasse/
 | Composant d'écran | `ecran-eleves.component.ts` | `EcranElevesComponent` |
 | Composant partagé | `mc-input.component.ts` | `McInputComponent` |
 | Popin | `popin-avertissement.component.ts` | `PopinAvertissementComponent` |
-| Service | `donnees.service.ts` | `DonneesService` |
+| Service (avec état) | `donnees.service.ts` | `DonneesService` |
+| Service (sans état) | `eleve.service.ts` | `EleveService` |
 | Garde | `donnees-chargees.garde.ts` | `DonneesChargeesGarde` |
 | Directive | `mc-auto-focus.directive.ts` | `McAutoFocusDirective` |
-| Pipe | `format-date.pipe.ts` | `FormatDatePipe` |
+| Tuyau (pipe) | `format-date.tuyau.ts` | `FormatDateTuyau` |
 | Interface modèle | `eleve.modele.ts` | `Eleve`, `Contact`, `AbsenceRecurrente`… |
 | Commande | `commande-creation.ts` | `CommandeCreation` |
 | Classe utilitaire | `date.utils.ts` | `DateUtils` |
 
-> Pas de suffixe `.modele.ts` imposé par Angular — c'est une convention maison pour distinguer les fichiers de types.
+> Le suffixe `.tuyau.ts` remplace `.pipe.ts` (convention française du projet — voir feedback-02).
+
+---
+
+## Fichiers racine de `app/`
+
+| Fichier | Rôle |
+|---|---|
+| `app.ts` | Composant racine : entête + `<router-outlet>` |
+| `app.config.ts` | `ApplicationConfig` : providers, withRouter |
+| `app.routes.ts` | Toutes les routes avec `loadComponent` (lazy) + `DonneesChargeesGarde` |
+| `composant-base.ts` | Classe de base pour les composants partagés — expose `LIBELLES` |
+| `libelles.ts` | Constantes de libellés centralisées (chaînes UI), importé par `composant-base.ts` |
 
 ---
 
@@ -161,15 +175,16 @@ Chaque étape doit être validée avant de passer à la suivante.
 
 - `app.ts`, `app.html`, `app.scss`
 - `app.config.ts` (providers, routing)
-- `app.routes.ts` (routes + `DonneesChargeesGarde`)
+- `app.routes.ts` (routes lazy + `DonneesChargeesGarde`)
 - `gardes/donnees-chargees.garde.ts`
 - `styles.scss` (variables CSS + thèmes)
+- `libelles.ts` + `composant-base.ts`
 
 ### Étape 2 — Modèles TypeScript
 
 - Tous les fichiers de `modeles/` (interfaces uniquement, pas de logique)
 
-### Étape 3 — Services de contexte
+### Étape 3 — Services de contexte et chiffrement
 
 - `commandes/` (5 classes, pur TypeScript)
 - `services/avecEtat/donnees.service.ts`
@@ -188,30 +203,26 @@ Chaque étape doit être validée avant de passer à la suivante.
 - `services/sansEtat/sauvegarde-auto.service.ts`
 - `services/sansEtat/recherche-globale.service.ts`
 
-### Étape 5 — Composants partagés simples
+### Étape 5 — Directive et tuyau
+
+- `directives/mc-auto-focus.directive.ts`
+- `tuyaux/format-date.tuyau.ts`
+
+### Étape 6 — Composants partagés simples
 
 Dans cet ordre (des plus simples aux plus complexes) :
 `mc-input` → `mc-textarea` → `mc-champ-heure` → `mc-checkbox` → `mc-select` → `mc-radio-group` → `mc-chip-filtre` → `mc-badge-statut` → `mc-champ-recherche` → `mc-bouton-destruction`
-
-### Étape 6 — Directives et pipes
-
-- `mc-auto-focus.directive.ts`
-- `format-date.pipe.ts`
 
 ### Étape 7 — Composants partagés riches et popins
 
 - `mc-mini-calendrier` → `mc-selecteur-competences` → `mc-eleves-concernes`
 - `popin-avertissement` → `popin-sauvegarde` → `popin-warnings-absences` → `popin-export-competences` → `popin-demarrage`
 
-### Étape 8 — Composant de base partagé
-
-- `partage/composant-base.ts` (classe de base pour les composants partagés)
-
-### Étape 9 — Écrans (du plus simple au plus complexe)
+### Étape 8 — Écrans (du plus simple au plus complexe)
 
 `ecran-demarrage` → `ecran-accueil` → `ecran-parametrage` → `ecran-eleves` → `ecran-projets` → `ecran-competences` → `ecran-emploi-du-temps` → `ecran-cahier-journal`
 
-### Étape 10 — Entête
+### Étape 9 — Entête
 
 - Intégration de l'entête dans `app.ts` : navigation, SAUVEGARDER, ANNULER/REFAIRE, recherche globale, thème
 
@@ -221,12 +232,13 @@ Dans cet ordre (des plus simples aux plus complexes) :
 
 | Sujet | Décision |
 |---|---|
-| Modules Angular | Aucun — tout est `standalone: true` |
+| Modules Angular | Aucun — `standalone: true` est le défaut (ne pas l'écrire) |
+| Lazy loading | `loadComponent` sur toutes les routes d'écrans |
 | State management | Signal unique dans `DonneesService` (pas de NgRx ni autre store) |
 | Formulaires | `ControlValueAccessor` dans les composants `mc-*` |
 | Détection de changement | `ChangeDetectionStrategy.OnPush` sur tous les composants |
-| Injection | `inject()` (pas de constructeur à injection) |
+| Injection | `inject()` dans le corps de la classe (pas de constructeur à injection) |
 | Inputs/Outputs | `input()` / `output()` (pas de `@Input` / `@Output`) |
-| Tests | Vitest, sans TestBed, instanciation directe |
+| Tests | Vitest — instanciation directe si possible, `TestBed` si `inject()` requis |
 | Polices | Locales dans `public/fonts/`, jamais de CDN |
 | Couleurs | Variables CSS uniquement, jamais de couleur hardcodée |

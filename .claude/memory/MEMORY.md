@@ -24,17 +24,17 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [Composants partagés](projet-04-composantsPartages.md) — Composants formulaire (ControlValueAccessor), mc-mini-calendrier (weekends+fériés+non ouvrés grisés), popins
 - [Services](projet-05-services.md) — DonneesService (aDonneesModifiees), ContextService, SauvegardeAutoService, RechercheGlobaleService, services métier
 - [Éléments techniques](projet-06-elementsTechniques.md) — DonneesChargeesGarde, pattern Commande (5 types), @media print, recherche globale, routing
-- [Architecture applicative](projet-15-architectureApplicative.md) — Structure dossiers, nommage fichiers/classes, ordre d'implémentation en 10 étapes
+- [Architecture applicative](projet-15-architectureApplicative.md) — Structure dossiers, nommage fichiers/classes, ordre d'implémentation en 9 étapes
 
 ## Règles de code
 
 - [Conventions Angular & TypeScript](feedback-01-angular.md) — standalone, Signals, OnPush, input()/output() public vs protected, RGAA
 - [Nommage français](feedback-02-conventions.md) — Tout le code en français, sauf impositions Angular/TS
-- [JSDoc et commentaires](feedback-03-doc.md) — Structure JSDoc systématique mais sans contenu et pas de commentaire
+- [JSDoc et commentaires](feedback-03-doc.md) — JSDoc rédigée obligatoire sur toute classe, membre et méthode — jamais vide
 - [RGAA — accessibilité](feedback-04-rgaa.md) — Focus modale via [mcAutoFocus], balises natives plutôt que rôles ARIA
 - [CSS qualité](feedback-05-scss.md) — Globalisation mc-, composition boutons, no hex hardcodé, classes utilitaires
 - [Collaboration](feedback-06-collaboration.md) — Reformuler et valider avant toute écriture de code
 - [IDs HTML](feedback-07-html.md) — Tout bouton/input doit avoir un id lowerCamelCase, dynamique en @for, contexteId si multi-instance
-- [Tests](feedback-08-tests.md) — Vitest sans TestBed, instanciation directe, structure describe/it, pas de mocks
+- [Tests](feedback-08-tests.md) — Vitest, instanciation directe ou TestBed selon inject(), structure describe/it, pas de mocks
 - [Polices locales](feedback-09-polices.md) — Toutes les polices dans public/fonts/, @font-face dans styles.scss, jamais de CDN externe
 - [ComposantBase et LIBELLES](feedback-10-composant-base.md) — Tout composant partagé étend ComposantBase ; LIBELLES accessible dans les templates sans redéclaration

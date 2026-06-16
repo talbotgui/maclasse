@@ -6,11 +6,8 @@
     "annee": "2025-2026"
   },
   "classe": {
-    "niveaux": [
-      "CM1",
-      "CM2"
-    ],
-    "libelle": "Double niveau CM1-CM2",
+    "niveau": "CM1-CM2",
+    "annee": "Double niveau CM1-CM2",
     "eleves": [
       {
         "id": "f1a2b3c4-d5e6-7890-abcd-ef1234567890",
@@ -61,6 +58,7 @@
         "notesAutorisationBaignade": "Signé par Patricia Martinot (mère) le 05/09/2024.",
         "notesPPA": null,
         "notesESS": null,
+        "manualite": "G",
         "absencesRecurrentes": [],
         "absencesPonctuelles": []
       },
@@ -159,6 +157,7 @@
         "notesAutorisationBaignade": "Non autorisé — allergie cutanée (attestation médicale du Dr Morin, 02/09/2024).",
         "notesPPA": null,
         "notesESS": "ESS du 15/01/2026.",
+        "dispositifsMedicaux": "EpiPen disponible dans le bureau de la directrice. Allergie sévère aux arachides.",
         "absencesRecurrentes": [
           {
             "id": "ar-O-5",
@@ -604,7 +603,7 @@
         "notesESS": null,
         "absencesRecurrentes": [
           {
-            "id": "ar-O-5",
+            "id": "ar-O-7",
             "libelle": "Orthophoniste",
             "jour": "vendredi",
             "heureDebut": "13:30",

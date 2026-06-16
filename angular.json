@@ -74,7 +74,7 @@
             "runner": "vitest",
             "coverage": true,
             "coverageExclude": [
-              "src/app/modeles/**",
+              "src/app/modeles/*.modele.ts",
               "src/app/gardes/**",
               "src/app/commandes/**",
               "src/**/libelles.ts",

@@ -14,12 +14,12 @@ except Exception:
     print('')
 " 2>/dev/null || echo "")
 
-# Ne rien faire si le fichier modifié n'est pas un service
-if ! echo "$FILE" | grep -qE '\.service\.ts$'; then
+# Ne rien faire si le fichier modifié n'est ni un service ni un modèle
+if ! echo "$FILE" | grep -qE '\.(service|modele)\.ts$'; then
   exit 0
 fi
 
-echo "Service modifié : $FILE"
+echo "Fichier modifié : $FILE"
 echo "Lancement de la vérification (compilation + tests + couverture ≥ 80%)..."
 
 cd /workspaces/maclasse

@@ -334,3 +334,16 @@ Ajoute, en étape 3 et 4 la vérification de la couverture de code des tests aut
 2. reporte la création de la garde en étape 3 et modifie le plan en conséquence
 3. option A crée un composant inline vide
 4. c'est cohérent
+---
+2026-06-16 21:26:43 [Sans titre] prend connaissance du projet et déclenche les modifications prévues de l'étape 2 du plan de génération initiale du projet détaillée dans .claude/memory/plans-01-generationInitiale.md. Avant toute modification de code soit critique et propose moi des alternatives ou des compléments si ton niveau de confiance est faible sur des points précis.
+---
+2026-06-16 21:37:24 [Examiner plan étape 2 et proposer modifications] 1. 'niveau' est une string. 'libelle' se nomme 'annee' et est une string.
+2. corrige pour utiliser dispositifsMedicaux. Les champs 'manualite' et 'dispositifsMedicaux' sont optionnels mais ajoute quelques données dans le fichier JSON.
+3. l'ID du statut d'acquisition est bien une string
+4. Crée une classe pour chacune des 5 interfaces référentiels
+5. un jour férié a un attribut 'nom'
+6. utilise un alias partagé pour 'paire'|'impare'|'lesDeux'
+---
+2026-06-16 21:47:53 [Examiner plan étape 2 et proposer modifications] Je veux ajouter un test automatisé vérifiant la cohérence entre le modèle de données et le jeu de données par défaut. Que proposes-tu ?
+---
+2026-06-16 21:50:57 [Examiner plan étape 2 et proposer modifications] Génère la classe de test mais ajoute la au calcul de couverture. Modifie aussi le hook pour que toute modification d'une classe de modèle déclenche les tests automatisés

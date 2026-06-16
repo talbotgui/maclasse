@@ -1,5 +1,19 @@
 {
   "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /workspaces/maclasse/.claude/hooks/verif-service.sh",
+            "timeout": 180,
+            "statusMessage": "Vérification compilation + tests + couverture ≥ 80%...",
+            "asyncRewake": true
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [

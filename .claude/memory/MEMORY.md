@@ -28,6 +28,10 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [Thèmes visuels](projet-16-themes.md) — 14 variables CSS par thème, 5 thèmes : Océan (défaut), Forêt, Crépuscule, Terre, Contraste
 - [Libellés UI](projet-17-libelles.md) — Structure de libelles.ts : LIBELLES as const, organisé par domaine fonctionnel (commun, entete, navigation, écrans, popins, aria)
 
+## Plans de génération
+
+- [Plan génération initiale](plans-01-generationInitiale.md) — 9 étapes séquentielles : config → modèles → services → composants → écrans → en-tête
+
 ## Règles de code
 
 - [Conventions Angular & TypeScript](feedback-01-angular.md) — standalone, Signals, OnPush, input()/output() public vs protected, RGAA
@@ -38,5 +42,6 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [Collaboration](feedback-06-collaboration.md) — Reformuler et valider avant toute écriture de code
 - [IDs HTML](feedback-07-html.md) — Tout bouton/input doit avoir un id lowerCamelCase, dynamique en @for, contexteId si multi-instance
 - [Tests](feedback-08-tests.md) — Vitest, instanciation directe ou TestBed selon inject(), structure describe/it, pas de mocks
+- [Couverture de code](feedback-11-couverture-tests.md) — 80% minimum (lignes/branches/fonctions/statements) sur les services, vérifiée après étapes 3 et 4
 - [Polices locales](feedback-09-polices.md) — Toutes les polices dans public/fonts/, @font-face dans styles.scss, jamais de CDN externe
 - [ComposantBase et LIBELLES](feedback-10-composant-base.md) — Tout composant partagé étend ComposantBase ; LIBELLES accessible dans les templates sans redéclaration

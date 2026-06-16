@@ -82,10 +82,8 @@ Vérifications et décisions à prendre **avant d'écrire la moindre ligne de co
 | `src/app/app.html` | Réécrire — layout : `<router-outlet>` uniquement pour l'instant |
 | `src/app/app.scss` | Réécrire — styles globaux du composant racine |
 | `src/app/app.config.ts` | Réécrire — providers complets |
-| `src/app/app.routes.ts` | Réécrire — routes lazy + `DonneesChargeesGarde` |
-| `src/app/gardes/donnees-chargees.garde.ts` | Créer — redirige vers `/demarrage` |
+| `src/app/app.routes.ts` | Réécrire — redirect `/` → `/demarrage` + composant inline temporaire |
 | `src/styles.scss` | Réécrire — variables CSS, thèmes, utilitaires, print |
-| `vitest.config.ts` | Créer |
 
 ### Détail de chaque fichier
 
@@ -129,11 +127,6 @@ Les routes sont **ajoutées au fil des étapes** (étape 8 pour chaque écran). 
 Étape 8.8 : /cahier-journal → EcranCahierJournalComponent (lazy, DonneesChargeesGarde)
 ```
 
-#### `src/app/gardes/donnees-chargees.garde.ts`
-- Fonction `CanActivateFn`
-- Injecte `DonneesService` via `inject()`
-- Retourne `true` si `DonneesService.donnees()` est non null, sinon `RedirectCommand` vers `/demarrage`
-
 #### `src/styles.scss`
 Contenu organisé en blocs séparés :
 1. `@font-face` — polices locales depuis `public/fonts/`
@@ -147,6 +140,9 @@ Contenu organisé en blocs séparés :
 9. Classes accessibilité : `sr-only`
 10. `mc-disc-pill`, `mc-btn-ajouter`, `mc-btn-supprimer`
 11. `@media print` — masque `.mc-colonne-gauche`, boutons non imprimables
+
+**Note :** `vitest.config.ts` n'est pas créé — la configuration Vitest est déjà complète dans `angular.json` (`runner: "vitest"`, seuils 80%, exclusions). Un fichier séparé créerait des conflits.
+**Note :** `src/app/gardes/donnees-chargees.garde.ts` est reporté à l'**étape 3** — la garde dépend de `DonneesService` qui n'existe qu'à cette étape.
 
 **Critère de validation étape 1 :** `ng serve` compile sans erreur TypeScript. L'app démarre à blanc (page vide ou router-outlet vide).
 
@@ -275,7 +271,16 @@ appliquerTheme(id: string): void  // modifie document.documentElement.dataset['t
 
 Test : `contexte.service.spec.ts`
 
-### 3.4 `ChiffrementService` (`src/app/services/sansEtat/chiffrement.service.ts`)
+### 3.4 `DonneesChargeesGarde` (`src/app/gardes/donnees-chargees.garde.ts`)
+
+Reportée de l'étape 1 — dépend de `DonneesService`.
+- Fonction `CanActivateFn`
+- Injecte `DonneesService` via `inject()`
+- Retourne `true` si `DonneesService.donnees()` est non null, sinon `RedirectCommand` vers `/demarrage`
+
+Test : aucun test requis — la garde est un composant infra simple, exclue de la couverture.
+
+### 3.5 `ChiffrementService` (`src/app/services/sansEtat/chiffrement.service.ts`)
 
 ```
 chiffrer(donnees: DonneesApplication, motDePasse: string): Promise<Blob>
@@ -661,11 +666,14 @@ Toutes les décisions préalables ont été validées.
 |---|---|---|
 | 1 | Bibliothèque ZIP | **`fflate`** |
 | 2 | Police(s) à utiliser | **Roboto** (Regular 400, Medium 500, Bold 700) |
-| 3 | `provideAnimationsAsync()` | **Inclus** dans `app.config.ts` |
+| 3 | `provideAnimationsAsync()` | **Supprimé** — dépréciée dans Angular 21 (animations fournies automatiquement) |
 | 4 | Config tests | **Dans `angular.json`** (section `test`) |
 | 5 | Ajout des routes | **Au fil des étapes** (route câblée quand l'écran est créé) |
 | 6 | Granularité des sessions | **Une étape entière par session** |
 | 7 | Couverture de code | **80% minimum** sur services (étapes 3 et 4), vérifiée avant de passer à la suivante |
+| 8 | `vitest.config.ts` | **Supprimé** — config déjà complète dans `angular.json` (runner, seuils, exclusions) |
+| 9 | `DonneesChargeesGarde` | **Reporté à l'étape 3** — dépend de `DonneesService` inexistant à l'étape 1 |
+| 10 | Composant temporaire `/demarrage` | **Inline dans `app.routes.ts`** — supprimé et remplacé par `EcranDemarrageComponent` à l'étape 8.1 |
 
 ---
 

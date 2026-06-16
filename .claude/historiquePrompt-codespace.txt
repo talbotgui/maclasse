@@ -327,3 +327,10 @@ Ajoute, en étape 3 et 4 la vérification de la couverture de code des tests aut
 2026-06-16 20:55:34 [Sans titre] prend connaissance du projet et déclenche les modifications prévues de l'étape 0 du plan de génération initiale du projet détaillée dans .claude/memory/plans-01-generationInitiale.md. Avant toute modification de code soit critique et propose moi des alternatives ou des compléments si ton niveau de confiance est faible sur des points précis.
 ---
 2026-06-16 20:56:27 [Créer hook de vérification couverture tests service] tu peux mettre cela en place
+---
+2026-06-16 21:06:57 [Sans titre] prend connaissance du projet et déclenche les modifications prévues de l'étape 1 du plan de génération initiale du projet détaillée dans .claude/memory/plans-01-generationInitiale.md. Avant toute modification de code soit critique et propose moi des alternatives ou des compléments si ton niveau de confiance est faible sur des points précis.
+---
+2026-06-16 21:14:06 [Examiner le projet et proposer modifications étape 1] 1. ne pas créer le fichier vitest.config.ts
+2. reporte la création de la garde en étape 3 et modifie le plan en conséquence
+3. option A crée un composant inline vide
+4. c'est cohérent

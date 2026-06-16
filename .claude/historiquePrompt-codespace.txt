@@ -307,3 +307,23 @@ Supprime la référence à NgOptimisedImage
 2026-06-16 20:11:07 [Analyser maquettes et vérifier cohérence besoin] - Dans l'écran de démarrage, prévois le libellé "Créer ma classe" pour l'affichage mobile.
 - dans l'accueil, prend le format de date "aujourd'hui label + titre de date sans tiret
 - dans l'EDT, documente le SELECT permettant de choisir un emploi du temps par son nom
+---
+2026-06-16 20:22:42 [Sans titre] Analyse le code présent dans le dépôt et ta mémoire (feedback et projet) pour préparer les premières étape de génération du code de l'application.
+Présente moi un plan détaillé de la génération du code que tu enregistreras dans le fichier plans-01-generationInitiale.md dans ta mémoire à côté des autres fichiers feedback-* et projet-*.
+Nous itérerons sur ce plan ensemble plusieurs fois avant de générer la première ligne de code.
+---
+2026-06-16 20:46:56 [Préparer plan de génération du code initial] 1. fflate
+2. roboto
+3. inclue provideAnimationsAsync
+4. Vitest dans angular.json
+5. ajoute les routes au fil des étapes
+6. génère une étape entière par session
+
+Ajoute, en étape 3 et 4 la vérification de la couverture de code des tests automatisés pour assurer une couverture de 80% du code des services (ajoute cette exigence dans ta mémoire)
+---
+2026-06-16 20:53:27 [Sans titre] <ide_opened_file>The user opened the file /workspaces/maclasse/LICENSE in the IDE. This may or may not be related to the current task.</ide_opened_file>
+@.claude/memory/feedback-11-couverture-tests.md fait référence à une règle de couverture de code des classes de service. Propose moi un hook permettant de vérifier la bonne compilation du projet, la bonne exécution des tests automatisés et la couverture de code après chaque prompt ayant modifié une classe de service du projet. Reformule et présente moi le hook. Ne le met pas en place
+---
+2026-06-16 20:55:34 [Sans titre] prend connaissance du projet et déclenche les modifications prévues de l'étape 0 du plan de génération initiale du projet détaillée dans .claude/memory/plans-01-generationInitiale.md. Avant toute modification de code soit critique et propose moi des alternatives ou des compléments si ton niveau de confiance est faible sur des points précis.
+---
+2026-06-16 20:56:27 [Créer hook de vérification couverture tests service] tu peux mettre cela en place

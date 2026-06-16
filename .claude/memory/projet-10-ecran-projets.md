@@ -11,6 +11,14 @@ related:
   - projet-04-composantsPartages
 ---
 
+## Maquette
+
+![05-projets](../../.maquettes/05-projets.png)
+
+**Cohérence globale** : liste des projets à gauche avec chips de filtrage par domaine, fiche projet en mode lecture + modification inline, section Périodes avec nom/dates/description/compétences (`mc-selecteur-competences`), bouton SUPPRIMER LA PÉRIODE, vue mobile — tout correspond.
+
+---
+
 ## Layout général
 
 Identique à l'écran Élèves : deux colonnes côte à côte.

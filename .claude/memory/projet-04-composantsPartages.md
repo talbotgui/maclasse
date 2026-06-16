@@ -11,6 +11,14 @@ related:
   - feedback-07-html
 ---
 
+## Maquette
+
+![01-composants](../../.maquettes/01-composants.png)
+
+**Cohérence** : palette de couleurs, typographie, boutons (Primaire / Secondaire / Tertiaire / Danger), composants de formulaire (mc-input, mc-textarea, mc-select, mc-radio-group, mc-checkbox, mc-champ-heure), chips et sélecteur multi-groupes — tout correspond à la spécification.
+
+---
+
 ## Principes
 
 - Tous les composants respectent les conventions Angular 21 : standalone, OnPush, `input()`/`output()`, `inject()`

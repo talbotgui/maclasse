@@ -10,6 +10,16 @@ related:
   - projet-05-services
 ---
 
+## Maquette
+
+![03-accueil](../../.maquettes/03-accueil.png)
+
+**Cohérence globale** : date du jour, séances filtrées (récréation et pause déjeuner exclues), affichage par séance (horaire + domaine niveau 1 + nombre d'élèves), lecture seule, état vide "Aucun journal pour aujourd'hui", absence de lien de navigation vers le CJ — tout correspond.
+
+**Format de date** : la maquette sépare en deux éléments (label `AUJOURD'HUI` + titre de date sans tiret) — intentionnel, documenté dans la spec.
+
+---
+
 ## Contexte
 
 Écran affiché par défaut après le chargement des données. Vue purement informative, aucune interaction de modification.
@@ -35,7 +45,9 @@ Pas de titre d'écran affiché — l'écran actif est identifiable via le bouton
 
 ### Date du jour
 
-- Format : **"Aujourd'hui — lundi 9 juin 2026"**
+- Rendu en deux niveaux :
+  - Label caption **"AUJOURD'HUI"** (petite casse, style secondaire)
+  - Titre **"lundi 9 juin 2026"** (sans tiret)
 - Calculée via `DateUtils`
 
 ### Résumé du cahier journal du jour

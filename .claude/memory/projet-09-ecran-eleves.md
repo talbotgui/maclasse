@@ -11,6 +11,14 @@ related:
   - projet-05-services
 ---
 
+## Maquette
+
+![04-eleves](../../.maquettes/04-eleves.png)
+
+**Cohérence globale** : liste NOM Prénom triée à gauche, bouton CRÉER en haut, fiche en mode lecture avec MODIFIER + SUPPRIMER, sections identité/contacts/absences/cursus éditables inline, popin d'avertissement "modifications non enregistrées" — tout correspond.
+
+---
+
 ## Layout général
 
 Deux colonnes côte à côte :

@@ -10,6 +10,16 @@ related:
   - projet-06-elementsTechniques
 ---
 
+## Maquette
+
+![02-demarrage](../../.maquettes/02-demarrage.png)
+
+**Cohérence globale** : popin non fermable, layout bureau (2 colonnes côte à côte), layout mobile (sections empilées), message d'erreur rouge en haut du formulaire, champ fichier + mot de passe + bouton œil, bouton CHARGER désactivé si vide — tout correspond.
+
+**Libellé mobile** : le bouton affiche **"Créer ma classe"** (raccourci mobile) vs **"Créer ma classe à partir d'un jeu de données d'exemple"** (desktop) — intentionnel, documenté dans la spec.
+
+---
+
 ## Contexte
 
 Affiché au lancement de l'application quand aucune donnée n'est chargée en mémoire.
@@ -46,7 +56,7 @@ Toujours visible, même sans données chargées.
 | Élément | Détail |
 |---|---|
 | Titre de zone | *"Première utilisation ? Créez votre espace de classe."* |
-| Bouton **"Créer ma classe à partir d'un jeu de données d'exemple"** | Charge `public/donnees-defaut.json`, transition immédiate vers l'écran d'accueil |
+| Bouton **"Créer ma classe à partir d'un jeu de données d'exemple"** (PC) / **"Créer ma classe"** (mobile) | Charge `public/donnees-defaut.json`, transition immédiate vers l'écran d'accueil |
 
 ---
 

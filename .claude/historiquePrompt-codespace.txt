@@ -295,3 +295,15 @@ Supprime la référence à NgOptimisedImage
 4/ La version du JSON permet de gérer les futures évolutions de l'application et d'appliquer des transformations en fonction de la ersion du JSON. La valeur par défaut sera "2026.09.1" pour le moment.
 
 5/ Décrit un composant dédié à l'entête.
+---
+2026-06-15 20:50:34 [Analyze available session elements] Quelle est maintenant la prochaine étape selon toi ?
+---
+2026-06-16 18:58:44 [Sans titre] /init
+---
+2026-06-16 19:08:39 [Sans titre] Le répertoire .maquettes contient des exports des écrans maquettés avec ClaudeDesign. Chaque écran de l'application a un export. Chaque export contient plusieurs visualisations : écran large, écran étroit, popin, ... Analyse ces images, référence l'image depuis le fichier MD décrivant la page. Vérifie la cohérence entre la maquette et la description du besoin
+---
+2026-06-16 20:04:23 [Analyser maquettes et vérifier cohérence besoin] reprend
+---
+2026-06-16 20:11:07 [Analyser maquettes et vérifier cohérence besoin] - Dans l'écran de démarrage, prévois le libellé "Créer ma classe" pour l'affichage mobile.
+- dans l'accueil, prend le format de date "aujourd'hui label + titre de date sans tiret
+- dans l'EDT, documente le SELECT permettant de choisir un emploi du temps par son nom

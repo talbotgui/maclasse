@@ -12,6 +12,14 @@ related:
   - projet-12-ecran-emploi-du-temps
 ---
 
+## Maquette
+
+![08-cahier-journal](../../.maquettes/08-cahier-journal.png)
+
+**Cohérence globale** : mini-calendrier à gauche avec navigation J-7/J-1/J+1/J+7, liste de séances au centre avec intercalaires "+", récréation visible dans la liste sans champs pédagogiques, formulaire contextuel à droite (Début, Fin, Titre, Disciplines, Objectifs…), deux boutons "Initialiser vide" / "Initialiser depuis l'EDT" sur journée vide, warning triangle orange — tout correspond.
+
+---
+
 ## Layout général
 
 Trois zones :

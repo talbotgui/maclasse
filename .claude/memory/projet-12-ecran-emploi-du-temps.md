@@ -12,6 +12,16 @@ related:
   - projet-09-ecran-eleves
 ---
 
+## Maquette
+
+![07-emploi-du-temps](../../.maquettes/07-emploi-du-temps.png)
+
+**Cohérence globale** : 3 colonnes (liste des EDT, grille hebdomadaire par jours ouvrés, formulaire contextuel EDT ou créneau), icône warning sur créneaux conflictuels, boutons ENREGISTRER / ANNULER / SUPPRIMER dans le formulaire — tout correspond.
+
+**Select d'EDT** : la maquette utlise un `mc-select` en haut de la colonne gauche pour choisir l'EDT actif par son nom ("Semaine complète" dans l'exemple) — Ceci n'est pas cohérent avec la spécification. La spécification fait foi.
+
+---
+
 ## Layout général
 
 Trois colonnes — homogène avec les autres écrans :

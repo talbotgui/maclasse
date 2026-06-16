@@ -11,6 +11,16 @@ related:
   - projet-05-services
 ---
 
+## Maquette
+
+![06-competences](../../.maquettes/06-competences.png)
+
+**Cohérence globale** : 3 colonnes (filtres, arbre replié par défaut, panier persistant), indicateur "au panier" sur les compétences sélectionnées, boutons VIDER + "Envoyer vers un projet" / "Envoyer vers une séance", popin d'export avec sélects en cascade (projet puis période) — tout correspond.
+
+**Note mobile** : la maquette mobile affiche un panneau "Panier – N compétences ^" en bas de l'écran (tiroir). Ce comportement n'est pas explicitement décrit dans la doc mais est cohérent avec la contrainte responsive.
+
+---
+
 ## Layout général
 
 Trois colonnes côte à côte :

@@ -1,37 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ChiffrementService } from './chiffrement.service';
-import { DonneesApplication } from '../../modeles/donnees-application.modele';
-
-/** Construit un objet `DonneesApplication` minimal pour les tests. */
-function creerDonnees(): DonneesApplication {
-  return {
-    version: '2026.09.1',
-    configuration: { delaiSauvegardeAutoMinutes: 2 },
-    enseignant: { prenom: 'Marie', nom: 'CURIE', annee: '2025-2026' },
-    classe: { niveau: 'CM2', annee: 'Classe CM2', eleves: [] },
-    referentiels: {
-      competences: [],
-      periodes: [],
-      statutsAcquisition: [],
-      statutsEleve: [],
-      typesContact: [],
-      groupes: [],
-      joursFeries: [],
-      raisonsAbsence: [],
-      frequencesAbsence: [],
-      configEmploiDuTemps: {
-        joursOuvres: ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'],
-        heureDebutJournee: '08:30',
-        heureFinJournee: '16:30',
-      },
-    },
-    emploisDuTemps: [],
-    projets: [],
-    cahierJournal: [],
-    ppi: [],
-    bulletins: [],
-  };
-}
+import { DonneesMother } from '../../tests/donnees.mother';
 
 describe('ChiffrementService', () => {
   let service: ChiffrementService;
@@ -42,12 +11,12 @@ describe('ChiffrementService', () => {
 
   describe('chiffrer', () => {
     it('retourne un Blob non vide', async () => {
-      const blob = await service.chiffrer(creerDonnees(), 'motDePasse123');
+      const blob = await service.chiffrer(DonneesMother.base(), 'motDePasse123');
       expect(blob.size).toBeGreaterThan(0);
     });
 
     it('deux chiffrements du même contenu produisent des Blobs différents (salt/IV aléatoires)', async () => {
-      const donnees = creerDonnees();
+      const donnees = DonneesMother.base();
       const blob1 = await service.chiffrer(donnees, 'motDePasse123');
       const blob2 = await service.chiffrer(donnees, 'motDePasse123');
       const arr1 = new Uint8Array(await blob1.arrayBuffer());
@@ -59,7 +28,7 @@ describe('ChiffrementService', () => {
 
   describe('dechiffrer', () => {
     it('cycle complet restaure les données originales', async () => {
-      const original = creerDonnees();
+      const original = DonneesMother.base();
       const blob = await service.chiffrer(original, 'motDePasse123');
       const fichier = new File([blob], 'donnees.zip');
       const resultat = await service.dechiffrer(fichier, 'motDePasse123');
@@ -70,13 +39,13 @@ describe('ChiffrementService', () => {
     });
 
     it('mauvais mot de passe lève une erreur', async () => {
-      const blob = await service.chiffrer(creerDonnees(), 'motDePasse123');
+      const blob = await service.chiffrer(DonneesMother.base(), 'motDePasse123');
       const fichier = new File([blob], 'donnees.zip');
       await expect(service.dechiffrer(fichier, 'mauvaisMotDePasse')).rejects.toBeDefined();
     });
 
     it('préserve les données complexes (tableaux imbriqués)', async () => {
-      const original = creerDonnees();
+      const original = DonneesMother.base();
       original.referentiels.competences = [
         { id: 'FC1', libelle: 'Français', enfants: [{ id: 'FC1-1', libelle: 'Lecture' }] },
       ];

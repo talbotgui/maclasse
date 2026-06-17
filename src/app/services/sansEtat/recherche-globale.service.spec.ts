@@ -2,39 +2,9 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { RechercheGlobaleService } from './recherche-globale.service';
 import { DonneesService } from '../avecEtat/donnees.service';
-import { DonneesApplication } from '../../modeles/donnees-application.modele';
-import { Eleve } from '../../modeles/eleve.modele';
-import { Projet } from '../../modeles/projet.modele';
-
-function creerDonneesVides(): DonneesApplication {
-  return {
-    version: '1.0',
-    configuration: { delaiSauvegardeAutoMinutes: 2 },
-    enseignant: { prenom: 'Test', nom: 'ENS', annee: '2025-2026' },
-    classe: { niveau: 'CM2', annee: 'CM2', eleves: [] },
-    referentiels: {
-      competences: [], periodes: [], statutsAcquisition: [], statutsEleve: [],
-      typesContact: [], groupes: [], joursFeries: [], raisonsAbsence: [],
-      frequencesAbsence: [],
-      configEmploiDuTemps: { joursOuvres: ['lundi'], heureDebutJournee: '08:30', heureFinJournee: '16:30' },
-    },
-    emploisDuTemps: [], projets: [], cahierJournal: [], ppi: [], bulletins: [],
-  };
-}
-
-function creerEleve(id: string, nom: string, prenom: string): Eleve {
-  return {
-    id, prenom, nom, sexe: 'M', niveau: 'CM2', groupes: [],
-    dateNaissance: '2015-01-01', dateArrivee: '2025-09-01',
-    statut: 'DC', bilans: '', accueil: '', inclusion: null, contacts: [],
-    absencesRecurrentes: [], absencesPonctuelles: [], cursus: [],
-    notesDroitImage: '', notesAutorisationBaignade: '', notesPPA: null, notesESS: null,
-  };
-}
-
-function creerProjet(id: string, nom: string): Projet {
-  return { id, nom, description: '', elevesIds: [], periodes: [] };
-}
+import { DonneesMother } from '../../tests/donnees.mother';
+import { EleveMother } from '../../tests/eleve.mother';
+import { ProjetMother } from '../../tests/projet.mother';
 
 describe('RechercheGlobaleService', () => {
   let service: RechercheGlobaleService;
@@ -44,15 +14,15 @@ describe('RechercheGlobaleService', () => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(RechercheGlobaleService);
     donneesService = TestBed.inject(DonneesService);
-    const d = creerDonneesVides();
+    const d = DonneesMother.base();
     d.classe.eleves = [
-      creerEleve('e1', 'MARTIN', 'Paul'),
-      creerEleve('e2', 'DUPONT', 'Marie'),
-      creerEleve('e3', 'ÉLIE', 'Élodie'),
+      EleveMother.base('e1', 'MARTIN', 'Paul'),
+      EleveMother.base('e2', 'DUPONT', 'Marie'),
+      EleveMother.base('e3', 'ÉLIE', 'Élodie'),
     ];
     d.projets = [
-      creerProjet('p1', 'Compostage'),
-      creerProjet('p2', 'Élevage d\'escargots'),
+      ProjetMother.base(),
+      ProjetMother.base({ id: 'p2', nom: 'Élevage d\'escargots' }),
     ];
     donneesService.charger(d);
   });
@@ -141,9 +111,9 @@ describe('RechercheGlobaleService', () => {
   /** Les élèves apparaissent avant les projets dans les résultats combinés. */
   describe('résultats mixtes', () => {
     it('retourne élèves avant projets', () => {
-      const d = creerDonneesVides();
-      d.classe.eleves = [creerEleve('e1', 'MAR', 'Test')];
-      d.projets = [creerProjet('p1', 'MAR')];
+      const d = DonneesMother.base();
+      d.classe.eleves = [EleveMother.base('e1', 'MAR', 'Test')];
+      d.projets = [ProjetMother.base({ nom: 'MAR' })];
       donneesService.charger(d);
       const resultats = service.rechercher('mar');
       expect(resultats[0].type).toBe('eleve');

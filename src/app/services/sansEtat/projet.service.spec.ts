@@ -2,40 +2,8 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ProjetService } from './projet.service';
 import { DonneesService } from '../avecEtat/donnees.service';
-import { DonneesApplication } from '../../modeles/donnees-application.modele';
-import { Projet, ProjetPeriode } from '../../modeles/projet.modele';
-
-function creerDonneesVides(): DonneesApplication {
-  return {
-    version: '1.0',
-    configuration: { delaiSauvegardeAutoMinutes: 2 },
-    enseignant: { prenom: 'Test', nom: 'ENS', annee: '2025-2026' },
-    classe: { niveau: 'CM2', annee: 'CM2', eleves: [] },
-    referentiels: {
-      competences: [], periodes: [], statutsAcquisition: [], statutsEleve: [],
-      typesContact: [], groupes: [], joursFeries: [], raisonsAbsence: [],
-      frequencesAbsence: [],
-      configEmploiDuTemps: { joursOuvres: ['lundi'], heureDebutJournee: '08:30', heureFinJournee: '16:30' },
-    },
-    emploisDuTemps: [], projets: [], cahierJournal: [], ppi: [], bulletins: [],
-  };
-}
-
-const PROJET_1: Projet = {
-  id: 'p1',
-  nom: 'Compostage',
-  description: 'Projet sur le compostage',
-  elevesIds: [],
-  periodes: [],
-};
-
-const PERIODE_1: ProjetPeriode = {
-  periodeNom: 'Période 1',
-  debut: '2025-09-01',
-  fin: '2025-10-18',
-  description: 'Phase 1',
-  competencesIds: [],
-};
+import { DonneesMother } from '../../tests/donnees.mother';
+import { ProjetMother, PeriodeMother } from '../../tests/projet.mother';
 
 describe('ProjetService', () => {
   let service: ProjetService;
@@ -45,18 +13,18 @@ describe('ProjetService', () => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(ProjetService);
     donneesService = TestBed.inject(DonneesService);
-    donneesService.charger(creerDonneesVides());
+    donneesService.charger(DonneesMother.base());
   });
 
   /** Le projet est ajouté à la liste et la création est réversible via UNDO. */
   describe('creerProjet', () => {
     it('ajoute un projet', () => {
-      service.creerProjet(PROJET_1);
+      service.creerProjet(ProjetMother.base());
       expect(donneesService.donnees()?.projets).toHaveLength(1);
     });
 
     it('supporte le UNDO', () => {
-      service.creerProjet(PROJET_1);
+      service.creerProjet(ProjetMother.base());
       donneesService.annuler();
       expect(donneesService.donnees()?.projets).toHaveLength(0);
     });
@@ -65,14 +33,14 @@ describe('ProjetService', () => {
   /** Met à jour le projet trouvé par son id ; sans effet si id inconnu ou données absentes. */
   describe('modifierProjet', () => {
     it('met à jour un projet existant', () => {
-      service.creerProjet(PROJET_1);
-      service.modifierProjet({ ...PROJET_1, nom: 'Jardinage' });
+      service.creerProjet(ProjetMother.base());
+      service.modifierProjet({ ...ProjetMother.base(), nom: 'Jardinage' });
       expect(donneesService.donnees()?.projets[0].nom).toBe('Jardinage');
     });
 
     it('sans effet si id inexistant', () => {
-      service.creerProjet(PROJET_1);
-      service.modifierProjet({ ...PROJET_1, id: 'inconnu', nom: 'X' });
+      service.creerProjet(ProjetMother.base());
+      service.modifierProjet({ ...ProjetMother.base(), id: 'inconnu', nom: 'X' });
       expect(donneesService.donnees()?.projets[0].nom).toBe('Compostage');
     });
 
@@ -80,20 +48,20 @@ describe('ProjetService', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({});
       const s = TestBed.inject(ProjetService);
-      expect(() => s.modifierProjet(PROJET_1)).not.toThrow();
+      expect(() => s.modifierProjet(ProjetMother.base())).not.toThrow();
     });
   });
 
   /** Retire le projet par son id ; sans effet si id inconnu ou données absentes. */
   describe('supprimerProjet', () => {
     it('supprime un projet existant', () => {
-      service.creerProjet(PROJET_1);
+      service.creerProjet(ProjetMother.base());
       service.supprimerProjet('p1');
       expect(donneesService.donnees()?.projets).toHaveLength(0);
     });
 
     it('sans effet si id inexistant', () => {
-      service.creerProjet(PROJET_1);
+      service.creerProjet(ProjetMother.base());
       service.supprimerProjet('inconnu');
       expect(donneesService.donnees()?.projets).toHaveLength(1);
     });
@@ -109,7 +77,7 @@ describe('ProjetService', () => {
   /** Retourne le projet si l'id existe, undefined sinon. */
   describe('obtenirProjet', () => {
     it('retourne le projet si l\'id existe', () => {
-      service.creerProjet(PROJET_1);
+      service.creerProjet(ProjetMother.base());
       expect(service.obtenirProjet('p1')?.nom).toBe('Compostage');
     });
 
@@ -121,8 +89,8 @@ describe('ProjetService', () => {
   /** Filtre par nom et description, insensible à la casse et aux accents ; retourne tout si terme vide. */
   describe('rechercherProjets', () => {
     beforeEach(() => {
-      service.creerProjet(PROJET_1);
-      service.creerProjet({ id: 'p2', nom: 'Élevage', description: 'Élever des escargots', elevesIds: [], periodes: [] });
+      service.creerProjet(ProjetMother.base());
+      service.creerProjet(ProjetMother.base({ id: 'p2', nom: 'Élevage', description: 'Élever des escargots' }));
     });
 
     it('retourne tous si terme vide', () => {
@@ -156,14 +124,14 @@ describe('ProjetService', () => {
   /** Vérifie l'ajout, la modification et la suppression de périodes dans un projet. */
   describe('ajouterPeriode', () => {
     it('ajoute une période au projet', () => {
-      service.creerProjet(PROJET_1);
-      service.ajouterPeriode('p1', PERIODE_1);
+      service.creerProjet(ProjetMother.base());
+      service.ajouterPeriode('p1', PeriodeMother.base());
       expect(donneesService.donnees()?.projets[0].periodes).toHaveLength(1);
     });
 
     it('sans effet si projet inexistant', () => {
-      service.creerProjet(PROJET_1);
-      service.ajouterPeriode('inconnu', PERIODE_1);
+      service.creerProjet(ProjetMother.base());
+      service.ajouterPeriode('inconnu', PeriodeMother.base());
       expect(donneesService.donnees()?.projets[0].periodes).toHaveLength(0);
     });
 
@@ -171,12 +139,12 @@ describe('ProjetService', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({});
       const s = TestBed.inject(ProjetService);
-      expect(() => s.ajouterPeriode('p1', PERIODE_1)).not.toThrow();
+      expect(() => s.ajouterPeriode('p1', PeriodeMother.base())).not.toThrow();
     });
 
     it('supporte le UNDO', () => {
-      service.creerProjet(PROJET_1);
-      service.ajouterPeriode('p1', PERIODE_1);
+      service.creerProjet(ProjetMother.base());
+      service.ajouterPeriode('p1', PeriodeMother.base());
       donneesService.annuler();
       expect(donneesService.donnees()?.projets[0].periodes).toHaveLength(0);
     });
@@ -185,16 +153,16 @@ describe('ProjetService', () => {
   /** Modifie une période existante dans un projet ; sans effet si le projet est introuvable ou sans données. */
   describe('modifierPeriode', () => {
     it('modifie une période existante', () => {
-      service.creerProjet(PROJET_1);
-      service.ajouterPeriode('p1', PERIODE_1);
-      service.modifierPeriode('p1', PERIODE_1, { ...PERIODE_1, debut: '2025-09-02' });
+      service.creerProjet(ProjetMother.base());
+      service.ajouterPeriode('p1', PeriodeMother.base());
+      service.modifierPeriode('p1', PeriodeMother.base(), { ...PeriodeMother.base(), debut: '2025-09-02' });
       expect(donneesService.donnees()?.projets[0].periodes[0].debut).toBe('2025-09-02');
     });
 
     it('sans effet si projet inexistant', () => {
-      service.creerProjet(PROJET_1);
-      service.ajouterPeriode('p1', PERIODE_1);
-      service.modifierPeriode('inconnu', PERIODE_1, { ...PERIODE_1, debut: '2025-09-02' });
+      service.creerProjet(ProjetMother.base());
+      service.ajouterPeriode('p1', PeriodeMother.base());
+      service.modifierPeriode('inconnu', PeriodeMother.base(), { ...PeriodeMother.base(), debut: '2025-09-02' });
       expect(donneesService.donnees()?.projets[0].periodes[0].debut).toBe('2025-09-01');
     });
 
@@ -202,22 +170,22 @@ describe('ProjetService', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({});
       const s = TestBed.inject(ProjetService);
-      expect(() => s.modifierPeriode('p1', PERIODE_1, PERIODE_1)).not.toThrow();
+      expect(() => s.modifierPeriode('p1', PeriodeMother.base(), PeriodeMother.base())).not.toThrow();
     });
   });
 
   /** Supprime une période d'un projet par son nom ; sans effet si le projet ou la période est introuvable. */
   describe('supprimerPeriode', () => {
     it('supprime une période existante', () => {
-      service.creerProjet(PROJET_1);
-      service.ajouterPeriode('p1', PERIODE_1);
+      service.creerProjet(ProjetMother.base());
+      service.ajouterPeriode('p1', PeriodeMother.base());
       service.supprimerPeriode('p1', 'Période 1');
       expect(donneesService.donnees()?.projets[0].periodes).toHaveLength(0);
     });
 
     it('sans effet si projet inexistant', () => {
-      service.creerProjet(PROJET_1);
-      service.ajouterPeriode('p1', PERIODE_1);
+      service.creerProjet(ProjetMother.base());
+      service.ajouterPeriode('p1', PeriodeMother.base());
       service.supprimerPeriode('inconnu', 'Période 1');
       expect(donneesService.donnees()?.projets[0].periodes).toHaveLength(1);
     });

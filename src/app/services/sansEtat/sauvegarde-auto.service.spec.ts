@@ -3,23 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { SauvegardeAutoService } from './sauvegarde-auto.service';
 import { DonneesService } from '../avecEtat/donnees.service';
 import { ContexteService } from '../avecEtat/contexte.service';
-import { DonneesApplication } from '../../modeles/donnees-application.modele';
-
-function creerDonneesVides(): DonneesApplication {
-  return {
-    version: '1.0',
-    configuration: { delaiSauvegardeAutoMinutes: 2 },
-    enseignant: { prenom: 'Test', nom: 'ENS', annee: '2025-2026' },
-    classe: { niveau: 'CM2', annee: 'CM2', eleves: [] },
-    referentiels: {
-      competences: [], periodes: [], statutsAcquisition: [], statutsEleve: [],
-      typesContact: [], groupes: [], joursFeries: [], raisonsAbsence: [],
-      frequencesAbsence: [],
-      configEmploiDuTemps: { joursOuvres: ['lundi'], heureDebutJournee: '08:30', heureFinJournee: '16:30' },
-    },
-    emploisDuTemps: [], projets: [], cahierJournal: [], ppi: [], bulletins: [],
-  };
-}
+import { DonneesMother } from '../../tests/donnees.mother';
 
 beforeAll(() => {
   // Polyfill pour les environnements de test sans URL.createObjectURL (jsdom).
@@ -52,21 +36,21 @@ describe('SauvegardeAutoService', () => {
     });
 
     it('sans effet si aucun mot de passe défini', async () => {
-      donneesService.charger(creerDonneesVides());
+      donneesService.charger(DonneesMother.base());
       contexteService.motDePasse = null;
       await service.sauvegarder();
       expect(service.dateDerniereSauvegarde()).toBeNull();
     });
 
     it('met à jour dateDerniereSauvegarde après une sauvegarde réussie', async () => {
-      donneesService.charger(creerDonneesVides());
+      donneesService.charger(DonneesMother.base());
       contexteService.motDePasse = 'mdpTest123';
       await service.sauvegarder();
       expect(service.dateDerniereSauvegarde()).not.toBeNull();
     });
 
     it('marque les données comme sauvegardées après une sauvegarde réussie', async () => {
-      const d = creerDonneesVides();
+      const d = DonneesMother.base();
       donneesService.charger(d);
       contexteService.motDePasse = 'mdpTest123';
       // Simuler une modification pour que aDonneesModifiees soit true
@@ -76,7 +60,7 @@ describe('SauvegardeAutoService', () => {
     });
 
     it('dateDerniereSauvegarde est une Date récente', async () => {
-      donneesService.charger(creerDonneesVides());
+      donneesService.charger(DonneesMother.base());
       contexteService.motDePasse = 'mdpTest123';
       const avant = new Date();
       await service.sauvegarder();
@@ -90,14 +74,14 @@ describe('SauvegardeAutoService', () => {
   /** Active le minuteur périodique de sauvegarde ; réinitialise s'il est déjà actif. */
   describe('demarrer', () => {
     it('active le timer', () => {
-      donneesService.charger(creerDonneesVides());
+      donneesService.charger(DonneesMother.base());
       service.demarrer();
       expect(service.timerActif).toBe(true);
       service.arreter();
     });
 
     it('remplace un timer déjà actif', () => {
-      donneesService.charger(creerDonneesVides());
+      donneesService.charger(DonneesMother.base());
       service.demarrer();
       service.demarrer();
       expect(service.timerActif).toBe(true);
@@ -114,7 +98,7 @@ describe('SauvegardeAutoService', () => {
   /** Stoppe le timer actif et remet timerActif à false ; sans effet si aucun timer n'est actif. */
   describe('arreter', () => {
     it('désactive le timer', () => {
-      donneesService.charger(creerDonneesVides());
+      donneesService.charger(DonneesMother.base());
       service.demarrer();
       service.arreter();
       expect(service.timerActif).toBe(false);

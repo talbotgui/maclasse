@@ -2,51 +2,8 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { EleveService } from './eleve.service';
 import { DonneesService } from '../avecEtat/donnees.service';
-import { DonneesApplication } from '../../modeles/donnees-application.modele';
-import { Eleve } from '../../modeles/eleve.modele';
-
-/** Construit un jeu de données minimal valide pour les tests. */
-function creerDonneesVides(): DonneesApplication {
-  return {
-    version: '1.0',
-    configuration: { delaiSauvegardeAutoMinutes: 2 },
-    enseignant: { prenom: 'Test', nom: 'ENS', annee: '2025-2026' },
-    classe: { niveau: 'CM2', annee: 'CM2', eleves: [] },
-    referentiels: {
-      competences: [], periodes: [], statutsAcquisition: [], statutsEleve: [],
-      typesContact: [], groupes: [], joursFeries: [], raisonsAbsence: [],
-      frequencesAbsence: [],
-      configEmploiDuTemps: { joursOuvres: ['lundi', 'mardi', 'jeudi', 'vendredi'], heureDebutJournee: '08:30', heureFinJournee: '16:30' },
-    },
-    emploisDuTemps: [], projets: [], cahierJournal: [], ppi: [], bulletins: [],
-  };
-}
-
-/** Construit un élève minimal pour les tests. */
-function creerEleve(partial: Partial<Eleve> & { id: string; nom: string; prenom: string }): Eleve {
-  return {
-    id: partial.id,
-    prenom: partial.prenom,
-    nom: partial.nom,
-    sexe: partial.sexe ?? 'M',
-    niveau: partial.niveau ?? 'CM2',
-    groupes: partial.groupes ?? [],
-    dateNaissance: '2015-01-01',
-    dateArrivee: '2025-09-01',
-    statut: 'DC',
-    bilans: '',
-    accueil: '',
-    inclusion: null,
-    contacts: [],
-    absencesRecurrentes: partial.absencesRecurrentes ?? [],
-    absencesPonctuelles: [],
-    cursus: [],
-    notesDroitImage: '',
-    notesAutorisationBaignade: '',
-    notesPPA: null,
-    notesESS: null,
-  };
-}
+import { DonneesMother } from '../../tests/donnees.mother';
+import { EleveMother } from '../../tests/eleve.mother';
 
 describe('EleveService', () => {
   let service: EleveService;
@@ -56,20 +13,20 @@ describe('EleveService', () => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(EleveService);
     donneesService = TestBed.inject(DonneesService);
-    donneesService.charger(creerDonneesVides());
+    donneesService.charger(DonneesMother.base());
   });
 
   /** L'élève est ajouté à la liste et la création est réversible via UNDO. */
   describe('creerEleve', () => {
     it('ajoute l\'élève à la classe', () => {
-      const eleve = creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' });
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Paul');
       service.creerEleve(eleve);
       expect(donneesService.donnees()?.classe.eleves).toHaveLength(1);
       expect(donneesService.donnees()?.classe.eleves[0].id).toBe('e1');
     });
 
     it('supporte l\'annulation UNDO', () => {
-      service.creerEleve(creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' }));
+      service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul'));
       donneesService.annuler();
       expect(donneesService.donnees()?.classe.eleves).toHaveLength(0);
     });
@@ -78,14 +35,14 @@ describe('EleveService', () => {
   /** Met à jour l'élève trouvé par son id, supporte UNDO ; sans effet si id inconnu ou données absentes. */
   describe('modifierEleve', () => {
     it('met à jour un élève existant', () => {
-      const eleve = creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' });
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Paul');
       service.creerEleve(eleve);
       service.modifierEleve({ ...eleve, prenom: 'Pierre' });
       expect(donneesService.donnees()?.classe.eleves[0].prenom).toBe('Pierre');
     });
 
     it('sans effet si id inexistant', () => {
-      service.modifierEleve(creerEleve({ id: 'inconnu', nom: 'X', prenom: 'Y' }));
+      service.modifierEleve(EleveMother.base('inconnu', 'X', 'Y'));
       expect(donneesService.donnees()?.classe.eleves).toHaveLength(0);
     });
 
@@ -93,11 +50,11 @@ describe('EleveService', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({});
       const s = TestBed.inject(EleveService);
-      expect(() => s.modifierEleve(creerEleve({ id: 'e1', nom: 'X', prenom: 'Y' }))).not.toThrow();
+      expect(() => s.modifierEleve(EleveMother.base('e1', 'X', 'Y'))).not.toThrow();
     });
 
     it('supporte le UNDO', () => {
-      const eleve = creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' });
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Paul');
       service.creerEleve(eleve);
       service.modifierEleve({ ...eleve, prenom: 'Pierre' });
       donneesService.annuler();
@@ -108,13 +65,13 @@ describe('EleveService', () => {
   /** Retire l'élève par son id ; sans effet si id inconnu ou données absentes. */
   describe('supprimerEleve', () => {
     it('supprime un élève existant', () => {
-      service.creerEleve(creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' }));
+      service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul'));
       service.supprimerEleve('e1');
       expect(donneesService.donnees()?.classe.eleves).toHaveLength(0);
     });
 
     it('sans effet si id inexistant', () => {
-      service.creerEleve(creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' }));
+      service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul'));
       service.supprimerEleve('inconnu');
       expect(donneesService.donnees()?.classe.eleves).toHaveLength(1);
     });
@@ -130,7 +87,7 @@ describe('EleveService', () => {
   /** Retourne l'élève si l'id existe, undefined sinon. */
   describe('obtenirEleve', () => {
     it('retourne l\'élève si l\'id existe', () => {
-      const eleve = creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' });
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Paul');
       service.creerEleve(eleve);
       expect(service.obtenirEleve('e1')?.nom).toBe('MARTIN');
     });
@@ -143,9 +100,9 @@ describe('EleveService', () => {
   /** Retourne les élèves triés NOM Prénom, filtrés par terme insensible à la casse et aux accents. */
   describe('rechercherEleves', () => {
     beforeEach(() => {
-      service.creerEleve(creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' }));
-      service.creerEleve(creerEleve({ id: 'e2', nom: 'DUPONT', prenom: 'Marie' }));
-      service.creerEleve(creerEleve({ id: 'e3', nom: 'ÉLIE', prenom: 'Élodie' }));
+      service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul'));
+      service.creerEleve(EleveMother.base('e2', 'DUPONT', 'Marie'));
+      service.creerEleve(EleveMother.base('e3', 'ÉLIE', 'Élodie'));
     });
 
     it('retourne tous les élèves triés si terme vide', () => {
@@ -202,13 +159,12 @@ describe('EleveService', () => {
     });
 
     it('retourne tableau vide si aucune absence récurrente', () => {
-      service.creerEleve(creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' }));
+      service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul'));
       expect(service.calculerConflitsAbsences('e1', '09:00', '10:00', 'lundi')).toEqual([]);
     });
 
     it('détecte un conflit sur le bon jour et le bon créneau', () => {
-      service.creerEleve(creerEleve({
-        id: 'e1', nom: 'MARTIN', prenom: 'Paul',
+      service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul', {
         absencesRecurrentes: [{
           id: 'a1', libelle: 'Orthophonie',
           jour: 'lundi', heureDebut: '09:00', heureFin: '10:00', paritesSemaine: 'lesDeux',
@@ -218,8 +174,7 @@ describe('EleveService', () => {
     });
 
     it('n\'inclut pas les absences sur un autre jour', () => {
-      service.creerEleve(creerEleve({
-        id: 'e1', nom: 'MARTIN', prenom: 'Paul',
+      service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul', {
         absencesRecurrentes: [{
           id: 'a1', libelle: 'Orthophonie',
           jour: 'mardi', heureDebut: '09:00', heureFin: '10:00', paritesSemaine: 'lesDeux',
@@ -229,8 +184,7 @@ describe('EleveService', () => {
     });
 
     it('n\'inclut pas les absences non chevauchantes', () => {
-      service.creerEleve(creerEleve({
-        id: 'e1', nom: 'MARTIN', prenom: 'Paul',
+      service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul', {
         absencesRecurrentes: [{
           id: 'a1', libelle: 'Orthophonie',
           jour: 'lundi', heureDebut: '10:00', heureFin: '11:00', paritesSemaine: 'lesDeux',
@@ -240,8 +194,7 @@ describe('EleveService', () => {
     });
 
     it('retourne plusieurs conflits', () => {
-      service.creerEleve(creerEleve({
-        id: 'e1', nom: 'MARTIN', prenom: 'Paul',
+      service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul', {
         absencesRecurrentes: [
           { id: 'a1', libelle: 'Ortho', jour: 'lundi', heureDebut: '09:00', heureFin: '09:30', paritesSemaine: 'lesDeux' },
           { id: 'a2', libelle: 'RASED', jour: 'lundi', heureDebut: '09:15', heureFin: '10:00', paritesSemaine: 'lesDeux' },

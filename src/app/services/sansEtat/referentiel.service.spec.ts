@@ -2,39 +2,9 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ReferentielService } from './referentiel.service';
 import { DonneesService } from '../avecEtat/donnees.service';
-import { DonneesApplication } from '../../modeles/donnees-application.modele';
 import { Groupe, Periode, JourFerie, StatutEleve, TypeContact, ConfigEmploiDuTemps } from '../../modeles/referentiels.modele';
-
-/** Construit un jeu de données minimal valide pour les tests. */
-function creerDonneesVides(): DonneesApplication {
-  return {
-    version: '1.0',
-    configuration: { delaiSauvegardeAutoMinutes: 2 },
-    enseignant: { prenom: 'Test', nom: 'ENS', annee: '2025-2026' },
-    classe: { niveau: 'CM2', annee: 'CM2', eleves: [] },
-    referentiels: {
-      competences: [],
-      periodes: [],
-      statutsAcquisition: [],
-      statutsEleve: [],
-      typesContact: [],
-      groupes: [],
-      joursFeries: [],
-      raisonsAbsence: [],
-      frequencesAbsence: [],
-      configEmploiDuTemps: {
-        joursOuvres: ['lundi', 'mardi', 'jeudi', 'vendredi'],
-        heureDebutJournee: '08:30',
-        heureFinJournee: '16:30',
-      },
-    },
-    emploisDuTemps: [],
-    projets: [],
-    cahierJournal: [],
-    ppi: [],
-    bulletins: [],
-  };
-}
+import { DonneesMother } from '../../tests/donnees.mother';
+import { EleveMother } from '../../tests/eleve.mother';
 
 describe('ReferentielService', () => {
   let service: ReferentielService;
@@ -53,25 +23,19 @@ describe('ReferentielService', () => {
     });
 
     it('retourne false si groupe non référencé', () => {
-      donneesService.charger(creerDonneesVides());
+      donneesService.charger(DonneesMother.base());
       expect(service.estGroupeUtilise('A')).toBe(false);
     });
 
     it('retourne true si groupe utilisé par un élève', () => {
-      const d = creerDonneesVides();
-      d.classe.eleves.push({
-        id: 'e1', prenom: 'Paul', nom: 'MARTIN', sexe: 'M', niveau: 'CM2',
-        groupes: ['A'], dateNaissance: '2015-01-01', dateArrivee: '2025-09-01',
-        statut: 'DC', bilans: '', accueil: '', inclusion: null,
-        contacts: [], absencesRecurrentes: [], absencesPonctuelles: [], cursus: [],
-        notesDroitImage: '', notesAutorisationBaignade: '', notesPPA: null, notesESS: null,
-      });
+      const d = DonneesMother.base();
+      d.classe.eleves.push(EleveMother.base('e1', 'MARTIN', 'Paul', { groupes: ['A'] }));
       donneesService.charger(d);
       expect(service.estGroupeUtilise('A')).toBe(true);
     });
 
     it('retourne true si groupe utilisé dans une séance', () => {
-      const d = creerDonneesVides();
+      const d = DonneesMother.base();
       d.cahierJournal.push({
         id: 'j1',
         date: '2026-06-15',
@@ -92,20 +56,14 @@ describe('ReferentielService', () => {
     });
 
     it('retourne true si statut utilisé par un élève', () => {
-      const d = creerDonneesVides();
-      d.classe.eleves.push({
-        id: 'e1', prenom: 'Paul', nom: 'MARTIN', sexe: 'M', niveau: 'CM2',
-        groupes: [], dateNaissance: '2015-01-01', dateArrivee: '2025-09-01',
-        statut: 'DC', bilans: '', accueil: '', inclusion: null,
-        contacts: [], absencesRecurrentes: [], absencesPonctuelles: [], cursus: [],
-        notesDroitImage: '', notesAutorisationBaignade: '', notesPPA: null, notesESS: null,
-      });
+      const d = DonneesMother.base();
+      d.classe.eleves.push(EleveMother.base('e1', 'MARTIN', 'Paul'));
       donneesService.charger(d);
       expect(service.estStatutEleveUtilise('DC')).toBe(true);
     });
 
     it('retourne false si statut non utilisé', () => {
-      donneesService.charger(creerDonneesVides());
+      donneesService.charger(DonneesMother.base());
       expect(service.estStatutEleveUtilise('HE')).toBe(false);
     });
   });
@@ -113,15 +71,10 @@ describe('ReferentielService', () => {
   /** Retourne true si le type est utilisé dans les contacts d'au moins un élève. */
   describe('estTypeContactUtilise', () => {
     it('retourne true si type de contact utilisé', () => {
-      const d = creerDonneesVides();
-      d.classe.eleves.push({
-        id: 'e1', prenom: 'Paul', nom: 'MARTIN', sexe: 'M', niveau: 'CM2',
-        groupes: [], dateNaissance: '2015-01-01', dateArrivee: '2025-09-01',
-        statut: 'DC', bilans: '', accueil: '', inclusion: null,
+      const d = DonneesMother.base();
+      d.classe.eleves.push(EleveMother.base('e1', 'MARTIN', 'Paul', {
         contacts: [{ type: 'P', nom: 'Papa', email: '', telephone: '', adressePostale: '' }],
-        absencesRecurrentes: [], absencesPonctuelles: [], cursus: [],
-        notesDroitImage: '', notesAutorisationBaignade: '', notesPPA: null, notesESS: null,
-      });
+      }));
       donneesService.charger(d);
       expect(service.estTypeContactUtilise('P')).toBe(true);
     });
@@ -138,7 +91,7 @@ describe('ReferentielService', () => {
     });
 
     it('retourne true si période utilisée dans un projet', () => {
-      const d = creerDonneesVides();
+      const d = DonneesMother.base();
       d.projets.push({
         id: 'p1', nom: 'Projet', description: '', elevesIds: [],
         periodes: [{ periodeNom: 'Période 1', debut: '2025-09-01', fin: '2025-10-18', description: '', competencesIds: [] }],
@@ -148,14 +101,14 @@ describe('ReferentielService', () => {
     });
 
     it('retourne true si période utilisée dans un bulletin', () => {
-      const d = creerDonneesVides();
+      const d = DonneesMother.base();
       d.bulletins.push({ id: 'b1', eleveId: 'e1', periode: 'Période 2', competencesEvaluees: [] });
       donneesService.charger(d);
       expect(service.estPeriodeUtilisee('Période 2')).toBe(true);
     });
 
     it('retourne false si période non utilisée', () => {
-      donneesService.charger(creerDonneesVides());
+      donneesService.charger(DonneesMother.base());
       expect(service.estPeriodeUtilisee('Période 1')).toBe(false);
     });
   });
@@ -164,7 +117,7 @@ describe('ReferentielService', () => {
   describe('CRUD groupes', () => {
     const groupe: Groupe = { id: 'A', libelle: 'Groupe A' };
 
-    beforeEach(() => donneesService.charger(creerDonneesVides()));
+    beforeEach(() => donneesService.charger(DonneesMother.base()));
 
     it('ajoute un groupe', () => {
       service.ajouterGroupe(groupe);
@@ -195,7 +148,7 @@ describe('ReferentielService', () => {
   describe('CRUD statuts élève', () => {
     const statut: StatutEleve = { id: 'DC', libelle: 'Dans la classe' };
 
-    beforeEach(() => donneesService.charger(creerDonneesVides()));
+    beforeEach(() => donneesService.charger(DonneesMother.base()));
 
     it('ajoute, modifie et supprime un statut élève', () => {
       service.ajouterStatutEleve(statut);
@@ -211,7 +164,7 @@ describe('ReferentielService', () => {
   describe('CRUD types de contact', () => {
     const type: TypeContact = { id: 'P', libelle: 'Père' };
 
-    beforeEach(() => donneesService.charger(creerDonneesVides()));
+    beforeEach(() => donneesService.charger(DonneesMother.base()));
 
     it('ajoute, modifie et supprime un type de contact', () => {
       service.ajouterTypeContact(type);
@@ -227,7 +180,7 @@ describe('ReferentielService', () => {
   describe('CRUD périodes', () => {
     const periode: Periode = { id: 'p1', nom: 'Période 1', debut: '2025-09-01', fin: '2025-10-18' };
 
-    beforeEach(() => donneesService.charger(creerDonneesVides()));
+    beforeEach(() => donneesService.charger(DonneesMother.base()));
 
     it('ajoute une période', () => {
       service.ajouterPeriode(periode);
@@ -263,7 +216,7 @@ describe('ReferentielService', () => {
   describe('CRUD jours fériés', () => {
     const jourFerie: JourFerie = { id: 'jf1', nom: 'Toussaint', date: '2025-11-01' };
 
-    beforeEach(() => donneesService.charger(creerDonneesVides()));
+    beforeEach(() => donneesService.charger(DonneesMother.base()));
 
     it('ajoute un jour férié', () => {
       service.ajouterJourFerie(jourFerie);
@@ -292,7 +245,7 @@ describe('ReferentielService', () => {
   /** Remplace la configuration globale de l'EDT et supporte UNDO. */
   describe('modifierConfigEmploiDuTemps', () => {
     it('remplace la configuration et supporte le UNDO', () => {
-      const d = creerDonneesVides();
+      const d = DonneesMother.base();
       donneesService.charger(d);
       const ancienne: ConfigEmploiDuTemps = d.referentiels.configEmploiDuTemps;
       const nouvelle: ConfigEmploiDuTemps = {
@@ -311,7 +264,7 @@ describe('ReferentielService', () => {
 
   /** Vérifie l'ajout, la modification et la suppression de raisons et fréquences d'absence. */
   describe('CRUD raisons et fréquences d\'absence', () => {
-    beforeEach(() => donneesService.charger(creerDonneesVides()));
+    beforeEach(() => donneesService.charger(DonneesMother.base()));
 
     it('ajoute et supprime une raison d\'absence', () => {
       const raison = { id: 'M', libelle: 'Maladie' };
@@ -345,7 +298,7 @@ describe('ReferentielService', () => {
 
   /** Vérifie l'ajout, la modification et la suppression de statuts d'acquisition. */
   describe('CRUD statuts d\'acquisition', () => {
-    beforeEach(() => donneesService.charger(creerDonneesVides()));
+    beforeEach(() => donneesService.charger(DonneesMother.base()));
 
     it('ajoute, modifie et supprime un statut d\'acquisition', () => {
       const statut = { id: 'A', glyphe: '✓', libelle: 'Acquis', couleur: 'green', fond: 'lightgreen' };
@@ -371,7 +324,7 @@ describe('ReferentielService', () => {
     });
 
     it('retourne true si statut utilisé dans un PPI', () => {
-      const d = creerDonneesVides();
+      const d = DonneesMother.base();
       d.ppi.push({
         id: 'ppi1', eleveId: 'e1',
         competencesEntrees: [{
@@ -385,7 +338,7 @@ describe('ReferentielService', () => {
     });
 
     it('retourne true si statut utilisé dans un bulletin', () => {
-      const d = creerDonneesVides();
+      const d = DonneesMother.base();
       d.bulletins.push({
         id: 'b1', eleveId: 'e1', periode: 'P1',
         competencesEvaluees: [{ competenceId: 'c1', evaluation: 'EC', appreciationPublique: '', appreciationPrivee: '' }],

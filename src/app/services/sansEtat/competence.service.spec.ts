@@ -2,50 +2,8 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { CompetenceService } from './competence.service';
 import { DonneesService } from '../avecEtat/donnees.service';
-import { DonneesApplication } from '../../modeles/donnees-application.modele';
-import { Competence } from '../../modeles/referentiels.modele';
-
-function creerDonneesVides(): DonneesApplication {
-  return {
-    version: '1.0',
-    configuration: { delaiSauvegardeAutoMinutes: 2 },
-    enseignant: { prenom: 'Test', nom: 'ENS', annee: '2025-2026' },
-    classe: { niveau: 'CM2', annee: 'CM2', eleves: [] },
-    referentiels: {
-      competences: [], periodes: [], statutsAcquisition: [], statutsEleve: [],
-      typesContact: [], groupes: [], joursFeries: [], raisonsAbsence: [],
-      frequencesAbsence: [],
-      configEmploiDuTemps: { joursOuvres: ['lundi'], heureDebutJournee: '08:30', heureFinJournee: '16:30' },
-    },
-    emploisDuTemps: [], projets: [], cahierJournal: [], ppi: [], bulletins: [],
-  };
-}
-
-/** Arbre de compétences pour les tests. */
-const ARBRE_COMPETENCES: Competence[] = [
-  {
-    id: 'FR',
-    libelle: 'Français',
-    enfants: [
-      {
-        id: 'FR-LECT',
-        libelle: 'Lecture',
-        enfants: [
-          { id: 'FR-LECT-1', libelle: 'Comprendre un texte lu' },
-          { id: 'FR-LECT-2', libelle: 'Lire à voix haute' },
-        ],
-      },
-      { id: 'FR-ECRIT', libelle: 'Écriture', enfants: [] },
-    ],
-  },
-  {
-    id: 'MATH',
-    libelle: 'Mathématiques',
-    enfants: [
-      { id: 'MATH-NB', libelle: 'Nombres et calculs' },
-    ],
-  },
-];
+import { DonneesMother } from '../../tests/donnees.mother';
+import { CompetenceMother } from '../../tests/competence.mother';
 
 describe('CompetenceService', () => {
   let service: CompetenceService;
@@ -55,8 +13,8 @@ describe('CompetenceService', () => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(CompetenceService);
     donneesService = TestBed.inject(DonneesService);
-    const d = creerDonneesVides();
-    d.referentiels.competences = ARBRE_COMPETENCES;
+    const d = DonneesMother.base();
+    d.referentiels.competences = CompetenceMother.arbreSimple();
     donneesService.charger(d);
   });
 

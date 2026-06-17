@@ -4,7 +4,7 @@
  * est délégué à `ReferentielService`.
  */
 
-import { Injectable, inject } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { Competence } from '../../modeles/referentiels.modele';
 import { DonneesService } from '../avecEtat/donnees.service';
 import { TexteUtils } from '../../utilitaires/texte.utils';
@@ -17,6 +17,21 @@ import { TexteUtils } from '../../utilitaires/texte.utils';
 export class CompetenceService {
   /** Accès en lecture aux données de l'application. */
   private readonly donneesService = inject(DonneesService);
+
+  /**
+   * Cache de libellés normalisés pour la recherche, indexé par identifiant de compétence.
+   * Recalculé uniquement lorsque `donneesService.donnees()` change (chargement ZIP),
+   * jamais entre deux frappes de l'utilisateur.
+   */
+  private readonly libellesNormalises = computed<Map<string, string>>(() => {
+    const carte = new Map<string, string>();
+    const parcourir = (noeud: Competence): void => {
+      carte.set(noeud.id, TexteUtils.normaliserPourRecherche(noeud.libelle));
+      noeud.enfants?.forEach(parcourir);
+    };
+    this.donneesService.donnees()?.referentiels.competences.forEach(parcourir);
+    return carte;
+  });
 
   /**
    * Retourne les nœuds de niveau 1 de l'arbre (domaines / disciplines).
@@ -46,9 +61,10 @@ export class CompetenceService {
   public rechercherCompetences(terme: string): Competence[] {
     if (!terme.trim()) return [];
     const t = TexteUtils.normaliserPourRecherche(terme);
+    const cache = this.libellesNormalises();
     const resultats: Competence[] = [];
     const parcourir = (noeud: Competence): void => {
-      if (TexteUtils.normaliserPourRecherche(noeud.libelle).includes(t)) {
+      if (cache.get(noeud.id)?.includes(t)) {
         resultats.push(noeud);
       }
       noeud.enfants?.forEach(parcourir);

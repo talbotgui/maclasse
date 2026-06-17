@@ -71,8 +71,7 @@ describe('CahierJournalService', () => {
     donneesService.charger(creerDonneesVides());
   });
 
-  // ── initialiserJourneeVide ────────────────────────────────────────────────
-
+  /** Crée une journée sans séances si elle n'existe pas ; sans effet si la date est déjà présente. */
   describe('initialiserJourneeVide', () => {
     it('crée une journée vide', () => {
       service.initialiserJourneeVide(DATE_LUNDI_PAIRE);
@@ -100,8 +99,7 @@ describe('CahierJournalService', () => {
     });
   });
 
-  // ── initialiserDepuisEdt ──────────────────────────────────────────────────
-
+  /** Importe les créneaux de l'EDT applicable (fréquence + plage de dates) et les trie par heure. */
   describe('initialiserDepuisEdt', () => {
     const EDT_LUNDI: EmploiDuTemps = {
       id: 'edt1', nom: 'Semaine', dateDebut: null, dateFin: null, frequence: 'lesDeux',
@@ -210,8 +208,7 @@ describe('CahierJournalService', () => {
     });
   });
 
-  // ── ajouterSeance ─────────────────────────────────────────────────────────
-
+  /** Ajoute une séance en fin de liste dans la journée ciblée ; sans effet si journée absente. */
   describe('ajouterSeance', () => {
     it('ajoute une séance à la journée', () => {
       service.initialiserJourneeVide(DATE_LUNDI_PAIRE);
@@ -232,8 +229,7 @@ describe('CahierJournalService', () => {
     });
   });
 
-  // ── modifierSeance ────────────────────────────────────────────────────────
-
+  /** Remplace la séance par son id dans la journée ciblée ; sans effet si journée ou séance absente. */
   describe('modifierSeance', () => {
     it('met à jour une séance existante', () => {
       service.initialiserJourneeVide(DATE_LUNDI_PAIRE);
@@ -255,8 +251,7 @@ describe('CahierJournalService', () => {
     });
   });
 
-  // ── supprimerSeance ───────────────────────────────────────────────────────
-
+  /** Retire la séance de la journée ciblée ; sans effet si journée ou séance absente. */
   describe('supprimerSeance', () => {
     it('supprime une séance existante', () => {
       service.initialiserJourneeVide(DATE_LUNDI_PAIRE);
@@ -270,8 +265,7 @@ describe('CahierJournalService', () => {
     });
   });
 
-  // ── deplacerSeance ────────────────────────────────────────────────────────
-
+  /** Réordonne les séances de la journée ; sans effet si index hors limites. */
   describe('deplacerSeance', () => {
     it('inverse l\'ordre de deux séances', () => {
       service.initialiserJourneeVide(DATE_LUNDI_PAIRE);
@@ -311,8 +305,7 @@ describe('CahierJournalService', () => {
     });
   });
 
-  // ── supprimerJournee ──────────────────────────────────────────────────────
-
+  /** Retire entièrement la journée du cahier journal ; sans effet si la date est absente. */
   describe('supprimerJournee', () => {
     it('supprime une journée existante', () => {
       service.initialiserJourneeVide(DATE_LUNDI_PAIRE);
@@ -340,8 +333,7 @@ describe('CahierJournalService', () => {
     });
   });
 
-  // ── dupliquerSeance ───────────────────────────────────────────────────────
-
+  /** Copie une séance vers une autre journée (existante ou créée) avec un nouvel UUID. */
   describe('dupliquerSeance', () => {
     it('duplique dans une journée existante', () => {
       service.initialiserJourneeVide(DATE_LUNDI_PAIRE);
@@ -386,8 +378,7 @@ describe('CahierJournalService', () => {
     });
   });
 
-  // ── dupliquerJournee ──────────────────────────────────────────────────────
-
+  /** Copie toutes les séances d'une journée vers une autre, remplaçant son contenu si elle existe déjà. */
   describe('dupliquerJournee', () => {
     it('duplique vers une nouvelle journée', () => {
       service.initialiserJourneeVide(DATE_LUNDI_PAIRE);
@@ -427,8 +418,7 @@ describe('CahierJournalService', () => {
     });
   });
 
-  // ── calculerConflitsAbsences ──────────────────────────────────────────────
-
+  /** Retourne les conflits entre les séances du jour et les absences récurrentes des élèves concernés. */
   describe('calculerConflitsAbsences', () => {
     it('retourne tableau vide si aucune donnée chargée', () => {
       TestBed.resetTestingModule();

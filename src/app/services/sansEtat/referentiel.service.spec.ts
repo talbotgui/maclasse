@@ -46,8 +46,7 @@ describe('ReferentielService', () => {
     donneesService = TestBed.inject(DonneesService);
   });
 
-  // ── estGroupeUtilise ──────────────────────────────────────────────────────
-
+  /** Retourne true si le groupe est référencé dans un élève, un créneau EDT ou une séance. */
   describe('estGroupeUtilise', () => {
     it('retourne false si aucune donnée chargée', () => {
       expect(service.estGroupeUtilise('A')).toBe(false);
@@ -86,8 +85,7 @@ describe('ReferentielService', () => {
     });
   });
 
-  // ── estStatutEleveUtilise ─────────────────────────────────────────────────
-
+  /** Retourne true si le statut est utilisé par au moins un élève. */
   describe('estStatutEleveUtilise', () => {
     it('retourne false sans données', () => {
       expect(service.estStatutEleveUtilise('DC')).toBe(false);
@@ -112,8 +110,7 @@ describe('ReferentielService', () => {
     });
   });
 
-  // ── estTypeContactUtilise ─────────────────────────────────────────────────
-
+  /** Retourne true si le type est utilisé dans les contacts d'au moins un élève. */
   describe('estTypeContactUtilise', () => {
     it('retourne true si type de contact utilisé', () => {
       const d = creerDonneesVides();
@@ -134,8 +131,7 @@ describe('ReferentielService', () => {
     });
   });
 
-  // ── estPeriodeUtilisee ────────────────────────────────────────────────────
-
+  /** Retourne true si la période est référencée dans un projet ou un bulletin. */
   describe('estPeriodeUtilisee', () => {
     it('retourne false sans données', () => {
       expect(service.estPeriodeUtilisee('Période 1')).toBe(false);
@@ -164,20 +160,7 @@ describe('ReferentielService', () => {
     });
   });
 
-  // ── estRaisonAbsenceUtilisee / estFrequenceAbsenceUtilisee ────────────────
-
-  describe('estRaisonAbsenceUtilisee et estFrequenceAbsenceUtilisee', () => {
-    it('retourne toujours false pour raison', () => {
-      expect(service.estRaisonAbsenceUtilisee('X')).toBe(false);
-    });
-
-    it('retourne toujours false pour fréquence', () => {
-      expect(service.estFrequenceAbsenceUtilisee('SP')).toBe(false);
-    });
-  });
-
-  // ── CRUD Groupes ──────────────────────────────────────────────────────────
-
+  /** Vérifie l'ajout, la modification et la suppression de groupes dans le référentiel. */
   describe('CRUD groupes', () => {
     const groupe: Groupe = { id: 'A', libelle: 'Groupe A' };
 
@@ -208,8 +191,7 @@ describe('ReferentielService', () => {
     });
   });
 
-  // ── CRUD Statuts élève ────────────────────────────────────────────────────
-
+  /** Vérifie l'ajout, la modification et la suppression de statuts élève. */
   describe('CRUD statuts élève', () => {
     const statut: StatutEleve = { id: 'DC', libelle: 'Dans la classe' };
 
@@ -225,8 +207,7 @@ describe('ReferentielService', () => {
     });
   });
 
-  // ── CRUD Types de contact ─────────────────────────────────────────────────
-
+  /** Vérifie l'ajout, la modification et la suppression de types de contact. */
   describe('CRUD types de contact', () => {
     const type: TypeContact = { id: 'P', libelle: 'Père' };
 
@@ -242,8 +223,7 @@ describe('ReferentielService', () => {
     });
   });
 
-  // ── CRUD Périodes ─────────────────────────────────────────────────────────
-
+  /** Vérifie l'ajout, la modification et la suppression de périodes. */
   describe('CRUD périodes', () => {
     const periode: Periode = { id: 'p1', nom: 'Période 1', debut: '2025-09-01', fin: '2025-10-18' };
 
@@ -279,8 +259,7 @@ describe('ReferentielService', () => {
     });
   });
 
-  // ── CRUD Jours fériés ─────────────────────────────────────────────────────
-
+  /** Vérifie l'ajout, la modification et la suppression de jours fériés. */
   describe('CRUD jours fériés', () => {
     const jourFerie: JourFerie = { id: 'jf1', nom: 'Toussaint', date: '2025-11-01' };
 
@@ -310,8 +289,7 @@ describe('ReferentielService', () => {
     });
   });
 
-  // ── Configuration EDT ─────────────────────────────────────────────────────
-
+  /** Remplace la configuration globale de l'EDT et supporte UNDO. */
   describe('modifierConfigEmploiDuTemps', () => {
     it('remplace la configuration et supporte le UNDO', () => {
       const d = creerDonneesVides();
@@ -331,8 +309,7 @@ describe('ReferentielService', () => {
     });
   });
 
-  // ── CRUD Raisons et fréquences d'absence ─────────────────────────────────
-
+  /** Vérifie l'ajout, la modification et la suppression de raisons et fréquences d'absence. */
   describe('CRUD raisons et fréquences d\'absence', () => {
     beforeEach(() => donneesService.charger(creerDonneesVides()));
 
@@ -366,8 +343,7 @@ describe('ReferentielService', () => {
     });
   });
 
-  // ── CRUD Statuts d'acquisition ────────────────────────────────────────────
-
+  /** Vérifie l'ajout, la modification et la suppression de statuts d'acquisition. */
   describe('CRUD statuts d\'acquisition', () => {
     beforeEach(() => donneesService.charger(creerDonneesVides()));
 
@@ -388,8 +364,7 @@ describe('ReferentielService', () => {
     });
   });
 
-  // ── estStatutAcquisitionUtilise ───────────────────────────────────────────
-
+  /** Retourne true si le statut est utilisé dans un PPI ou un bulletin. */
   describe('estStatutAcquisitionUtilise', () => {
     it('retourne false sans données', () => {
       expect(service.estStatutAcquisitionUtilise('A')).toBe(false);

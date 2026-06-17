@@ -13,24 +13,24 @@ import { DonneesApplication } from '../modeles/donnees-application.modele';
  */
 export class CommandeSuppression<T extends { id: string }> implements Commande {
   /**
-   * @param _accesseur Fonction retournant le tableau cible depuis les données.
-   * @param _element Élément à supprimer — conservé pour l'annulation.
-   * @param _index Index de l'élément dans le tableau au moment de la suppression.
+   * @param accesseur Fonction retournant le tableau cible depuis les données.
+   * @param element Élément à supprimer — conservé pour l'annulation.
+   * @param index Index de l'élément dans le tableau au moment de la suppression.
    */
   public constructor(
-    private readonly _accesseur: (d: DonneesApplication) => T[],
-    private readonly _element: T,
-    private readonly _index: number,
+    private readonly accesseur: (d: DonneesApplication) => T[],
+    private readonly element: T,
+    private readonly index: number,
   ) {}
 
   /**
-   * Supprime l'élément situé à `_index`.
+   * Supprime l'élément situé à `index`.
    * @param donnees État courant des données.
    * @returns Nouvel état sans l'élément.
    */
   public executer(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
-    this._accesseur(clone).splice(this._index, 1);
+    this.accesseur(clone).splice(this.index, 1);
     return clone;
   }
 
@@ -41,7 +41,7 @@ export class CommandeSuppression<T extends { id: string }> implements Commande {
    */
   public annuler(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
-    this._accesseur(clone).splice(this._index, 0, structuredClone(this._element));
+    this.accesseur(clone).splice(this.index, 0, structuredClone(this.element));
     return clone;
   }
 }

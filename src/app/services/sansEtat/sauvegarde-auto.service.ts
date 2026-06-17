@@ -15,19 +15,19 @@ import { ChiffrementService } from './chiffrement.service';
 @Injectable({ providedIn: 'root' })
 export class SauvegardeAutoService {
   /** Accès aux données et marquage post-sauvegarde. */
-  private readonly _donneesService = inject(DonneesService);
+  private readonly donneesService = inject(DonneesService);
 
   /** Contexte applicatif : mot de passe de chiffrement. */
-  private readonly _contexteService = inject(ContexteService);
+  private readonly contexteService = inject(ContexteService);
 
   /** Service de chiffrement AES-GCM. */
-  private readonly _chiffrementService = inject(ChiffrementService);
+  private readonly chiffrementService = inject(ChiffrementService);
 
   /** Date et heure de la dernière sauvegarde réussie, ou `null` si aucune. */
   public readonly dateDerniereSauvegarde: WritableSignal<Date | null> = signal(null);
 
   /** Référence au minuteur de sauvegarde automatique, `null` si inactif. */
-  private _timer: ReturnType<typeof setInterval> | null = null;
+  private timer: ReturnType<typeof setInterval> | null = null;
 
   /**
    * Démarre le minuteur de sauvegarde automatique.
@@ -38,8 +38,8 @@ export class SauvegardeAutoService {
   public demarrer(): void {
     this.arreter();
     const delaiMinutes =
-      this._donneesService.donnees()?.configuration.delaiSauvegardeAutoMinutes ?? 2;
-    this._timer = setInterval(() => void this.sauvegarder(), delaiMinutes * 60_000);
+      this.donneesService.donnees()?.configuration.delaiSauvegardeAutoMinutes ?? 2;
+    this.timer = setInterval(() => void this.sauvegarder(), delaiMinutes * 60_000);
   }
 
   /**
@@ -47,9 +47,9 @@ export class SauvegardeAutoService {
    * Sans effet si aucun minuteur n'est actif.
    */
   public arreter(): void {
-    if (this._timer !== null) {
-      clearInterval(this._timer);
-      this._timer = null;
+    if (this.timer !== null) {
+      clearInterval(this.timer);
+      this.timer = null;
     }
   }
 
@@ -59,13 +59,13 @@ export class SauvegardeAutoService {
    * Sans effet si aucune donnée n'est chargée ou si aucun mot de passe n'est défini dans le contexte.
    */
   public async sauvegarder(): Promise<void> {
-    const donnees = this._donneesService.donnees();
-    const motDePasse = this._contexteService.motDePasse;
+    const donnees = this.donneesService.donnees();
+    const motDePasse = this.contexteService.motDePasse;
     if (!donnees || !motDePasse) return;
 
-    const blob = await this._chiffrementService.chiffrer(donnees, motDePasse);
-    this._declencherTelechargement(blob);
-    this._donneesService.marquerCommeSauvegarde();
+    const blob = await this.chiffrementService.chiffrer(donnees, motDePasse);
+    this.declencherTelechargement(blob);
+    this.donneesService.marquerCommeSauvegarde();
     this.dateDerniereSauvegarde.set(new Date());
   }
 
@@ -73,7 +73,7 @@ export class SauvegardeAutoService {
    * `true` si le minuteur de sauvegarde automatique est actif.
    */
   public get timerActif(): boolean {
-    return this._timer !== null;
+    return this.timer !== null;
   }
 
   /**
@@ -81,7 +81,7 @@ export class SauvegardeAutoService {
    * Le nom du fichier inclut la date du jour au format ISO.
    * @param blob Blob ZIP à télécharger.
    */
-  protected _declencherTelechargement(blob: Blob): void {
+  protected declencherTelechargement(blob: Blob): void {
     const url = URL.createObjectURL(blob);
     const lien = document.createElement('a');
     lien.href = url;

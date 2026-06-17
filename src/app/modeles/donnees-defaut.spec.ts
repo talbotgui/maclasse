@@ -14,7 +14,6 @@ import type { Bulletin, Ppi } from './ppi-bulletin.modele';
 import type { Projet } from './projet.modele';
 import type { Referentiels } from './referentiels.modele';
 
-// ── Vérifications compile-time ────────────────────────────────────────────
 // Si un champ requis est ajouté à DonneesApplication sans être répercuté dans le JSON,
 // la compilation échoue ici — avant même d'exécuter les tests.
 
@@ -29,8 +28,6 @@ const _checkProjets = donneesDefaut.projets satisfies Record<keyof Projet, unkno
 const _checkPpi = donneesDefaut.ppi satisfies Ppi[];
 const _checkBulletins = donneesDefaut.bulletins satisfies Bulletin[];
 
-// ── Constantes de validation ──────────────────────────────────────────────
-
 /** Regex d'une date au format ISO 8601 (`YYYY-MM-DD`). */
 const REGEX_DATE_ISO = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -40,15 +37,12 @@ const REGEX_HEURE = /^\d{2}:\d{2}$/;
 /** Jours de la semaine scolaire valides. */
 const JOURS_SEMAINE: JourSemaine[] = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'];
 
-// ── Tests runtime ─────────────────────────────────────────────────────────
-
 /** Raccourci typé vers les données JSON en tant que DonneesApplication. */
 const donnees = donneesDefaut as unknown as DonneesApplication;
 
 describe('donnees-defaut.json — cohérence modèle/données', () => {
 
-  // ── Structure racine ────────────────────────────────────────────────────
-
+  /** Vérifie que tous les champs de premier niveau sont présents et que les collections sont des tableaux. */
   describe('Structure racine', () => {
     it('possède une version non vide', () => {
       expect(donnees.version).toBeTruthy();
@@ -63,8 +57,7 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
     });
   });
 
-  // ── Classe ──────────────────────────────────────────────────────────────
-
+  /** Vérifie la structure de la classe et la présence de la liste des élèves. */
   describe('Classe', () => {
     it('a un niveau et une annee non vides', () => {
       expect(donnees.classe.niveau).toBeTruthy();
@@ -76,8 +69,7 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
     });
   });
 
-  // ── Format des dates ISO ────────────────────────────────────────────────
-
+  /** Toutes les dates présentes dans le JSON sont au format YYYY-MM-DD. */
   describe('Format des dates (YYYY-MM-DD)', () => {
     it('dateNaissance et dateArrivee des élèves sont valides', () => {
       for (const eleve of donnees.classe.eleves) {
@@ -123,8 +115,7 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
     });
   });
 
-  // ── Format des heures HH:MM ─────────────────────────────────────────────
-
+  /** Toutes les heures présentes dans le JSON sont au format HH:MM. */
   describe('Format des heures (HH:MM)', () => {
     it('heures de la configEmploiDuTemps sont valides', () => {
       const config = donnees.referentiels.configEmploiDuTemps;
@@ -160,8 +151,7 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
     });
   });
 
-  // ── Unicité des identifiants ────────────────────────────────────────────
-
+  /** Chaque identifiant est unique au sein de son tableau. */
   describe('Unicité des identifiants', () => {
     it('les IDs des élèves sont uniques', () => {
       const ids = donnees.classe.eleves.map((e) => e.id);
@@ -194,8 +184,7 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
     });
   });
 
-  // ── Intégrité des références croisées ──────────────────────────────────
-
+  /** Les références inter-entités (groupe, statut…) pointent vers des identifiants existants. */
   describe('Intégrité des références croisées', () => {
     it('les statuts des élèves référencent des entrées valides', () => {
       const statutsValides = new Set(donnees.referentiels.statutsEleve.map((s) => s.id));
@@ -238,8 +227,7 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
     });
   });
 
-  // ── Champs optionnels de Eleve ──────────────────────────────────────────
-
+  /** Les champs optionnels de Eleve sont null ou absents — jamais des chaînes invalides. */
   describe('Champs optionnels de Eleve', () => {
     it('manualite vaut A, D ou G quand elle est définie', () => {
       for (const eleve of donnees.classe.eleves) {

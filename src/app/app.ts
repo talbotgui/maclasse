@@ -16,10 +16,10 @@ import { ContexteService } from './services/avecEtat/contexte.service';
 })
 export class App {
   /** Service de contexte global — utilisé pour l'application réactive du thème. */
-  protected readonly _contexte = inject(ContexteService);
+  protected readonly contexte = inject(ContexteService);
 
   /** Câble l'effet d'application du thème dans le contexte d'injection du constructeur. */
   public constructor() {
-    effect(() => this._contexte.appliquerTheme(this._contexte.themeActif()));
+    effect(() => this.contexte.appliquerTheme(this.contexte.themeActif()));
   }
 }

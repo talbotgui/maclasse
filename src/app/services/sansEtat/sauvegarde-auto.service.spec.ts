@@ -43,8 +43,7 @@ describe('SauvegardeAutoService', () => {
     service.dateDerniereSauvegarde.set(null);
   });
 
-  // ── sauvegarder ───────────────────────────────────────────────────────────
-
+  /** Déclenche le chiffrement et le téléchargement, met à jour la date et marque les données sauvegardées. */
   describe('sauvegarder', () => {
     it('sans effet si aucune donnée chargée', async () => {
       contexteService.motDePasse = 'mdp';
@@ -88,8 +87,7 @@ describe('SauvegardeAutoService', () => {
     });
   });
 
-  // ── demarrer / arreter ────────────────────────────────────────────────────
-
+  /** Active le minuteur périodique de sauvegarde ; réinitialise s'il est déjà actif. */
   describe('demarrer', () => {
     it('active le timer', () => {
       donneesService.charger(creerDonneesVides());
@@ -113,6 +111,7 @@ describe('SauvegardeAutoService', () => {
     });
   });
 
+  /** Stoppe le timer actif et remet timerActif à false ; sans effet si aucun timer n'est actif. */
   describe('arreter', () => {
     it('désactive le timer', () => {
       donneesService.charger(creerDonneesVides());

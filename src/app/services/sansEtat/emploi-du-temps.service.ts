@@ -18,16 +18,14 @@ import { DateUtils } from '../../utilitaires/date.utils';
 @Injectable({ providedIn: 'root' })
 export class EmploiDuTempsService {
   /** Accès aux données de l'application et soumission des commandes. */
-  private readonly _donneesService = inject(DonneesService);
-
-  // ── CRUD EDT ──────────────────────────────────────────────────────────────
+  private readonly donneesService = inject(DonneesService);
 
   /**
    * Crée un emploi du temps et l'ajoute à la liste.
    * @param edt Emploi du temps à créer (doit posséder un `id` unique).
    */
   public creerEdt(edt: EmploiDuTemps): void {
-    this._donneesService.executer(new CommandeCreation(d => d.emploisDuTemps, edt));
+    this.donneesService.executer(new CommandeCreation(d => d.emploisDuTemps, edt));
   }
 
   /**
@@ -36,11 +34,11 @@ export class EmploiDuTempsService {
    * @param edt Nouvelle valeur de l'EDT (même `id`).
    */
   public modifierEdt(edt: EmploiDuTemps): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const ancien = donnees.emploisDuTemps.find(e => e.id === edt.id);
     if (!ancien) return;
-    this._donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, edt));
+    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, edt));
   }
 
   /**
@@ -49,11 +47,11 @@ export class EmploiDuTempsService {
    * @param id UUID de l'EDT à supprimer.
    */
   public supprimerEdt(id: string): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const index = donnees.emploisDuTemps.findIndex(e => e.id === id);
     if (index === -1) return;
-    this._donneesService.executer(
+    this.donneesService.executer(
       new CommandeSuppression(d => d.emploisDuTemps, donnees.emploisDuTemps[index], index),
     );
   }
@@ -63,10 +61,8 @@ export class EmploiDuTempsService {
    * @param id UUID de l'EDT.
    */
   public obtenirEdt(id: string): EmploiDuTemps | undefined {
-    return this._donneesService.donnees()?.emploisDuTemps.find(e => e.id === id);
+    return this.donneesService.donnees()?.emploisDuTemps.find(e => e.id === id);
   }
-
-  // ── CRUD créneaux ─────────────────────────────────────────────────────────
 
   /**
    * Ajoute un créneau à un EDT existant.
@@ -76,12 +72,12 @@ export class EmploiDuTempsService {
    * @param creneau Créneau à ajouter.
    */
   public ajouterCreneau(edtId: string, creneau: CreneauEdt): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const ancien = donnees.emploisDuTemps.find(e => e.id === edtId);
     if (!ancien) return;
     const nouveau: EmploiDuTemps = { ...ancien, creneaux: [...ancien.creneaux, creneau] };
-    this._donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau));
+    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau));
   }
 
   /**
@@ -91,13 +87,13 @@ export class EmploiDuTempsService {
    * @param creneau Nouvelle valeur du créneau (même `id`).
    */
   public modifierCreneau(edtId: string, creneau: CreneauEdt): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const ancien = donnees.emploisDuTemps.find(e => e.id === edtId);
     if (!ancien) return;
     const creneaux = ancien.creneaux.map(c => (c.id === creneau.id ? creneau : c));
     const nouveau: EmploiDuTemps = { ...ancien, creneaux };
-    this._donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau));
+    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau));
   }
 
   /**
@@ -107,7 +103,7 @@ export class EmploiDuTempsService {
    * @param creneauId UUID du créneau à supprimer.
    */
   public supprimerCreneau(edtId: string, creneauId: string): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const ancien = donnees.emploisDuTemps.find(e => e.id === edtId);
     if (!ancien) return;
@@ -115,10 +111,8 @@ export class EmploiDuTempsService {
       ...ancien,
       creneaux: ancien.creneaux.filter(c => c.id !== creneauId),
     };
-    this._donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau));
+    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau));
   }
-
-  // ── Détection de chevauchements ───────────────────────────────────────────
 
   /**
    * Retourne `true` si l'EDT fourni a au moins un créneau en conflit avec un autre EDT.
@@ -130,9 +124,10 @@ export class EmploiDuTempsService {
    * @returns `true` si un chevauchement est détecté avec un autre EDT.
    */
   public validerChevauchement(edt: EmploiDuTemps): boolean {
-    const autresEdts = this._donneesService.donnees()?.emploisDuTemps.filter(e => e.id !== edt.id) ?? [];
+    const autresEdts =
+      this.donneesService.donnees()?.emploisDuTemps.filter(e => e.id !== edt.id) ?? [];
     for (const autre of autresEdts) {
-      if (!this._frequencesCompatibles(edt.frequence, autre.frequence)) continue;
+      if (!this.frequencesCompatibles(edt.frequence, autre.frequence)) continue;
       const debut1 = edt.dateDebut ?? '0000-01-01';
       const fin1 = edt.dateFin ?? '9999-12-31';
       const debut2 = autre.dateDebut ?? '0000-01-01';
@@ -152,8 +147,6 @@ export class EmploiDuTempsService {
     return false;
   }
 
-  // ── Conflits avec absences récurrentes ────────────────────────────────────
-
   /**
    * Calcule les conflits entre un créneau et les absences récurrentes des élèves concernés.
    * La parité de semaine n'est pas prise en compte — tout chevauchement horaire sur le même
@@ -162,7 +155,7 @@ export class EmploiDuTempsService {
    * @returns Liste de libellés au format `"NOM Prénom — libellé d'absence"`.
    */
   public calculerConflitsAbsences(creneauId: string): string[] {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return [];
 
     let creneau: CreneauEdt | undefined;
@@ -215,7 +208,7 @@ export class EmploiDuTempsService {
    * @param f2 Fréquence du second EDT.
    * @returns `true` si les deux fréquences peuvent coïncider sur une même semaine.
    */
-  private _frequencesCompatibles(f1: FrequenceSemaine, f2: FrequenceSemaine): boolean {
+  private frequencesCompatibles(f1: FrequenceSemaine, f2: FrequenceSemaine): boolean {
     if (f1 === 'lesDeux' || f2 === 'lesDeux') return true;
     return f1 === f2;
   }

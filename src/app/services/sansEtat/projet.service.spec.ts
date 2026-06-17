@@ -48,8 +48,7 @@ describe('ProjetService', () => {
     donneesService.charger(creerDonneesVides());
   });
 
-  // ── creerProjet ───────────────────────────────────────────────────────────
-
+  /** Le projet est ajouté à la liste et la création est réversible via UNDO. */
   describe('creerProjet', () => {
     it('ajoute un projet', () => {
       service.creerProjet(PROJET_1);
@@ -63,8 +62,7 @@ describe('ProjetService', () => {
     });
   });
 
-  // ── modifierProjet ────────────────────────────────────────────────────────
-
+  /** Met à jour le projet trouvé par son id ; sans effet si id inconnu ou données absentes. */
   describe('modifierProjet', () => {
     it('met à jour un projet existant', () => {
       service.creerProjet(PROJET_1);
@@ -86,8 +84,7 @@ describe('ProjetService', () => {
     });
   });
 
-  // ── supprimerProjet ───────────────────────────────────────────────────────
-
+  /** Retire le projet par son id ; sans effet si id inconnu ou données absentes. */
   describe('supprimerProjet', () => {
     it('supprime un projet existant', () => {
       service.creerProjet(PROJET_1);
@@ -109,8 +106,7 @@ describe('ProjetService', () => {
     });
   });
 
-  // ── obtenirProjet ─────────────────────────────────────────────────────────
-
+  /** Retourne le projet si l'id existe, undefined sinon. */
   describe('obtenirProjet', () => {
     it('retourne le projet si l\'id existe', () => {
       service.creerProjet(PROJET_1);
@@ -122,8 +118,7 @@ describe('ProjetService', () => {
     });
   });
 
-  // ── rechercherProjets ─────────────────────────────────────────────────────
-
+  /** Filtre par nom et description, insensible à la casse et aux accents ; retourne tout si terme vide. */
   describe('rechercherProjets', () => {
     beforeEach(() => {
       service.creerProjet(PROJET_1);
@@ -158,8 +153,7 @@ describe('ProjetService', () => {
     });
   });
 
-  // ── gestion des périodes ──────────────────────────────────────────────────
-
+  /** Vérifie l'ajout, la modification et la suppression de périodes dans un projet. */
   describe('ajouterPeriode', () => {
     it('ajoute une période au projet', () => {
       service.creerProjet(PROJET_1);
@@ -188,6 +182,7 @@ describe('ProjetService', () => {
     });
   });
 
+  /** Modifie une période existante dans un projet ; sans effet si le projet est introuvable ou sans données. */
   describe('modifierPeriode', () => {
     it('modifie une période existante', () => {
       service.creerProjet(PROJET_1);
@@ -211,6 +206,7 @@ describe('ProjetService', () => {
     });
   });
 
+  /** Supprime une période d'un projet par son nom ; sans effet si le projet ou la période est introuvable. */
   describe('supprimerPeriode', () => {
     it('supprime une période existante', () => {
       service.creerProjet(PROJET_1);

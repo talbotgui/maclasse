@@ -66,8 +66,7 @@ describe('EmploiDuTempsService', () => {
     donneesService.charger(creerDonneesVides());
   });
 
-  // ── creerEdt ──────────────────────────────────────────────────────────────
-
+  /** L'EDT est ajouté à la liste et la création est réversible via UNDO. */
   describe('creerEdt', () => {
     it('ajoute un EDT', () => {
       service.creerEdt(EDT_1);
@@ -81,8 +80,7 @@ describe('EmploiDuTempsService', () => {
     });
   });
 
-  // ── modifierEdt ───────────────────────────────────────────────────────────
-
+  /** Met à jour l'EDT trouvé par son id ; sans effet si id inconnu ou données absentes. */
   describe('modifierEdt', () => {
     it('met à jour un EDT existant', () => {
       service.creerEdt(EDT_1);
@@ -111,8 +109,7 @@ describe('EmploiDuTempsService', () => {
     });
   });
 
-  // ── supprimerEdt ──────────────────────────────────────────────────────────
-
+  /** Retire l'EDT et tous ses créneaux ; sans effet si id inconnu ou données absentes. */
   describe('supprimerEdt', () => {
     it('supprime un EDT existant', () => {
       service.creerEdt(EDT_1);
@@ -141,8 +138,7 @@ describe('EmploiDuTempsService', () => {
     });
   });
 
-  // ── obtenirEdt ────────────────────────────────────────────────────────────
-
+  /** Retourne l'EDT si l'id existe, undefined sinon. */
   describe('obtenirEdt', () => {
     it("retourne l'EDT si l'id existe", () => {
       service.creerEdt(EDT_1);
@@ -154,8 +150,7 @@ describe('EmploiDuTempsService', () => {
     });
   });
 
-  // ── ajouterCreneau ────────────────────────────────────────────────────────
-
+  /** Ajoute un créneau en fin de liste dans l'EDT ciblé ; sans effet si EDT inconnu. */
   describe('ajouterCreneau', () => {
     it("ajoute un créneau à l'EDT", () => {
       service.creerEdt(EDT_1);
@@ -184,8 +179,7 @@ describe('EmploiDuTempsService', () => {
     });
   });
 
-  // ── modifierCreneau ───────────────────────────────────────────────────────
-
+  /** Remplace le créneau par son id dans l'EDT ciblé ; sans effet si EDT ou créneau inconnu. */
   describe('modifierCreneau', () => {
     it('met à jour un créneau existant', () => {
       service.creerEdt(EDT_1);
@@ -209,8 +203,7 @@ describe('EmploiDuTempsService', () => {
     });
   });
 
-  // ── supprimerCreneau ──────────────────────────────────────────────────────
-
+  /** Retire le créneau de l'EDT ciblé ; sans effet si EDT ou créneau inconnu. */
   describe('supprimerCreneau', () => {
     it('supprime un créneau existant', () => {
       service.creerEdt(EDT_1);
@@ -234,8 +227,7 @@ describe('EmploiDuTempsService', () => {
     });
   });
 
-  // ── validerChevauchement ──────────────────────────────────────────────────
-
+  /** Détecte tout créneau en conflit horaire sur le même jour avec un autre EDT de fréquence compatible. */
   describe('validerChevauchement', () => {
     it("retourne false si aucun autre EDT n'existe", () => {
       const edt = { ...EDT_1, creneaux: [CRENEAU_LUNDI_9_10] };
@@ -301,8 +293,7 @@ describe('EmploiDuTempsService', () => {
     });
   });
 
-  // ── calculerConflitsAbsences ──────────────────────────────────────────────
-
+  /** Retourne les conflits entre un créneau et les absences récurrentes des élèves concernés. */
   describe('calculerConflitsAbsences', () => {
     it('retourne tableau vide si aucune donnée chargée', () => {
       TestBed.resetTestingModule();

@@ -5,18 +5,18 @@
 
 import { Injectable, WritableSignal, signal } from '@angular/core';
 
-/** Séquence cyclique des thèmes disponibles. */
-const THEMES = ['defaut', 'foret', 'crepuscule', 'terre', 'contraste'] as const;
-
-/** Clé de stockage du thème actif dans le `localStorage`. */
-const CLE_THEME = 'mc_theme';
-
 /**
  * Service stateful singleton exposant le thème actif, les sélections persistantes
  * entre écrans et le panier de compétences.
  */
 @Injectable({ providedIn: 'root' })
 export class ContexteService {
+  /** Séquence cyclique des thèmes disponibles. */
+  private static readonly THEMES = ['defaut', 'foret', 'crepuscule', 'terre', 'contraste'] as const;
+
+  /** Clé de stockage du thème actif dans le `localStorage`. */
+  private static readonly CLE_THEME = 'mc_theme';
+
   /** Identifiant du thème visuel actif, persisté dans le `localStorage`. */
   public readonly themeActif: WritableSignal<string>;
 
@@ -34,7 +34,7 @@ export class ContexteService {
 
   /** Initialise le thème depuis le `localStorage` et l'applique immédiatement. */
   public constructor() {
-    const themeStocke = localStorage.getItem(CLE_THEME) ?? 'defaut';
+    const themeStocke = localStorage.getItem(ContexteService.CLE_THEME) ?? 'defaut';
     this.themeActif = signal(themeStocke);
     this.appliquerTheme(themeStocke);
   }
@@ -44,11 +44,13 @@ export class ContexteService {
    * Le nouveau thème est appliqué au document et persisté dans le `localStorage`.
    */
   public basculerTheme(): void {
-    const indexCourant = THEMES.indexOf(this.themeActif() as (typeof THEMES)[number]);
-    const suivant = THEMES[(indexCourant + 1) % THEMES.length];
+    const indexCourant = ContexteService.THEMES.indexOf(
+      this.themeActif() as (typeof ContexteService.THEMES)[number],
+    );
+    const suivant = ContexteService.THEMES[(indexCourant + 1) % ContexteService.THEMES.length];
     this.themeActif.set(suivant);
     this.appliquerTheme(suivant);
-    localStorage.setItem(CLE_THEME, suivant);
+    localStorage.setItem(ContexteService.CLE_THEME, suivant);
   }
 
   /**

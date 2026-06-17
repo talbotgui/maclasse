@@ -61,6 +61,7 @@ describe('DonneesService', () => {
     service = TestBed.inject(DonneesService);
   });
 
+  /** Vérifie que toutes les propriétés réactives sont dans leur état par défaut avant tout chargement. */
   describe('état initial', () => {
     it('données nulles au démarrage', () => {
       expect(service.donnees()).toBeNull();
@@ -79,6 +80,7 @@ describe('DonneesService', () => {
     });
   });
 
+  /** Charge les données dans le service, isole par clonage et réinitialise les piles UNDO/REDO. */
   describe('charger', () => {
     it('expose les données chargées', () => {
       service.charger(creerDonnees('v1'));
@@ -115,6 +117,7 @@ describe('DonneesService', () => {
     });
   });
 
+  /** Exécute une commande, met à jour les données, active UNDO et marque les données comme modifiées. */
   describe('executer', () => {
     it('met à jour les données via la commande', () => {
       service.charger(creerDonnees('v1'));
@@ -149,6 +152,7 @@ describe('DonneesService', () => {
     });
   });
 
+  /** Annule la dernière commande, restaure l'état précédent et déplace la commande vers la pile REDO. */
   describe('annuler', () => {
     it('restaure l\'état précédant la commande', () => {
       service.charger(creerDonnees('v1'));
@@ -177,6 +181,7 @@ describe('DonneesService', () => {
     });
   });
 
+  /** Ré-applique une commande annulée, met à jour les données et déplace la commande vers la pile UNDO. */
   describe('refaire', () => {
     it('ré-applique la commande annulée', () => {
       service.charger(creerDonnees('v1'));
@@ -207,6 +212,7 @@ describe('DonneesService', () => {
     });
   });
 
+  /** Remet aDonneesModifiees à false sans altérer ni les données ni les piles UNDO/REDO. */
   describe('marquerCommeSauvegarde', () => {
     it('remet aDonneesModifiees à false', () => {
       service.charger(creerDonnees());
@@ -216,6 +222,7 @@ describe('DonneesService', () => {
     });
   });
 
+  /** Vérifie la cohérence des cycles complets exécuter/annuler/refaire sur plusieurs commandes enchaînées. */
   describe('enchaînements UNDO/REDO', () => {
     it('cycle complet : exécuter → annuler → refaire', () => {
       service.charger(creerDonnees('v1'));

@@ -373,3 +373,31 @@ E:les tests vérifient uniquement la logique
 2026-06-17 11:14:01 [Examiner plan étape 4 et proposer modifications] tu peux réaliser les modifications
 ---
 2026-06-17 18:28:40 [Examiner plan étape 4 et proposer modifications] reprend
+---
+2026-06-17 19:19:27 [Sans titre] <ide_opened_file>The user opened the file /workspaces/maclasse/aFaire.txt in the IDE. This may or may not be related to the current task.</ide_opened_file>
+J'ai des retours à faire sur le code généré jusqu'ici. Analyse ces remarques et fait moi un retour sur chaque élément :
+- Des constantes sont présentes en dehors d'une classe (DateUtils par exemple). Toute constante doit être statique et readonly dans une classe.
+- Des valeurs numériques existent comme dans DateUtils.calculerParite et devraient être des constantes.
+- La méthode _normaliser est dupliquée plusieurs fois dans plusieurs classes.
+- les classes/structures/interfaces décrivant une donnée (un DTO) doivent toutes être dans un fichier dédié du répertoire src/app/modeles. Mais la classe ResultatRecherche est présente dans une classe de service.
+- les membres privés de classe ne doivent pas être préfixé par un underscore (simplement camelCase).
+---
+2026-06-17 19:22:35 [Analyser remarques refactorisation code C#] 1. corrige et fais en une règle de développement
+2. corrige et fais en une règle de développement
+3 corrige en créant une classe TestUtils.
+4. corrige et fais en une règle de conception
+5. corrige et fais en une règle de développement
+---
+2026-06-17 19:32:15 [Analyser remarques refactorisation code C#] <ide_selection>The user selected the lines 69 to 69 from /workspaces/maclasse/src/app/services/sansEtat/emploi-du-temps.service.ts:
+// ──
+
+This may or may not be related to the current task.</ide_selection>
+Les lignes de commentaire commençant par "// ──" me pose problèmes. 
+Dans les fichiers .spec.ts, Il devrait être un commentaire "/** */" sur chaque méthode "describe".
+Dans les fichiers des composants applicatifs TS, ces commentaires ne commentent rien et n'ont pas lieu d'être.
+Qu'en penses-tu ?
+---
+2026-06-17 19:33:42 [Analyser remarques refactorisation code C#] <ide_opened_file>The user opened the file /workspaces/maclasse/aFaire.txt in the IDE. This may or may not be related to the current task.</ide_opened_file>
+oui
+---
+2026-06-17 19:42:05 [Sans titre] Problème de performance : la méthode CompetenceService.rechercherCompetences ne semble pas performante car elle normalise systématiquement le libellés de toutes les compétences. N'est-il pas possible de stocker le résultat de la normalisation en mémoire ou dans un attribut dédié de la compétence ? Ou as-tu une autre idée ?

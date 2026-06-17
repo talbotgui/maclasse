@@ -7,30 +7,39 @@
 
 import { JourSemaine } from '../modeles/emploi-du-temps.modele';
 
-/** Noms français des jours, indexés comme `Date.getDay()` (0 = dimanche). */
-const NOMS_JOURS = [
-  'dimanche',
-  'lundi',
-  'mardi',
-  'mercredi',
-  'jeudi',
-  'vendredi',
-  'samedi',
-] as const;
-
-/** Formateur de date longue en français (ex. : `"lundi 9 juin 2026"`). */
-const FORMATEUR_DATE_LONG = new Intl.DateTimeFormat('fr-FR', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-});
-
 /**
  * Classe utilitaire pour la manipulation et le formatage de dates ISO (`YYYY-MM-DD`)
  * et d'heures (`HH:MM`). Tous les traitements s'effectuent en heure locale.
  */
 export class DateUtils {
+  /** Noms français des jours, indexés comme `Date.getDay()` (0 = dimanche). */
+  private static readonly NOMS_JOURS = [
+    'dimanche',
+    'lundi',
+    'mardi',
+    'mercredi',
+    'jeudi',
+    'vendredi',
+    'samedi',
+  ] as const;
+
+  /** Formateur de date longue en français (ex. : `"lundi 9 juin 2026"`). */
+  private static readonly FORMATEUR_DATE_LONG = new Intl.DateTimeFormat('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
+  /** Millisecondes dans un jour calendaire. */
+  private static readonly MS_PAR_JOUR = 86_400_000;
+
+  /** Offset du jeudi dans l'algorithme ISO de calcul du numéro de semaine (lundi = 1). */
+  private static readonly INDEX_JEUDI_ISO = 4;
+
+  /** Nombre de jours dans une semaine. */
+  private static readonly JOURS_PAR_SEMAINE = 7;
+
   /**
    * Ajoute un nombre de jours (positif ou négatif) à une date ISO.
    * @param date Date de départ au format `YYYY-MM-DD`.
@@ -55,7 +64,7 @@ export class DateUtils {
    */
   public static obtenirJourSemaine(date: string): JourSemaine | 'samedi' | 'dimanche' {
     const [annee, mois, jour] = date.split('-').map(Number);
-    return NOMS_JOURS[new Date(annee, mois - 1, jour).getDay()];
+    return DateUtils.NOMS_JOURS[new Date(annee, mois - 1, jour).getDay()];
   }
 
   /**
@@ -66,7 +75,7 @@ export class DateUtils {
    */
   public static formaterDateLong(date: string): string {
     const [annee, mois, jour] = date.split('-').map(Number);
-    return FORMATEUR_DATE_LONG.format(new Date(annee, mois - 1, jour));
+    return DateUtils.FORMATEUR_DATE_LONG.format(new Date(annee, mois - 1, jour));
   }
 
   /**
@@ -90,10 +99,13 @@ export class DateUtils {
     const [annee, mois, jour] = date.split('-').map(Number);
     // Calcul ISO : on se place au jeudi de la même semaine pour obtenir le numéro correct.
     const d = new Date(Date.UTC(annee, mois - 1, jour));
-    const jourSemaine = d.getUTCDay() || 7; // lundi = 1, dimanche = 7
-    d.setUTCDate(d.getUTCDate() + 4 - jourSemaine);
+    const jourSemaine = d.getUTCDay() || DateUtils.JOURS_PAR_SEMAINE; // lundi = 1, dimanche = 7
+    d.setUTCDate(d.getUTCDate() + DateUtils.INDEX_JEUDI_ISO - jourSemaine);
     const debutAnnee = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    const numeroSemaine = Math.ceil(((d.getTime() - debutAnnee.getTime()) / 86_400_000 + 1) / 7);
+    const numeroSemaine = Math.ceil(
+      ((d.getTime() - debutAnnee.getTime()) / DateUtils.MS_PAR_JOUR + 1) /
+        DateUtils.JOURS_PAR_SEMAINE,
+    );
     return numeroSemaine % 2 === 0 ? 'paire' : 'impaire';
   }
 

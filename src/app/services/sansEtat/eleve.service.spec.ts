@@ -59,8 +59,7 @@ describe('EleveService', () => {
     donneesService.charger(creerDonneesVides());
   });
 
-  // ── creerEleve ────────────────────────────────────────────────────────────
-
+  /** L'élève est ajouté à la liste et la création est réversible via UNDO. */
   describe('creerEleve', () => {
     it('ajoute l\'élève à la classe', () => {
       const eleve = creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' });
@@ -76,8 +75,7 @@ describe('EleveService', () => {
     });
   });
 
-  // ── modifierEleve ─────────────────────────────────────────────────────────
-
+  /** Met à jour l'élève trouvé par son id, supporte UNDO ; sans effet si id inconnu ou données absentes. */
   describe('modifierEleve', () => {
     it('met à jour un élève existant', () => {
       const eleve = creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' });
@@ -107,8 +105,7 @@ describe('EleveService', () => {
     });
   });
 
-  // ── supprimerEleve ────────────────────────────────────────────────────────
-
+  /** Retire l'élève par son id ; sans effet si id inconnu ou données absentes. */
   describe('supprimerEleve', () => {
     it('supprime un élève existant', () => {
       service.creerEleve(creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' }));
@@ -130,8 +127,7 @@ describe('EleveService', () => {
     });
   });
 
-  // ── obtenirEleve ──────────────────────────────────────────────────────────
-
+  /** Retourne l'élève si l'id existe, undefined sinon. */
   describe('obtenirEleve', () => {
     it('retourne l\'élève si l\'id existe', () => {
       const eleve = creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' });
@@ -144,8 +140,7 @@ describe('EleveService', () => {
     });
   });
 
-  // ── rechercherEleves ──────────────────────────────────────────────────────
-
+  /** Retourne les élèves triés NOM Prénom, filtrés par terme insensible à la casse et aux accents. */
   describe('rechercherEleves', () => {
     beforeEach(() => {
       service.creerEleve(creerEleve({ id: 'e1', nom: 'MARTIN', prenom: 'Paul' }));
@@ -193,8 +188,7 @@ describe('EleveService', () => {
     });
   });
 
-  // ── calculerConflitsAbsences ──────────────────────────────────────────────
-
+  /** Retourne les libellés des absences récurrentes chevauchant le créneau sur le jour donné. */
   describe('calculerConflitsAbsences', () => {
     it('retourne tableau vide si aucune donnée chargée', () => {
       TestBed.resetTestingModule();

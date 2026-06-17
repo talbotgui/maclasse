@@ -18,9 +18,7 @@ import { DateUtils } from '../../utilitaires/date.utils';
 @Injectable({ providedIn: 'root' })
 export class CahierJournalService {
   /** Accès aux données de l'application et soumission des commandes. */
-  private readonly _donneesService = inject(DonneesService);
-
-  // ── Initialisation des journées ───────────────────────────────────────────
+  private readonly donneesService = inject(DonneesService);
 
   /**
    * Initialise une journée vide pour la date donnée.
@@ -28,10 +26,10 @@ export class CahierJournalService {
    * @param date Date ISO de la journée à créer (ex. : `"2026-06-09"`).
    */
   public initialiserJourneeVide(date: string): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     if (donnees.cahierJournal.some(j => j.date === date)) return;
-    this._donneesService.executer(
+    this.donneesService.executer(
       new CommandeCreation<JourneeJournal>(d => d.cahierJournal, {
         id: crypto.randomUUID(),
         date,
@@ -48,7 +46,7 @@ export class CahierJournalService {
    * @param date Date ISO de la journée à initialiser.
    */
   public initialiserDepuisEdt(date: string): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     if (donnees.cahierJournal.some(j => j.date === date)) return;
 
@@ -85,7 +83,7 @@ export class CahierJournalService {
       }
     }
     seances.sort((a, b) => a.heureDebut.localeCompare(b.heureDebut));
-    this._donneesService.executer(
+    this.donneesService.executer(
       new CommandeCreation<JourneeJournal>(d => d.cahierJournal, {
         id: crypto.randomUUID(),
         date,
@@ -93,8 +91,6 @@ export class CahierJournalService {
       }),
     );
   }
-
-  // ── Gestion des séances ───────────────────────────────────────────────────
 
   /**
    * Ajoute une séance à la journée identifiée par la date.
@@ -104,13 +100,13 @@ export class CahierJournalService {
    * @param seance Séance à ajouter.
    */
   public ajouterSeance(date: string, seance: Seance): void {
-    const ancienneJournee = this._donneesService.donnees()?.cahierJournal.find(j => j.date === date);
+    const ancienneJournee = this.donneesService.donnees()?.cahierJournal.find(j => j.date === date);
     if (!ancienneJournee) return;
     const nouvelleJournee: JourneeJournal = {
       ...ancienneJournee,
       seances: [...ancienneJournee.seances, seance],
     };
-    this._donneesService.executer(
+    this.donneesService.executer(
       new CommandeModification<JourneeJournal>(d => d.cahierJournal, ancienneJournee, nouvelleJournee),
     );
   }
@@ -122,13 +118,13 @@ export class CahierJournalService {
    * @param seance Nouvelle valeur de la séance (même `id`).
    */
   public modifierSeance(date: string, seance: Seance): void {
-    const ancienneJournee = this._donneesService.donnees()?.cahierJournal.find(j => j.date === date);
+    const ancienneJournee = this.donneesService.donnees()?.cahierJournal.find(j => j.date === date);
     if (!ancienneJournee) return;
     const nouvelleJournee: JourneeJournal = {
       ...ancienneJournee,
       seances: ancienneJournee.seances.map(s => (s.id === seance.id ? seance : s)),
     };
-    this._donneesService.executer(
+    this.donneesService.executer(
       new CommandeModification<JourneeJournal>(d => d.cahierJournal, ancienneJournee, nouvelleJournee),
     );
   }
@@ -140,13 +136,13 @@ export class CahierJournalService {
    * @param seanceId UUID de la séance à supprimer.
    */
   public supprimerSeance(date: string, seanceId: string): void {
-    const ancienneJournee = this._donneesService.donnees()?.cahierJournal.find(j => j.date === date);
+    const ancienneJournee = this.donneesService.donnees()?.cahierJournal.find(j => j.date === date);
     if (!ancienneJournee) return;
     const nouvelleJournee: JourneeJournal = {
       ...ancienneJournee,
       seances: ancienneJournee.seances.filter(s => s.id !== seanceId),
     };
-    this._donneesService.executer(
+    this.donneesService.executer(
       new CommandeModification<JourneeJournal>(d => d.cahierJournal, ancienneJournee, nouvelleJournee),
     );
   }
@@ -159,7 +155,7 @@ export class CahierJournalService {
    * @param indexCible Index de destination.
    */
   public deplacerSeance(date: string, indexSource: number, indexCible: number): void {
-    const ancienneJournee = this._donneesService.donnees()?.cahierJournal.find(j => j.date === date);
+    const ancienneJournee = this.donneesService.donnees()?.cahierJournal.find(j => j.date === date);
     if (!ancienneJournee) return;
     if (
       indexSource < 0 ||
@@ -173,12 +169,10 @@ export class CahierJournalService {
     const [seanceDeplacement] = seances.splice(indexSource, 1);
     seances.splice(indexCible, 0, seanceDeplacement);
     const nouvelleJournee: JourneeJournal = { ...ancienneJournee, seances };
-    this._donneesService.executer(
+    this.donneesService.executer(
       new CommandeModification<JourneeJournal>(d => d.cahierJournal, ancienneJournee, nouvelleJournee),
     );
   }
-
-  // ── Gestion des journées ──────────────────────────────────────────────────
 
   /**
    * Supprime entièrement une journée du cahier journal.
@@ -186,11 +180,11 @@ export class CahierJournalService {
    * @param date Date ISO de la journée à supprimer.
    */
   public supprimerJournee(date: string): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const index = donnees.cahierJournal.findIndex(j => j.date === date);
     if (index === -1) return;
-    this._donneesService.executer(
+    this.donneesService.executer(
       new CommandeSuppression<JourneeJournal>(
         d => d.cahierJournal,
         donnees.cahierJournal[index],
@@ -208,7 +202,7 @@ export class CahierJournalService {
    * @param dateCible Date ISO de la journée cible.
    */
   public dupliquerSeance(seanceId: string, dateSource: string, dateCible: string): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const journeeSource = donnees.cahierJournal.find(j => j.date === dateSource);
     if (!journeeSource) return;
@@ -218,7 +212,7 @@ export class CahierJournalService {
 
     const journeeCible = donnees.cahierJournal.find(j => j.date === dateCible);
     if (!journeeCible) {
-      this._donneesService.executer(
+      this.donneesService.executer(
         new CommandeCreation<JourneeJournal>(d => d.cahierJournal, {
           id: crypto.randomUUID(),
           date: dateCible,
@@ -230,7 +224,7 @@ export class CahierJournalService {
         ...journeeCible,
         seances: [...journeeCible.seances, nouvelleSeance],
       };
-      this._donneesService.executer(
+      this.donneesService.executer(
         new CommandeModification<JourneeJournal>(d => d.cahierJournal, journeeCible, nouvelleJournee),
       );
     }
@@ -245,7 +239,7 @@ export class CahierJournalService {
    * @param dateCible Date ISO de la journée cible.
    */
   public dupliquerJournee(dateSource: string, dateCible: string): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const journeeSource = donnees.cahierJournal.find(j => j.date === dateSource);
     if (!journeeSource) return;
@@ -256,7 +250,7 @@ export class CahierJournalService {
 
     const journeeCible = donnees.cahierJournal.find(j => j.date === dateCible);
     if (!journeeCible) {
-      this._donneesService.executer(
+      this.donneesService.executer(
         new CommandeCreation<JourneeJournal>(d => d.cahierJournal, {
           id: crypto.randomUUID(),
           date: dateCible,
@@ -265,13 +259,11 @@ export class CahierJournalService {
       );
     } else {
       const nouvelleJournee: JourneeJournal = { ...journeeCible, seances: seancesClonees };
-      this._donneesService.executer(
+      this.donneesService.executer(
         new CommandeModification<JourneeJournal>(d => d.cahierJournal, journeeCible, nouvelleJournee),
       );
     }
   }
-
-  // ── Conflits avec absences récurrentes ────────────────────────────────────
 
   /**
    * Calcule les conflits entre une séance et les absences récurrentes des élèves concernés.
@@ -281,7 +273,7 @@ export class CahierJournalService {
    * @returns Liste de libellés au format `"NOM Prénom — libellé d'absence"`.
    */
   public calculerConflitsAbsences(date: string, seanceId: string): string[] {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return [];
     const journee = donnees.cahierJournal.find(j => j.date === date);
     if (!journee) return [];

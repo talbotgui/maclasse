@@ -13,24 +13,24 @@ import { DonneesApplication } from '../modeles/donnees-application.modele';
  */
 export class CommandeSuppressionParIndex<T> implements Commande {
   /**
-   * @param _accesseur Fonction retournant le tableau cible.
-   * @param _element Élément supprimé — conservé pour l'annulation.
-   * @param _index Index de l'élément au moment de la suppression.
+   * @param accesseur Fonction retournant le tableau cible.
+   * @param element Élément supprimé — conservé pour l'annulation.
+   * @param index Index de l'élément au moment de la suppression.
    */
   public constructor(
-    private readonly _accesseur: (d: DonneesApplication) => T[],
-    private readonly _element: T,
-    private readonly _index: number,
+    private readonly accesseur: (d: DonneesApplication) => T[],
+    private readonly element: T,
+    private readonly index: number,
   ) {}
 
   /**
-   * Supprime l'élément situé à `_index`.
+   * Supprime l'élément situé à `index`.
    * @param donnees État courant des données.
    * @returns Nouvel état sans l'élément.
    */
   public executer(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
-    this._accesseur(clone).splice(this._index, 1);
+    this.accesseur(clone).splice(this.index, 1);
     return clone;
   }
 
@@ -41,7 +41,7 @@ export class CommandeSuppressionParIndex<T> implements Commande {
    */
   public annuler(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
-    this._accesseur(clone).splice(this._index, 0, structuredClone(this._element));
+    this.accesseur(clone).splice(this.index, 0, structuredClone(this.element));
     return clone;
   }
 }
@@ -53,35 +53,35 @@ export class CommandeSuppressionParIndex<T> implements Commande {
  */
 export class CommandeRemplacement<T> implements Commande {
   /**
-   * @param _ecrire Fonction d'écriture dans le clone des données.
-   * @param _ancienneValeur Valeur à restaurer lors de l'annulation.
-   * @param _nouvelleValeur Valeur à écrire lors de l'exécution.
+   * @param ecrire Fonction d'écriture dans le clone des données.
+   * @param ancienneValeur Valeur à restaurer lors de l'annulation.
+   * @param nouvelleValeur Valeur à écrire lors de l'exécution.
    */
   public constructor(
-    private readonly _ecrire: (d: DonneesApplication, valeur: T) => void,
-    private readonly _ancienneValeur: T,
-    private readonly _nouvelleValeur: T,
+    private readonly ecrire: (d: DonneesApplication, valeur: T) => void,
+    private readonly ancienneValeur: T,
+    private readonly nouvelleValeur: T,
   ) {}
 
   /**
-   * Écrit `_nouvelleValeur`.
+   * Écrit `nouvelleValeur`.
    * @param donnees État courant des données.
    * @returns Nouvel état avec la valeur remplacée.
    */
   public executer(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
-    this._ecrire(clone, structuredClone(this._nouvelleValeur));
+    this.ecrire(clone, structuredClone(this.nouvelleValeur));
     return clone;
   }
 
   /**
-   * Restaure `_ancienneValeur`.
+   * Restaure `ancienneValeur`.
    * @param donnees État courant des données.
    * @returns Nouvel état avec la valeur d'origine.
    */
   public annuler(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
-    this._ecrire(clone, structuredClone(this._ancienneValeur));
+    this.ecrire(clone, structuredClone(this.ancienneValeur));
     return clone;
   }
 }

@@ -9,6 +9,7 @@ import { CommandeCreation } from '../../commandes/commande-creation';
 import { CommandeModification } from '../../commandes/commande-modification';
 import { CommandeSuppression } from '../../commandes/commande-suppression';
 import { DonneesService } from '../avecEtat/donnees.service';
+import { TexteUtils } from '../../utilitaires/texte.utils';
 
 /**
  * Service sans état exposant le CRUD des projets pédagogiques et de leurs périodes.
@@ -16,14 +17,14 @@ import { DonneesService } from '../avecEtat/donnees.service';
 @Injectable({ providedIn: 'root' })
 export class ProjetService {
   /** Accès aux données de l'application et soumission des commandes. */
-  private readonly _donneesService = inject(DonneesService);
+  private readonly donneesService = inject(DonneesService);
 
   /**
    * Crée un projet et l'ajoute à la liste des projets.
    * @param projet Projet à créer (doit posséder un `id` unique).
    */
   public creerProjet(projet: Projet): void {
-    this._donneesService.executer(new CommandeCreation(d => d.projets, projet));
+    this.donneesService.executer(new CommandeCreation(d => d.projets, projet));
   }
 
   /**
@@ -32,11 +33,11 @@ export class ProjetService {
    * @param projet Nouvelle valeur du projet (même `id`).
    */
   public modifierProjet(projet: Projet): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const ancien = donnees.projets.find(p => p.id === projet.id);
     if (!ancien) return;
-    this._donneesService.executer(new CommandeModification(d => d.projets, ancien, projet));
+    this.donneesService.executer(new CommandeModification(d => d.projets, ancien, projet));
   }
 
   /**
@@ -45,11 +46,11 @@ export class ProjetService {
    * @param id UUID du projet à supprimer.
    */
   public supprimerProjet(id: string): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const index = donnees.projets.findIndex(p => p.id === id);
     if (index === -1) return;
-    this._donneesService.executer(
+    this.donneesService.executer(
       new CommandeSuppression(d => d.projets, donnees.projets[index], index),
     );
   }
@@ -59,7 +60,7 @@ export class ProjetService {
    * @param id UUID du projet.
    */
   public obtenirProjet(id: string): Projet | undefined {
-    return this._donneesService.donnees()?.projets.find(p => p.id === id);
+    return this.donneesService.donnees()?.projets.find(p => p.id === id);
   }
 
   /**
@@ -69,13 +70,13 @@ export class ProjetService {
    * @returns Projets correspondants.
    */
   public rechercherProjets(terme: string): Projet[] {
-    const projets = this._donneesService.donnees()?.projets ?? [];
+    const projets = this.donneesService.donnees()?.projets ?? [];
     if (!terme.trim()) return projets;
-    const t = this._normaliser(terme);
+    const t = TexteUtils.normaliserPourRecherche(terme);
     return projets.filter(
       p =>
-        this._normaliser(p.nom).includes(t) ||
-        this._normaliser(p.description).includes(t),
+        TexteUtils.normaliserPourRecherche(p.nom).includes(t) ||
+        TexteUtils.normaliserPourRecherche(p.description).includes(t),
     );
   }
 
@@ -87,12 +88,12 @@ export class ProjetService {
    * @param periode Période à ajouter.
    */
   public ajouterPeriode(projetId: string, periode: ProjetPeriode): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const ancien = donnees.projets.find(p => p.id === projetId);
     if (!ancien) return;
     const nouveau: Projet = { ...ancien, periodes: [...ancien.periodes, periode] };
-    this._donneesService.executer(new CommandeModification(d => d.projets, ancien, nouveau));
+    this.donneesService.executer(new CommandeModification(d => d.projets, ancien, nouveau));
   }
 
   /**
@@ -107,7 +108,7 @@ export class ProjetService {
     anciennePeriode: ProjetPeriode,
     nouvellePeriode: ProjetPeriode,
   ): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const ancien = donnees.projets.find(p => p.id === projetId);
     if (!ancien) return;
@@ -115,7 +116,7 @@ export class ProjetService {
       pp.periodeNom === anciennePeriode.periodeNom ? nouvellePeriode : pp,
     );
     const nouveau: Projet = { ...ancien, periodes };
-    this._donneesService.executer(new CommandeModification(d => d.projets, ancien, nouveau));
+    this.donneesService.executer(new CommandeModification(d => d.projets, ancien, nouveau));
   }
 
   /**
@@ -125,7 +126,7 @@ export class ProjetService {
    * @param periodeNom Nom de la période à supprimer.
    */
   public supprimerPeriode(projetId: string, periodeNom: string): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const ancien = donnees.projets.find(p => p.id === projetId);
     if (!ancien) return;
@@ -133,18 +134,6 @@ export class ProjetService {
       ...ancien,
       periodes: ancien.periodes.filter(pp => pp.periodeNom !== periodeNom),
     };
-    this._donneesService.executer(new CommandeModification(d => d.projets, ancien, nouveau));
-  }
-
-  /**
-   * Normalise un texte pour la recherche insensible à la casse et aux accents.
-   * @param texte Texte à normaliser.
-   * @returns Texte en minuscules sans diacritiques.
-   */
-  private _normaliser(texte: string): string {
-    return texte
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase();
+    this.donneesService.executer(new CommandeModification(d => d.projets, ancien, nouveau));
   }
 }

@@ -13,14 +13,14 @@ import { DonneesApplication } from '../modeles/donnees-application.modele';
  */
 export class CommandeModification<T extends { id: string }> implements Commande {
   /**
-   * @param _accesseur Fonction retournant le tableau cible depuis les données.
-   * @param _ancienneValeur Valeur à remplacer — clonée à l'annulation.
-   * @param _nouvelleValeur Valeur de remplacement — clonée à l'exécution.
+   * @param accesseur Fonction retournant le tableau cible depuis les données.
+   * @param ancienneValeur Valeur à remplacer — clonée à l'annulation.
+   * @param nouvelleValeur Valeur de remplacement — clonée à l'exécution.
    */
   public constructor(
-    private readonly _accesseur: (d: DonneesApplication) => T[],
-    private readonly _ancienneValeur: T,
-    private readonly _nouvelleValeur: T,
+    private readonly accesseur: (d: DonneesApplication) => T[],
+    private readonly ancienneValeur: T,
+    private readonly nouvelleValeur: T,
   ) {}
 
   /**
@@ -30,10 +30,10 @@ export class CommandeModification<T extends { id: string }> implements Commande 
    */
   public executer(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
-    const tableau = this._accesseur(clone);
-    const index = tableau.findIndex(e => e.id === this._ancienneValeur.id);
+    const tableau = this.accesseur(clone);
+    const index = tableau.findIndex(e => e.id === this.ancienneValeur.id);
     if (index !== -1) {
-      tableau[index] = structuredClone(this._nouvelleValeur);
+      tableau[index] = structuredClone(this.nouvelleValeur);
     }
     return clone;
   }
@@ -45,10 +45,10 @@ export class CommandeModification<T extends { id: string }> implements Commande 
    */
   public annuler(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
-    const tableau = this._accesseur(clone);
-    const index = tableau.findIndex(e => e.id === this._ancienneValeur.id);
+    const tableau = this.accesseur(clone);
+    const index = tableau.findIndex(e => e.id === this.ancienneValeur.id);
     if (index !== -1) {
-      tableau[index] = structuredClone(this._ancienneValeur);
+      tableau[index] = structuredClone(this.ancienneValeur);
     }
     return clone;
   }

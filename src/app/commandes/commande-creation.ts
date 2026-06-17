@@ -13,12 +13,12 @@ import { DonneesApplication } from '../modeles/donnees-application.modele';
  */
 export class CommandeCreation<T extends { id: string }> implements Commande {
   /**
-   * @param _accesseur Fonction retournant le tableau cible depuis les données (par référence dans le clone).
-   * @param _element Élément à ajouter — cloné à l'exécution.
+   * @param accesseur Fonction retournant le tableau cible depuis les données (par référence dans le clone).
+   * @param element Élément à ajouter — cloné à l'exécution.
    */
   public constructor(
-    private readonly _accesseur: (d: DonneesApplication) => T[],
-    private readonly _element: T,
+    private readonly accesseur: (d: DonneesApplication) => T[],
+    private readonly element: T,
   ) {}
 
   /**
@@ -28,7 +28,7 @@ export class CommandeCreation<T extends { id: string }> implements Commande {
    */
   public executer(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
-    this._accesseur(clone).push(structuredClone(this._element));
+    this.accesseur(clone).push(structuredClone(this.element));
     return clone;
   }
 
@@ -39,8 +39,8 @@ export class CommandeCreation<T extends { id: string }> implements Commande {
    */
   public annuler(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
-    const tableau = this._accesseur(clone);
-    const index = tableau.findIndex(e => e.id === this._element.id);
+    const tableau = this.accesseur(clone);
+    const index = tableau.findIndex(e => e.id === this.element.id);
     if (index !== -1) {
       tableau.splice(index, 1);
     }

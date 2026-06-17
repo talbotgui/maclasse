@@ -7,18 +7,6 @@ import { Injectable } from '@angular/core';
 import { deflateSync, inflateSync, zipSync, unzipSync } from 'fflate';
 import { DonneesApplication } from '../../modeles/donnees-application.modele';
 
-/** Nom du fichier chiffré à l'intérieur du ZIP de sortie. */
-const NOM_FICHIER_CHIFFRE = 'donnees.json.enc';
-
-/** Longueur du salt PBKDF2 en octets. */
-const LONGUEUR_SALT = 16;
-
-/** Longueur du vecteur d'initialisation AES-GCM en octets. */
-const LONGUEUR_IV = 12;
-
-/** Nombre d'itérations PBKDF2 — équilibre sécurité/performance. */
-const ITERATIONS_PBKDF2 = 100_000;
-
 /**
  * Service sans état exposant deux opérations asynchrones :
  * chiffrement et déchiffrement d'un fichier ZIP.
@@ -28,6 +16,18 @@ const ITERATIONS_PBKDF2 = 100_000;
  */
 @Injectable({ providedIn: 'root' })
 export class ChiffrementService {
+  /** Nom du fichier chiffré à l'intérieur du ZIP de sortie. */
+  private static readonly NOM_FICHIER_CHIFFRE = 'donnees.json.enc';
+
+  /** Longueur du salt PBKDF2 en octets. */
+  private static readonly LONGUEUR_SALT = 16;
+
+  /** Longueur du vecteur d'initialisation AES-GCM en octets. */
+  private static readonly LONGUEUR_IV = 12;
+
+  /** Nombre d'itérations PBKDF2 — équilibre sécurité/performance. */
+  private static readonly ITERATIONS_PBKDF2 = 100_000;
+
   /**
    * Chiffre les données de l'application et retourne un `Blob` ZIP téléchargeable.
    *
@@ -46,19 +46,23 @@ export class ChiffrementService {
     const octetsJson = new TextEncoder().encode(JSON.stringify(donnees));
     const compresse = deflateSync(octetsJson);
 
-    const salt = crypto.getRandomValues(new Uint8Array(LONGUEUR_SALT));
-    const iv = crypto.getRandomValues(new Uint8Array(LONGUEUR_IV));
-    const cle = await this._deriverCle(motDePasse, salt, ['encrypt']);
+    const salt = crypto.getRandomValues(new Uint8Array(ChiffrementService.LONGUEUR_SALT));
+    const iv = crypto.getRandomValues(new Uint8Array(ChiffrementService.LONGUEUR_IV));
+    const cle = await this.deriverCle(motDePasse, salt, ['encrypt']);
     const ciphertext = new Uint8Array(
       await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, cle, compresse),
     );
 
-    const payload = new Uint8Array(LONGUEUR_SALT + LONGUEUR_IV + ciphertext.byteLength);
+    const payload = new Uint8Array(
+      ChiffrementService.LONGUEUR_SALT +
+        ChiffrementService.LONGUEUR_IV +
+        ciphertext.byteLength,
+    );
     payload.set(salt, 0);
-    payload.set(iv, LONGUEUR_SALT);
-    payload.set(ciphertext, LONGUEUR_SALT + LONGUEUR_IV);
+    payload.set(iv, ChiffrementService.LONGUEUR_SALT);
+    payload.set(ciphertext, ChiffrementService.LONGUEUR_SALT + ChiffrementService.LONGUEUR_IV);
 
-    const zip = zipSync({ [NOM_FICHIER_CHIFFRE]: payload });
+    const zip = zipSync({ [ChiffrementService.NOM_FICHIER_CHIFFRE]: payload });
     return new Blob([zip], { type: 'application/zip' });
   }
 
@@ -80,13 +84,18 @@ export class ChiffrementService {
   public async dechiffrer(fichier: File, motDePasse: string): Promise<DonneesApplication> {
     const tampon = await fichier.arrayBuffer();
     const zip = unzipSync(new Uint8Array(tampon));
-    const payload = zip[NOM_FICHIER_CHIFFRE];
+    const payload = zip[ChiffrementService.NOM_FICHIER_CHIFFRE];
 
-    const salt = payload.slice(0, LONGUEUR_SALT);
-    const iv = payload.slice(LONGUEUR_SALT, LONGUEUR_SALT + LONGUEUR_IV);
-    const ciphertext = payload.slice(LONGUEUR_SALT + LONGUEUR_IV);
+    const salt = payload.slice(0, ChiffrementService.LONGUEUR_SALT);
+    const iv = payload.slice(
+      ChiffrementService.LONGUEUR_SALT,
+      ChiffrementService.LONGUEUR_SALT + ChiffrementService.LONGUEUR_IV,
+    );
+    const ciphertext = payload.slice(
+      ChiffrementService.LONGUEUR_SALT + ChiffrementService.LONGUEUR_IV,
+    );
 
-    const cle = await this._deriverCle(motDePasse, salt, ['decrypt']);
+    const cle = await this.deriverCle(motDePasse, salt, ['decrypt']);
     const decrypte = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, cle, ciphertext);
 
     const decompresse = inflateSync(new Uint8Array(decrypte));
@@ -100,7 +109,7 @@ export class ChiffrementService {
    * @param usages Usages autorisés (`'encrypt'` ou `'decrypt'`).
    * @returns Clé cryptographique non extractible.
    */
-  private async _deriverCle(
+  private async deriverCle(
     motDePasse: string,
     salt: Uint8Array<ArrayBuffer>,
     usages: KeyUsage[],
@@ -113,7 +122,12 @@ export class ChiffrementService {
       ['deriveKey'],
     );
     return crypto.subtle.deriveKey(
-      { name: 'PBKDF2', salt, iterations: ITERATIONS_PBKDF2, hash: 'SHA-256' },
+      {
+        name: 'PBKDF2',
+        salt,
+        iterations: ChiffrementService.ITERATIONS_PBKDF2,
+        hash: 'SHA-256',
+      },
       materiau,
       { name: 'AES-GCM', length: 256 },
       false,

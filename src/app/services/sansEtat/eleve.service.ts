@@ -11,6 +11,7 @@ import { CommandeModification } from '../../commandes/commande-modification';
 import { CommandeSuppression } from '../../commandes/commande-suppression';
 import { DonneesService } from '../avecEtat/donnees.service';
 import { DateUtils } from '../../utilitaires/date.utils';
+import { TexteUtils } from '../../utilitaires/texte.utils';
 
 /**
  * Service sans état exposant le CRUD des élèves et le calcul des conflits d'absences.
@@ -18,14 +19,14 @@ import { DateUtils } from '../../utilitaires/date.utils';
 @Injectable({ providedIn: 'root' })
 export class EleveService {
   /** Accès aux données de l'application et soumission des commandes. */
-  private readonly _donneesService = inject(DonneesService);
+  private readonly donneesService = inject(DonneesService);
 
   /**
    * Crée un élève et l'ajoute à la classe.
    * @param eleve Élève à ajouter (doit posséder un `id` unique).
    */
   public creerEleve(eleve: Eleve): void {
-    this._donneesService.executer(new CommandeCreation(d => d.classe.eleves, eleve));
+    this.donneesService.executer(new CommandeCreation(d => d.classe.eleves, eleve));
   }
 
   /**
@@ -34,11 +35,11 @@ export class EleveService {
    * @param eleve Nouvelle valeur de l'élève (même `id`).
    */
   public modifierEleve(eleve: Eleve): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const ancien = donnees.classe.eleves.find(e => e.id === eleve.id);
     if (!ancien) return;
-    this._donneesService.executer(
+    this.donneesService.executer(
       new CommandeModification(d => d.classe.eleves, ancien, eleve),
     );
   }
@@ -49,11 +50,11 @@ export class EleveService {
    * @param id UUID de l'élève à supprimer.
    */
   public supprimerEleve(id: string): void {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const index = donnees.classe.eleves.findIndex(e => e.id === id);
     if (index === -1) return;
-    this._donneesService.executer(
+    this.donneesService.executer(
       new CommandeSuppression(d => d.classe.eleves, donnees.classe.eleves[index], index),
     );
   }
@@ -63,7 +64,7 @@ export class EleveService {
    * @param id UUID de l'élève.
    */
   public obtenirEleve(id: string): Eleve | undefined {
-    return this._donneesService.donnees()?.classe.eleves.find(e => e.id === id);
+    return this.donneesService.donnees()?.classe.eleves.find(e => e.id === id);
   }
 
   /**
@@ -73,18 +74,18 @@ export class EleveService {
    * @returns Élèves correspondants, triés alphabétiquement.
    */
   public rechercherEleves(terme: string): Eleve[] {
-    const eleves = this._donneesService.donnees()?.classe.eleves ?? [];
+    const eleves = this.donneesService.donnees()?.classe.eleves ?? [];
     const tries = [...eleves].sort((a, b) =>
       `${a.nom} ${a.prenom}`.localeCompare(`${b.nom} ${b.prenom}`, 'fr'),
     );
     if (!terme.trim()) return tries;
-    const t = this._normaliser(terme);
+    const t = TexteUtils.normaliserPourRecherche(terme);
     return tries.filter(
       e =>
-        this._normaliser(e.nom).includes(t) ||
-        this._normaliser(e.prenom).includes(t) ||
-        this._normaliser(`${e.nom} ${e.prenom}`).includes(t) ||
-        this._normaliser(`${e.prenom} ${e.nom}`).includes(t),
+        TexteUtils.normaliserPourRecherche(e.nom).includes(t) ||
+        TexteUtils.normaliserPourRecherche(e.prenom).includes(t) ||
+        TexteUtils.normaliserPourRecherche(`${e.nom} ${e.prenom}`).includes(t) ||
+        TexteUtils.normaliserPourRecherche(`${e.prenom} ${e.nom}`).includes(t),
     );
   }
 
@@ -104,7 +105,7 @@ export class EleveService {
     heureFin: string,
     jour: JourSemaine,
   ): string[] {
-    const donnees = this._donneesService.donnees();
+    const donnees = this.donneesService.donnees();
     if (!donnees) return [];
     const eleve = donnees.classe.eleves.find(e => e.id === eleveId);
     if (!eleve) return [];
@@ -115,17 +116,5 @@ export class EleveService {
           DateUtils.chevauchementHoraire(a.heureDebut, a.heureFin, heureDebut, heureFin),
       )
       .map(a => a.libelle);
-  }
-
-  /**
-   * Normalise un texte pour la recherche insensible à la casse et aux accents.
-   * @param texte Texte à normaliser.
-   * @returns Texte en minuscules sans diacritiques.
-   */
-  private _normaliser(texte: string): string {
-    return texte
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase();
   }
 }

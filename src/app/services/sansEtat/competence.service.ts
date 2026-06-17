@@ -7,6 +7,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Competence } from '../../modeles/referentiels.modele';
 import { DonneesService } from '../avecEtat/donnees.service';
+import { TexteUtils } from '../../utilitaires/texte.utils';
 
 /**
  * Service sans état exposant la navigation, la recherche et la résolution
@@ -15,7 +16,7 @@ import { DonneesService } from '../avecEtat/donnees.service';
 @Injectable({ providedIn: 'root' })
 export class CompetenceService {
   /** Accès en lecture aux données de l'application. */
-  private readonly _donneesService = inject(DonneesService);
+  private readonly donneesService = inject(DonneesService);
 
   /**
    * Retourne les nœuds de niveau 1 de l'arbre (domaines / disciplines).
@@ -23,7 +24,7 @@ export class CompetenceService {
    * @returns Tableau des domaines, ou tableau vide si aucune donnée chargée.
    */
   public obtenirDomaines(): Competence[] {
-    return this._donneesService.donnees()?.referentiels.competences ?? [];
+    return this.donneesService.donnees()?.referentiels.competences ?? [];
   }
 
   /**
@@ -44,10 +45,10 @@ export class CompetenceService {
    */
   public rechercherCompetences(terme: string): Competence[] {
     if (!terme.trim()) return [];
-    const t = this._normaliser(terme);
+    const t = TexteUtils.normaliserPourRecherche(terme);
     const resultats: Competence[] = [];
     const parcourir = (noeud: Competence): void => {
-      if (this._normaliser(noeud.libelle).includes(t)) {
+      if (TexteUtils.normaliserPourRecherche(noeud.libelle).includes(t)) {
         resultats.push(noeud);
       }
       noeud.enfants?.forEach(parcourir);
@@ -91,17 +92,5 @@ export class CompetenceService {
       if (chemin) return chemin;
     }
     return [];
-  }
-
-  /**
-   * Normalise un texte pour la recherche insensible à la casse et aux accents.
-   * @param texte Texte à normaliser.
-   * @returns Texte en minuscules sans diacritiques.
-   */
-  private _normaliser(texte: string): string {
-    return texte
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase();
   }
 }

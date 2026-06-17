@@ -2,8 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { DateUtils } from './date.utils';
 
 describe('DateUtils', () => {
-  // ── ajouterJours ──────────────────────────────────────────────────────────
-
+  /** Calcule correctement les dates en tenant compte des passages de mois et d'année. */
   describe('ajouterJours', () => {
     it('ajoute des jours positifs', () => {
       expect(DateUtils.ajouterJours('2026-06-09', 7)).toBe('2026-06-16');
@@ -30,8 +29,7 @@ describe('DateUtils', () => {
     });
   });
 
-  // ── obtenirJourSemaine ────────────────────────────────────────────────────
-
+  /** Retourne le nom français du jour pour tous les jours de la semaine (lundi … dimanche). */
   describe('obtenirJourSemaine', () => {
     it('retourne lundi pour le 15/06/2026', () => {
       expect(DateUtils.obtenirJourSemaine('2026-06-15')).toBe('lundi');
@@ -62,8 +60,7 @@ describe('DateUtils', () => {
     });
   });
 
-  // ── formaterDateLong ──────────────────────────────────────────────────────
-
+  /** Produit un libellé en toutes lettres en français avec le jour, le numéro, le mois et l'année. */
   describe('formaterDateLong', () => {
     it('contient le nom du jour, du mois et l\'année', () => {
       const resultat = DateUtils.formaterDateLong('2026-06-15');
@@ -78,8 +75,7 @@ describe('DateUtils', () => {
     });
   });
 
-  // ── formaterDateCourt ─────────────────────────────────────────────────────
-
+  /** Convertit une date ISO en DD/MM/YYYY en préservant les zéros initiaux. */
   describe('formaterDateCourt', () => {
     it('convertit ISO en DD/MM/YYYY', () => {
       expect(DateUtils.formaterDateCourt('2026-06-09')).toBe('09/06/2026');
@@ -94,8 +90,7 @@ describe('DateUtils', () => {
     });
   });
 
-  // ── calculerParite ────────────────────────────────────────────────────────
-
+  /** Identifie la parité ISO des semaines, y compris pour la semaine 1 (fin décembre/début janvier). */
   describe('calculerParite', () => {
     // Semaine ISO 25 de 2026 : 15–21 juin (impaire)
     it('retourne impaire pour la semaine 25 de 2026 (lundi 15 juin)', () => {
@@ -122,8 +117,7 @@ describe('DateUtils', () => {
     });
   });
 
-  // ── chevauchementHoraire ──────────────────────────────────────────────────
-
+  /** Retourne true uniquement pour un chevauchement strict ; deux créneaux adjacents ne se chevauchent pas. */
   describe('chevauchementHoraire', () => {
     it('retourne true si les créneaux se chevauchent partiellement', () => {
       expect(DateUtils.chevauchementHoraire('08:00', '10:00', '09:00', '11:00')).toBe(true);
@@ -154,8 +148,7 @@ describe('DateUtils', () => {
     });
   });
 
-  // ── formaterHeure ─────────────────────────────────────────────────────────
-
+  /** Produit une heure HH:MM avec zéro initial pour les heures et minutes à un chiffre. */
   describe('formaterHeure', () => {
     it('formate en HH:MM avec zéro initial pour l\'heure', () => {
       expect(DateUtils.formaterHeure(new Date(2026, 5, 9, 8, 5))).toBe('08:05');

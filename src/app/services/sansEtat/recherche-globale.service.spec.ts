@@ -57,8 +57,7 @@ describe('RechercheGlobaleService', () => {
     donneesService.charger(d);
   });
 
-  // ── Cas limites ───────────────────────────────────────────────────────────
-
+  /** Retourne toujours un tableau vide si le terme est vide ou composé uniquement d'espaces. */
   describe('terme vide', () => {
     it('retourne tableau vide si terme vide', () => {
       expect(service.rechercher('')).toEqual([]);
@@ -69,6 +68,7 @@ describe('RechercheGlobaleService', () => {
     });
   });
 
+  /** Retourne un tableau vide si aucune donnée n'est encore chargée dans le service. */
   describe('sans données chargées', () => {
     it('retourne tableau vide', () => {
       TestBed.resetTestingModule();
@@ -78,8 +78,7 @@ describe('RechercheGlobaleService', () => {
     });
   });
 
-  // ── Recherche dans les élèves ─────────────────────────────────────────────
-
+  /** Trouve les élèves par nom ou prénom, insensible à la casse et aux accents, avec le bon type et la bonne route. */
   describe('recherche dans les élèves', () => {
     it('trouve un élève par nom', () => {
       const resultats = service.rechercher('martin');
@@ -117,8 +116,7 @@ describe('RechercheGlobaleService', () => {
     });
   });
 
-  // ── Recherche dans les projets ────────────────────────────────────────────
-
+  /** Trouve les projets par nom, insensible à la casse et aux accents, avec le bon type et la bonne route. */
   describe('recherche dans les projets', () => {
     it('trouve un projet par nom', () => {
       const resultats = service.rechercher('compostage');
@@ -140,8 +138,7 @@ describe('RechercheGlobaleService', () => {
     });
   });
 
-  // ── Résultats mixtes ──────────────────────────────────────────────────────
-
+  /** Les élèves apparaissent avant les projets dans les résultats combinés. */
   describe('résultats mixtes', () => {
     it('retourne élèves avant projets', () => {
       const d = creerDonneesVides();

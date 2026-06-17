@@ -60,8 +60,7 @@ describe('CompetenceService', () => {
     donneesService.charger(d);
   });
 
-  // ── obtenirDomaines ───────────────────────────────────────────────────────
-
+  /** Retourne les nœuds de niveau 1 (domaines) ou un tableau vide si aucune donnée. */
   describe('obtenirDomaines', () => {
     it('retourne les nœuds de niveau 1', () => {
       const domaines = service.obtenirDomaines();
@@ -78,8 +77,7 @@ describe('CompetenceService', () => {
     });
   });
 
-  // ── obtenirDomaineParId ───────────────────────────────────────────────────
-
+  /** Retourne le domaine de niveau 1 correspondant, undefined si id inconnu. */
   describe('obtenirDomaineParId', () => {
     it('retourne le domaine correspondant', () => {
       expect(service.obtenirDomaineParId('FR')?.libelle).toBe('Français');
@@ -90,8 +88,7 @@ describe('CompetenceService', () => {
     });
   });
 
-  // ── rechercherCompetences ─────────────────────────────────────────────────
-
+  /** Parcourt tous les nœuds et retourne ceux dont le libellé contient le terme, insensible casse et accents. */
   describe('rechercherCompetences', () => {
     it('retourne tableau vide si terme vide', () => {
       expect(service.rechercherCompetences('')).toEqual([]);
@@ -127,8 +124,7 @@ describe('CompetenceService', () => {
     });
   });
 
-  // ── obtenirChemin ─────────────────────────────────────────────────────────
-
+  /** Retourne le chemin de nœuds depuis la racine jusqu'au nœud cible inclus, tableau vide si id inconnu. */
   describe('obtenirChemin', () => {
     it('retourne le chemin vers un nœud en profondeur', () => {
       const chemin = service.obtenirChemin('FR-LECT-1');
@@ -155,8 +151,7 @@ describe('CompetenceService', () => {
     });
   });
 
-  // ── resoudreLibelle ───────────────────────────────────────────────────────
-
+  /** Retourne le chemin breadcrumb séparé par ›, chaîne vide si id inconnu. */
   describe('resoudreLibelle', () => {
     it('retourne le chemin breadcrumb complet', () => {
       const libelle = service.resoudreLibelle('FR-LECT-1');

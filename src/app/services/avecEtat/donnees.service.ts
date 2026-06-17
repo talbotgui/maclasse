@@ -14,29 +14,31 @@ import { DonneesApplication } from '../../modeles/donnees-application.modele';
  */
 @Injectable({ providedIn: 'root' })
 export class DonneesService {
-  /** Signal interne portant les données courantes. */
-  private readonly _donnees: WritableSignal<DonneesApplication | null> = signal(null);
+  /** Signal interne portant les données courantes (écriture réservée à ce service). */
+  private readonly donneesModifiables: WritableSignal<DonneesApplication | null> = signal(null);
 
   /** Pile des commandes exécutées, réversibles via `annuler()`. */
-  private readonly _pileUndo: WritableSignal<Commande[]> = signal([]);
+  private readonly pileUndo: WritableSignal<Commande[]> = signal([]);
 
   /** Pile des commandes annulées, rétablissables via `refaire()`. */
-  private readonly _pileRedo: WritableSignal<Commande[]> = signal([]);
+  private readonly pileRedo: WritableSignal<Commande[]> = signal([]);
 
   /** Indique si des données ont été modifiées depuis la dernière sauvegarde. */
-  private readonly _modifieeDepuisSauvegarde: WritableSignal<boolean> = signal(false);
+  private readonly modifieeDepuisSauvegarde: WritableSignal<boolean> = signal(false);
 
   /** Données courantes de l'application, ou `null` si non chargées. */
-  public readonly donnees: Signal<DonneesApplication | null> = this._donnees.asReadonly();
+  public readonly donnees: Signal<DonneesApplication | null> =
+    this.donneesModifiables.asReadonly();
 
   /** `true` si la pile UNDO contient au moins une commande. */
-  public readonly peutAnnuler: Signal<boolean> = computed(() => this._pileUndo().length > 0);
+  public readonly peutAnnuler: Signal<boolean> = computed(() => this.pileUndo().length > 0);
 
   /** `true` si la pile REDO contient au moins une commande. */
-  public readonly peutRefaire: Signal<boolean> = computed(() => this._pileRedo().length > 0);
+  public readonly peutRefaire: Signal<boolean> = computed(() => this.pileRedo().length > 0);
 
   /** `true` si des données ont été modifiées depuis la dernière sauvegarde. */
-  public readonly aDonneesModifiees: Signal<boolean> = this._modifieeDepuisSauvegarde.asReadonly();
+  public readonly aDonneesModifiees: Signal<boolean> =
+    this.modifieeDepuisSauvegarde.asReadonly();
 
   /**
    * Charge un jeu de données et réinitialise les piles UNDO/REDO.
@@ -44,10 +46,10 @@ export class DonneesService {
    * @param donnees Données à charger — clonées pour isolation.
    */
   public charger(donnees: DonneesApplication): void {
-    this._donnees.set(structuredClone(donnees));
-    this._pileUndo.set([]);
-    this._pileRedo.set([]);
-    this._modifieeDepuisSauvegarde.set(false);
+    this.donneesModifiables.set(structuredClone(donnees));
+    this.pileUndo.set([]);
+    this.pileRedo.set([]);
+    this.modifieeDepuisSauvegarde.set(false);
   }
 
   /**
@@ -56,14 +58,14 @@ export class DonneesService {
    * @param commande Commande décrivant la mutation et son inverse.
    */
   public executer(commande: Commande): void {
-    const courant = this._donnees();
+    const courant = this.donneesModifiables();
     if (courant === null) {
       return;
     }
-    this._donnees.set(commande.executer(courant));
-    this._pileUndo.update(pile => [...pile, commande]);
-    this._pileRedo.set([]);
-    this._modifieeDepuisSauvegarde.set(true);
+    this.donneesModifiables.set(commande.executer(courant));
+    this.pileUndo.update(pile => [...pile, commande]);
+    this.pileRedo.set([]);
+    this.modifieeDepuisSauvegarde.set(true);
   }
 
   /**
@@ -71,16 +73,16 @@ export class DonneesService {
    * Sans effet si la pile UNDO est vide ou si aucune donnée n'est chargée.
    */
   public annuler(): void {
-    const pileUndo = this._pileUndo();
-    const courant = this._donnees();
-    if (pileUndo.length === 0 || courant === null) {
+    const pileUndoCourante = this.pileUndo();
+    const courant = this.donneesModifiables();
+    if (pileUndoCourante.length === 0 || courant === null) {
       return;
     }
-    const commande = pileUndo[pileUndo.length - 1];
-    this._donnees.set(commande.annuler(courant));
-    this._pileUndo.update(p => p.slice(0, -1));
-    this._pileRedo.update(p => [...p, commande]);
-    this._modifieeDepuisSauvegarde.set(true);
+    const commande = pileUndoCourante[pileUndoCourante.length - 1];
+    this.donneesModifiables.set(commande.annuler(courant));
+    this.pileUndo.update(p => p.slice(0, -1));
+    this.pileRedo.update(p => [...p, commande]);
+    this.modifieeDepuisSauvegarde.set(true);
   }
 
   /**
@@ -88,16 +90,16 @@ export class DonneesService {
    * Sans effet si la pile REDO est vide ou si aucune donnée n'est chargée.
    */
   public refaire(): void {
-    const pileRedo = this._pileRedo();
-    const courant = this._donnees();
-    if (pileRedo.length === 0 || courant === null) {
+    const pileRedoCourante = this.pileRedo();
+    const courant = this.donneesModifiables();
+    if (pileRedoCourante.length === 0 || courant === null) {
       return;
     }
-    const commande = pileRedo[pileRedo.length - 1];
-    this._donnees.set(commande.executer(courant));
-    this._pileRedo.update(p => p.slice(0, -1));
-    this._pileUndo.update(p => [...p, commande]);
-    this._modifieeDepuisSauvegarde.set(true);
+    const commande = pileRedoCourante[pileRedoCourante.length - 1];
+    this.donneesModifiables.set(commande.executer(courant));
+    this.pileRedo.update(p => p.slice(0, -1));
+    this.pileUndo.update(p => [...p, commande]);
+    this.modifieeDepuisSauvegarde.set(true);
   }
 
   /**
@@ -105,6 +107,6 @@ export class DonneesService {
    * Remet `aDonneesModifiees` à `false`.
    */
   public marquerCommeSauvegarde(): void {
-    this._modifieeDepuisSauvegarde.set(false);
+    this.modifieeDepuisSauvegarde.set(false);
   }
 }

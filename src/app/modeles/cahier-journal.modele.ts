@@ -42,6 +42,8 @@ export interface Seance {
  * La liste des séances est ordonnée par heure de début croissante.
  */
 export interface JourneeJournal {
+  /** Identifiant unique de la journée. */
+  id: string;
   /** Date de la journée au format ISO (ex. : `"2026-06-09"`). */
   date: string;
   /** Séances de la journée, triées par heure de début. */

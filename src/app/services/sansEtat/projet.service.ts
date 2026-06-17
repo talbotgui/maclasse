@@ -1,0 +1,150 @@
+/**
+ * Service métier gérant les projets pédagogiques.
+ * Toute mutation transite par `DonneesService.executer()`.
+ */
+
+import { Injectable, inject } from '@angular/core';
+import { Projet, ProjetPeriode } from '../../modeles/projet.modele';
+import { CommandeCreation } from '../../commandes/commande-creation';
+import { CommandeModification } from '../../commandes/commande-modification';
+import { CommandeSuppression } from '../../commandes/commande-suppression';
+import { DonneesService } from '../avecEtat/donnees.service';
+
+/**
+ * Service sans état exposant le CRUD des projets pédagogiques et de leurs périodes.
+ */
+@Injectable({ providedIn: 'root' })
+export class ProjetService {
+  /** Accès aux données de l'application et soumission des commandes. */
+  private readonly _donneesService = inject(DonneesService);
+
+  /**
+   * Crée un projet et l'ajoute à la liste des projets.
+   * @param projet Projet à créer (doit posséder un `id` unique).
+   */
+  public creerProjet(projet: Projet): void {
+    this._donneesService.executer(new CommandeCreation(d => d.projets, projet));
+  }
+
+  /**
+   * Modifie un projet existant retrouvé par son `id`.
+   * Sans effet si l'`id` n'existe pas ou si aucune donnée n'est chargée.
+   * @param projet Nouvelle valeur du projet (même `id`).
+   */
+  public modifierProjet(projet: Projet): void {
+    const donnees = this._donneesService.donnees();
+    if (!donnees) return;
+    const ancien = donnees.projets.find(p => p.id === projet.id);
+    if (!ancien) return;
+    this._donneesService.executer(new CommandeModification(d => d.projets, ancien, projet));
+  }
+
+  /**
+   * Supprime un projet par son identifiant.
+   * Sans effet si l'`id` n'existe pas ou si aucune donnée n'est chargée.
+   * @param id UUID du projet à supprimer.
+   */
+  public supprimerProjet(id: string): void {
+    const donnees = this._donneesService.donnees();
+    if (!donnees) return;
+    const index = donnees.projets.findIndex(p => p.id === id);
+    if (index === -1) return;
+    this._donneesService.executer(
+      new CommandeSuppression(d => d.projets, donnees.projets[index], index),
+    );
+  }
+
+  /**
+   * Retourne un projet par son identifiant, ou `undefined` s'il n'existe pas.
+   * @param id UUID du projet.
+   */
+  public obtenirProjet(id: string): Projet | undefined {
+    return this._donneesService.donnees()?.projets.find(p => p.id === id);
+  }
+
+  /**
+   * Retourne la liste des projets filtrée par terme de recherche.
+   * La recherche porte sur le nom et la description. Insensible à la casse et aux accents.
+   * @param terme Terme de recherche (vide = liste complète).
+   * @returns Projets correspondants.
+   */
+  public rechercherProjets(terme: string): Projet[] {
+    const projets = this._donneesService.donnees()?.projets ?? [];
+    if (!terme.trim()) return projets;
+    const t = this._normaliser(terme);
+    return projets.filter(
+      p =>
+        this._normaliser(p.nom).includes(t) ||
+        this._normaliser(p.description).includes(t),
+    );
+  }
+
+  /**
+   * Ajoute une période à un projet existant.
+   * Le projet est remplacé dans son intégralité (UNDO/REDO au niveau du projet).
+   * Sans effet si le projet n'existe pas ou si aucune donnée n'est chargée.
+   * @param projetId UUID du projet.
+   * @param periode Période à ajouter.
+   */
+  public ajouterPeriode(projetId: string, periode: ProjetPeriode): void {
+    const donnees = this._donneesService.donnees();
+    if (!donnees) return;
+    const ancien = donnees.projets.find(p => p.id === projetId);
+    if (!ancien) return;
+    const nouveau: Projet = { ...ancien, periodes: [...ancien.periodes, periode] };
+    this._donneesService.executer(new CommandeModification(d => d.projets, ancien, nouveau));
+  }
+
+  /**
+   * Modifie une période d'un projet (retrouvée par `periodeNom`).
+   * Sans effet si le projet ou la période n'existe pas.
+   * @param projetId UUID du projet.
+   * @param anciennePeriode Période actuelle (son `periodeNom` sert de clé).
+   * @param nouvellePeriode Nouvelle valeur de la période.
+   */
+  public modifierPeriode(
+    projetId: string,
+    anciennePeriode: ProjetPeriode,
+    nouvellePeriode: ProjetPeriode,
+  ): void {
+    const donnees = this._donneesService.donnees();
+    if (!donnees) return;
+    const ancien = donnees.projets.find(p => p.id === projetId);
+    if (!ancien) return;
+    const periodes = ancien.periodes.map(pp =>
+      pp.periodeNom === anciennePeriode.periodeNom ? nouvellePeriode : pp,
+    );
+    const nouveau: Projet = { ...ancien, periodes };
+    this._donneesService.executer(new CommandeModification(d => d.projets, ancien, nouveau));
+  }
+
+  /**
+   * Supprime une période d'un projet (retrouvée par `periodeNom`).
+   * Sans effet si le projet ou la période n'existe pas.
+   * @param projetId UUID du projet.
+   * @param periodeNom Nom de la période à supprimer.
+   */
+  public supprimerPeriode(projetId: string, periodeNom: string): void {
+    const donnees = this._donneesService.donnees();
+    if (!donnees) return;
+    const ancien = donnees.projets.find(p => p.id === projetId);
+    if (!ancien) return;
+    const nouveau: Projet = {
+      ...ancien,
+      periodes: ancien.periodes.filter(pp => pp.periodeNom !== periodeNom),
+    };
+    this._donneesService.executer(new CommandeModification(d => d.projets, ancien, nouveau));
+  }
+
+  /**
+   * Normalise un texte pour la recherche insensible à la casse et aux accents.
+   * @param texte Texte à normaliser.
+   * @returns Texte en minuscules sans diacritiques.
+   */
+  private _normaliser(texte: string): string {
+    return texte
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+  }
+}

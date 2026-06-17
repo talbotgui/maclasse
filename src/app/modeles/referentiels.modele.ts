@@ -40,6 +40,8 @@ export interface StatutAcquisition {
  * Utilisée pour structurer les projets et les bulletins.
  */
 export interface Periode {
+  /** Identifiant unique de la période. */
+  id: string;
   /** Nom affiché de la période. */
   nom: string;
   /** Date de début au format ISO. */
@@ -83,6 +85,8 @@ export interface Groupe {
  * Jour férié ou période de vacances scolaires.
  */
 export interface JourFerie {
+  /** Identifiant unique du jour férié. */
+  id: string;
   /** Nom du jour férié ou de la période (ex. : `"Toussaint"`). */
   nom: string;
   /** Date au format ISO (ex. : `"2025-11-01"`). */

@@ -1,0 +1,22 @@
+<div class="mc-champ">
+  <label [for]="id()">
+    {{ label() }}
+    @if (required()) {
+      <span class="mc-champ-requis" aria-hidden="true"> *</span>
+    }
+  </label>
+  <select
+    [id]="id()"
+    [required]="required()"
+    [disabled]="estDesactive()"
+    (change)="surChangement($any($event.target).value)"
+    (blur)="surBlur()"
+  >
+    @if (avecOptionVide()) {
+      <option value="">—</option>
+    }
+    @for (opt of options(); track opt.valeur) {
+      <option [value]="opt.valeur" [selected]="opt.valeur === valeur()">{{ opt.libelle }}</option>
+    }
+  </select>
+</div>

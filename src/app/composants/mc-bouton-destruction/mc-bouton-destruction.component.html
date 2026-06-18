@@ -1,0 +1,34 @@
+@if (!etatConfirmation()) {
+  <button
+    [id]="id()"
+    type="button"
+    class="mc-btn-danger mc-btn-sm"
+    [disabled]="desactive()"
+    [attr.aria-describedby]="tooltipDesactive() ? id() + '_desc' : null"
+    (click)="demanderConfirmation()"
+  >
+    {{ LIBELLES.commun.supprimer }}
+  </button>
+  @if (tooltipDesactive()) {
+    <span [id]="id() + '_desc'" class="sr-only">{{ tooltipDesactive() }}</span>
+  }
+} @else {
+  <div class="mc-bouton-destruction__confirmation">
+    <button
+      [id]="id() + '_annuler'"
+      type="button"
+      class="mc-btn-fantome mc-btn-sm"
+      (click)="annuler()"
+    >
+      {{ LIBELLES.commun.annuler }}
+    </button>
+    <button
+      [id]="id() + '_confirmer'"
+      type="button"
+      class="mc-btn-danger mc-btn-sm"
+      (click)="confirmer()"
+    >
+      {{ LIBELLES.commun.confirmer }}
+    </button>
+  </div>
+}

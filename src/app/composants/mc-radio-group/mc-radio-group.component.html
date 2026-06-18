@@ -1,0 +1,23 @@
+<fieldset class="mc-groupe-radio" [disabled]="estDesactive()">
+  <legend>
+    {{ label() }}
+    @if (required()) {
+      <span class="mc-champ-requis" aria-hidden="true"> *</span>
+    }
+  </legend>
+  @for (opt of options(); track opt.valeur) {
+    <div class="mc-radio-option">
+      <input
+        type="radio"
+        [id]="id() + '_' + opt.valeur"
+        [name]="id()"
+        [value]="opt.valeur"
+        [checked]="opt.valeur === valeur()"
+        [required]="required()"
+        (change)="surChangement(opt.valeur)"
+        (blur)="surBlur()"
+      />
+      <label [for]="id() + '_' + opt.valeur">{{ opt.libelle }}</label>
+    </div>
+  }
+</fieldset>

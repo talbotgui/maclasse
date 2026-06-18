@@ -1,0 +1,20 @@
+Suite au déroulement des étapes de génération :
+- faire passer Sonar sur le code
+
+
+Futures pages :
+- [EXPLORATION] EVALUATIONS Créer la page des évaluations avec le tableau proposé par ClaudeDesign mais ajoute un "ne sera pas évaluer" pour gérer le cas d'un élève n'ayant pas le niveau pour attaquer une notion à une période donnée (retard par rapport à ses camarades et aux prévisions du projet)
+- [EXPLORATION] Que proposes-tu comme contenu à la page d'accueil quand les données sont chargées ?
+- [EXPLORATION] Propose des raccourcis pour toutes les pages et documente les dans la modale d'aide
+- [EXPLORATION] Implémenter un guide de découverte de l'application
+
+Avant la MEP :
+- [RGAA] Faire un audit RGAA avec Claude
+- [RGAA] Faire un audit RGAA avec les outils externes
+- [PIC] builder et déployer l'application sur GithubPages
+
+Améliorations :
+- [UX] Si l'écran est trop peu large et que le menu n'est pas complètement affiché, un SELECT doit remplacer le menu.
+
+A l'occasion :
+- [PIC] générer la documentation JSDOC et COMPODOC

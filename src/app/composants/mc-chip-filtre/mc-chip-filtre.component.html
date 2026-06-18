@@ -1,0 +1,10 @@
+<button
+  [id]="id()"
+  type="button"
+  class="mc-chip"
+  [class.mc-chip-actif]="actif()"
+  [attr.aria-pressed]="actif()"
+  (click)="basculer()"
+>
+  {{ libelle() }}
+</button>

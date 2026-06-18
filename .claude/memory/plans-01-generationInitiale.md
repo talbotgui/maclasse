@@ -235,16 +235,16 @@ Règles absolues :
 ### 3.2 `DonneesService` (`src/app/services/avecEtat/donnees.service.ts`)
 
 ```
-_donnees: WritableSignal<DonneesApplication | null>   // signal privé
-_pileUndo: Commande[]                                  // privé
-_pileRedo: Commande[]                                  // privé
-_modifieeDepuisSauvegarde: WritableSignal<boolean>     // privé
+donneesModifiables: WritableSignal<DonneesApplication | null>   // signal privé (écriture réservée au service)
+pileUndo: WritableSignal<Commande[]>                             // privé
+pileRedo: WritableSignal<Commande[]>                             // privé
+modifieeDepuisSauvegarde: WritableSignal<boolean>                // privé
 
 // Signaux exposés
-donnees: Signal<DonneesApplication | null>       // computed ou lecture du signal privé
-peutAnnuler: Signal<boolean>                     // computed sur _pileUndo.length
-peutRefaire: Signal<boolean>                     // computed sur _pileRedo.length
-aDonneesModifiees: Signal<boolean>               // lecture de _modifieeDepuisSauvegarde
+donnees: Signal<DonneesApplication | null>       // asReadonly() de donneesModifiables
+peutAnnuler: Signal<boolean>                     // computed sur pileUndo().length
+peutRefaire: Signal<boolean>                     // computed sur pileRedo().length
+aDonneesModifiees: Signal<boolean>               // asReadonly() de modifieeDepuisSauvegarde
 
 // Méthodes publiques
 charger(donnees: DonneesApplication): void
@@ -377,7 +377,7 @@ Test : `date.utils.spec.ts` — instanciation directe (`new DateUtils()` n'est p
 
 ### 4.8 `SauvegardeAutoService` (`src/app/services/sansEtat/sauvegarde-auto.service.ts`)
 - Injecte `DonneesService`, `ContexteService`, `ChiffrementService`
-- `private _timer: ReturnType<typeof setInterval> | null`
+- `private timer: ReturnType<typeof setInterval> | null`
 - Signal `dateDerniereSauvegarde: WritableSignal<Date | null>`
 - `demarrer(): void` — démarre le timer après première sauvegarde manuelle
 - `sauvegarder(): Promise<void>` — appelée par le timer ET par le bouton SAUVEGARDER de l'entête
@@ -423,7 +423,7 @@ Test : `date.utils.spec.ts` — instanciation directe (`new DateUtils()` n'est p
 
 ### Composants de formulaire (CVA)
 Chacun implémente `ControlValueAccessor` + fournit `NG_VALUE_ACCESSOR`.
-Membres CVA communs : `_onChange`, `_onTouched`, `writeValue()`, `registerOnChange()`, `registerOnTouched()`, `setDisabledState()`.
+Membres CVA communs : `onChange`, `onTouched` (callbacks `protected`, non préfixés), `writeValue()`, `registerOnChange()`, `registerOnTouched()`, `setDisabledState()` (méthodes `public` — imposé par l'interface Angular).
 
 #### `mc-input`
 - `input() public readonly id: InputSignal<string>`
@@ -448,7 +448,8 @@ Membres CVA communs : `_onChange`, `_onTouched`, `writeValue()`, `registerOnChan
 
 #### `mc-select`
 - `input() public readonly options: InputSignal<{ valeur: string; libelle: string }[]>`
-- `<select [id]="id()">` avec `@for (opt of options())`
+- `input() public readonly avecOptionVide: InputSignal<boolean>` (défaut `false`) — ajoute `<option value="">—</option>` en tête pour les champs non obligatoires
+- `<select [id]="id()">` : `@if (avecOptionVide())` + `<option value="">—</option>` puis `@for (opt of options())`
 
 #### `mc-radio-group`
 - `input() public readonly options: InputSignal<{ valeur: string; libelle: string }[]>`
@@ -465,24 +466,26 @@ Membres CVA communs : `_onChange`, `_onTouched`, `writeValue()`, `registerOnChan
 - `<button [id]="id()" [class.mc-chip-actif]="actif()">`
 
 #### `mc-badge-statut`
-- `input() public readonly statut: InputSignal<StatutAcquisition>`
-- Affichage : glyphe + `[style.color]="statut().couleur"` + `[style.background]="statut().fond"`
+- `input() public readonly statut: InputSignal<StatutAcquisition | null>` (défaut `null`)
+- Affichage conditionnel : `@if (statut())` → glyphe + `[style.color]="statut()!.couleur"` + `[style.background]="statut()!.fond"` ; sinon `—`
 
 #### `mc-champ-recherche`
 - `input() public readonly id: InputSignal<string>`
 - `input() public readonly placeholder: InputSignal<string>`
+- `input() public readonly delaiMs: InputSignal<number>` (défaut `0`) — debounce avant émission ; `0` = émission immédiate
 - `output() protected readonly rechercheChange: OutputEmitterRef<string>`
 - `<input type="search" [id]="id()">` + bouton reset
+- Signal local `protected readonly valeurCourante = signal('')` ; `effect()` avec `setTimeout(delaiMs())` pour le debounce — annuler le timer précédent à chaque nouvelle valeur
 
 #### `mc-bouton-destruction`
-- Signal local `protected readonly _etatConfirmation = signal(false)`
+- Signal local `protected readonly etatConfirmation = signal(false)`
 - `input() public readonly id: InputSignal<string>`
 - `input() public readonly desactive: InputSignal<boolean>` (défaut `false`)
 - `input() public readonly tooltipDesactive: InputSignal<string>` (défaut `''`)
 - `output() protected readonly confirme: OutputEmitterRef<void>`
 - État NORMAL : bouton SUPPRIMER visible
 - État CONFIRMATION : SUPPRIMER masqué, ANNULER + CONFIRMER visibles
-- `[attr.aria-describedby]` et `[attr.title]` si désactivé avec tooltip
+- Si `tooltipDesactive()` non vide : `[attr.aria-describedby]="id() + '_desc'"` sur le bouton + `<span [id]="id() + '_desc'" class="sr-only">{{ tooltipDesactive() }}</span>` (le `title` natif n'est pas fiable sur les boutons désactivés)
 
 **Critère de validation étape 6 :** Chaque composant s'affiche correctement, le CVA fonctionne dans un `ReactiveForm` minimal.
 
@@ -496,7 +499,7 @@ Membres CVA communs : `_onChange`, `_onTouched`, `writeValue()`, `registerOnChan
 - `input() public readonly joursOuvres: InputSignal<JourSemaine[]>`
 - `input() public readonly jourSelectionne: InputSignal<string | null>`
 - `output() protected readonly jourChange: OutputEmitterRef<string>`
-- Signal local `protected readonly _moisAffiche = signal<Date>(new Date())`
+- Signal local `protected readonly moisAffiche = signal<Date>(new Date())`
 - `computed()` pour la grille de jours du mois
 - Griser : weekends, fériés, non ouvrés
 - Mettre en évidence : `journeesAvecEntrees`
@@ -674,6 +677,11 @@ Toutes les décisions préalables ont été validées.
 | 8 | `vitest.config.ts` | **Supprimé** — config déjà complète dans `angular.json` (runner, seuils, exclusions) |
 | 9 | `DonneesChargeesGarde` | **Reporté à l'étape 3** — dépend de `DonneesService` inexistant à l'étape 1 |
 | 10 | Composant temporaire `/demarrage` | **Inline dans `app.routes.ts`** — supprimé et remplacé par `EcranDemarrageComponent` à l'étape 8.1 |
+| 11 | Underscore sur membres privés/protégés | **Interdit** — camelCase simple (`donneesModifiables`, `pileUndo`, `timer`…), cohérent avec `feedback-13` |
+| 12 | `mc-select` — option vide | **`avecOptionVide: InputSignal<boolean>` (défaut `false`)** — `<option value="">—</option>` en tête si activé |
+| 13 | `mc-champ-recherche` — debounce | **`delaiMs: InputSignal<number>` (défaut `0`)** — le composant gère le debounce via `setTimeout` + signal local |
+| 14 | `mc-bouton-destruction` — tooltip accessible | **`<span class="sr-only">` + `aria-describedby`** — `title` natif non fiable sur bouton `disabled` |
+| 15 | `mc-badge-statut` — valeur nulle | **`StatutAcquisition \| null` (défaut `null`)** — affichage conditionnel `@if (statut())`, sinon `—` |
 
 ---
 
@@ -691,4 +699,5 @@ Ces règles sont non négociables à chaque fichier généré :
 - Zéro `any` — `unknown` si type incertain
 - IDs HTML obligatoires sur tous les éléments interactifs
 - Composants partagés (`composants/`) → étend `ComposantBase`
+- Membres `private`/`protected` en camelCase simple — jamais préfixés `_` (sauf paramètre de constructeur non utilisé)
 - Tests Vitest pour tous les services — jamais pour les composants

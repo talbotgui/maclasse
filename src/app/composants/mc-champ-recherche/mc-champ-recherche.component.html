@@ -1,0 +1,19 @@
+<div class="mc-champ-recherche">
+  <input
+    type="search"
+    [id]="id()"
+    [placeholder]="placeholder()"
+    [value]="valeurCourante()"
+    [attr.aria-label]="placeholder() || LIBELLES.commun.rechercher"
+    (input)="surSaisie($any($event.target).value)"
+  />
+  @if (valeurCourante()) {
+    <button
+      [id]="id() + '_reinit'"
+      type="button"
+      class="mc-champ-recherche__reinit"
+      [attr.aria-label]="LIBELLES.commun.annuler"
+      (click)="reinitialiser()"
+    >✕</button>
+  }
+</div>

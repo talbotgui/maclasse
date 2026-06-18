@@ -1,0 +1,17 @@
+<div class="mc-champ">
+  <label [for]="id()">
+    {{ label() }}
+    @if (required()) {
+      <span class="mc-champ-requis" aria-hidden="true"> *</span>
+    }
+  </label>
+  <input
+    type="time"
+    [id]="id()"
+    [required]="required()"
+    [disabled]="estDesactive()"
+    [value]="valeur()"
+    (change)="surChangement($any($event.target).value)"
+    (blur)="surBlur()"
+  />
+</div>

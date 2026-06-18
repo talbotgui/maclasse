@@ -1,0 +1,19 @@
+<div class="mc-champ">
+  <label [for]="id()">
+    {{ label() }}
+    @if (required()) {
+      <span class="mc-champ-requis" aria-hidden="true"> *</span>
+    }
+  </label>
+  <textarea
+    [id]="id()"
+    [placeholder]="placeholder()"
+    [rows]="lignes()"
+    [required]="required()"
+    [disabled]="estDesactive()"
+    [value]="valeur()"
+    class="mc-textarea"
+    (input)="surChangement($any($event.target).value)"
+    (blur)="surBlur()"
+  ></textarea>
+</div>

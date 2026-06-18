@@ -1,0 +1,17 @@
+<div class="mc-champ mc-champ--checkbox">
+  <input
+    type="checkbox"
+    [id]="id()"
+    [checked]="valeur()"
+    [required]="required()"
+    [disabled]="estDesactive()"
+    (change)="surChangement($any($event.target).checked)"
+    (blur)="surBlur()"
+  />
+  <label [for]="id()">
+    {{ label() }}
+    @if (required()) {
+      <span class="mc-champ-requis" aria-hidden="true"> *</span>
+    }
+  </label>
+</div>

@@ -1,0 +1,35 @@
+<dialog
+  #dialog
+  class="mc-popin"
+  aria-modal="true"
+  aria-labelledby="titreWarnings"
+  (cancel)="surCancel($event)"
+>
+  <div class="mc-popover-carte">
+    <div class="mc-popover-entete">
+      <span id="titreWarnings" class="mc-popover-titre">{{ LIBELLES.popins.warnings.titre }}</span>
+    </div>
+
+    <div class="mc-popin__corps">
+      @if (conflits().length === 0) {
+        <p class="mc-liste-vide">{{ LIBELLES.commun.aucunResultat }}</p>
+      } @else {
+        <ul class="mc-popin__liste-conflits">
+          @for (conflit of conflits(); track $index) {
+            <li>{{ conflit }}</li>
+          }
+        </ul>
+      }
+    </div>
+
+    <div class="mc-popover-pied">
+      <button
+        id="btnWarningsFermer"
+        type="button"
+        class="mc-btn-primaire"
+        [mcAutoFocus]="visible()"
+        (click)="fermer()"
+      >{{ LIBELLES.popins.warnings.fermer }}</button>
+    </div>
+  </div>
+</dialog>

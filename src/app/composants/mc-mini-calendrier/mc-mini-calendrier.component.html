@@ -1,0 +1,47 @@
+<div class="mc-mini-calendrier">
+  <div class="mc-mini-calendrier__entete">
+    <button
+      id="btnMoisPrecedent"
+      type="button"
+      class="mc-btn-icone"
+      [disabled]="!peutNaviguerArriere()"
+      [attr.aria-label]="LIBELLES.aria.calendrierMoisPrecedent"
+      (click)="moisPrecedent()"
+    >&#8249;</button>
+    <strong class="mc-mini-calendrier__libelle-mois">{{ libelleMois() }}</strong>
+    <button
+      id="btnMoisSuivant"
+      type="button"
+      class="mc-btn-icone"
+      [disabled]="!peutNaviguerAvant()"
+      [attr.aria-label]="LIBELLES.aria.calendrierMoisSuivant"
+      (click)="moisSuivant()"
+    >&#8250;</button>
+  </div>
+
+  <div class="mc-mini-calendrier__grille">
+    @for (entete of entetes; track $index) {
+      <span class="mc-mini-calendrier__entete-col" aria-hidden="true">{{ entete }}</span>
+    }
+
+    @for (caseCalendrier of grille(); track $index) {
+      @if (caseCalendrier.date === null) {
+        <span class="mc-mini-calendrier__vide"></span>
+      } @else {
+        <button
+          [id]="'calendrierJour_' + caseCalendrier.date"
+          type="button"
+          class="mc-mini-calendrier__jour"
+          [class.mc-mini-calendrier__jour--grise]="caseCalendrier.grise"
+          [class.mc-mini-calendrier__jour--entree]="caseCalendrier.avecEntree"
+          [class.mc-mini-calendrier__jour--selectionne]="caseCalendrier.estSelectionnee"
+          [class.mc-mini-calendrier__jour--aujourdhui]="caseCalendrier.estAujourdhui"
+          [disabled]="caseCalendrier.grise"
+          [attr.aria-pressed]="caseCalendrier.estSelectionnee"
+          [attr.aria-label]="caseCalendrier.date"
+          (click)="selectionnerJour(caseCalendrier)"
+        >{{ +caseCalendrier.date.substring(8) }}</button>
+      }
+    }
+  </div>
+</div>

@@ -1,8 +1,22 @@
 ---
 name: feedback-12-constantes-statiques
-description: Toute constante doit être static readonly dans une classe — jamais au niveau module ; les valeurs numériques significatives doivent être nommées
+description: Chercher les constantes existantes avant d'en créer une nouvelle ; toute constante dans sa classe en static readonly ; valeurs numériques significatives nommées
 metadata:
   type: feedback
+---
+
+## Chercher avant de créer
+
+Avant de déclarer une nouvelle constante, vérifier qu'elle n'existe pas déjà ailleurs dans le projet : dans `LIBELLES` (libelles.ts), dans les classes utilitaires (`DateUtils`, `TexteUtils`…), dans les services ou les modèles.
+
+**Why:** Les doublons de constantes se produisent naturellement lors de la génération de nouveaux fichiers. Les noms des jours de la semaine ont été dupliqués dans `DateUtils` et `McMiniCalendrierComponent` avant d'être factorisés dans `LIBELLES.dates.nomsJours`.
+
+**How to apply:**
+- Pour toute chaîne de caractères affichée à l'écran → chercher d'abord dans `LIBELLES`
+- Pour toute valeur numérique ou tableau réutilisable → chercher dans les classes utilitaires et les services
+- Si la constante existe déjà, l'importer et la réutiliser ; ne jamais la redéclarer localement
+- Si elle n'existe pas encore dans un endroit partagé, l'y créer plutôt que de la déclarer dans la classe courante
+
 ---
 
 ## Constantes : static readonly dans leur classe

@@ -28,6 +28,10 @@ related:
 
 ```typescript
 export const LIBELLES = {
+  dates: {
+    nomsJours: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
+  },
+
   commun: {
     enregistrer:               'Enregistrer',
     annuler:                   'Annuler',

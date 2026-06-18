@@ -1,0 +1,77 @@
+<div class="mc-eleves-concernes">
+  <fieldset class="mc-groupe-radio">
+    <legend>{{ LIBELLES.elevesConcernes.legende }}</legend>
+
+    <div class="mc-radio-option">
+      <input
+        [id]="id() + '_classe'"
+        [name]="id() + '_mode'"
+        type="radio"
+        value="classe"
+        [checked]="valeurInterne().type === 'classe'"
+        (change)="surChangementMode('classe')"
+      />
+      <label [for]="id() + '_classe'">{{ LIBELLES.elevesConcernes.modeClasse }}</label>
+    </div>
+
+    <div class="mc-radio-option">
+      <input
+        [id]="id() + '_groupes'"
+        [name]="id() + '_mode'"
+        type="radio"
+        value="groupes"
+        [checked]="valeurInterne().type === 'groupes'"
+        (change)="surChangementMode('groupes')"
+      />
+      <label [for]="id() + '_groupes'">{{ LIBELLES.elevesConcernes.modeGroupes }}</label>
+    </div>
+
+    <div class="mc-radio-option">
+      <input
+        [id]="id() + '_eleves'"
+        [name]="id() + '_mode'"
+        type="radio"
+        value="eleves"
+        [checked]="valeurInterne().type === 'eleves'"
+        (change)="surChangementMode('eleves')"
+      />
+      <label [for]="id() + '_eleves'">{{ LIBELLES.elevesConcernes.modeEleves }}</label>
+    </div>
+  </fieldset>
+
+  @if (valeurInterne().type === 'groupes') {
+    <div class="mc-eleves-concernes__chips" role="group" aria-label="Groupes">
+      @if (groupes().length === 0) {
+        <p class="mc-liste-vide">{{ LIBELLES.commun.aucunResultat }}</p>
+      }
+      @for (groupe of groupes(); track groupe.id) {
+        <button
+          [id]="id() + '_groupe_' + groupe.id"
+          type="button"
+          class="mc-chip"
+          [class.mc-chip-actif]="valeurInterne().groupes.includes(groupe.id)"
+          [attr.aria-pressed]="valeurInterne().groupes.includes(groupe.id)"
+          (click)="basculerGroupe(groupe.id)"
+        >{{ groupe.libelle }}</button>
+      }
+    </div>
+  }
+
+  @if (valeurInterne().type === 'eleves') {
+    <div class="mc-eleves-concernes__chips" role="group" aria-label="Élèves">
+      @if (eleves().length === 0) {
+        <p class="mc-liste-vide">{{ LIBELLES.commun.aucunResultat }}</p>
+      }
+      @for (eleve of eleves(); track eleve.id) {
+        <button
+          [id]="id() + '_eleve_' + eleve.id"
+          type="button"
+          class="mc-chip"
+          [class.mc-chip-actif]="valeurInterne().elevesIds.includes(eleve.id)"
+          [attr.aria-pressed]="valeurInterne().elevesIds.includes(eleve.id)"
+          (click)="basculerEleve(eleve.id)"
+        >{{ eleve.nom.toUpperCase() }} {{ eleve.prenom }}</button>
+      }
+    </div>
+  }
+</div>

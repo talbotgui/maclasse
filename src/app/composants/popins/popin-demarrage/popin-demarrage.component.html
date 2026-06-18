@@ -1,0 +1,82 @@
+<dialog
+  #dialog
+  class="mc-popin mc-popin--demarrage"
+  aria-modal="true"
+  aria-labelledby="titreDemarrage"
+  (cancel)="$event.preventDefault()"
+>
+  <div class="mc-popover-carte mc-popin--demarrage__carte">
+    <div class="mc-popover-entete">
+      <h1 id="titreDemarrage" class="mc-popover-titre">{{ LIBELLES.entete.titre }}</h1>
+    </div>
+
+    <div class="mc-popin__corps">
+      <p class="mc-popover-sous-titre">{{ LIBELLES.demarrage.bienvenue }}</p>
+
+      @if (erreur()) {
+        <p class="mc-popin__erreur" role="alert">{{ erreur() }}</p>
+      }
+
+      <!-- Zone Première utilisation -->
+      <section class="mc-popin__section">
+        <h2 class="mc-section-titre">{{ LIBELLES.demarrage.titreNouveauFichier }}</h2>
+        <button
+          id="btnCreer"
+          type="button"
+          class="mc-btn-primaire"
+          [disabled]="enChargement()"
+          autofocus
+          (click)="creer()"
+        >
+          @if (enChargement()) {
+            {{ LIBELLES.commun.chargement }}
+          } @else {
+            {{ LIBELLES.demarrage.boutonCreer }}
+          }
+        </button>
+      </section>
+
+      <!-- Zone Charger -->
+      <section class="mc-popin__section">
+        <h2 class="mc-section-titre">{{ LIBELLES.demarrage.titreCharger }}</h2>
+
+        <div class="mc-champ">
+          <label for="fichierZip">{{ LIBELLES.demarrage.labelFichier }}</label>
+          <input
+            id="fichierZip"
+            type="file"
+            accept=".zip"
+            [disabled]="enChargement()"
+            (change)="surSelectionFichier($event)"
+          />
+        </div>
+
+        <div class="mc-champ">
+          <label for="motDePasseChargement">{{ LIBELLES.demarrage.labelMotDePasse }}</label>
+          <input
+            id="motDePasseChargement"
+            type="password"
+            [value]="motDePasse()"
+            [disabled]="enChargement()"
+            (input)="motDePasse.set($any($event.target).value)"
+            (keydown.enter)="charger()"
+          />
+        </div>
+
+        <button
+          id="btnCharger"
+          type="button"
+          class="mc-btn-primaire"
+          [disabled]="!peutCharger"
+          (click)="charger()"
+        >
+          @if (enChargement()) {
+            {{ LIBELLES.demarrage.boutonChargement }}
+          } @else {
+            {{ LIBELLES.demarrage.boutonCharger }}
+          }
+        </button>
+      </section>
+    </div>
+  </div>
+</dialog>

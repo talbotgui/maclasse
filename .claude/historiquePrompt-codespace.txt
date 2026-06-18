@@ -435,3 +435,25 @@ Implémente les étapes 1 à 3
 2026-06-17 20:39:40 [Sans titre] Etape 7 : Etape 6 : prend connaissance du projet et déclenche les modifications prévues de l'étape 7 du plan de génération initiale du projet détaillée dans .claude/memory/plans-01-generationInitiale.md. Avant toute modification de code soit critique et propose moi des alternatives ou des compléments si ton niveau de confiance est faible sur des points précis.
 ---
 2026-06-18 05:23:37 [Étape 6 : modifications du plan de génération initiale] reprend
+---
+2026-06-18 05:33:33 [Étape 7 du plan de génération initiale du projet] reprend
+---
+2026-06-18 05:39:18 [Étape 7 du plan de génération initiale du projet] 1. laisse les cases vidse
+2. navigation bloquée entre la date de début de la première période et la date de fin de la dernière période
+3. retour à l'état plié avant recherche
+4. toggle
+5. l'écran écoute demarrageTermine et le popin ne se masque que si les données sont bien chargées (attention à la gestion des erreurs)
+6. le popin appelle DonneesService
+---
+2026-06-18 06:00:10 [Étape 7 du plan de génération initiale du projet] reprend
+---
+2026-06-18 06:31:22 [Étape 7 du plan de génération initiale du projet] - Déplace les constantes dans les classes comme dans McElevesConcernesComponent.VALEUR_DEFAUT
+- Déplace la classe CaseCalendrier, NoeudAffiche, ... dans un fichier du répertoire des modèles
+- C'est règles sont pourtant en mémoire. Non ?
+---
+2026-06-18 06:37:53 [Sans titre] retours après l'étape 7 de la génération : 
+- les noms des jours sont répétés dans des constantes dans plusieurs fichiers. Crée une unique constante dans la classe des libellés.
+- crée une règle sur le fait de rechercher des constantes existantes avant d'en créer un nouvelle
+---
+2026-06-18 06:39:58 [Centraliser constantes des jours et créer règle de recherche] - ok pour "dates"
+- crée une règle large pour toutes les constantes du projet

@@ -45,7 +45,7 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [Couverture de code](feedback-11-couverture-tests.md) — 80% minimum (lignes/branches/fonctions/statements) sur les services, vérifiée après étapes 3 et 4
 - [Polices locales](feedback-09-polices.md) — Toutes les polices dans public/fonts/, @font-face dans styles.scss, jamais de CDN externe
 - [ComposantBase et LIBELLES](feedback-10-composant-base.md) — Tout composant partagé étend ComposantBase ; LIBELLES accessible dans les templates sans redéclaration
-- [Constantes statiques et valeurs magiques](feedback-12-constantes-statiques.md) — Toute constante en `private static readonly` dans sa classe ; valeurs numériques significatives nommées
+- [Constantes : chercher avant de créer](feedback-12-constantes-statiques.md) — Chercher dans LIBELLES/utils/services avant toute nouvelle constante ; static readonly dans sa classe ; valeurs numériques nommées
 - [Membres privés sans underscore](feedback-13-membres-prives.md) — `private`/`protected` en camelCase simple, jamais préfixé `_` (sauf paramètre non utilisé)
 - [DTOs dans src/app/modeles/](feedback-14-modeles-dto.md) — Toute interface/classe de données dans un fichier `*.modele.ts`, jamais dans un service
 - [Pattern Object Mother](feedback-15-object-mother.md) — Factories de données de test dans `src/app/tests/`, surcharge via `Partial<T>`, jamais de `creerXxx()` local dans les spec

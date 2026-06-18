@@ -1,0 +1,37 @@
+dialog.mc-popin {
+  border: none;
+  border-radius: 8px;
+  padding: 0;
+  background: transparent;
+
+  &::backdrop {
+    background: rgb(0 0 0 / 60%);
+  }
+}
+
+.mc-popin--demarrage__carte {
+  min-width: 440px;
+  max-width: 560px;
+}
+
+.mc-popin__corps {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mc-popin__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mc-popin__erreur {
+  margin: 0;
+  padding: 0.625rem 0.875rem;
+  border-radius: 4px;
+  background-color: color-mix(in srgb, var(--erreur) 10%, transparent);
+  color: var(--erreur);
+  font-size: 0.875rem;
+}

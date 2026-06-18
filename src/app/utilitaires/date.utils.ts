@@ -5,6 +5,7 @@
  * les décalages UTC lors du formatage.
  */
 
+import { LIBELLES } from '../libelles';
 import { JourSemaine } from '../modeles/emploi-du-temps.modele';
 
 /**
@@ -12,17 +13,6 @@ import { JourSemaine } from '../modeles/emploi-du-temps.modele';
  * et d'heures (`HH:MM`). Tous les traitements s'effectuent en heure locale.
  */
 export class DateUtils {
-  /** Noms français des jours, indexés comme `Date.getDay()` (0 = dimanche). */
-  private static readonly NOMS_JOURS = [
-    'dimanche',
-    'lundi',
-    'mardi',
-    'mercredi',
-    'jeudi',
-    'vendredi',
-    'samedi',
-  ] as const;
-
   /** Formateur de date longue en français (ex. : `"lundi 9 juin 2026"`). */
   private static readonly FORMATEUR_DATE_LONG = new Intl.DateTimeFormat('fr-FR', {
     weekday: 'long',
@@ -64,7 +54,7 @@ export class DateUtils {
    */
   public static obtenirJourSemaine(date: string): JourSemaine | 'samedi' | 'dimanche' {
     const [annee, mois, jour] = date.split('-').map(Number);
-    return DateUtils.NOMS_JOURS[new Date(annee, mois - 1, jour).getDay()];
+    return LIBELLES.dates.nomsJours[new Date(annee, mois - 1, jour).getDay()];
   }
 
   /**

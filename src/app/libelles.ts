@@ -4,6 +4,12 @@
  * et déclarée localement dans chaque composant d'écran.
  */
 export const LIBELLES = {
+  /** Noms français des jours, indexés comme `Date.getDay()` (0 = dimanche). */
+  dates: {
+    nomsJours: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
+    initialeJours: ['L', 'M', 'M', 'J', 'V', 'S', 'D'],
+  },
+
   /** Libellés communs réutilisés dans plusieurs domaines. */
   commun: {
     enregistrer:               'Enregistrer',
@@ -165,6 +171,14 @@ export const LIBELLES = {
     },
   },
 
+  /** Libellés du composant `mc-eleves-concernes` (modes de sélection). */
+  elevesConcernes: {
+    legende:     'Périmètre des élèves concernés',
+    modeClasse:  'Toute la classe',
+    modeGroupes: 'Par groupes',
+    modeEleves:  'Élèves spécifiques',
+  },
+
   /** Libellés destinés exclusivement à l'accessibilité (RGAA). */
   aria: {
     boutonFermerPopin:            'Fermer la fenêtre',
@@ -172,5 +186,7 @@ export const LIBELLES = {
     champRecherche:               'Champ de recherche',
     valeurUtiliseeNonSupprimable: 'Cette valeur est utilisée dans l\'application et ne peut pas être supprimée',
     eleveAbsent:                  'Élève absent ce jour',
+    calendrierMoisPrecedent:      'Mois précédent',
+    calendrierMoisSuivant:        'Mois suivant',
   },
 } as const;

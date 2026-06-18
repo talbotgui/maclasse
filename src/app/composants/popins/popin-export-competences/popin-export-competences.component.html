@@ -1,0 +1,74 @@
+<dialog
+  #dialog
+  class="mc-popin"
+  aria-modal="true"
+  aria-labelledby="titreExport"
+  (cancel)="surCancel($event)"
+>
+  <div class="mc-popover-carte">
+    <div class="mc-popover-entete">
+      <span id="titreExport" class="mc-popover-titre">{{ LIBELLES.popins.exportCompetences.titre }}</span>
+    </div>
+
+    <div class="mc-popin__corps">
+      <div class="mc-champ">
+        <label for="exportSelectPrimaire">
+          @if (mode() === 'projet') {
+            {{ LIBELLES.popins.exportCompetences.choixProjet }}
+          } @else {
+            {{ LIBELLES.popins.exportCompetences.choixJour }}
+          }
+        </label>
+        <select
+          id="exportSelectPrimaire"
+          [value]="selectionPrimaire()"
+          [mcAutoFocus]="visible()"
+          (change)="surChangementPrimaire($any($event.target).value)"
+        >
+          <option value="">—</option>
+          @for (opt of optionsPrimaires(); track opt.valeur) {
+            <option [value]="opt.valeur">{{ opt.libelle }}</option>
+          }
+        </select>
+      </div>
+
+      @if (selectionPrimaire()) {
+        <div class="mc-champ">
+          <label for="exportSelectSecondaire">
+            @if (mode() === 'projet') {
+              {{ LIBELLES.popins.exportCompetences.choixPeriode }}
+            } @else {
+              {{ LIBELLES.popins.exportCompetences.choixSeance }}
+            }
+          </label>
+          <select
+            id="exportSelectSecondaire"
+            [value]="selectionSecondaire()"
+            (change)="surChangementSecondaire($any($event.target).value)"
+          >
+            <option value="">—</option>
+            @for (opt of optionsSecondaires(); track opt.valeur) {
+              <option [value]="opt.valeur">{{ opt.libelle }}</option>
+            }
+          </select>
+        </div>
+      }
+    </div>
+
+    <div class="mc-popover-pied">
+      <button
+        id="btnExportAnnuler"
+        type="button"
+        class="mc-btn-fantome"
+        (click)="surAnnulation()"
+      >{{ LIBELLES.popins.exportCompetences.annuler }}</button>
+      <button
+        id="btnExportConfirmer"
+        type="button"
+        class="mc-btn-primaire"
+        [disabled]="!peutConfirmer()"
+        (click)="surConfirmation()"
+      >{{ LIBELLES.popins.exportCompetences.confirmer }}</button>
+    </div>
+  </div>
+</dialog>

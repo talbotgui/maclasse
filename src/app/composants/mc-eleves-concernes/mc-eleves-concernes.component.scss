@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+.mc-eleves-concernes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mc-eleves-concernes__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}

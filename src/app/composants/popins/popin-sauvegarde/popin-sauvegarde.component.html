@@ -1,0 +1,43 @@
+<dialog
+  #dialog
+  class="mc-popin"
+  aria-modal="true"
+  aria-labelledby="titreSauvegarde"
+  (cancel)="surCancel($event)"
+>
+  <div class="mc-popover-carte">
+    <div class="mc-popover-entete">
+      <span id="titreSauvegarde" class="mc-popover-titre">{{ LIBELLES.popins.sauvegarde.titre }}</span>
+    </div>
+
+    <div class="mc-popin__corps">
+      <div class="mc-champ">
+        <label for="motDePasseSauvegarde">{{ LIBELLES.popins.sauvegarde.labelMotDePasse }}</label>
+        <input
+          id="motDePasseSauvegarde"
+          type="password"
+          [value]="motDePasse()"
+          [mcAutoFocus]="visible()"
+          (input)="motDePasse.set($any($event.target).value)"
+          (keydown.enter)="surConfirmation()"
+        />
+      </div>
+    </div>
+
+    <div class="mc-popover-pied">
+      <button
+        id="btnSauvegardeAnnuler"
+        type="button"
+        class="mc-btn-fantome"
+        (click)="surAnnulation()"
+      >{{ LIBELLES.popins.sauvegarde.annuler }}</button>
+      <button
+        id="btnSauvegardeConfirmer"
+        type="button"
+        class="mc-btn-primaire"
+        [disabled]="!motDePasse().trim()"
+        (click)="surConfirmation()"
+      >{{ LIBELLES.popins.sauvegarde.confirmer }}</button>
+    </div>
+  </div>
+</dialog>

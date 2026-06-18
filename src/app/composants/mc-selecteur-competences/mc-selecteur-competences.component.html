@@ -1,0 +1,54 @@
+<div class="mc-selecteur-competences">
+  <mc-champ-recherche
+    id="rechercheCompetences"
+    [placeholder]="LIBELLES.commun.rechercher"
+    (rechercheChange)="surRecherche($event)"
+  />
+
+  @if (domaines().length > 0) {
+    <div class="mc-selecteur-competences__domaines" role="group" aria-label="Filtrer par domaine">
+      @for (domaine of domaines(); track domaine.id) {
+        <mc-chip-filtre
+          [id]="'filtreDomaine_' + domaine.id"
+          [libelle]="domaine.libelle"
+          [actif]="estDomaineActif(domaine.id)"
+          (selectionChange)="basculerDomaine(domaine.id)"
+        />
+      }
+    </div>
+  }
+
+  <div class="mc-selecteur-competences__arbre" role="tree">
+    @if (noeudsAffiches().length === 0) {
+      <p class="mc-liste-vide">{{ LIBELLES.commun.aucunResultat }}</p>
+    }
+    @for (noeud of noeudsAffiches(); track noeud.competence.id) {
+      <div
+        class="mc-selecteur-competences__noeud"
+        [style.padding-left.rem]="noeud.niveau * 1.25"
+        role="treeitem"
+        [attr.aria-expanded]="noeud.estFeuille ? null : noeud.estDeplie"
+      >
+        @if (!noeud.estFeuille) {
+          <button
+            [id]="'noeudToggle_' + noeud.competence.id"
+            type="button"
+            class="mc-selecteur-competences__toggle"
+            [attr.aria-label]="(noeud.estDeplie ? 'Replier ' : 'Déplier ') + noeud.competence.libelle"
+            (click)="basculerNoeud(noeud.competence.id)"
+          >{{ noeud.estDeplie ? '▼' : '▶' }}</button>
+        } @else {
+          <span class="mc-selecteur-competences__indent"></span>
+        }
+        <button
+          [id]="'noeudSel_' + noeud.competence.id"
+          type="button"
+          class="mc-selecteur-competences__libelle"
+          [class.mc-selecteur-competences__libelle--selectionne]="noeud.estSelectionne"
+          [attr.aria-pressed]="noeud.estSelectionne"
+          (click)="basculerSelection(noeud.competence.id)"
+        >{{ noeud.competence.libelle }}</button>
+      </div>
+    }
+  </div>
+</div>

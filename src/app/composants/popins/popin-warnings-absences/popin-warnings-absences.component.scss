@@ -1,0 +1,30 @@
+dialog.mc-popin {
+  border: none;
+  border-radius: 8px;
+  padding: 0;
+  background: transparent;
+
+  &::backdrop {
+    background: rgb(0 0 0 / 50%);
+  }
+}
+
+.mc-popin__corps {
+  padding: 1.25rem 1.5rem;
+  min-width: 320px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.mc-popin__liste-conflits {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  color: var(--texte-principal);
+
+  li {
+    color: var(--avertissement);
+  }
+}

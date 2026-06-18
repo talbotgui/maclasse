@@ -1,0 +1,33 @@
+<dialog
+  #dialog
+  class="mc-popin"
+  aria-modal="true"
+  aria-labelledby="titreAvertissement"
+  (cancel)="surCancel($event)"
+>
+  <div class="mc-popover-carte">
+    <div class="mc-popover-entete">
+      <span id="titreAvertissement" class="mc-popover-titre">{{ LIBELLES.popins.avertissement.titre }}</span>
+    </div>
+
+    <div class="mc-popin__corps">
+      <p>{{ message() || LIBELLES.commun.avertissementModifications }}</p>
+    </div>
+
+    <div class="mc-popover-pied">
+      <button
+        id="btnAvertissementAnnuler"
+        type="button"
+        class="mc-btn-fantome"
+        [mcAutoFocus]="visible()"
+        (click)="surAnnulation()"
+      >{{ LIBELLES.popins.avertissement.annuler }}</button>
+      <button
+        id="btnAvertissementConfirmer"
+        type="button"
+        class="mc-btn-danger"
+        (click)="surConfirmation()"
+      >{{ LIBELLES.popins.avertissement.confirmer }}</button>
+    </div>
+  </div>
+</dialog>

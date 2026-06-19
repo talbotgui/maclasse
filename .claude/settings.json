@@ -1,4 +1,28 @@
 {
+  "telemetry": "off",
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(npx ng *)",
+      "Bash(npx vitest *)",
+      "Read(//home/codespace/.claude/**)"
+    ],
+    "deny": [
+      "Bash(git *)",
+      "Bash(rm -rf *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(nc *)",
+      "Bash(ssh *)",
+      "Read(/interditAclaude/**)",
+      "Grep(/interditAclaude/**)",
+      "Read(*.pem)",
+      "Grep(*.pem)",
+      "Read(*.key)",
+      "Grep(*.key)"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {

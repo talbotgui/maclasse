@@ -24,6 +24,9 @@ export class McBoutonDestructionComponent extends ComposantBase {
   /** Si `true`, le bouton SUPPRIMER est désactivé (non cliquable). */
   public readonly desactive: InputSignal<boolean> = input(false);
 
+  /** Si `true`, applique la taille réduite `mc-btn-sm` (usage dans les formulaires/listes). */
+  public readonly petit: InputSignal<boolean> = input(false);
+
   /**
    * Texte d'explication affiché aux lecteurs d'écran quand le bouton est désactivé.
    * Vide par défaut. Si renseigné, un `<span class="sr-only">` est rendu et lié via `aria-describedby`.

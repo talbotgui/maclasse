@@ -49,6 +49,7 @@
         >{{ LIBELLES.commun.annuler }}</button>
         <mc-bouton-destruction
           id="btnSupprimerEdt"
+          [petit]="true"
           (confirme)="edtSupprime.emit()"
         >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction>
       </div>
@@ -136,6 +137,7 @@
         @if (estEditionCreneau()) {
           <mc-bouton-destruction
             id="btnSupprimerCreneau"
+            [petit]="true"
             (confirme)="creneauSupprime.emit(formCreneau.id)"
           >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction>
         }

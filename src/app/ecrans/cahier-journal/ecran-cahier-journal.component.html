@@ -29,19 +29,19 @@
       @if (journeeSelectionnee()) {
         <button
           id="btnDupliquerJournee"
-          class="mc-btn-secondaire mc-btn-sm"
+          class="mc-btn-secondaire"
           (click)="demanderDuplication(null)"
         >{{ LIBELLES.cahierJournal.boutonDupliquerJournee }}</button>
 
         <button
           id="btnImprimerCj"
-          class="mc-btn-fantome mc-btn-sm"
+          class="mc-btn-fantome"
           (click)="imprimer()"
         >{{ LIBELLES.cahierJournal.boutonImprimer }}</button>
 
         <button
           id="btnSupprimerJournee"
-          class="mc-btn-destruction mc-btn-sm"
+          class="mc-btn-destruction"
           (click)="demanderSuppressionJournee()"
         >{{ LIBELLES.cahierJournal.boutonSupprimerJournee }}</button>
       }

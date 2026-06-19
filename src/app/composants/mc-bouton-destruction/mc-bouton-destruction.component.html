@@ -2,7 +2,8 @@
   <button
     [id]="id()"
     type="button"
-    class="mc-btn-danger mc-btn-sm"
+    class="mc-btn-danger"
+    [class.mc-btn-sm]="petit()"
     [disabled]="desactive()"
     [attr.aria-describedby]="tooltipDesactive() ? id() + '_desc' : null"
     (click)="demanderConfirmation()"
@@ -17,7 +18,8 @@
     <button
       [id]="id() + '_annuler'"
       type="button"
-      class="mc-btn-fantome mc-btn-sm"
+      class="mc-btn-fantome"
+      [class.mc-btn-sm]="petit()"
       (click)="annuler()"
     >
       {{ LIBELLES.commun.annuler }}
@@ -25,7 +27,8 @@
     <button
       [id]="id() + '_confirmer'"
       type="button"
-      class="mc-btn-danger mc-btn-sm"
+      class="mc-btn-danger"
+      [class.mc-btn-sm]="petit()"
       (click)="confirmer()"
     >
       {{ LIBELLES.commun.confirmer }}

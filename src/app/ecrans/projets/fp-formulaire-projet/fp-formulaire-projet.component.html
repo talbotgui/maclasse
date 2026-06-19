@@ -39,7 +39,7 @@
             <mc-input [id]="'champPeriodeNomProjet' + i" [label]="LIBELLES.projet.labelPeriodeNom" [(ngModel)]="periode.periodeNom" />
             <mc-input [id]="'champPeriodeDebutProjet' + i" [label]="LIBELLES.projet.labelPeriodeDebut" type="date" [(ngModel)]="periode.debut" />
             <mc-input [id]="'champPeriodeFinProjet' + i" [label]="LIBELLES.projet.labelPeriodeFin" type="date" [(ngModel)]="periode.fin" />
-            <mc-bouton-destruction [id]="'btnSupprimerPeriodeProjet' + i" [desactive]="false" [tooltipDesactive]="''" (confirme)="supprimerPeriode(i)" />
+            <mc-bouton-destruction [id]="'btnSupprimerPeriodeProjet' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerPeriode(i)" />
           </div>
           <mc-textarea [id]="'champPeriodeDescProjet' + i" [label]="LIBELLES.projet.labelPeriodeDescription" [(ngModel)]="periode.description" />
           <div class="form-projet__competences">

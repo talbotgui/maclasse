@@ -5,6 +5,7 @@ import {
 import type { OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../../composant-base';
 import { ChiffrementService } from '../../../services/sansEtat/chiffrement.service';
+import { ContexteService } from '../../../services/avecEtat/contexte.service';
 import type { DonneesApplication } from '../../../modeles/donnees-application.modele';
 
 /**
@@ -35,6 +36,9 @@ export class PopinDemarrageComponent extends ComposantBase {
 
   /** Service de déchiffrement du fichier ZIP. */
   private readonly chiffrementService = inject(ChiffrementService);
+
+  /** Service de contexte — mémorise le mot de passe pour les sauvegardes ultérieures. */
+  private readonly contexteService = inject(ContexteService);
 
   /** Fichier ZIP sélectionné par l'utilisateur, `null` si aucun. */
   private fichierSelectionne: File | null = null;
@@ -95,10 +99,9 @@ export class PopinDemarrageComponent extends ComposantBase {
     this.enChargement.set(true);
     this.erreur.set(null);
     try {
-      const donnees = await this.chiffrementService.dechiffrer(
-        this.fichierSelectionne,
-        this.motDePasse().trim(),
-      );
+      const mdp = this.motDePasse().trim();
+      const donnees = await this.chiffrementService.dechiffrer(this.fichierSelectionne, mdp);
+      this.contexteService.motDePasse = mdp;
       this.demarrageTermine.emit(donnees);
     } catch (e) {
       this.erreur.set(

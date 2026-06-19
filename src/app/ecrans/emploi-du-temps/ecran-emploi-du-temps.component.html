@@ -1,0 +1,141 @@
+<div class="edt">
+
+  <!-- ── Colonne gauche : liste des EDT ── -->
+  <div class="edt__gauche">
+    <div class="edt__gauche-entete">
+      <h1 class="edt__titre-ecran">{{ LIBELLES.edt.titre }}</h1>
+      <button id="btnCreerEdt" class="mc-btn-primaire" (click)="creerEdt()">
+        {{ LIBELLES.edt.boutonCreer }}
+      </button>
+    </div>
+
+    @if (edts().length === 0) {
+      <p class="edt__liste-vide">{{ LIBELLES.edt.aucunEdtSelectionne }}</p>
+    } @else {
+      <ul class="edt__liste" role="listbox" aria-label="Liste des emplois du temps">
+        @for (edt of edts(); track edt.id) {
+          <li>
+            <button
+              [id]="'btnSelectionnerEdt' + edt.id"
+              class="edt__btn-edt"
+              [class.edt__btn-edt--actif]="edtSelectionne()?.id === edt.id"
+              role="option"
+              [attr.aria-selected]="edtSelectionne()?.id === edt.id"
+              (click)="selectionnerEdt(edt)"
+            >
+              <span class="edt__btn-edt-nom">{{ edt.nom }}</span>
+              @if (edtsAvecConflits().has(edt.id)) {
+                <span
+                  class="edt__icone-conflit"
+                  role="img"
+                  [attr.aria-label]="LIBELLES.edt.avertissementChevauchement"
+                  title="{{ LIBELLES.edt.avertissementChevauchement }}"
+                >⚠</span>
+              }
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <!-- ── Colonne centrale : grille hebdomadaire ── -->
+  <div class="edt__grille-conteneur">
+    @if (!edtSelectionne()) {
+      <p class="edt__grille-vide">{{ LIBELLES.edt.aucunEdtSelectionne }}</p>
+    } @else {
+      <div class="edt__grille-entete">
+        <span class="edt__grille-nom">{{ edtSelectionne()!.nom }}</span>
+        <button id="btnImprimerEdt" class="mc-btn-fantome mc-btn-sm" (click)="imprimer()">
+          {{ LIBELLES.edt.boutonImprimer }}
+        </button>
+      </div>
+
+      <div class="edt__grille-defilement">
+        <table class="edt__grille" aria-label="Grille hebdomadaire">
+          <thead>
+            <tr>
+              <th class="edt__grille-th edt__grille-th--heure" scope="col">Heure</th>
+              @for (jour of joursOuvres(); track jour) {
+                <th class="edt__grille-th" scope="col">{{ LIBELLES_JOURS[jour] }}</th>
+              }
+              <!-- Colonne d'ajout de créneau par jour -->
+            </tr>
+          </thead>
+          <tbody>
+            @for (ligne of lignesGrille(); track ligne.heureDebut + ligne.heureFin) {
+              <tr>
+                <td class="edt__grille-heure">
+                  {{ ligne.heureDebut }}–{{ ligne.heureFin }}
+                </td>
+                @for (jour of joursOuvres(); track jour) {
+                  @let creneau = creneauDeGrille(jour, ligne);
+                  <td
+                    class="edt__grille-cellule"
+                    [class.edt__grille-cellule--pedagogique]="creneau?.type === 'pedagogique'"
+                    [class.edt__grille-cellule--recreation]="creneau?.type === 'recreation'"
+                    [class.edt__grille-cellule--pause]="creneau?.type === 'pauseDejeuner'"
+                    [class.edt__grille-cellule--vide]="!creneau"
+                  >
+                    @if (creneau) {
+                      <button
+                        [id]="'btnCreneau' + creneau.id"
+                        class="edt__btn-creneau"
+                        (click)="selectionnerCreneau(creneau)"
+                      >
+                        <span class="edt__creneau-type">{{ creneau.type }}</span>
+                        @if (creneau.titre) {
+                          <span class="edt__creneau-titre">{{ creneau.titre }}</span>
+                        }
+                      </button>
+                    } @else {
+                      <button
+                        [id]="'btnAjouterCreneau' + jour + ligne.heureDebut"
+                        class="edt__btn-ajouter-creneau"
+                        [attr.aria-label]="'Ajouter un créneau ' + LIBELLES_JOURS[jour]"
+                        (click)="ajouterCreneauPourJour(jour)"
+                      >+</button>
+                    }
+                  </td>
+                }
+              </tr>
+            }
+            <!-- Ligne d'ajout pour chaque jour -->
+            <tr class="edt__grille-ligne-ajout">
+              <td class="edt__grille-heure"></td>
+              @for (jour of joursOuvres(); track jour) {
+                <td class="edt__grille-cellule edt__grille-cellule--ajout">
+                  <button
+                    [id]="'btnNouveauCreneauJour' + jour"
+                    class="edt__btn-nouveau-creneau"
+                    [attr.aria-label]="LIBELLES.edt.boutonAjouter + ' ' + LIBELLES_JOURS[jour]"
+                    (click)="ajouterCreneauPourJour(jour)"
+                  >{{ LIBELLES.edt.boutonAjouter }}</button>
+                </td>
+              }
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- ── Colonne droite : formulaire contextuel ── -->
+  <div class="edt__droite">
+    @if (formEdt() !== null || creneauEdite() !== null) {
+      <edt-formulaire
+        [edt]="formEdt()"
+        [creneau]="creneauEdite()"
+        [domaines]="domaines()"
+        (edtEnregistre)="onEdtEnregistre($event)"
+        (edtSupprime)="onEdtSupprime()"
+        (creneauEnregistre)="onCreneauEnregistre($event)"
+        (creneauSupprime)="onCreneauSupprime($event)"
+        (annule)="onAnnule()"
+      />
+    } @else {
+      <p class="edt__droite-vide">{{ LIBELLES.edt.aucunEdtSelectionne }}</p>
+    }
+  </div>
+
+</div>

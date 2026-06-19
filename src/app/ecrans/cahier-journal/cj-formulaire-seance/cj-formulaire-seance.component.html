@@ -1,0 +1,126 @@
+<form class="cj-formulaire-seance" id="formSeance" (ngSubmit)="onEnregistrer()">
+
+  <div class="cj-formulaire-seance__entete">
+    <h3 class="cj-formulaire-seance__titre">
+      {{ seance() ? LIBELLES.commun.modifier : LIBELLES.commun.creer }} une séance
+    </h3>
+  </div>
+
+  <div class="cj-formulaire-seance__corps">
+    <div class="cj-formulaire-seance__ligne-heures">
+      <mc-champ-heure
+        id="inputHeureDebutSeance"
+        [(ngModel)]="formSeance.heureDebut"
+        name="heureDebut"
+        [label]="LIBELLES.cahierJournal.labelHeureDebut"
+        [required]="true"
+      />
+      <mc-champ-heure
+        id="inputHeureFinSeance"
+        [(ngModel)]="formSeance.heureFin"
+        name="heureFin"
+        [label]="LIBELLES.cahierJournal.labelHeureFin"
+        [required]="true"
+      />
+    </div>
+
+    <mc-select
+      id="selectTypeSeance"
+      [(ngModel)]="formSeance.type"
+      name="type"
+      [options]="optionsType"
+      [label]="LIBELLES.cahierJournal.labelType"
+    />
+
+    @if (formSeance.type === 'pedagogique') {
+
+      <div class="cj-formulaire-seance__groupe" role="group" aria-labelledby="labelDisciplinesSeance">
+        <p id="labelDisciplinesSeance" class="cj-formulaire-seance__label-groupe">
+          {{ LIBELLES.cahierJournal.labelDisciplines }}
+        </p>
+        <div class="cj-formulaire-seance__chips">
+          @for (domaine of domaines(); track domaine.id) {
+            <mc-chip-filtre
+              [id]="'chipDisciplineSeance' + domaine.id"
+              [libelle]="domaine.libelle"
+              [actif]="(formSeance.disciplinesIds ?? []).includes(domaine.id)"
+              (selectionChange)="basculerDiscipline(domaine.id, $event)"
+            />
+          }
+        </div>
+      </div>
+
+      <mc-input
+        id="inputTitreSeance"
+        [(ngModel)]="formSeance.titre"
+        name="titre"
+        [label]="LIBELLES.cahierJournal.labelTitre"
+      />
+
+      <mc-textarea
+        id="textareaObjectifsSeance"
+        [(ngModel)]="formSeance.objectifs"
+        name="objectifs"
+        [label]="LIBELLES.cahierJournal.labelObjectifs"
+        [lignes]="3"
+      />
+
+      <mc-textarea
+        id="textareaDeroulementSeance"
+        [(ngModel)]="formSeance.deroulement"
+        name="deroulement"
+        [label]="LIBELLES.cahierJournal.labelDeroulement"
+        [lignes]="3"
+      />
+
+      <mc-textarea
+        id="textareaRessourcesSeance"
+        [(ngModel)]="formSeance.ressources"
+        name="ressources"
+        [label]="LIBELLES.cahierJournal.labelRessources"
+        [lignes]="2"
+      />
+
+      <mc-textarea
+        id="textareaDescriptionSeance"
+        [(ngModel)]="formSeance.description"
+        name="description"
+        [label]="LIBELLES.cahierJournal.labelDescription"
+        [lignes]="2"
+      />
+
+      <div class="cj-formulaire-seance__groupe">
+        <p class="cj-formulaire-seance__label-groupe">{{ LIBELLES.cahierJournal.labelCompetences }}</p>
+        <mc-selecteur-competences
+          [competencesSelectionnees]="formSeance.competencesIds ?? []"
+          [multiSelection]="true"
+          (selectionChange)="surSelectionCompetences($event)"
+        />
+      </div>
+
+      <div class="cj-formulaire-seance__groupe">
+        <p class="cj-formulaire-seance__label-groupe">{{ LIBELLES.cahierJournal.labelEleves }}</p>
+        <mc-eleves-concernes
+          [id]="'elevesConcernesSeance'"
+          [ngModel]="formSeance.elevesConcernes"
+          (ngModelChange)="surElevesConcernesChange($event)"
+          name="elevesConcernes"
+        />
+      </div>
+
+    }
+  </div>
+
+  <div class="cj-formulaire-seance__actions">
+    <button id="btnEnregistrerSeance" type="submit" class="mc-btn-primaire">
+      {{ LIBELLES.commun.enregistrer }}
+    </button>
+    <button
+      id="btnAnnulerSeance"
+      type="button"
+      class="mc-btn-fantome"
+      (click)="annuler.emit()"
+    >{{ LIBELLES.commun.annuler }}</button>
+  </div>
+
+</form>

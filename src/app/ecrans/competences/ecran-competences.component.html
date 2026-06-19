@@ -1,0 +1,65 @@
+<div class="competences">
+
+  <!-- Zone centrale : sélecteur d'arbre (avec filtres intégrés) -->
+  <div class="competences__arbre">
+    <mc-selecteur-competences
+      [competencesSelectionnees]="panier()"
+      [multiSelection]="true"
+      (selectionChange)="surSelectionChange($event)"
+    />
+  </div>
+
+  <!-- Colonne droite : panier -->
+  <div class="competences__panier">
+    <h2 class="competences__panier-titre">{{ LIBELLES.competences.titre }}</h2>
+
+    @if (panierAvecLibelles().length === 0) {
+      <p class="competences__panier-vide">{{ LIBELLES.competences.panierVide }}</p>
+    } @else {
+      <ul class="competences__panier-liste" aria-label="Panier de compétences">
+        @for (item of panierAvecLibelles(); track item.id) {
+          <li class="competences__panier-item">
+            <span class="competences__panier-libelle">{{ item.libelle }}</span>
+            <button
+              [id]="'btnRetirerCompetence' + item.id"
+              class="mc-btn-icone mc-btn-xs"
+              [attr.aria-label]="'Retirer ' + item.libelle"
+              (click)="retirerDuPanier(item.id)"
+            >✕</button>
+          </li>
+        }
+      </ul>
+    }
+
+    <div class="competences__panier-actions">
+      <button
+        id="btnViderPanier"
+        class="mc-btn-fantome"
+        [disabled]="!panierNonVide()"
+        (click)="viderPanier()"
+      >{{ LIBELLES.competences.boutonVider }}</button>
+      <button
+        id="btnEnvoyerProjet"
+        class="mc-btn-primaire"
+        [disabled]="!panierNonVide()"
+        (click)="exporterVersProjet()"
+      >{{ LIBELLES.competences.boutonEnvoyerProjet }}</button>
+      <button
+        id="btnEnvoyerSeance"
+        class="mc-btn-primaire"
+        [disabled]="!panierNonVide()"
+        (click)="exporterVersSeance()"
+      >{{ LIBELLES.competences.boutonEnvoyerSeance }}</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Popin d'export -->
+<popin-export-competences
+  [visible]="popinExportVisible()"
+  [competencesIds]="panier()"
+  [mode]="modeExport()"
+  (confirme)="confirmerExport($event)"
+  (annule)="annulerExport()"
+/>

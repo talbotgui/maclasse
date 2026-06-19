@@ -1,0 +1,59 @@
+<div class="form-projet">
+
+  <!-- Bandeau -->
+  <div class="form-projet__bandeau">
+    <mc-input id="champFormNomProjet" [label]="LIBELLES.projet.labelNom" [(ngModel)]="formProjet.nom" />
+    <div class="form-projet__bandeau-actions">
+      <button id="btnEnregistrerProjet" class="mc-btn-primaire" (click)="onEnregistrer()">{{ LIBELLES.commun.enregistrer }}</button>
+      <button id="btnAnnulerProjet" class="mc-btn-fantome" (click)="annuler.emit()">{{ LIBELLES.commun.annuler }}</button>
+    </div>
+  </div>
+
+  <!-- Section : Informations générales -->
+  <section class="form-projet__section" aria-labelledby="titreFormInfosProjet">
+    <h3 id="titreFormInfosProjet" class="form-projet__titre-section">{{ LIBELLES.projet.sectionInfos }}</h3>
+    <mc-textarea id="champFormDescProjet" [label]="LIBELLES.projet.labelDescription" [(ngModel)]="formProjet.description" />
+    <fieldset class="form-projet__chips-fieldset">
+      <legend>{{ LIBELLES.projet.labelEleves }}</legend>
+      <div class="form-projet__chips">
+        @for (eleve of eleves(); track eleve.id) {
+          <mc-chip-filtre
+            [id]="'chipProjetEleve' + eleve.id"
+            [libelle]="eleve.nom.toUpperCase() + ' ' + eleve.prenom"
+            [actif]="formProjet.elevesIds.includes(eleve.id)"
+            (selectionChange)="basculerEleve(eleve.id, $event)"
+          />
+        }
+      </div>
+    </fieldset>
+  </section>
+
+  <!-- Section : Périodes -->
+  <section class="form-projet__section" aria-labelledby="titreFormPeriodesProjet">
+    <h3 id="titreFormPeriodesProjet" class="form-projet__titre-section">{{ LIBELLES.projet.sectionPeriodes }}</h3>
+    <button id="btnAjouterPeriodeProjet" class="mc-btn-primaire mc-btn-sm" (click)="ajouterPeriode()">{{ LIBELLES.projet.boutonAjouterPeriode }}</button>
+    <ul class="form-projet__periodes">
+      @for (periode of formProjet.periodes; track $index; let i = $index) {
+        <li class="form-projet__periode">
+          <div class="form-projet__periode-header">
+            <mc-input [id]="'champPeriodeNomProjet' + i" [label]="LIBELLES.projet.labelPeriodeNom" [(ngModel)]="periode.periodeNom" />
+            <mc-input [id]="'champPeriodeDebutProjet' + i" [label]="LIBELLES.projet.labelPeriodeDebut" type="date" [(ngModel)]="periode.debut" />
+            <mc-input [id]="'champPeriodeFinProjet' + i" [label]="LIBELLES.projet.labelPeriodeFin" type="date" [(ngModel)]="periode.fin" />
+            <mc-bouton-destruction [id]="'btnSupprimerPeriodeProjet' + i" [desactive]="false" [tooltipDesactive]="''" (confirme)="supprimerPeriode(i)" />
+          </div>
+          <mc-textarea [id]="'champPeriodeDescProjet' + i" [label]="LIBELLES.projet.labelPeriodeDescription" [(ngModel)]="periode.description" />
+          <div class="form-projet__competences">
+            <span class="form-projet__label-competences">{{ LIBELLES.projet.labelPeriodeCompetences }}</span>
+            <mc-selecteur-competences
+              [id]="'selecteurCompetences' + i"
+              [competencesSelectionnees]="periode.competencesIds"
+              [multiSelection]="true"
+              (selectionChange)="surSelectionCompetences(i, $event)"
+            />
+          </div>
+        </li>
+      }
+    </ul>
+  </section>
+
+</div>

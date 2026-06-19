@@ -1,0 +1,195 @@
+<div class="cj">
+
+  <!-- ── Colonne gauche : navigation et actions ── -->
+  <div class="cj__gauche">
+    <div class="cj__nav-date">
+      <button id="btnMoins7Jours" class="mc-btn-icone" title="-7 jours" aria-label="7 jours en arrière" (click)="naviguerJour(-7)">«</button>
+      <button id="btnMoins1Jour" class="mc-btn-icone" title="-1 jour" aria-label="Jour précédent" (click)="naviguerJour(-1)">‹</button>
+      <span class="cj__date-courante">{{ dateFormatee() }}</span>
+      <button id="btnPlus1Jour" class="mc-btn-icone" title="+1 jour" aria-label="Jour suivant" (click)="naviguerJour(1)">›</button>
+      <button id="btnPlus7Jours" class="mc-btn-icone" title="+7 jours" aria-label="7 jours en avant" (click)="naviguerJour(7)">»</button>
+    </div>
+
+    <mc-mini-calendrier
+      [journeesAvecEntrees]="journeesAvecEntrees()"
+      [joursFeries]="joursFeries()"
+      [joursOuvres]="joursOuvres()"
+      [jourSelectionne]="dateSelectionnee()"
+      (jourChange)="surChangementDate($event)"
+    />
+
+    <div class="cj__actions-journee">
+      <button id="btnInitialiserVide" class="mc-btn-secondaire mc-btn-sm" (click)="initialiserVide()">
+        {{ LIBELLES.cahierJournal.boutonInitialiserVide }}
+      </button>
+      <button id="btnInitialiserEdt" class="mc-btn-secondaire mc-btn-sm" (click)="initialiserDepuisEdt()">
+        {{ LIBELLES.cahierJournal.boutonInitialiserEdt }}
+      </button>
+
+      @if (journeeSelectionnee()) {
+        <button
+          id="btnDupliquerJournee"
+          class="mc-btn-secondaire mc-btn-sm"
+          (click)="demanderDuplication(null)"
+        >{{ LIBELLES.cahierJournal.boutonDupliquerJournee }}</button>
+
+        <button
+          id="btnImprimerCj"
+          class="mc-btn-fantome mc-btn-sm"
+          (click)="imprimer()"
+        >{{ LIBELLES.cahierJournal.boutonImprimer }}</button>
+
+        <button
+          id="btnSupprimerJournee"
+          class="mc-btn-destruction mc-btn-sm"
+          (click)="demanderSuppressionJournee()"
+        >{{ LIBELLES.cahierJournal.boutonSupprimerJournee }}</button>
+      }
+
+      <!-- Formulaire inline de duplication -->
+      @if (popinDuplicationVisible()) {
+        <div class="cj__duplication" role="form" aria-label="Duplication">
+          <label for="inputDateDuplication" class="cj__duplication-label">
+            {{ LIBELLES.cahierJournal.labelJourCible }}
+          </label>
+          <input
+            id="inputDateDuplication"
+            type="date"
+            class="cj__duplication-input"
+            [value]="dateDuplication()"
+            (input)="mettreAJourDateDuplication($event)"
+          />
+          <div class="cj__duplication-actions">
+            <button
+              id="btnConfirmerDuplication"
+              class="mc-btn-primaire mc-btn-sm"
+              [disabled]="!dateDuplication()"
+              (click)="confirmerDuplication()"
+            >{{ LIBELLES.cahierJournal.boutonConfirmerDuplication }}</button>
+            <button
+              id="btnAnnulerDuplication"
+              class="mc-btn-fantome mc-btn-sm"
+              (click)="annulerDuplication()"
+            >{{ LIBELLES.commun.annuler }}</button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ── Colonne droite : séances ── -->
+  <div class="cj__droite">
+
+    @if (!journeeSelectionnee()) {
+      <div class="cj__droite-vide">
+        <p>{{ LIBELLES.cahierJournal.aucuneSeance }}</p>
+        <button id="btnInitialiserVidePrincipal" class="mc-btn-secondaire" (click)="initialiserVide()">
+          {{ LIBELLES.cahierJournal.boutonInitialiserVide }}
+        </button>
+      </div>
+    } @else {
+
+      <div class="cj__seances-liste">
+        @if (seances().length === 0) {
+          <p class="cj__seances-vide">{{ LIBELLES.cahierJournal.aucuneSeance }}</p>
+        }
+
+        @for (seance of seances(); track seance.id; let i = $index) {
+          <article class="cj__seance" [class.cj__seance--editee]="seanceEditee()?.id === seance.id">
+            <div class="cj__seance-entete">
+              <span class="cj__seance-heures">{{ seance.heureDebut }} – {{ seance.heureFin }}</span>
+              <span class="cj__seance-type">{{ seance.type }}</span>
+              @if (seance.titre) {
+                <span class="cj__seance-titre">{{ seance.titre }}</span>
+              }
+              <div class="cj__seance-controles">
+                <button
+                  [id]="'btnMonterSeance' + seance.id"
+                  class="mc-btn-icone mc-btn-xs"
+                  [disabled]="i === 0"
+                  aria-label="Monter la séance"
+                  (click)="deplacerSeance(i, -1)"
+                >↑</button>
+                <button
+                  [id]="'btnDescendreSeance' + seance.id"
+                  class="mc-btn-icone mc-btn-xs"
+                  [disabled]="i === seances().length - 1"
+                  aria-label="Descendre la séance"
+                  (click)="deplacerSeance(i, 1)"
+                >↓</button>
+                <button
+                  [id]="'btnModifierSeance' + seance.id"
+                  class="mc-btn-icone mc-btn-xs"
+                  aria-label="Modifier la séance"
+                  (click)="editerSeance(seance)"
+                >✎</button>
+                <button
+                  [id]="'btnDupliquerSeance' + seance.id"
+                  class="mc-btn-icone mc-btn-xs"
+                  [attr.aria-label]="LIBELLES.cahierJournal.boutonDupliquerSeance"
+                  (click)="demanderDuplication(seance.id)"
+                >⎘</button>
+                <button
+                  [id]="'btnSupprimerSeance' + seance.id"
+                  class="mc-btn-icone mc-btn-xs mc-btn-danger"
+                  aria-label="Supprimer la séance"
+                  (click)="supprimerSeance(seance.id)"
+                >✕</button>
+              </div>
+            </div>
+
+            @if (seance.objectifs) {
+              <p class="cj__seance-objectifs">{{ seance.objectifs }}</p>
+            }
+          </article>
+
+          @if (seanceEditee()?.id === seance.id) {
+            <cj-formulaire-seance
+              [seance]="seanceEditee()"
+              [journee]="journeeSelectionnee()"
+              [domaines]="domaines()"
+              (enregistrer)="onEnregistrerSeance($event)"
+              (annuler)="fermerFormulaire()"
+            />
+          }
+        }
+
+        @if (enCreationSeance()) {
+          <cj-formulaire-seance
+            [seance]="null"
+            [journee]="journeeSelectionnee()"
+            [domaines]="domaines()"
+            (enregistrer)="onEnregistrerSeance($event)"
+            (annuler)="fermerFormulaire()"
+          />
+        }
+      </div>
+
+      <div class="cj__ajouter-seance">
+        <button
+          id="btnAjouterSeance"
+          class="mc-btn-secondaire"
+          [disabled]="enCreationSeance()"
+          (click)="creerSeance()"
+        >+ Ajouter une séance</button>
+      </div>
+
+    }
+  </div>
+
+</div>
+
+<!-- ── Popins ── -->
+
+<popin-avertissement
+  [visible]="popinSupprimerVisible()"
+  [message]="LIBELLES.cahierJournal.boutonSupprimerJournee"
+  (confirme)="confirmerSuppressionJournee()"
+  (annule)="annulerSuppression()"
+/>
+
+<popin-warnings-absences
+  [visible]="popinConflitsVisible()"
+  [conflits]="conflits()"
+  (annule)="fermerConflits()"
+/>

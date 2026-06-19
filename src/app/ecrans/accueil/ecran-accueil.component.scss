@@ -1,0 +1,83 @@
+:host {
+  display: block;
+  padding: 2rem;
+}
+
+.accueil {
+  max-width: 48rem;
+  margin: 0 auto;
+
+  &__date {
+    margin-bottom: 2rem;
+  }
+
+  &__label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--texte-secondaire);
+  }
+
+  &__titre {
+    margin: 0.25rem 0 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--texte-principal);
+    text-transform: capitalize;
+  }
+
+  &__journal {
+    background-color: var(--surface);
+    border: 1px solid var(--bordure);
+    border-radius: 0.5rem;
+    padding: 1.25rem 1.5rem;
+  }
+
+  &__vide {
+    margin: 0;
+    color: var(--texte-secondaire);
+    font-style: italic;
+  }
+
+  &__liste {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__seance {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr auto;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--bordure);
+
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+
+  &__horaire {
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    color: var(--texte-principal);
+    white-space: nowrap;
+  }
+
+  &__disciplines {
+    color: var(--texte-principal);
+  }
+
+  &__eleves {
+    white-space: nowrap;
+    color: var(--texte-secondaire);
+    font-size: 0.875rem;
+  }
+}

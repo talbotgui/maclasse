@@ -1,0 +1,146 @@
+@if (!creneau()) {
+
+  <!-- ── Formulaire propriétés EDT ── -->
+  @if (formEdt) {
+    <form class="edt-formulaire" id="formProprietesEdt" (ngSubmit)="onEnregistrerEdt()">
+      <h2 class="edt-formulaire__titre">{{ LIBELLES.edt.titre }}</h2>
+
+      <mc-input
+        id="inputNomEdt"
+        [(ngModel)]="formEdt.nom"
+        name="nom"
+        [label]="LIBELLES.edt.labelNom"
+        [required]="true"
+      />
+
+      <mc-input
+        id="inputDateDebutEdt"
+        [(ngModel)]="formEdt.dateDebut"
+        name="dateDebut"
+        type="date"
+        [label]="LIBELLES.edt.labelDateDebut"
+      />
+
+      <mc-input
+        id="inputDateFinEdt"
+        [(ngModel)]="formEdt.dateFin"
+        name="dateFin"
+        type="date"
+        [label]="LIBELLES.edt.labelDateFin"
+      />
+
+      <mc-select
+        id="selectFrequenceEdt"
+        [(ngModel)]="formEdt.frequence"
+        name="frequence"
+        [options]="optionsFrequence"
+        [label]="LIBELLES.edt.labelFrequence"
+      />
+
+      <div class="edt-formulaire__actions">
+        <button id="btnEnregistrerEdt" type="submit" class="mc-btn-primaire">
+          {{ LIBELLES.commun.enregistrer }}
+        </button>
+        <button
+          id="btnAnnulerEdt"
+          type="button"
+          class="mc-btn-fantome"
+          (click)="annule.emit()"
+        >{{ LIBELLES.commun.annuler }}</button>
+        <mc-bouton-destruction
+          id="btnSupprimerEdt"
+          (confirme)="edtSupprime.emit()"
+        >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction>
+      </div>
+    </form>
+  }
+
+} @else {
+
+  <!-- ── Formulaire créneau ── -->
+  @if (formCreneau) {
+    <form class="edt-formulaire" id="formCreneau" (ngSubmit)="onEnregistrerCreneau()">
+      <h2 class="edt-formulaire__titre">
+        {{ estEditionCreneau() ? LIBELLES.commun.modifier : LIBELLES.commun.creer }} créneau
+      </h2>
+
+      <mc-champ-heure
+        id="inputHeureDebutCreneau"
+        [(ngModel)]="formCreneau.heureDebut"
+        name="heureDebut"
+        [label]="LIBELLES.edt.labelHeureDebut"
+        [required]="true"
+      />
+
+      <mc-champ-heure
+        id="inputHeureFinCreneau"
+        [(ngModel)]="formCreneau.heureFin"
+        name="heureFin"
+        [label]="LIBELLES.edt.labelHeureFin"
+        [required]="true"
+      />
+
+      <mc-select
+        id="selectTypeCreneau"
+        [(ngModel)]="formCreneau.type"
+        name="type"
+        [options]="optionsTypeCreneau"
+        [label]="LIBELLES.edt.labelType"
+      />
+
+      @if (formCreneau.type === 'pedagogique') {
+        <div class="edt-formulaire__groupe" role="group" aria-labelledby="labelDisciplinesCreneau">
+          <p id="labelDisciplinesCreneau" class="edt-formulaire__label-groupe">
+            {{ LIBELLES.edt.labelDisciplines }}
+          </p>
+          <div class="edt-formulaire__chips">
+            @for (domaine of domaines(); track domaine.id) {
+              <mc-chip-filtre
+                [id]="'chipDisciplineCreneau' + domaine.id"
+                [libelle]="domaine.libelle"
+                [actif]="(formCreneau.disciplinesIds ?? []).includes(domaine.id)"
+                (selectionChange)="basculerDiscipline(domaine.id, $event)"
+              />
+            }
+          </div>
+        </div>
+
+        <mc-input
+          id="inputTitreCreneau"
+          [(ngModel)]="formCreneau.titre"
+          name="titre"
+          [label]="LIBELLES.edt.labelTitreCreneau"
+        />
+
+        <div class="edt-formulaire__groupe">
+          <p class="edt-formulaire__label-groupe">{{ LIBELLES.edt.labelEleves }}</p>
+          <mc-eleves-concernes
+            [id]="'elevesConcernesCreneau'"
+            [ngModel]="formCreneau.elevesConcernes"
+            (ngModelChange)="surElevesConcernesChange($event)"
+            name="elevesConcernes"
+          />
+        </div>
+      }
+
+      <div class="edt-formulaire__actions">
+        <button id="btnEnregistrerCreneau" type="submit" class="mc-btn-primaire">
+          {{ LIBELLES.commun.enregistrer }}
+        </button>
+        <button
+          id="btnAnnulerCreneau"
+          type="button"
+          class="mc-btn-fantome"
+          (click)="annule.emit()"
+        >{{ LIBELLES.commun.annuler }}</button>
+        @if (estEditionCreneau()) {
+          <mc-bouton-destruction
+            id="btnSupprimerCreneau"
+            (confirme)="creneauSupprime.emit(formCreneau.id)"
+          >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction>
+        }
+      </div>
+    </form>
+  }
+
+}

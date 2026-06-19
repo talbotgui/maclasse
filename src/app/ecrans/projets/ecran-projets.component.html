@@ -1,0 +1,68 @@
+<div class="mc-layout-liste-detail">
+
+  <!-- Colonne gauche -->
+  <aside class="mc-colonne-gauche projets__gauche">
+    <div class="projets__gauche-entete">
+      <button id="btnCreerProjet" class="mc-btn-primaire" (click)="creerProjet()">{{ LIBELLES.projet.boutonCreer }}</button>
+      <mc-champ-recherche id="rechercheProjet" [placeholder]="LIBELLES.commun.rechercher" [delaiMs]="0" (rechercheChange)="termeRecherche.set($event)" />
+      @if (domaines().length > 0) {
+        <div class="projets__chips-domaines">
+          @for (domaine of domaines(); track domaine.id) {
+            <mc-chip-filtre
+              [id]="'chipDomaine' + domaine.id"
+              [libelle]="domaine.libelle"
+              [actif]="domainesFiltres().includes(domaine.id)"
+              (selectionChange)="basculerFiltreDomaine(domaine.id, $event)"
+            />
+          }
+        </div>
+      }
+    </div>
+
+    <ul class="projets__liste" aria-label="Liste des projets">
+      @if (projetsAffiches().length === 0) {
+        <li class="projets__liste-vide">{{ LIBELLES.projet.aucunProjet }}</li>
+      }
+      @for (projet of projetsAffiches(); track projet.id) {
+        <li>
+          <button
+            [id]="'btnProjet' + projet.id"
+            class="projets__btn-projet"
+            [class.projets__btn-projet--actif]="projetSelectionne()?.id === projet.id"
+            (click)="selectionnerProjet(projet)"
+          >{{ projet.nom }}</button>
+        </li>
+      }
+    </ul>
+  </aside>
+
+  <!-- Colonne droite -->
+  <div class="mc-colonne-droite projets__droite">
+    @if (!projetSelectionne() && !enModeEdition()) {
+      <p class="projets__vide">{{ LIBELLES.projet.aucunProjetSelectionne }}</p>
+    }
+    @if (projetSelectionne() && !enModeEdition()) {
+      <fp-fiche-projet
+        [projet]="projetSelectionne()!"
+        (modifier)="activerEdition()"
+        (supprimer)="supprimerProjet()"
+        (imprimer)="imprimer()"
+      />
+    }
+    @if (enModeEdition()) {
+      <fp-formulaire-projet
+        [projet]="projetSelectionne()"
+        (enregistrer)="onEnregistrer($event)"
+        (annuler)="onAnnulerEdition()"
+      />
+    }
+  </div>
+
+</div>
+
+<popin-avertissement
+  [visible]="popinAvertissementVisible()"
+  [message]="LIBELLES.commun.avertissementModifications"
+  (confirme)="confirmerAvertissement()"
+  (annule)="annulerAvertissement()"
+/>

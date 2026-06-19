@@ -1,0 +1,128 @@
+<div class="fiche-eleve">
+
+  <!-- Bandeau supérieur -->
+  <div class="fiche-eleve__bandeau">
+    <h2 class="fiche-eleve__titre">{{ eleve().nom | uppercase }}&nbsp;{{ eleve().prenom }}</h2>
+    <div class="fiche-eleve__bandeau-actions">
+      <button id="btnModifierEleve" class="mc-btn-primaire" (click)="modifier.emit()">{{ LIBELLES.commun.modifier }}</button>
+      <mc-bouton-destruction
+        id="btnSupprimerEleve"
+        [desactive]="false"
+        [tooltipDesactive]="''"
+        (confirme)="supprimer.emit()"
+      />
+      <button id="btnImprimerEleve" class="mc-btn-fantome" (click)="imprimer.emit()">{{ LIBELLES.eleve.boutonImprimer }}</button>
+    </div>
+  </div>
+
+  <!-- Section : Identité -->
+  <section class="fiche-eleve__section" aria-labelledby="titreIdentite">
+    <h3 id="titreIdentite" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionIdentite }}</h3>
+    <dl class="fiche-eleve__dl">
+      <dt>{{ LIBELLES.eleve.labelSexeM[0] + '/' + LIBELLES.eleve.labelSexeF[0] }}</dt>
+      <dd>{{ eleve().sexe === 'M' ? LIBELLES.eleve.labelSexeM : LIBELLES.eleve.labelSexeF }}</dd>
+
+      <dt>{{ LIBELLES.eleve.labelDateNaissance }}</dt>
+      <dd>{{ eleve().dateNaissance ? DateUtils.formaterDateCourt(eleve().dateNaissance) : '—' }}</dd>
+
+      <dt>{{ LIBELLES.eleve.labelDateArrivee }}</dt>
+      <dd>{{ eleve().dateArrivee ? DateUtils.formaterDateCourt(eleve().dateArrivee) : '—' }}</dd>
+
+      <dt>{{ LIBELLES.eleve.labelNiveau }}</dt>
+      <dd>{{ eleve().niveau || '—' }}</dd>
+
+      <dt>{{ LIBELLES.eleve.labelGroupes }}</dt>
+      <dd>{{ eleve().groupes.length ? eleve().groupes.map(g => libelleGroupe(g)).join(', ') : '—' }}</dd>
+
+      <dt>{{ LIBELLES.eleve.labelStatut }}</dt>
+      <dd>{{ libelleDuStatut(eleve().statut) || '—' }}</dd>
+
+      @if (eleve().bilans) {
+        <dt>{{ LIBELLES.eleve.labelBilans }}</dt>
+        <dd class="fiche-eleve__texte-long">{{ eleve().bilans }}</dd>
+      }
+      @if (eleve().accueil) {
+        <dt>{{ LIBELLES.eleve.labelAccueil }}</dt>
+        <dd class="fiche-eleve__texte-long">{{ eleve().accueil }}</dd>
+      }
+      @if (eleve().inclusion) {
+        <dt>{{ LIBELLES.eleve.labelInclusion }}</dt>
+        <dd class="fiche-eleve__texte-long">{{ eleve().inclusion }}</dd>
+      }
+    </dl>
+  </section>
+
+  <!-- Section : Contacts -->
+  @if (eleve().contacts.length > 0) {
+    <section class="fiche-eleve__section" aria-labelledby="titreContacts">
+      <h3 id="titreContacts" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionContacts }}</h3>
+      <ul class="fiche-eleve__liste-resumee">
+        @for (contact of eleve().contacts; track $index) {
+          <li>{{ libelleTypeContact(contact.type) }} — {{ contact.nom }}@if (contact.telephone) { — {{ contact.telephone }}}</li>
+        }
+      </ul>
+    </section>
+  }
+
+  <!-- Section : Absences récurrentes -->
+  @if (eleve().absencesRecurrentes.length > 0) {
+    <section class="fiche-eleve__section" aria-labelledby="titreAbsencesRec">
+      <h3 id="titreAbsencesRec" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionAbsencesRecurrentes }}</h3>
+      <ul class="fiche-eleve__liste-resumee">
+        @for (abs of eleve().absencesRecurrentes; track abs.id) {
+          <li>{{ abs.libelle }} — {{ abs.jour }} {{ abs.heureDebut }}–{{ abs.heureFin }}</li>
+        }
+      </ul>
+    </section>
+  }
+
+  <!-- Section : Absences ponctuelles -->
+  @if (eleve().absencesPonctuelles.length > 0) {
+    <section class="fiche-eleve__section" aria-labelledby="titreAbsencesPonct">
+      <h3 id="titreAbsencesPonct" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionAbsencesPonctuelles }}</h3>
+      <ul class="fiche-eleve__liste-resumee">
+        @for (abs of eleve().absencesPonctuelles; track abs.id) {
+          <li>{{ DateUtils.formaterDateCourt(abs.date) }} — {{ abs.justification || '—' }}</li>
+        }
+      </ul>
+    </section>
+  }
+
+  <!-- Section : Cursus -->
+  @if (eleve().cursus.length > 0) {
+    <section class="fiche-eleve__section" aria-labelledby="titreCursus">
+      <h3 id="titreCursus" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionCursus }}</h3>
+      <ul class="fiche-eleve__liste-resumee">
+        @for (annee of eleve().cursus; track annee.annee) {
+          <li>{{ annee.annee }}–{{ annee.annee + 1 }} — {{ annee.niveau }} — {{ annee.etablissement }}</li>
+        }
+      </ul>
+    </section>
+  }
+
+  <!-- Section : Notes administratives -->
+  @if (eleve().notesDroitImage || eleve().notesAutorisationBaignade || eleve().notesPPA || eleve().notesESS) {
+    <section class="fiche-eleve__section" aria-labelledby="titreNotes">
+      <h3 id="titreNotes" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionNotes }}</h3>
+      <dl class="fiche-eleve__dl">
+        @if (eleve().notesDroitImage) {
+          <dt>{{ LIBELLES.eleve.labelDroitImage }}</dt>
+          <dd class="fiche-eleve__texte-long">{{ eleve().notesDroitImage }}</dd>
+        }
+        @if (eleve().notesAutorisationBaignade) {
+          <dt>{{ LIBELLES.eleve.labelAutorisationBaignade }}</dt>
+          <dd class="fiche-eleve__texte-long">{{ eleve().notesAutorisationBaignade }}</dd>
+        }
+        @if (eleve().notesPPA) {
+          <dt>{{ LIBELLES.eleve.labelPPA }}</dt>
+          <dd class="fiche-eleve__texte-long">{{ eleve().notesPPA }}</dd>
+        }
+        @if (eleve().notesESS) {
+          <dt>{{ LIBELLES.eleve.labelESS }}</dt>
+          <dd class="fiche-eleve__texte-long">{{ eleve().notesESS }}</dd>
+        }
+      </dl>
+    </section>
+  }
+
+</div>

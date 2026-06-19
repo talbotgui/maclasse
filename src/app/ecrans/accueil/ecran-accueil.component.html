@@ -1,0 +1,22 @@
+<section class="accueil">
+  <div class="accueil__date">
+    <span class="accueil__label">{{ LIBELLES.accueil.labelAujourdhui }}</span>
+    <h1 class="accueil__titre">{{ dateFormatee }}</h1>
+  </div>
+
+  <div class="accueil__journal">
+    @if (seancesResumees().length === 0) {
+      <p class="accueil__vide">{{ LIBELLES.accueil.aucunJournal }}</p>
+    } @else {
+      <ul class="accueil__liste">
+        @for (seance of seancesResumees(); track seance.heureDebut) {
+          <li class="accueil__seance">
+            <span class="accueil__horaire">{{ seance.heureDebut }} – {{ seance.heureFin }}</span>
+            <span class="accueil__disciplines">{{ seance.disciplines.join(', ') }}</span>
+            <span class="accueil__eleves">{{ seance.nbEleves }}&nbsp;{{ LIBELLES.accueil.labelNbEleves }}</span>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</section>

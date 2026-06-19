@@ -1,0 +1,82 @@
+<div class="mc-layout-liste-detail">
+
+  <!-- Colonne gauche : navigation -->
+  <aside class="mc-colonne-gauche eleves__gauche">
+    <div class="eleves__gauche-entete">
+      <button id="btnCreerEleve" class="mc-btn-primaire" (click)="creerEleve()">{{ LIBELLES.eleve.boutonCreer }}</button>
+      <mc-champ-recherche
+        id="rechercheEleves"
+        [placeholder]="LIBELLES.commun.rechercher"
+        [delaiMs]="0"
+        (rechercheChange)="termeRecherche.set($event)"
+      />
+      @if (groupes().length > 0) {
+        <div class="eleves__chips-groupes">
+          @for (groupe of groupes(); track groupe.id) {
+            <mc-chip-filtre
+              [id]="'chipGroupe' + groupe.id"
+              [libelle]="groupe.libelle"
+              [actif]="groupesFiltres().includes(groupe.id)"
+              (selectionChange)="basculerFiltreGroupe(groupe.id, $event)"
+            />
+          }
+        </div>
+      }
+    </div>
+
+    <ul class="eleves__liste" aria-label="Liste des élèves">
+      @if (elevesAffiches().length === 0) {
+        <li class="eleves__liste-vide">{{ LIBELLES.eleve.aucunEleve }}</li>
+      }
+      @for (eleve of elevesAffiches(); track eleve.id) {
+        <li>
+          <button
+            [id]="'btnEleve' + eleve.id"
+            class="eleves__btn-eleve"
+            [class.eleves__btn-eleve--actif]="eleveSelectionne()?.id === eleve.id"
+            (click)="selectionnerEleve(eleve)"
+          >{{ eleve.nom | uppercase }}&nbsp;{{ eleve.prenom }}</button>
+        </li>
+      }
+    </ul>
+  </aside>
+
+  <!-- Colonne droite : fiche ou formulaire -->
+  <div class="mc-colonne-droite eleves__droite">
+    @if (!eleveSelectionne() && !enModeEdition()) {
+      <p class="eleves__vide">{{ LIBELLES.eleve.aucunEleveSelectionne }}</p>
+    }
+
+    @if (eleveSelectionne() && !enModeEdition()) {
+      <fe-fiche-eleve
+        [eleve]="eleveSelectionne()!"
+        [groupes]="groupes()"
+        [statutsEleve]="statutsEleve()"
+        [typesContact]="typesContact()"
+        (modifier)="activerEdition()"
+        (supprimer)="supprimerEleve()"
+        (imprimer)="imprimer()"
+      />
+    }
+
+    @if (enModeEdition()) {
+      <fe-formulaire-eleve
+        [eleve]="eleveSelectionne()"
+        [groupes]="groupes()"
+        [statutsEleve]="statutsEleve()"
+        [typesContact]="typesContact()"
+        (enregistrer)="onEnregistrer($event)"
+        (annuler)="onAnnulerEdition()"
+      />
+    }
+  </div>
+
+</div>
+
+<!-- Popin d'avertissement modifications non enregistrées -->
+<popin-avertissement
+  [visible]="popinAvertissementVisible()"
+  [message]="LIBELLES.commun.avertissementModifications"
+  (confirme)="confirmerAvertissement()"
+  (annule)="annulerAvertissement()"
+/>

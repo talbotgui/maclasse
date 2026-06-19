@@ -1,0 +1,107 @@
+.fiche-projet {
+  padding: 1.25rem 1.5rem;
+
+  &__bandeau {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--bordure);
+  }
+
+  &__titre {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--texte-principal);
+  }
+
+  &__bandeau-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  &__section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--bordure);
+
+    &:last-child { border-bottom: none; }
+  }
+
+  &__titre-section {
+    margin: 0 0 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--texte-secondaire);
+  }
+
+  &__description {
+    margin: 0 0 0.75rem;
+    color: var(--texte-principal);
+    white-space: pre-line;
+  }
+
+  &__dl {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 0.375rem 1rem;
+    margin: 0;
+
+    dt { color: var(--texte-secondaire); font-size: 0.875rem; font-weight: 500; }
+    dd { margin: 0; color: var(--texte-principal); }
+  }
+
+  &__periodes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__periode {
+    padding: 0.875rem 1rem;
+    background-color: var(--surface);
+    border: 1px solid var(--bordure);
+    border-radius: 0.375rem;
+  }
+
+  &__periode-entete {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &__periode-dates {
+    font-size: 0.875rem;
+    color: var(--texte-secondaire);
+  }
+
+  &__periode-desc {
+    margin: 0 0 0.5rem;
+    font-size: 0.875rem;
+    color: var(--texte-principal);
+    white-space: pre-line;
+  }
+
+  &__competences {
+    margin: 0;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+
+    li {
+      font-size: 0.8125rem;
+      color: var(--texte-secondaire);
+    }
+  }
+}

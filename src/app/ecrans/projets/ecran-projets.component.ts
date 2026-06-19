@@ -5,6 +5,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
+import { ContexteService } from '../../services/avecEtat/contexte.service';
 import { ProjetService } from '../../services/sansEtat/projet.service';
 import { CompetenceService } from '../../services/sansEtat/competence.service';
 import { McChampRechercheComponent } from '../../composants/mc-champ-recherche/mc-champ-recherche.component';
@@ -39,6 +40,9 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
   /** Service de données. */
   private readonly donneesService = inject(DonneesService);
 
+  /** Contexte applicatif — source de vérité pour le projet sélectionné. */
+  private readonly contexteService = inject(ContexteService);
+
   /** Service métier des projets. */
   private readonly projetService = inject(ProjetService);
 
@@ -51,8 +55,12 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
   /** Domaines filtrés actifs (IDs). */
   protected readonly domainesFiltres = signal<string[]>([]);
 
-  /** Projet actuellement sélectionné. */
-  protected readonly projetSelectionne = signal<Projet | null>(null);
+  /** Projet actuellement sélectionné — dérivé de l'ID conservé dans le contexte. */
+  protected readonly projetSelectionne = computed<Projet | null>(() => {
+    const id = this.contexteService.projetSelectionne();
+    if (!id) return null;
+    return this.donneesService.donnees()?.projets.find(p => p.id === id) ?? null;
+  });
 
   /** `true` si le formulaire est en mode édition ou création. */
   protected readonly enModeEdition = signal(false);
@@ -148,18 +156,13 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
     } else {
       this.projetService.creerProjet(projet);
     }
-    this.projetSelectionne.set(
-      this.donneesService.donnees()?.projets.find(p => p.id === projet.id) ?? projet,
-    );
+    this.contexteService.projetSelectionne.set(projet.id);
     this.enModeEdition.set(false);
   }
 
   /** Annule l'édition et repasse en mode lecture. */
   protected onAnnulerEdition(): void {
     this.enModeEdition.set(false);
-    if (!this.projetSelectionne()) {
-      this.projetSelectionne.set(null);
-    }
   }
 
   /** Supprime le projet sélectionné. */
@@ -167,7 +170,7 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
     const projet = this.projetSelectionne();
     if (!projet) return;
     this.projetService.supprimerProjet(projet.id);
-    this.projetSelectionne.set(null);
+    this.contexteService.projetSelectionne.set(null);
   }
 
   /**
@@ -199,13 +202,13 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
 
   /** Active un projet et repasse en mode lecture. */
   private activerProjet(projet: Projet): void {
-    this.projetSelectionne.set(projet);
+    this.contexteService.projetSelectionne.set(projet.id);
     this.enModeEdition.set(false);
   }
 
   /** Active le mode création. */
   private activerCreation(): void {
-    this.projetSelectionne.set(null);
+    this.contexteService.projetSelectionne.set(null);
     this.enModeEdition.set(true);
   }
 }

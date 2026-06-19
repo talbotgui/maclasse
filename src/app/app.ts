@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ContexteService } from './services/avecEtat/contexte.service';
+import { McEnteteComponent } from './composants/mc-entete/mc-entete.component';
 
 /**
  * Composant racine de l'application MaClasse.
@@ -9,7 +10,7 @@ import { ContexteService } from './services/avecEtat/contexte.service';
  */
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, McEnteteComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

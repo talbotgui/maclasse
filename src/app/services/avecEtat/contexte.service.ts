@@ -23,6 +23,9 @@ export class ContexteService {
   /** ID du dernier élève sélectionné — conservé lors des changements d'écran. */
   public readonly eleveSelectionne: WritableSignal<string | null> = signal(null);
 
+  /** ID du dernier projet sélectionné — conservé lors des changements d'écran. */
+  public readonly projetSelectionne: WritableSignal<string | null> = signal(null);
+
   /** ISO date du dernier jour consulté dans le cahier journal. */
   public readonly jourCourantCahierJournal: WritableSignal<string | null> = signal(null);
 

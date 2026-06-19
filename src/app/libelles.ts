@@ -40,6 +40,7 @@ export const LIBELLES = {
     tooltipAucuneSauvegarde:   'Aucune sauvegarde effectuée',
     rechercheLabel:            'Recherche globale',
     rechercheAria:             'Résultats de recherche',
+    boutonTheme:               'Changer de thème',
   },
 
   /** Libellés de la navigation principale. */

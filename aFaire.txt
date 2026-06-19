@@ -1,6 +1,40 @@
+Bugs :
+- global
+  - revoir le sélecteur de compétence
+  - A la création sur le bouton CREER, dans tous les écrans, le focus doit se placer sur le premier champ éditable
+  - propose une homogénéisation des boutons sans libellé dans l'écran CJ et dans les autres
+  - les boutons MODIFIER, SAUVEGARDER, IMPRIMER, ENREGISTRER sont tous de taille différente. Homogénéise ça
+  - en petite largeur d'écran, la colonne de gauche doit passer au dessus de la zone centrale
+  - dans l'ensemble de l'application, filtre les domaines à partir de la sélection faite dans une nouvelle section du paramétrage
+- dans l'entête
+  - dans l'entête, si la largeur de l'écran est trop petite pour afficher les boutons des écrans, affiche un bouton "BURGER" pour afficher le contenu de l'entête
+  - dans la recherche, permet la saisie d'une date pour sélectionner et afficher le calendrier à la date demandée
+  - dans la recherche, recherche aussi dans les noms des emplois du temps
+  - transforme le bouton de thème pour qu'il affiche un tout petit popin contenant un bouton pour chaque thème
+- écran ELEVE
+  - dans l'impression de la page ELEVE, la colonne de gauche est encore visible.
+  - dans l'entête du formulaire des élèves, en mode EDITION, les champs de saisie et les 2 boutons ne sont pas responsive. Propose une amélioration.
+- écran PROJET
+  - dans le formulaire d'un PROJET, il faut pouvoir sélectionner les élèves via les groupes. Ajouter un sélecteur de groupes, au dessus du sélecteur des élèves, synchronisant la sélection entre les deux me semble pertinent. Qu'en penses-tu ?
+- écran COMPETENCES
+  - l'arbre dans l'écran des compétences n'est pas navigable au clavier
+  - ajoute un bouton au bout de chaque compétence, dans l'écran COMPETENCES, pour en sélectionner une pour le panier
+- écran EDT
+  - le bouton SUPPRIMER est plus petit que les autres dans le formulaire d'édition de l'EDT
+  - les boutons du mini-calendrier (+1j, +7j, ...) ne fonctionnent pas
+  - dans l'écran EDT, dans la colonne de gauche, ajoute la fréquence à côté du nom de l'emploi du temps
+  - dans l'écran EDT, dans la colonne de gauche, ajoute une icône à côté du nom des emplois du temps actifs (dont la date du jour est entre les bornes)
+- écran CJ
+  - le libellé des colonnes du mini-calendrier est mauvais. L'initiale du jour de la semaine est décalée (remplacer J par V)
+  - les boutons de réorganisation/déplacement d'une séance ne fonctionne pas
+  - la sélection de la cible d'une duplication doit être dans un popin
+
+
 Suite au déroulement des étapes de génération :
 - faire passer Sonar sur le code
 
+Analyse de l'usage de la mémoire
+- dans chaque session de génération, demander l'analyse des questions posées pour compléter une checklist de ce que doit contenir le plan de génération
 
 Futures pages :
 - [EXPLORATION] EVALUATIONS Créer la page des évaluations avec le tableau proposé par ClaudeDesign mais ajoute un "ne sera pas évaluer" pour gérer le cas d'un élève n'ayant pas le niveau pour attaquer une notion à une période donnée (retard par rapport à ses camarades et aux prévisions du projet)

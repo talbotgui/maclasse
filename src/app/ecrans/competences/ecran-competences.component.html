@@ -4,7 +4,6 @@
   <div class="competences__arbre">
     <mc-arbre-competences
       [competencesSelectionnees]="panier()"
-      [multiSelection]="true"
       (selectionChange)="surSelectionChange($event)"
     />
     <p class="competences__arbre-info">{{ LIBELLES.competences.infoDomainesParametrage }}</p>

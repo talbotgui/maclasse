@@ -63,7 +63,6 @@
 }
 
 .mc-arbre-competences__libelle {
-  flex: 1;
   text-align: left;
   padding: 0.375rem 0.5rem;
   background: transparent;
@@ -71,10 +70,9 @@
   color: var(--texte-principal);
   font-size: 0.875rem;
   border-radius: 4px;
-  cursor: pointer;
+  cursor: default;
 
-  &--selectionne {
-    background-color: var(--chip-actif);
+  &--dans-panier {
     color: var(--couleur-primaire);
     font-weight: 500;
   }
@@ -82,5 +80,21 @@
   &:focus-visible {
     outline: 2px solid var(--couleur-focus);
     outline-offset: 1px;
+  }
+}
+
+.mc-arbre-competences__ajouter {
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+
+  .mc-arbre-competences__noeud &,
+  &:focus-visible {
+    opacity: 1;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
   }
 }

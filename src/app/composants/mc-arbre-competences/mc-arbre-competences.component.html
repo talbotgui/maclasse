@@ -46,11 +46,17 @@
           [id]="'noeudSel_' + noeud.competence.id"
           type="button"
           class="mc-arbre-competences__libelle"
-          [class.mc-arbre-competences__libelle--selectionne]="noeud.estSelectionne"
-          [attr.aria-pressed]="noeud.estSelectionne"
-          (click)="basculerSelection(noeud.competence.id)"
+          [class.mc-arbre-competences__libelle--dans-panier]="noeud.estSelectionne"
           (keydown)="naviguerClavier($event, $index)"
         >{{ noeud.competence.libelle }}</button>
+        <button
+          [id]="'btnAjouterPanier_' + noeud.competence.id"
+          type="button"
+          class="mc-arbre-competences__ajouter mc-btn-icone mc-btn-xs"
+          [attr.aria-label]="LIBELLES.competences.ariaAjouterAuPanier + noeud.competence.libelle"
+          [disabled]="noeud.estSelectionne"
+          (click)="ajouterAuPanier(noeud.competence.id)"
+        >+</button>
       </div>
     }
   </div>

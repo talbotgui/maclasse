@@ -755,3 +755,21 @@ Not implemented: navigation to another Document
 2026-06-20 12:15:04 [Revoir le sélecteur de compétence avec autocomplétion] je prend l'option A. Implémente la
 ---
 2026-06-20 12:21:23 [Revoir le sélecteur de compétence avec autocomplétion] modifie la description des écrans et le plan de génération de l'application avec les modifications faites dans cette session
+---
+2026-06-20 12:45:18 [Sans titre] dans le sélecteur de compétence, la liste des options s'affiche derrière les autres champs du formulaire de la page. Analyse le problème
+---
+2026-06-20 12:47:22 [Sans titre] Dans l'écran des compétences, ajoute un bouton au bout du libellé de chaque compétence pour ajouter la compétence dans le panier. Au clic, n'ajoute pas la compétence en double dans le panier.
+Reformule
+---
+2026-06-20 12:47:56 [Analyser z-index du sélecteur de compétence] tente cette correction
+---
+2026-06-20 12:49:53 [Ajouter bouton panier aux compétences] retire aussi la gestion du clic sur la compétence elle-même.  et reformule
+---
+2026-06-20 12:52:35 [Analyser z-index du sélecteur de compétence] le problème n'est pas résolu.
+Voici le rendu actuel :
+---
+2026-06-20 12:52:54 [Ajouter bouton panier aux compétences] c bon. Tu peux modifier le code
+---
+2026-06-20 13:01:45 [Ajouter bouton panier aux compétences] modifie la documentation/mémoire avec ces changements
+---
+2026-06-20 13:01:51 [Analyser z-index du sélecteur de compétence] reprend

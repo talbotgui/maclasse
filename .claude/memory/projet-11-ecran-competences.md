@@ -60,10 +60,15 @@ Le composant `mc-arbre-competences` intègre les trois sous-zones suivantes :
 - Les nœuds non correspondants sont **masqués** (pas grisés)
 - Quand les filtres sont vidés, l'arbre revient à son état replié par défaut
 
-### Interaction avec une compétence feuille
+### Interaction avec une compétence
 
-- **Clic** sur une compétence feuille → ajout au panier (si elle n'y est pas déjà)
-- Indicateur visuel sur la compétence déjà présente dans le panier (ex. icône ou style distinct)
+- Le libellé de la compétence n'est **pas cliquable** (navigation clavier uniquement via flèches ARIA)
+- Chaque ligne expose un **bouton "+"** à droite du libellé
+  - Clic → ajout au panier si la compétence n'y est pas déjà
+  - **Désactivé** (`disabled`) si la compétence est déjà dans le panier
+  - `aria-label` = "Ajouter au panier : {libellé}"
+  - `id` = `btnAjouterPanier_{id}`
+- Indicateur visuel (couleur primaire + gras) sur les compétences déjà dans le panier (classe `--dans-panier`)
 - Aucun indicateur d'utilisation dans les projets ou séances
 
 ---

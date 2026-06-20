@@ -8,12 +8,13 @@ import type { Competence } from '../../modeles/referentiels.modele';
 import type { NoeudAffiche } from '../../modeles/composants.modele';
 
 /**
- * Arbre hiérarchique de sélection de compétences avec filtrage textuel et filtrage par domaine.
+ * Arbre hiérarchique de compétences avec filtrage textuel et filtrage par domaine.
  * Utilisé dans l'écran Compétences où l'arbre est la pièce centrale de navigation.
  *
+ * Chaque nœud expose un bouton "Ajouter au panier" qui émet `selectionChange` avec la
+ * compétence ajoutée. Un doublon dans `competencesSelectionnees` désactive le bouton.
  * En mode recherche active : les nœuds correspondants et leurs ancêtres sont affichés
  * et auto-dépliés ; l'état déplié d'avant la recherche est restauré à l'effacement.
- * En mode mono-sélection : cliquer sur une compétence déjà sélectionnée la désélectionne.
  */
 @Component({
   selector: 'mc-arbre-competences',
@@ -23,13 +24,10 @@ import type { NoeudAffiche } from '../../modeles/composants.modele';
   styleUrl: './mc-arbre-competences.component.scss',
 })
 export class McArbreCompetencesComponent extends ComposantBase {
-  /** Identifiants des compétences actuellement sélectionnées. */
+  /** Identifiants des compétences déjà présentes dans le panier (désactivent le bouton d'ajout). */
   public readonly competencesSelectionnees: InputSignal<string[]> = input<string[]>([]);
 
-  /** `true` pour autoriser la sélection de plusieurs compétences simultanément. */
-  public readonly multiSelection: InputSignal<boolean> = input(true);
-
-  /** Émis avec la liste mise à jour des identifiants sélectionnés. */
+  /** Émis avec la liste mise à jour des identifiants après ajout d'une compétence. */
   protected readonly selectionChange: OutputEmitterRef<string[]> = output<string[]>();
 
   /** Service d'accès à l'arbre des compétences. */
@@ -159,23 +157,14 @@ export class McArbreCompetencesComponent extends ComposantBase {
   }
 
   /**
-   * Ajoute ou retire une compétence de la sélection, selon `multiSelection`.
-   * En mode mono-sélection, un clic sur la compétence déjà sélectionnée la désélectionne.
-   * @param id Identifiant de la compétence.
+   * Ajoute une compétence au panier si elle n'y est pas déjà.
+   * @param id Identifiant de la compétence à ajouter.
    */
-  protected basculerSelection(id: string): void {
+  protected ajouterAuPanier(id: string): void {
     const courant = this.competencesSelectionnees();
-    let nouvelleSelection: string[];
-
-    if (this.multiSelection()) {
-      nouvelleSelection = courant.includes(id)
-        ? courant.filter(i => i !== id)
-        : [...courant, id];
-    } else {
-      nouvelleSelection = courant.includes(id) ? [] : [id];
+    if (!courant.includes(id)) {
+      this.selectionChange.emit([...courant, id]);
     }
-
-    this.selectionChange.emit(nouvelleSelection);
   }
 
   /**

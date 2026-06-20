@@ -155,6 +155,7 @@ export const LIBELLES = {
     boutonEnvoyerProjet: 'Envoyer vers un projet',
     boutonEnvoyerSeance: 'Envoyer vers une séance',
     infoDomainesParametrage: 'Tous les domaines sont disponibles et activables dans l\'écran Paramétrage.',
+    ariaAjouterAuPanier: 'Ajouter au panier : ',
   },
 
   /** Libellés du composant sélecteur de compétences (`mc-selecteur-competences`). */

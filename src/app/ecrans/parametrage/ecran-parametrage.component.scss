@@ -147,3 +147,17 @@
     color: var(--texte-secondaire);
   }
 }
+
+@media (max-width: 768px) {
+  .parametrage {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    height: auto;
+    min-height: 100%;
+  }
+
+  .parametrage__nav {
+    border-right: none;
+    border-bottom: 1px solid var(--bordure);
+  }
+}

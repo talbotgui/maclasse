@@ -237,6 +237,26 @@
   }
 }
 
+@media (max-width: 768px) {
+  .edt {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    height: auto;
+    min-height: 100%;
+  }
+
+  .edt__gauche {
+    max-height: 40vh;
+    overflow-y: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--bordure);
+  }
+
+  .edt__grille-conteneur {
+    border-right: none;
+  }
+}
+
 @media print {
   .edt__gauche,
   .edt__droite { display: none; }

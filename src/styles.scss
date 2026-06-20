@@ -628,6 +628,20 @@ button {
   }
 }
 
+@media (max-width: 768px) {
+  .mc-layout-liste-detail {
+    flex-direction: column;
+  }
+
+  .mc-colonne-gauche {
+    flex: 0 0 auto;
+    max-height: 40vh;
+    overflow-y: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--bordure);
+  }
+}
+
 @media print {
   .mc-colonne-gauche {
     display: none;

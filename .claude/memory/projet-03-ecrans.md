@@ -36,6 +36,24 @@ related:
 - Implémentation : variables CSS portées sur la balise DOM la plus haute (`<html>` ou `<app-root>`)
 - Règle : aucune couleur hardcodée dans les composants, tout passe par les variables CSS
 
+### Comportement responsive (petite largeur ≤ 768px)
+
+- **Breakpoint unique : 768px** — en dessous de cette largeur, tous les layouts à colonnes basculent en empilement vertical
+- La **colonne de gauche** s'affiche **au-dessus** de la zone centrale
+- Hauteur max de la colonne gauche en mode empilé : **40vh** avec `overflow-y: auto`
+- La bordure droite (séparation visuelle) devient une bordure basse
+- Pour les layouts à 3 colonnes (EDT) : empilement dans l'ordre naturel du DOM (gauche → centre → droite)
+
+**Implémentation par écran :**
+
+| Écran | Fichier CSS concerné | Règle responsive |
+|---|---|---|
+| Élèves, Projets | `styles.scss` (`.mc-layout-liste-detail`) | `flex-direction: column` ; `.mc-colonne-gauche` : `flex: 0 0 auto`, `max-height: 40vh`, `border-right: none`, `border-bottom` |
+| Cahier journal | `ecran-cahier-journal.component.scss` | `.cj` : `grid-template-columns: 1fr` ; `.cj__gauche` : `max-height: 40vh`, bordure basse |
+| Compétences | `ecran-competences.component.scss` | `.competences` : `grid-template-columns: 1fr` ; empilement arbre puis panier |
+| Emploi du temps | `ecran-emploi-du-temps.component.scss` | `.edt` : `grid-template-columns: 1fr` ; `.edt__gauche` : `max-height: 40vh`, bordure basse |
+| Paramétrage | `ecran-parametrage.component.scss` | `.parametrage` : `grid-template-columns: 1fr` ; `.parametrage__nav` : bordure basse |
+
 ---
 
 ## Écran de démarrage (avant chargement des données)

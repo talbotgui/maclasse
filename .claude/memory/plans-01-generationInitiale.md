@@ -140,6 +140,7 @@ Contenu organisé en blocs séparés :
 9. Classes accessibilité : `sr-only`
 10. `mc-disc-pill`, `mc-btn-ajouter`, `mc-btn-supprimer`
 11. `@media print` — masque `.mc-colonne-gauche`, boutons non imprimables
+12. `@media (max-width: 768px)` — responsive : `.mc-layout-liste-detail` passe en `flex-direction: column` ; `.mc-colonne-gauche` : `flex: 0 0 auto`, `max-height: 40vh`, `overflow-y: auto`, `border-right: none`, `border-bottom: 1px solid var(--bordure)`
 
 **Note :** `vitest.config.ts` n'est pas créé — la configuration Vitest est déjà complète dans `angular.json` (`runner: "vitest"`, seuils 80%, exclusions). Un fichier séparé créerait des conflits.
 **Note :** `src/app/gardes/donnees-chargees.garde.ts` est reporté à l'**étape 3** — la garde dépend de `DonneesService` qui n'existe qu'à cette étape.
@@ -590,6 +591,7 @@ Membres CVA communs : `onChange`, `onTouched` (callbacks `protected`, non préfi
 - Sections : Enseignant, Classe, Groupes, Périodes, Raisons d'absence, Statuts élève, Types de contact, Statuts d'acquisition, Configuration EDT, Jours fériés, Préférences
 - Pour chaque section liste : AJOUTER + liste + MODIFIER inline + `mc-bouton-destruction`
 - `mc-bouton-destruction` désactivé si `ReferentielService.estUtilise*(id)`
+- **Responsive `≤ 768px`** : `.parametrage` → `grid-template-columns: 1fr` ; `.parametrage__nav` : `border-right: none`, `border-bottom: 1px solid var(--bordure)`
 
 ### 8.4 `ecran-eleves`
 - Colonne gauche : bouton `btnCreerEleve` + `mc-champ-recherche` + liste élèves (NOM Prénom, triée)
@@ -610,12 +612,14 @@ Membres CVA communs : `onChange`, `onTouched` (callbacks `protected`, non préfi
 - Centre : arbre `mc-selecteur-competences`
 - Droite : liste du panier (depuis `ContexteService.panierCompetences`) + VIDER + boutons export vers projet/séance
 - Panier auto-effacé si une compétence du panier est désélectionnée dans l'arbre
+- **Responsive `≤ 768px`** : `.competences` → `grid-template-columns: 1fr` ; empilement arbre puis panier (ordre DOM naturel)
 
 ### 8.7 `ecran-emploi-du-temps`
 - 3 colonnes : liste EDT gauche | grille hebdo centre | formulaire droit
 - Grille hebdo : colonnes = jours ouvrés (lundi–vendredi par défaut), lignes = créneaux horaires
 - Formulaire droit : propriétés de l'EDT ou formulaire de créneau selon sélection
 - Warning chevauchement : icône sur l'EDT dans la liste, `popin-warnings-absences`
+- **Responsive `≤ 768px`** : `.edt` → `grid-template-columns: 1fr` ; `.edt__gauche` : `max-height: 40vh`, `overflow-y: auto`, `border-right: none`, `border-bottom: 1px solid var(--bordure)` ; `.edt__grille-conteneur` : `border-right: none`
 
 ### 8.8 `ecran-cahier-journal`
 - Colonne gauche : `mc-mini-calendrier` + boutons J−7/J−1/J+1/J+7
@@ -623,6 +627,7 @@ Membres CVA communs : `onChange`, `onTouched` (callbacks `protected`, non préfi
 - Boutons : Initialiser vide, Initialiser depuis EDT, Supprimer la journée, Dupliquer séance/journée
 - Warning absences à l'ENREGISTRER d'une séance (non bloquant)
 - Flèches réorganisation séances (haut / bas)
+- **Responsive `≤ 768px`** : `.cj` → `grid-template-columns: 1fr` ; `.cj__gauche` : `max-height: 40vh`, `overflow-y: auto`, `border-right: none`, `border-bottom: 1px solid var(--bordure)`
 
 **Critère de validation étape 8 :** Tous les écrans sont navigables. Les opérations CRUD fonctionnent. UNDO/REDO fonctionne sur au moins 2 écrans.
 
@@ -682,6 +687,7 @@ Toutes les décisions préalables ont été validées.
 | 13 | `mc-champ-recherche` — debounce | **`delaiMs: InputSignal<number>` (défaut `0`)** — le composant gère le debounce via `setTimeout` + signal local |
 | 14 | `mc-bouton-destruction` — tooltip accessible | **`<span class="sr-only">` + `aria-describedby`** — `title` natif non fiable sur bouton `disabled` |
 | 15 | `mc-badge-statut` — valeur nulle | **`StatutAcquisition \| null` (défaut `null`)** — affichage conditionnel `@if (statut())`, sinon `—` |
+| 16 | Responsive — breakpoint | **`768px`** — unique breakpoint ; colonne gauche passe au-dessus de la zone centrale, `max-height: 40vh` |
 
 ---
 

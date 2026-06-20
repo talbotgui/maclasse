@@ -166,6 +166,22 @@
   }
 }
 
+@media (max-width: 768px) {
+  .cj {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    height: auto;
+    min-height: 100%;
+  }
+
+  .cj__gauche {
+    max-height: 40vh;
+    overflow-y: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--bordure);
+  }
+}
+
 @media print {
   .cj__gauche { display: none; }
 

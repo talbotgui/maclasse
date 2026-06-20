@@ -71,3 +71,22 @@
     gap: 0.5rem;
   }
 }
+
+@media (max-width: 768px) {
+  .competences {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+    height: auto;
+    min-height: 100%;
+  }
+
+  .competences__arbre {
+    border-right: none;
+    border-bottom: 1px solid var(--bordure);
+  }
+
+  .competences__panier {
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+}

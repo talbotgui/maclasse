@@ -803,3 +803,13 @@ Voici le rendu actuel :
 2026-06-20 19:46:18 [Sans titre] le plugin "typescript-lsp" est-il actif ?
 ---
 2026-06-20 19:53:22 [Sans titre] Il manque à peu près tous les tests de tous les composants applicatifs. Prépare un plan "plans-02-testsDeComposant.md" décrivant, étape après étape, la création de tous ces tests. De quels éléments as-tu besoin pour réaliser ce plan ?
+---
+2026-06-20 20:02:39 [Créer un plan de tests pour tous les composants] test les composants simples, puis les composants riches puis les écrans. Rien ne doit être exclus. Crée les ObjectMother nécessaires
+---
+2026-06-20 20:05:55 [Centraliser constantes des jours et créer règle de recherche] que manque-t-il dans les règles pour que ce problème ne se reproduise pas à l'avenir ?
+---
+2026-06-20 20:06:21 [Homogénéiser la taille des boutons d'action] que manque-t-il dans les règles, décrites en mémoire, pour que ce problème ne se reproduise pas à l'avenir ?
+---
+2026-06-20 20:06:39 [Arbre des compétences non navigable au clavier] que manque-t-il dans les règles, décrites en mémoire, pour que ce problème ne se reproduise pas à l'avenir ?
+---
+2026-06-20 20:08:18 [Arbre des compétences non navigable au clavier] oui

@@ -33,6 +33,24 @@ Le parent gère la valeur :
 - **Formulaire sous `@if`** (Élèves, Projets, EDT) : `[focusDemande]="true"` (statique — le composant est recréé)
 - **Formulaire toujours dans le DOM** (Cahier Journal) : signal réactif, ex. `[focusDemande]="enCreationSeance()"`
 
+## Navigation clavier des widgets complexes
+
+Tout composant qui utilise un pattern ARIA avancé doit implémenter
+les interactions clavier de la spec WAI-ARIA pour ce pattern.
+
+| Pattern | Touches obligatoires |
+|---|---|
+| `role="tree"` | ↓/↑ nœud suivant/précédent, → déplier/descendre, ← replier/remonter, Début/Fin |
+| `role="listbox"` | ↓/↑ option suivante/précédente, Début/Fin |
+| `role="combobox"` | ↓/↑ ouvrir/naviguer, Entrée sélectionner, Échap fermer |
+| `role="grid"` | ↓/↑/←/→ cellule adjacente, Début/Fin, Ctrl+Début/Fin |
+
+Implémenter via `(keydown)` sur l'élément interactif principal + `viewChildren`
+pour déplacer le focus (`.nativeElement.focus()`).
+
+Chaque attribut exigé par le rôle (`aria-selected` pour `treeitem`,
+`aria-expanded` pour nœuds non-feuilles, etc.) doit être présent.
+
 ## Contrôle qualité
 
 - Tous les contrôles AXE doivent passer au vert

@@ -1,5 +1,5 @@
 ---
-globs: ["**/*.scss", "**/index.html"]
+globs: ["**/*.scss", "**/*.html"]
 ---
 
 # SCSS / CSS — Règles de style
@@ -24,6 +24,16 @@ Composer `base + modificateurs` — jamais créer une nouvelle classe "tout-en-u
 - Couleur : `mc-btn-danger`
 
 Exemple : `class="mc-btn-fantome mc-btn-sm"` — pas de nouvelle classe de base sans discussion.
+
+## Quand utiliser `mc-btn-sm`
+
+**Taille normale (aucun modificateur)** — actions primaires isolées dans une fiche ou un formulaire à pleine largeur :
+MODIFIER, ENREGISTRER, ANNULER, IMPRIMER, SUPPRIMER JOURNÉE, DUPLIQUER JOURNÉE.
+
+**`mc-btn-sm`** — boutons dans un contexte compact (ligne de liste, formulaire inline) :
+boutons ENREGISTRER/ANNULER dans les lignes de référentiels du paramétrage, mini-formulaire de duplication du CJ, boutons AJOUTER inline dans les sections de formulaire.
+
+**`mc-bouton-destruction`** : utiliser `[petit]="true"` quand le composant est dans un formulaire ou une liste (même règle que `mc-btn-sm`). Sans cet attribut, il prend la taille normale (usage dans les fiches, à côté de MODIFIER).
 
 ## Pas de couleurs hardcodées
 

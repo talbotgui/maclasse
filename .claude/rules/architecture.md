@@ -44,8 +44,8 @@ Exception : `0`, `1`, `-1`, `2` quand leur rôle est évident.
 
 Avant de déclarer une nouvelle constante ou valeur :
 
-1. Chercher dans `LIBELLES` (`libelles.ts`) pour toute chaîne affichée à l'écran
-2. Chercher dans les classes utilitaires (`DateUtils`, `TexteUtils`…) pour les valeurs numériques ou tableaux
+1. Chercher dans `LIBELLES` (`libelles.ts`) pour toute chaîne ou tableau de chaînes françaises — qu'elles soient affichées à l'écran ou utilisées pour de la logique (ex. : `LIBELLES.dates.nomsJours` pour un lookup par index)
+2. Chercher dans les classes utilitaires (`DateUtils`, `TexteUtils`…) pour les valeurs numériques ou tableaux techniques
 3. Chercher dans les services et modèles
 
 Si la constante existe déjà → l'importer et la réutiliser, jamais la redéclarer localement.

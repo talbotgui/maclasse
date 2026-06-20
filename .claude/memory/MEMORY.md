@@ -31,3 +31,4 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 ## Plans de génération
 
 - [Plan génération initiale](plans-01-generationInitiale.md) — 9 étapes séquentielles : config → modèles → services → composants → écrans → en-tête
+- [Plan tests composants](plans-02-testsDeComposant.md) — 11 étapes : 31 composants à couvrir, du plus simple (pur/CVA) aux écrans complexes

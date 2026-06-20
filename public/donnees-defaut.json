@@ -9450,9 +9450,9 @@
           "titre": "Lecture – Compréhension de texte",
           "objectifs": "",
           "competencesIds": [
-            "FC2-27",
-            "FC2-28",
-            "FC2-30"
+            "FR-CM1-1-8",
+            "FR-CM1-1-9",
+            "FR-CM1-1-12"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9474,9 +9474,9 @@
           "titre": "Numération – Les grands nombres",
           "objectifs": "",
           "competencesIds": [
-            "MC2-95",
-            "MC2-97",
-            "MC2-98"
+            "MAT-CM1-1-3",
+            "MAT-CM1-1-4",
+            "MAT-CM1-1-5"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9504,9 +9504,9 @@
           "titre": "Grammaire – Le groupe nominal",
           "objectifs": "",
           "competencesIds": [
-            "FC2-296",
-            "FC2-141",
-            "FC2-311"
+            "FR-CM1-5-19",
+            "FR-CM1-5-20",
+            "FR-CM1-5-26"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9534,9 +9534,9 @@
           "titre": "Géométrie – Les figures planes",
           "objectifs": "",
           "competencesIds": [
-            "MC2-227",
-            "MC2-228",
-            "MC2-229"
+            "MAT-CM1-3-7",
+            "MAT-CM1-3-8",
+            "MAT-CM1-3-9"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9558,8 +9558,8 @@
           "titre": "Orthographe – Les homophones grammaticaux",
           "objectifs": "",
           "competencesIds": [
-            "FC2-172",
-            "FC2-141"
+            "FR-CM1-5-22",
+            "FR-CM1-5-34"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9587,9 +9587,9 @@
           "titre": "Calcul mental – Multiplication et division",
           "objectifs": "",
           "competencesIds": [
-            "MC2-72",
-            "MC2-116",
-            "MC2-117"
+            "MAT-CM1-1-35",
+            "MAT-CM1-1-43",
+            "MAT-CM1-1-52"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9611,8 +9611,8 @@
           "titre": "Production d'écrits – Rédiger un récit",
           "objectifs": "",
           "competencesIds": [
-            "FC2-182",
-            "FC2-195"
+            "FR-CM1-2-7",
+            "FR-CM1-2-11"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9640,9 +9640,9 @@
           "titre": "Fractions – Introduction",
           "objectifs": "",
           "competencesIds": [
-            "MC2-58",
-            "MC2-59",
-            "MC2-60"
+            "MAT-CM1-1-14",
+            "MAT-CM1-1-17",
+            "MAT-CM1-1-20"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9670,8 +9670,8 @@
           "titre": "Vocabulaire – Familles de mots",
           "objectifs": "",
           "competencesIds": [
-            "FC2-229",
-            "FC2-255"
+            "FR-CM1-4-4",
+            "FR-CM1-4-9"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9693,8 +9693,8 @@
           "titre": "Problèmes – Situations multiplicatives",
           "objectifs": "",
           "competencesIds": [
-            "MC2-88",
-            "MC2-89"
+            "MAT-CM1-1-55",
+            "MAT-CM1-1-56"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9722,8 +9722,8 @@
           "titre": "Dictée préparée",
           "objectifs": "",
           "competencesIds": [
-            "FC2-108",
-            "FC2-172"
+            "FR-CM1-2-10",
+            "FR-CM1-4-8"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9745,9 +9745,9 @@
           "titre": "Opérations – Pose et calcul",
           "objectifs": "",
           "competencesIds": [
-            "MC2-109",
-            "MC2-111",
-            "MC2-112"
+            "MAT-CM1-1-49",
+            "MAT-CM1-1-50",
+            "MAT-CM1-1-52"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9775,9 +9775,9 @@
           "titre": "Conjugaison – Les temps du passé",
           "objectifs": "",
           "competencesIds": [
-            "FC2-307",
-            "FC2-319",
-            "FC2-320"
+            "FR-CM1-5-35",
+            "FR-CM1-5-38",
+            "FR-CM1-5-41"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9805,10 +9805,10 @@
           "titre": "Mesures – Longueurs et périmètres",
           "objectifs": "",
           "competencesIds": [
-            "MC2-137",
-            "MC2-140",
-            "MC2-196",
-            "MC2-198"
+            "MAT-CM1-2-1",
+            "MAT-CM1-2-3",
+            "MAT-CM1-2-7",
+            "MAT-CM1-2-8"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9830,8 +9830,8 @@
           "titre": "Lecture autonome – Album de littérature",
           "objectifs": "",
           "competencesIds": [
-            "FC2-35",
-            "FC2-27"
+            "FR-CM1-1-17",
+            "FR-CM1-1-18"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9859,9 +9859,9 @@
           "titre": "Évaluation – Numération et calcul",
           "objectifs": "",
           "competencesIds": [
-            "MC2-95",
-            "MC2-47",
-            "MC2-109"
+            "MAT-CM1-1-3",
+            "MAT-CM1-1-47",
+            "MAT-CM1-1-49"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9883,9 +9883,9 @@
           "titre": "Lecture – Débat littéraire",
           "objectifs": "",
           "competencesIds": [
-            "FC2-195",
-            "FC2-207",
-            "FC3-76"
+            "FR-CM1-1-16",
+            "FR-CM1-3-12",
+            "FR-CM1-3-14"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9913,9 +9913,9 @@
           "titre": "Synthèse – Ce que j'ai appris cette semaine",
           "objectifs": "",
           "competencesIds": [
-            "MC2-47",
-            "MC2-72",
-            "MC2-88"
+            "MAT-CM1-1-47",
+            "MAT-CM1-1-35",
+            "MAT-CM1-1-55"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9943,8 +9943,8 @@
           "titre": "Rédaction – Bilan personnel de la semaine",
           "objectifs": "",
           "competencesIds": [
-            "FC2-182",
-            "FC2-219"
+            "FR-CM1-2-4",
+            "FR-CM1-2-8"
           ],
           "deroulement": "",
           "ressources": "",
@@ -9966,9 +9966,9 @@
           "titre": "Jeux mathématiques",
           "objectifs": "",
           "competencesIds": [
-            "MC2-24",
-            "MC2-34",
-            "MC2-85"
+            "MAT-CM1-1-60",
+            "MAT-CM1-1-58",
+            "MAT-CM1-1-57"
           ],
           "deroulement": "",
           "ressources": "",
@@ -10009,9 +10009,9 @@
           "periodeNom": "Période 1",
           "description": "Découverte du projet : lecture de journaux existants, identification des rubriques. Écriture d'un premier article collectif sur la rentrée.",
           "competencesIds": [
-            "F-1-1-1-1",
-            "F-1-1-1-2",
-            "AP111"
+            "FR-CM1-1-8",
+            "FR-CM1-1-9",
+            "FR-CM1-1-7"
           ],
           "debut": "2025-09-02",
           "fin": "2025-10-17"
@@ -10020,9 +10020,9 @@
           "periodeNom": "Période 2",
           "description": "Mise en page du numéro 2 : introduction à la mise en page et à l'illustration. Enrichissement du vocabulaire de presse.",
           "competencesIds": [
-            "F-1-1-2-1",
-            "AP112",
-            "AP133"
+            "FR-CM1-2-7",
+            "FR-CM1-2-6",
+            "FR-CM1-2-5"
           ],
           "debut": "2025-11-04",
           "fin": "2025-12-19"
@@ -10031,9 +10031,9 @@
           "periodeNom": "Période 3",
           "description": "Numéro spécial « Vivre ensemble » : rédaction de témoignages et d'interviews croisées entre élèves.",
           "competencesIds": [
-            "EMC-2",
-            "EMC-4",
-            "F-1-1-1-1"
+            "EMC-C2-1-1",
+            "EMC-C2-1-5",
+            "FR-CM1-1-9"
           ],
           "debut": "2026-01-05",
           "fin": "2026-02-06"
@@ -10042,9 +10042,9 @@
           "periodeNom": "Période 4",
           "description": "Reportage sur notre quartier : collecte d'informations, écriture de descriptions géographiques et illustration photographique.",
           "competencesIds": [
-            "JF72111",
-            "JF72112",
-            "F-1-1-2-1"
+            "QLM-C2-2-37",
+            "QLM-C2-2-38",
+            "FR-CM1-2-3"
           ],
           "debut": "2026-02-23",
           "fin": "2026-04-10"
@@ -10053,9 +10053,9 @@
           "periodeNom": "Période 5",
           "description": "Numéro bilan de l'année : rétrospective illustrée, article de clôture, couverture artistique réalisée collectivement.",
           "competencesIds": [
-            "AP121",
-            "AP131",
-            "F-1-1-1-2"
+            "FR-CM1-2-6",
+            "FR-CM1-2-7",
+            "FR-CM1-2-8"
           ],
           "debut": "2026-04-27",
           "fin": "2026-07-04"
@@ -10078,8 +10078,8 @@
           "periodeNom": "Période 1",
           "description": "Préparation du projet : observation du sol, identification des légumes à planter. Premières hypothèses sur les besoins des plantes.",
           "competencesIds": [
-            "QLMC21111",
-            "QLMC21113"
+            "QLM-C2-1-9",
+            "QLM-C2-1-13"
           ],
           "debut": "2025-09-02",
           "fin": "2025-10-17"
@@ -10088,9 +10088,9 @@
           "periodeNom": "Période 2",
           "description": "Semis en godets : mesure de la germination (hauteur, durée). Relevés de températures et comparaison des conditions de croissance.",
           "competencesIds": [
-            "QLMC21112",
-            "M-1-1-1-1",
-            "M-1-1-1-3"
+            "QLM-C2-1-10",
+            "MAT-CM1-2-4",
+            "MAT-CM1-2-6"
           ],
           "debut": "2025-11-04",
           "fin": "2025-12-19"
@@ -10099,8 +10099,8 @@
           "periodeNom": "Période 3",
           "description": "Plantation en pleine terre : mise en œuvre de l'arrosage raisonné. Carnet de suivi des observations hebdomadaires.",
           "competencesIds": [
-            "QLMC21114",
-            "JF81113"
+            "QLM-C2-1-14",
+            "QLM-C2-1-11"
           ],
           "debut": "2026-01-05",
           "fin": "2026-02-06"
@@ -10109,9 +10109,9 @@
           "periodeNom": "Période 4",
           "description": "Taille, entretien et lutte biologique contre les nuisibles. Comparaison des variétés et enregistrement des résultats.",
           "competencesIds": [
-            "JF81111",
-            "JF81112",
-            "M-1-1-1-2"
+            "QLM-C2-1-15",
+            "QLM-C2-1-16",
+            "MAT-CM1-2-3"
           ],
           "debut": "2026-02-23",
           "fin": "2026-04-10"
@@ -10120,10 +10120,10 @@
           "periodeNom": "Période 5",
           "description": "Récolte et dégustation. Bilan scientifique : qu'avons-nous appris ? Présentation du carnet de suivi à la classe.",
           "competencesIds": [
-            "QLMC21111",
-            "QLMC21112",
-            "QLMC21113",
-            "JF81114"
+            "QLM-C2-1-9",
+            "QLM-C2-1-10",
+            "QLM-C2-1-13",
+            "QLM-C2-1-17"
           ],
           "debut": "2026-04-27",
           "fin": "2026-07-04"
@@ -10144,45 +10144,10 @@
       ],
       "periodes": [
         {
-          "periodeNom": "Période 1",
-          "description": "Choix du thème et répartition des rôles. Découverte d'œuvres de référence pour nourrir l'imaginaire collectif.",
-          "competencesIds": [
-            "JF411",
-            "JF412"
-          ],
-          "debut": "2025-09-02",
-          "fin": "2025-10-17"
-        },
-        {
-          "periodeNom": "Période 2",
-          "description": "Apprentissage des chants du spectacle : travail sur la justesse et l'expressivité vocale.",
-          "competencesIds": [
-            "EM111",
-            "EM112",
-            "EM113"
-          ],
-          "debut": "2025-11-04",
-          "fin": "2025-12-19"
-        },
-        {
-          "periodeNom": "Période 3",
-          "description": "Création des décors et des costumes : peinture, sculpture légère, collage. Découverte de l'espace scénique.",
-          "competencesIds": [
-            "AP111",
-            "AP113",
-            "AP131",
-            "JF215"
-          ],
-          "debut": "2026-01-05",
-          "fin": "2026-02-06"
-        },
-        {
           "periodeNom": "Période 4",
           "description": "Répétitions intégrales : coordination chant / mouvement. Travail d'expression corporelle et placement sur scène.",
           "competencesIds": [
-            "EM114",
-            "EM115",
-            "EPESC213"
+            "EPS-C2-3-2"
           ],
           "debut": "2026-02-23",
           "fin": "2026-04-10"
@@ -10191,10 +10156,9 @@
           "periodeNom": "Période 5",
           "description": "Filage général et représentation devant les familles. Bilan collectif sur le vécu du projet et les apprentissages réalisés.",
           "competencesIds": [
-            "EM114",
-            "EMC-2",
-            "EMC-4",
-            "JF4131"
+            "EMC-C2-1-1",
+            "EMC-C2-1-5",
+            "EMC-C2-1-4"
           ],
           "debut": "2026-04-27",
           "fin": "2026-07-04"
@@ -10204,7 +10168,18 @@
   ],
   "configuration": {
     "delaiSauvegardeAutoMinutes": 2,
-    "domainesActifs": ["EMC-C2","EMC-CM1","QLM-C2","EPS-C2","EART-C2","LV-C2","FR-CM1","FR-CM2","MAT-CM1","MAT-CM2"]
+    "domainesActifs": [
+      "EMC-C2",
+      "EMC-CM1",
+      "QLM-C2",
+      "EPS-C2",
+      "EART-C2",
+      "LV-C2",
+      "FR-CM1",
+      "FR-CM2",
+      "MAT-CM1",
+      "MAT-CM2"
+    ]
   },
   "emploisDuTemps": [],
   "ppi": [],

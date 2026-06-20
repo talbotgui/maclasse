@@ -7,31 +7,61 @@ import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { CompetenceMother } from '../../tests/competence.mother';
 
-/** Composant hôte minimal pour tester {@link McSelecteurCompetencesComponent} dans un contexte Angular réel. */
+/**
+ * Composant hôte minimal permettant de tester {@link McSelecteurCompetencesComponent}
+ * avec des inputs/outputs liés.
+ */
 @Component({
-  template: `<mc-selecteur-competences [competencesSelectionnees]="[]" />`,
+  template: `
+    <mc-selecteur-competences
+      [competencesSelectionnees]="selectionnes"
+      [multiSelection]="multi"
+      (selectionChange)="selectionnes = $event"
+    />
+  `,
   imports: [McSelecteurCompetencesComponent],
 })
-class ComposantHote {}
+class ComposantHote {
+  /** Identifiants des compétences sélectionnées, mis à jour lors de `selectionChange`. */
+  selectionnes: string[] = [];
+  /** Mode de sélection. */
+  multi = true;
+}
 
 describe('McSelecteurCompetencesComponent', () => {
   let fixture: ComponentFixture<ComposantHote>;
+  let hote: ComposantHote;
 
-  /** Retourne tous les boutons de libellé (sélection) dans l'ordre d'affichage. */
-  const boutonsLibelle = () =>
-    fixture.debugElement.queryAll(By.css('.mc-selecteur-competences__libelle')).map(d => d.nativeElement as HTMLButtonElement);
+  /** Retourne l'élément input de l'autocomplétion. */
+  const champSaisie = () =>
+    fixture.debugElement.query(By.css('#rechercheCompetences')).nativeElement as HTMLInputElement;
 
-  /** Clique sur le bouton toggle du nœud `id` pour le déplier/replier. */
-  const cliquerToggle = (id: string) => {
-    const btn = fixture.debugElement.query(By.css(`#noeudToggle_${id}`));
-    btn?.nativeElement.click();
+  /** Simule une saisie dans le champ d'autocomplétion. */
+  const saisir = (valeur: string) => {
+    const input = champSaisie();
+    input.value = valeur;
+    input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
   };
 
-  /** Envoie un événement clavier sur le bouton à l'index donné. */
-  const appuyerTouche = (indexBouton: number, key: string) => {
-    const bouton = boutonsLibelle()[indexBouton];
-    bouton.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+  /** Envoie une touche clavier sur le champ de saisie. */
+  const appuyerTouche = (key: string) => {
+    champSaisie().dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+    fixture.detectChanges();
+  };
+
+  /** Retourne les options visibles dans la liste de suggestions. */
+  const suggestions = () =>
+    fixture.debugElement.queryAll(By.css('.mc-selecteur-competences__option'))
+      .map(d => d.nativeElement as HTMLLIElement);
+
+  /** Retourne les CHIPs des compétences sélectionnées. */
+  const chipsSelection = () =>
+    fixture.debugElement.queryAll(By.css('.mc-selecteur-competences__chip'));
+
+  /** Clique sur le bouton chip d'un domaine par son identifiant. */
+  const cliquerFiltreDomaine = (id: string) => {
+    fixture.debugElement.query(By.css(`#filtreDomaine_${id}`))?.nativeElement.click();
     fixture.detectChanges();
   };
 
@@ -42,137 +72,184 @@ describe('McSelecteurCompetencesComponent', () => {
     d.referentiels.competences = CompetenceMother.arbreSimple();
     donneesService.charger(d);
     fixture = TestBed.createComponent(ComposantHote);
+    hote = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  describe('navigation clavier — ArrowDown / ArrowUp', () => {
-    it('ArrowDown déplace le focus sur le nœud suivant', () => {
-      const boutons = boutonsLibelle();
-      boutons[0].focus();
+  describe('chips de filtre par domaine', () => {
+    it('affiche un chip par domaine de niveau 1', () => {
+      const chips = fixture.debugElement.queryAll(By.css('.mc-selecteur-competences__domaines mc-chip-filtre'));
 
-      appuyerTouche(0, 'ArrowDown');
-
-      expect(document.activeElement).toBe(boutons[1]);
+      expect(chips.length).toBe(2);
     });
 
-    it('ArrowUp déplace le focus sur le nœud précédent', () => {
-      const boutons = boutonsLibelle();
-      boutons[1].focus();
+    it('activer un filtre de domaine restreint les suggestions', () => {
+      saisir('a');
+      const avantFiltre = suggestions().length;
 
-      appuyerTouche(1, 'ArrowUp');
+      cliquerFiltreDomaine('MATH');
+      saisir('a');
 
-      expect(document.activeElement).toBe(boutons[0]);
+      expect(suggestions().length).toBeLessThan(avantFiltre);
+      expect(suggestions().every(o => o.textContent?.includes('Mathématiques'))).toBe(true);
     });
 
-    it('ArrowDown sur le dernier nœud ne déplace pas le focus', () => {
-      const boutons = boutonsLibelle();
-      const dernier = boutons[boutons.length - 1];
-      dernier.focus();
+    it('désactiver un filtre de domaine restaure toutes les suggestions', () => {
+      saisir('a');
+      const total = suggestions().length;
 
-      appuyerTouche(boutons.length - 1, 'ArrowDown');
+      cliquerFiltreDomaine('MATH');
+      cliquerFiltreDomaine('MATH');
+      saisir('a');
 
-      expect(document.activeElement).toBe(dernier);
-    });
-
-    it('ArrowUp sur le premier nœud ne déplace pas le focus', () => {
-      const boutons = boutonsLibelle();
-      boutons[0].focus();
-
-      appuyerTouche(0, 'ArrowUp');
-
-      expect(document.activeElement).toBe(boutons[0]);
+      expect(suggestions().length).toBe(total);
     });
   });
 
-  describe('navigation clavier — Home / End', () => {
-    it('Home déplace le focus sur le premier nœud', () => {
-      const boutons = boutonsLibelle();
-      boutons[1].focus();
+  describe('autocomplétion', () => {
+    it('saisie vide : aucune suggestion affichée', () => {
+      saisir('');
 
-      appuyerTouche(1, 'Home');
-
-      expect(document.activeElement).toBe(boutons[0]);
+      expect(suggestions()).toHaveLength(0);
     });
 
-    it('End déplace le focus sur le dernier nœud', () => {
-      const boutons = boutonsLibelle();
-      boutons[0].focus();
+    it('saisie "lecture" : suggère le chemin complet', () => {
+      saisir('lecture');
 
-      appuyerTouche(0, 'End');
-
-      expect(document.activeElement).toBe(boutons[boutons.length - 1]);
-    });
-  });
-
-  describe('navigation clavier — ArrowRight', () => {
-    it('ArrowRight déplie un nœud fermé et conserve le focus', () => {
-      const boutons = boutonsLibelle();
-      boutons[0].focus();
-
-      appuyerTouche(0, 'ArrowRight');
-
-      expect(boutonsLibelle().length).toBeGreaterThan(boutons.length);
-      expect(document.activeElement).toBe(boutonsLibelle()[0]);
+      expect(suggestions()).toHaveLength(1);
+      expect(suggestions()[0].textContent?.trim()).toBe('Français › Lecture');
     });
 
-    it('ArrowRight sur un nœud déjà déplié descend vers le premier enfant', () => {
-      // Déplier FR (index 0)
-      cliquerToggle('FR');
-      const boutonsApresDepliage = boutonsLibelle();
+    it('saisie sans correspondance : affiche "aucun résultat"', () => {
+      saisir('zzzzz');
 
-      boutonsApresDepliage[0].focus();
-      appuyerTouche(0, 'ArrowRight');
-
-      expect(document.activeElement).toBe(boutonsLibelle()[1]);
+      const message = fixture.debugElement.query(By.css('.mc-selecteur-competences__aucun-resultat'));
+      expect(message).not.toBeNull();
+      expect(suggestions()).toHaveLength(0);
     });
 
-    it('ArrowRight sur une feuille ne fait rien', () => {
-      // Déplier FR puis FR-LECT pour atteindre une feuille
-      cliquerToggle('FR');
-      cliquerToggle('FR-LECT');
-      const boutons = boutonsLibelle();
-      // FR-LECT-1 est à l'index 2 (FR, FR-LECT, FR-LECT-1, ...)
-      const indexFeuille = boutons.findIndex(b => b.id === 'noeudSel_FR-LECT-1');
-      boutons[indexFeuille].focus();
+    it('saisie "texte" : suggère la compétence feuille avec chemin complet', () => {
+      saisir('texte');
 
-      appuyerTouche(indexFeuille, 'ArrowRight');
-
-      expect(document.activeElement).toBe(boutons[indexFeuille]);
-      expect(boutonsLibelle().length).toBe(boutons.length);
+      expect(suggestions()).toHaveLength(1);
+      expect(suggestions()[0].textContent?.trim()).toBe('Français › Lecture › Comprendre un texte lu');
     });
   });
 
-  describe('navigation clavier — ArrowLeft', () => {
-    it('ArrowLeft replie un nœud déplié et conserve le focus', () => {
-      cliquerToggle('FR');
-      const boutonsApresDepliage = boutonsLibelle();
-      boutonsApresDepliage[0].focus();
+  describe('navigation clavier dans les suggestions', () => {
+    it('ArrowDown sélectionne la première option', () => {
+      saisir('a');
 
-      appuyerTouche(0, 'ArrowLeft');
+      appuyerTouche('ArrowDown');
 
-      expect(boutonsLibelle().length).toBeLessThan(boutonsApresDepliage.length);
-      expect(document.activeElement).toBe(boutonsLibelle()[0]);
+      expect(suggestions()[0].classList).toContain('mc-selecteur-competences__option--active');
     });
 
-    it('ArrowLeft depuis un enfant remonte vers le parent', () => {
-      cliquerToggle('FR');
-      const boutons = boutonsLibelle();
-      // FR (0), FR-LECT (1), FR-ECRIT (2), MATH (3)
-      const indexEnfant = boutons.findIndex(b => b.id === 'noeudSel_FR-LECT');
-      boutons[indexEnfant].focus();
+    it('ArrowDown puis ArrowDown sélectionne la deuxième option', () => {
+      saisir('a');
 
-      appuyerTouche(indexEnfant, 'ArrowLeft');
+      appuyerTouche('ArrowDown');
+      appuyerTouche('ArrowDown');
 
-      expect(document.activeElement).toBe(boutonsLibelle()[0]);
+      expect(suggestions()[1].classList).toContain('mc-selecteur-competences__option--active');
+      expect(suggestions()[0].classList).not.toContain('mc-selecteur-competences__option--active');
     });
 
-    it('ArrowLeft sur un nœud racine fermé ne fait rien', () => {
-      const boutons = boutonsLibelle();
-      boutons[0].focus();
+    it('ArrowUp depuis le début ne passe pas en dessous de -1', () => {
+      saisir('a');
 
-      appuyerTouche(0, 'ArrowLeft');
+      appuyerTouche('ArrowUp');
 
-      expect(document.activeElement).toBe(boutons[0]);
+      expect(suggestions().every(o => !o.classList.contains('mc-selecteur-competences__option--active'))).toBe(true);
+    });
+
+    it('Enter sélectionne l\'option focalisée et vide le champ', () => {
+      saisir('lecture');
+      appuyerTouche('ArrowDown');
+
+      appuyerTouche('Enter');
+
+      expect(hote.selectionnes).toContain('FR-LECT');
+      expect(champSaisie().value).toBe('');
+    });
+
+    it('Escape ferme le panneau et vide le champ', () => {
+      saisir('lecture');
+
+      appuyerTouche('Escape');
+
+      expect(champSaisie().value).toBe('');
+      expect(suggestions()).toHaveLength(0);
+    });
+  });
+
+  describe('sélection de compétences', () => {
+    it('cliquer sur une suggestion émet selectionChange avec l\'ID et vide le champ', () => {
+      saisir('lecture');
+
+      suggestions()[0].click();
+      fixture.detectChanges();
+
+      expect(hote.selectionnes).toContain('FR-LECT');
+      expect(champSaisie().value).toBe('');
+    });
+
+    it('cliquer sur une compétence déjà sélectionnée ne crée pas de doublon', () => {
+      saisir('lecture');
+      suggestions()[0].click();
+      fixture.detectChanges();
+
+      saisir('lecture');
+      suggestions()[0].click();
+      fixture.detectChanges();
+
+      expect(hote.selectionnes.filter(id => id === 'FR-LECT')).toHaveLength(1);
+    });
+
+    it('mode mono : sélectionner remplace la sélection existante', () => {
+      hote.multi = false;
+      // Pas de detectChanges isolé : la saisie déclenche le premier cycle commun
+      saisir('nombres');
+      suggestions()[0].click();
+      fixture.detectChanges();
+
+      saisir('lecture');
+      suggestions()[0].click();
+      fixture.detectChanges();
+
+      expect(hote.selectionnes).toEqual(['FR-LECT']);
+    });
+  });
+
+  describe('chips des compétences sélectionnées', () => {
+    it('affiche un chip par compétence sélectionnée avec son libellé court', () => {
+      saisir('texte');
+      suggestions()[0].click();
+      fixture.detectChanges();
+
+      const chips = chipsSelection();
+      expect(chips).toHaveLength(1);
+      expect(chips[0].nativeElement.textContent).toContain('Comprendre un texte lu');
+    });
+
+    it('supprimer un chip émet la sélection sans cet identifiant', () => {
+      saisir('texte');
+      suggestions()[0].click();
+      fixture.detectChanges();
+
+      saisir('haute');
+      suggestions()[0].click();
+      fixture.detectChanges();
+
+      fixture.debugElement.query(By.css('#supprimerComp_FR-LECT-1'))?.nativeElement.click();
+      fixture.detectChanges();
+
+      expect(hote.selectionnes).not.toContain('FR-LECT-1');
+      expect(hote.selectionnes).toContain('FR-LECT-2');
+    });
+
+    it('n\'affiche pas la zone chips si la sélection est vide', () => {
+      expect(chipsSelection()).toHaveLength(0);
     });
   });
 });

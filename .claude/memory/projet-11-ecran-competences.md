@@ -23,28 +23,28 @@ related:
 
 ## Layout général
 
-Trois colonnes côte à côte :
-- **Colonne gauche** : filtres (recherche textuelle + chips de domaine)
-- **Zone centrale** : arbre des compétences
-- **Colonne droite** : panier de compétences sélectionnées
+Deux zones côte à côte :
+- **Zone gauche** : composant `mc-arbre-competences` (filtres + arbre intégrés)
+- **Zone droite** : panier de compétences sélectionnées
 
 Écran en **lecture seule** — aucune modification des compétences dans cette version.
 
 ---
 
-## Colonne gauche — Filtres
+## Zone gauche — `mc-arbre-competences`
 
-| Élément | Détail |
+Le composant `mc-arbre-competences` intègre les trois sous-zones suivantes :
+
+| Sous-zone | Détail |
 |---|---|
 | Champ `mc-champ-recherche` | Filtre textuel en temps réel sur les libellés (tous niveaux de l'arbre) |
 | Chips `mc-chip-filtre` par domaine | Un chip par entrée de niveau 1 de l'arbre ; sélection/désélection cumulative |
+| Arbre des compétences | Voir ci-dessous |
 
 - Les deux filtres sont **cumulatifs** (ET logique)
 - Pas de bouton "Réinitialiser les filtres"
 
----
-
-## Zone centrale — Arbre des compétences
+### Arbre des compétences
 
 ### Affichage par défaut
 

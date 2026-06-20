@@ -9,7 +9,7 @@ import { ContexteService } from '../../services/avecEtat/contexte.service';
 import { CompetenceService } from '../../services/sansEtat/competence.service';
 import { ProjetService } from '../../services/sansEtat/projet.service';
 import { CahierJournalService } from '../../services/sansEtat/cahier-journal.service';
-import { McSelecteurCompetencesComponent } from '../../composants/mc-selecteur-competences/mc-selecteur-competences.component';
+import { McArbreCompetencesComponent } from '../../composants/mc-arbre-competences/mc-arbre-competences.component';
 import { PopinExportCompetencesComponent } from '../../composants/popins/popin-export-competences/popin-export-competences.component';
 import type { ResultatExportCompetences } from '../../composants/popins/popin-export-competences/popin-export-competences.component';
 import { signal } from '@angular/core';
@@ -21,7 +21,7 @@ import { signal } from '@angular/core';
 @Component({
   selector: 'ecran-competences',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [McSelecteurCompetencesComponent, PopinExportCompetencesComponent],
+  imports: [McArbreCompetencesComponent, PopinExportCompetencesComponent],
   templateUrl: './ecran-competences.component.html',
   styleUrl: './ecran-competences.component.scss',
 })

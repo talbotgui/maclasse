@@ -60,9 +60,15 @@ Ces composants wrappent les éléments natifs HTML pour centraliser le style et 
 
 ### `mc-selecteur-competences`
 
-- Arbre de compétences filtrable (recherche textuelle + chips de domaine)
+- Sélecteur de compétences **autocomplete** : filtre par domaine via chips + champ de saisie avec suggestions (libellé complet "domaine › sous-domaine › …") + compétences sélectionnées affichées en chips avec bouton de suppression (✕)
 - Permet la sélection mono ou multi-compétences
-- Utilisé dans : Cahier journal (séance), Projets (période), PPI, Bulletin
+- Utilisé dans : Projets (période), Cahier journal (séance)
+
+### `mc-arbre-competences`
+
+- Arbre de compétences filtrable : champ `mc-champ-recherche` + chips de domaine `mc-chip-filtre` + arbre repliable navigation clavier WAI-ARIA Tree View (ArrowDown/Up/Left/Right/Home/End)
+- Permet la sélection mono ou multi-compétences
+- Utilisé dans : **écran Compétences uniquement**
 
 ### `mc-eleves-concernes`
 

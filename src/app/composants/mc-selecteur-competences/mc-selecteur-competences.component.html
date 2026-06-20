@@ -1,57 +1,81 @@
 <div class="mc-selecteur-competences">
-  <mc-champ-recherche
-    id="rechercheCompetences"
-    [placeholder]="LIBELLES.commun.rechercher"
-    (rechercheChange)="surRecherche($event)"
-  />
 
   @if (domaines().length > 0) {
-    <div class="mc-selecteur-competences__domaines" role="group" aria-label="Filtrer par domaine">
+    <fieldset class="mc-selecteur-competences__domaines">
+      <legend class="sr-only">{{ LIBELLES.selecteurCompetences.ariaFiltreDomaine }}</legend>
       @for (domaine of domaines(); track domaine.id) {
         <mc-chip-filtre
           [id]="'filtreDomaine_' + domaine.id"
           [libelle]="domaine.libelle"
-          [actif]="estDomaineActif(domaine.id)"
+          [actif]="estDomaineFiltre(domaine.id)"
           (selectionChange)="basculerDomaine(domaine.id)"
         />
       }
-    </div>
+    </fieldset>
   }
 
-  <div class="mc-selecteur-competences__arbre" role="tree">
-    @if (noeudsAffiches().length === 0) {
-      <p class="mc-liste-vide">{{ LIBELLES.commun.aucunResultat }}</p>
-    }
-    @for (noeud of noeudsAffiches(); track noeud.competence.id) {
-      <div
-        class="mc-selecteur-competences__noeud"
-        [style.padding-left.rem]="noeud.niveau * 1.25"
-        role="treeitem"
-        [attr.aria-expanded]="noeud.estFeuille ? null : noeud.estDeplie"
-        [attr.aria-selected]="noeud.estSelectionne"
+  <div class="mc-selecteur-competences__combobox">
+    <input
+      id="rechercheCompetences"
+      type="text"
+      role="combobox"
+      class="mc-selecteur-competences__input"
+      [attr.placeholder]="LIBELLES.selecteurCompetences.placeholder"
+      [attr.aria-expanded]="estOuvert()"
+      aria-autocomplete="list"
+      aria-controls="listeSuggestionsCompetences"
+      [attr.aria-activedescendant]="idOptionFocalisee() ? 'optionComp_' + idOptionFocalisee() : null"
+      [value]="saisie()"
+      (input)="surSaisie($event)"
+      (focus)="surFocus()"
+      (blur)="surBlur()"
+      (keydown)="naviguerClavier($event)"
+    />
+
+    @if (estOuvert() && suggestions().length > 0) {
+      <ul
+        id="listeSuggestionsCompetences"
+        role="listbox"
+        class="mc-selecteur-competences__liste"
+        [attr.aria-label]="LIBELLES.selecteurCompetences.ariaSuggestions"
       >
-        @if (!noeud.estFeuille) {
-          <button
-            [id]="'noeudToggle_' + noeud.competence.id"
-            type="button"
-            class="mc-selecteur-competences__toggle"
-            [attr.aria-label]="(noeud.estDeplie ? 'Replier ' : 'Déplier ') + noeud.competence.libelle"
-            (click)="basculerNoeud(noeud.competence.id)"
-          >{{ noeud.estDeplie ? '▼' : '▶' }}</button>
-        } @else {
-          <span class="mc-selecteur-competences__indent"></span>
+        @for (option of suggestions(); track option.id) {
+          <li
+            [id]="'optionComp_' + option.id"
+            role="option"
+            class="mc-selecteur-competences__option"
+            [class.mc-selecteur-competences__option--active]="option.id === idOptionFocalisee()"
+            [attr.aria-selected]="competencesSelectionnees().includes(option.id)"
+            (mousedown)="$event.preventDefault()"
+            (click)="selectionnerOption(option.id)"
+          >{{ option.libelle }}</li>
         }
-        <button
-          #boutonSelection
-          [id]="'noeudSel_' + noeud.competence.id"
-          type="button"
-          class="mc-selecteur-competences__libelle"
-          [class.mc-selecteur-competences__libelle--selectionne]="noeud.estSelectionne"
-          [attr.aria-pressed]="noeud.estSelectionne"
-          (click)="basculerSelection(noeud.competence.id)"
-          (keydown)="naviguerClavier($event, $index)"
-        >{{ noeud.competence.libelle }}</button>
+      </ul>
+    } @else if (estOuvert() && saisie().trim() && suggestions().length === 0) {
+      <div class="mc-selecteur-competences__aucun-resultat" role="status">
+        {{ LIBELLES.commun.aucunResultat }}
       </div>
     }
   </div>
+
+  @if (competencesAffichees().length > 0) {
+    <ul
+      class="mc-selecteur-competences__chips"
+      [attr.aria-label]="LIBELLES.selecteurCompetences.ariaSelectionnes"
+    >
+      @for (comp of competencesAffichees(); track comp.id) {
+        <li class="mc-selecteur-competences__chip mc-chip mc-chip-actif">
+          <span>{{ comp.libelleCourt }}</span>
+          <button
+            type="button"
+            [id]="'supprimerComp_' + comp.id"
+            class="mc-selecteur-competences__chip-supprimer"
+            [attr.aria-label]="LIBELLES.selecteurCompetences.ariaSupprimer + comp.cheminComplet"
+            (click)="supprimerCompetence(comp.id)"
+          >✕</button>
+        </li>
+      }
+    </ul>
+  }
+
 </div>

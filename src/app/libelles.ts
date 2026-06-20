@@ -157,6 +157,15 @@ export const LIBELLES = {
     infoDomainesParametrage: 'Tous les domaines sont disponibles et activables dans l\'écran Paramétrage.',
   },
 
+  /** Libellés du composant sélecteur de compétences (`mc-selecteur-competences`). */
+  selecteurCompetences: {
+    placeholder:       'Rechercher une compétence…',
+    ariaFiltreDomaine: 'Filtrer par domaine',
+    ariaSuggestions:   'Suggestions de compétences',
+    ariaSelectionnes:  'Compétences sélectionnées',
+    ariaSupprimer:     'Supprimer la compétence : ',
+  },
+
   /** Libellés de l'écran Emploi du temps. */
   edt: {
     titre:                      'Emploi du temps',

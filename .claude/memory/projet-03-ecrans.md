@@ -82,10 +82,9 @@ related:
 ## Écran Compétences
 
 - **Lecture seule** (pas d'édition dans cette version)
-- Layout : 3 colonnes — filtres à gauche | arbre au centre | panier à droite
-- Colonne gauche : recherche textuelle + chips de filtrage par domaine (niveau 1 de l'arbre)
-- Zone centrale : arbre repliable, filtre masque les non-correspondants et déploie les ancêtres
-- Colonne droite : panier de compétences sélectionnées, persisté dans `ContextService`, export vers ProjetPeriode ou séance via popin
+- Layout : 2 zones — `mc-arbre-competences` à gauche (filtres + arbre intégrés) | panier à droite
+- Zone gauche : composant `mc-arbre-competences` — champ de recherche textuelle + chips de filtrage par domaine + arbre repliable (filtre masque les non-correspondants et déploie les ancêtres), navigation clavier WAI-ARIA Tree View
+- Zone droite : panier de compétences sélectionnées, persisté dans `ContextService`, export vers ProjetPeriode ou séance via popin
 
 ---
 

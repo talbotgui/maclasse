@@ -1,23 +1,23 @@
-import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input, output, signal, viewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../composant-base';
-import { McChampRechercheComponent } from '../mc-champ-recherche/mc-champ-recherche.component';
 import { McChipFiltreComponent } from '../mc-chip-filtre/mc-chip-filtre.component';
 import { CompetenceService } from '../../services/sansEtat/competence.service';
-import type { Competence } from '../../modeles/referentiels.modele';
-import type { NoeudAffiche } from '../../modeles/composants.modele';
+import type { OptionAutoComplete } from '../../modeles/composants.modele';
 
 /**
- * Sélecteur d'arbre de compétences avec filtrage textuel et filtrage par domaine.
+ * Sélecteur de compétences compact en trois zones :
+ * 1. CHIPs de filtre par domaine (filtre les suggestions).
+ * 2. Champ d'autocomplétion affichant le chemin complet de chaque option.
+ * 3. CHIPs des compétences sélectionnées, chacun avec un bouton de suppression.
  *
- * En mode recherche active : les nœuds correspondants et leurs ancêtres sont affichés
- * et auto-dépliés ; l'état déplié d'avant la recherche est restauré à l'effacement.
- * En mode mono-sélection : cliquer sur une compétence déjà sélectionnée la désélectionne.
+ * Pattern ARIA combobox : l'input porte `role="combobox"` ; la liste `role="listbox"`.
+ * La navigation clavier suit les recommandations WAI-ARIA 1.2 (↓/↑, Entrée, Échap).
  */
 @Component({
   selector: 'mc-selecteur-competences',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [McChampRechercheComponent, McChipFiltreComponent],
+  imports: [McChipFiltreComponent],
   templateUrl: './mc-selecteur-competences.component.html',
   styleUrl: './mc-selecteur-competences.component.scss',
 })
@@ -34,227 +34,176 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
   /** Service d'accès à l'arbre des compétences. */
   private readonly competenceService = inject(CompetenceService);
 
-  /** Terme de recherche saisi par l'utilisateur. */
-  private readonly termeRecherche = signal('');
+  /** Valeur courante du champ de saisie. */
+  protected readonly saisie = signal('');
+
+  /** Indique si le panneau de suggestions est actuellement ouvert. */
+  protected readonly estOuvert = signal(false);
+
+  /** Index de l'option mise en évidence au clavier (-1 = aucune). */
+  private readonly indexFocalise = signal(-1);
 
   /** Identifiants des domaines actifs dans le filtre (Set vide = tous affichés). */
-  private readonly domainesActifs = signal<Set<string>>(new Set());
+  private readonly domainesFiltres = signal<Set<string>>(new Set());
 
-  /** Identifiants des nœuds actuellement dépliés. */
-  private readonly noeudsDepliés = signal<Set<string>>(new Set());
-
-  /** Références aux boutons de libellé de l'arbre, dans l'ordre d'affichage, pour la navigation clavier. */
-  private readonly boutonsSelection = viewChildren<ElementRef<HTMLButtonElement>>('boutonSelection');
-
-  /** État déplié sauvegardé avant l'activation d'une recherche, `null` si inactif. */
-  private readonly noeudsDepliésAvantRecherche = signal<Set<string> | null>(null);
-
-  /** Domaines de niveau 1 de l'arbre. */
+  /** Domaines de niveau 1 disponibles. */
   protected readonly domaines = computed(() => this.competenceService.obtenirDomaines());
 
-  /** Identifiants des nœuds correspondant au terme de recherche courant. */
-  private readonly idsCorrespondants = computed<Set<string>>(() => {
-    const terme = this.termeRecherche().trim();
-    if (!terme) return new Set<string>();
-    return new Set(this.competenceService.rechercherCompetences(terme).map(c => c.id));
-  });
-
   /**
-   * Identifiants des nœuds ancêtres de résultats de recherche.
-   * Ces nœuds sont auto-dépliés pour rendre les résultats visibles.
+   * Options d'autocomplétion filtrées selon la saisie et les domaines actifs.
+   * Vide si le champ de saisie est vide.
    */
-  private readonly idsAncetresResultats = computed<Set<string>>(() => {
-    const cherches = this.idsCorrespondants();
-    if (cherches.size === 0) return new Set<string>();
-    const ancetres = new Set<string>();
-    const parcourir = (noeud: Competence): boolean => {
-      let aResultat = cherches.has(noeud.id);
-      for (const enfant of noeud.enfants ?? []) {
-        if (parcourir(enfant)) aResultat = true;
-      }
-      if (aResultat && !cherches.has(noeud.id)) ancetres.add(noeud.id);
-      return aResultat;
-    };
-    this.competenceService.obtenirDomaines().forEach(parcourir);
-    return ancetres;
-  });
+  protected readonly suggestions = computed<OptionAutoComplete[]>(() => {
+    const terme = this.saisie().trim();
+    if (!terme) return [];
 
-  /** Liste aplatie des nœuds visibles dans l'arbre selon l'état courant. */
-  protected readonly noeudsAffiches = computed<NoeudAffiche[]>(() => {
-    const domainesActifs = this.domainesActifs();
-    const depliés = this.noeudsDepliés();
-    const cherches = this.idsCorrespondants();
-    const ancetres = this.idsAncetresResultats();
-    const selection = this.competencesSelectionnees();
-    const enRecherche = cherches.size > 0;
+    let resultats = this.competenceService.rechercherCompetences(terme);
 
-    const resultat: NoeudAffiche[] = [];
-
-    const ajouter = (noeud: Competence, niveau: number): void => {
-      const estFeuille = !noeud.enfants?.length;
-      const estCorrespondant = cherches.has(noeud.id);
-      const estAncetre = ancetres.has(noeud.id);
-
-      if (enRecherche && !estCorrespondant && !estAncetre) return;
-
-      const estDeplie = enRecherche ? estAncetre : depliés.has(noeud.id);
-
-      resultat.push({
-        competence: noeud,
-        niveau,
-        estFeuille,
-        estDeplie,
-        estSelectionne: selection.includes(noeud.id),
+    const filtres = this.domainesFiltres();
+    if (filtres.size > 0) {
+      resultats = resultats.filter(c => {
+        const chemin = this.competenceService.obtenirChemin(c.id);
+        return chemin.length > 0 && filtres.has(chemin[0].id);
       });
+    }
 
-      if (estDeplie && noeud.enfants) {
-        noeud.enfants.forEach(enfant => ajouter(enfant, niveau + 1));
-      }
-    };
+    return resultats.map(c => ({
+      id: c.id,
+      libelle: this.competenceService.resoudreLibelle(c.id),
+    }));
+  });
 
-    const domainesFiltres = domainesActifs.size > 0
-      ? this.domaines().filter(d => domainesActifs.has(d.id))
-      : this.domaines();
-
-    domainesFiltres.forEach(d => ajouter(d, 0));
-    return resultat;
+  /** Identifiant de l'option actuellement mise en évidence, ou `null`. */
+  protected readonly idOptionFocalisee = computed<string | null>(() => {
+    const index = this.indexFocalise();
+    const options = this.suggestions();
+    return index >= 0 && index < options.length ? options[index].id : null;
   });
 
   /**
-   * Met à jour le terme de recherche. Sauvegarde l'état déplié au début de la recherche
-   * et le restaure à l'effacement.
-   * @param terme Nouveau terme de recherche.
+   * Compétences sélectionnées avec leur libellé propre (dernier segment du chemin)
+   * pour affichage dans les CHIPs, et le chemin complet pour l'aria-label du bouton ×.
    */
-  protected surRecherche(terme: string): void {
-    const etaitVide = !this.termeRecherche().trim();
-    const estVide = !terme.trim();
+  protected readonly competencesAffichees = computed(() =>
+    this.competencesSelectionnees().map(id => {
+      const chemin = this.competenceService.resoudreLibelle(id);
+      return {
+        id,
+        libelleCourt: chemin.split(' › ').at(-1) ?? chemin,
+        cheminComplet: chemin,
+      };
+    })
+  );
 
-    if (etaitVide && !estVide) {
-      this.noeudsDepliésAvantRecherche.set(new Set(this.noeudsDepliés()));
-    } else if (!etaitVide && estVide) {
-      const sauvegarde = this.noeudsDepliésAvantRecherche();
-      if (sauvegarde !== null) {
-        this.noeudsDepliés.set(new Set(sauvegarde));
-        this.noeudsDepliésAvantRecherche.set(null);
-      }
+  /**
+   * Met à jour la saisie et ouvre les suggestions si le champ n'est pas vide.
+   * @param event Événement `input` natif.
+   */
+  protected surSaisie(event: Event): void {
+    const valeur = (event.target as HTMLInputElement).value;
+    this.saisie.set(valeur);
+    this.indexFocalise.set(-1);
+    this.estOuvert.set(!!valeur.trim());
+  }
+
+  /** Rouvre les suggestions si une saisie est déjà présente lors du focus. */
+  protected surFocus(): void {
+    if (this.saisie().trim()) {
+      this.estOuvert.set(true);
     }
-    this.termeRecherche.set(terme);
+  }
+
+  /** Ferme les suggestions lors de la perte de focus (après les événements mousedown). */
+  protected surBlur(): void {
+    this.estOuvert.set(false);
   }
 
   /**
-   * Bascule l'état déplié/replié d'un nœud non-feuille.
-   * @param id Identifiant du nœud.
+   * Navigation clavier dans la liste de suggestions (pattern ARIA combobox) :
+   * - ↓ : option suivante (ouvre si fermé).
+   * - ↑ : option précédente.
+   * - Entrée : sélectionne l'option mise en évidence.
+   * - Échap : ferme et vide le champ.
+   * @param event Événement clavier natif.
    */
-  protected basculerNoeud(id: string): void {
-    this.noeudsDepliés.update(set => {
-      const nouvel = new Set(set);
-      if (nouvel.has(id)) {
-        nouvel.delete(id);
-      } else {
-        nouvel.add(id);
-      }
-      return nouvel;
-    });
-  }
-
-  /**
-   * Ajoute ou retire une compétence de la sélection, selon `multiSelection`.
-   * En mode mono-sélection, un clic sur la compétence déjà sélectionnée la désélectionne.
-   * @param id Identifiant de la compétence.
-   */
-  protected basculerSelection(id: string): void {
-    const courant = this.competencesSelectionnees();
-    let nouvelleSelection: string[];
-
-    if (this.multiSelection()) {
-      nouvelleSelection = courant.includes(id)
-        ? courant.filter(i => i !== id)
-        : [...courant, id];
-    } else {
-      nouvelleSelection = courant.includes(id) ? [] : [id];
-    }
-
-    this.selectionChange.emit(nouvelleSelection);
-  }
-
-  /**
-   * Gère la navigation clavier dans l'arbre selon le pattern WAI-ARIA Tree View :
-   * - ↓/↑ : nœud suivant/précédent visible.
-   * - → : déplier si fermé, sinon descendre vers le premier enfant.
-   * - ← : replier si ouvert, sinon remonter vers le nœud parent.
-   * - Début/Fin : sauter au premier/dernier nœud.
-   * @param event Événement clavier intercepté.
-   * @param indexCourant Index du nœud focalisé dans `noeudsAffiches`.
-   */
-  protected naviguerClavier(event: KeyboardEvent, indexCourant: number): void {
-    const noeuds = this.noeudsAffiches();
-    const boutons = this.boutonsSelection();
+  protected naviguerClavier(event: KeyboardEvent): void {
+    const options = this.suggestions();
+    const index = this.indexFocalise();
 
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault();
-        boutons[indexCourant + 1]?.nativeElement.focus();
+        if (!this.estOuvert() && options.length > 0) this.estOuvert.set(true);
+        this.indexFocalise.set(Math.min(index + 1, options.length - 1));
         break;
+
       case 'ArrowUp':
         event.preventDefault();
-        boutons[indexCourant - 1]?.nativeElement.focus();
+        this.indexFocalise.set(Math.max(index - 1, -1));
         break;
-      case 'Home':
+
+      case 'Enter': {
         event.preventDefault();
-        boutons[0]?.nativeElement.focus();
-        break;
-      case 'End':
-        event.preventDefault();
-        boutons[boutons.length - 1]?.nativeElement.focus();
-        break;
-      case 'ArrowRight': {
-        event.preventDefault();
-        const noeud = noeuds[indexCourant];
-        if (!noeud.estFeuille && !noeud.estDeplie) {
-          this.basculerNoeud(noeud.competence.id);
-        } else if (!noeud.estFeuille && noeud.estDeplie) {
-          boutons[indexCourant + 1]?.nativeElement.focus();
-        }
+        const option = options[index];
+        if (option) this.selectionnerOption(option.id);
         break;
       }
-      case 'ArrowLeft': {
+
+      case 'Escape':
         event.preventDefault();
-        const noeud = noeuds[indexCourant];
-        if (!noeud.estFeuille && noeud.estDeplie) {
-          this.basculerNoeud(noeud.competence.id);
-        } else {
-          let i = indexCourant - 1;
-          while (i >= 0 && noeuds[i].niveau >= noeud.niveau) {
-            i--;
-          }
-          boutons[i]?.nativeElement.focus();
-        }
+        this.fermer();
         break;
-      }
     }
   }
 
   /**
-   * Active ou désactive un filtre de domaine.
+   * Sélectionne une option de la liste d'autocomplétion.
+   * Appelé sur `mousedown` (avant `blur`) pour éviter la fermeture anticipée.
+   * @param id Identifiant de la compétence à ajouter.
+   */
+  protected selectionnerOption(id: string): void {
+    const courant = this.competencesSelectionnees();
+    if (!courant.includes(id)) {
+      const nouvelleSelection = this.multiSelection() ? [...courant, id] : [id];
+      this.selectionChange.emit(nouvelleSelection);
+    }
+    this.fermer();
+  }
+
+  /**
+   * Retire une compétence de la sélection.
+   * @param id Identifiant de la compétence à supprimer.
+   */
+  protected supprimerCompetence(id: string): void {
+    this.selectionChange.emit(this.competencesSelectionnees().filter(i => i !== id));
+  }
+
+  /**
+   * Active ou désactive un filtre de domaine et réinitialise le focus clavier.
    * @param id Identifiant du domaine.
    */
   protected basculerDomaine(id: string): void {
-    this.domainesActifs.update(set => {
+    this.domainesFiltres.update(set => {
       const nouvel = new Set(set);
-      if (nouvel.has(id)) {
-        nouvel.delete(id);
-      } else {
-        nouvel.add(id);
-      }
+      if (nouvel.has(id)) nouvel.delete(id);
+      else nouvel.add(id);
       return nouvel;
     });
+    this.indexFocalise.set(-1);
   }
 
   /**
    * Indique si un domaine est actif dans le filtre.
    * @param id Identifiant du domaine.
    */
-  protected estDomaineActif(id: string): boolean {
-    return this.domainesActifs().has(id);
+  protected estDomaineFiltre(id: string): boolean {
+    return this.domainesFiltres().has(id);
+  }
+
+  /** Ferme le panneau et réinitialise la saisie et le focus clavier. */
+  private fermer(): void {
+    this.estOuvert.set(false);
+    this.indexFocalise.set(-1);
+    this.saisie.set('');
   }
 }

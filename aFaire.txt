@@ -13,8 +13,6 @@ Bugs :
   - dans l'entête du formulaire des élèves, en mode EDITION, les champs de saisie et les 2 boutons ne sont pas responsive. Propose une amélioration.
 - écran PROJET
   - dans le formulaire d'un PROJET, il faut pouvoir sélectionner les élèves via les groupes. Ajouter un sélecteur de groupes, au dessus du sélecteur des élèves, synchronisant la sélection entre les deux me semble pertinent. Qu'en penses-tu ?
-- écran COMPETENCES
-  - ajoute un bouton au bout de chaque compétence, dans l'écran COMPETENCES, pour en sélectionner une pour le panier
 - écran EDT
   - le bouton SUPPRIMER est plus petit que les autres dans le formulaire d'édition de l'EDT
   - les boutons du mini-calendrier (+1j, +7j, ...) ne fonctionnent pas

@@ -506,12 +506,23 @@ Membres CVA communs : `onChange`, `onTouched` (callbacks `protected`, non préfi
 - Mettre en évidence : `journeesAvecEntrees`
 
 ### 7.2 `mc-selecteur-competences`
-- Arbre des compétences filtrable (recherche textuelle + chips domaine)
+- Sélecteur de compétences **autocomplete** : 3 zones — chips de filtre par domaine (zone 1), champ de saisie avec liste `role="combobox"` affichant les suggestions en libellé complet (zone 2), chips des compétences sélectionnées avec bouton ✕ (zone 3)
+- `input() public readonly competencesSelectionnees: InputSignal<string[]>`
+- `input() public readonly multiSelection: InputSignal<boolean>` (défaut `true`)
+- `output() protected readonly selectionChange: OutputEmitterRef<string[]>`
+- Injecte `CompetenceService`
+- Signals : `saisie`, `estOuvert`, `indexFocalise`, `domainesFiltres`
+- Utilisé dans : Projets (périodes), Cahier journal (séances)
+
+### 7.2b `mc-arbre-competences`
+- Arbre de compétences filtrable (recherche textuelle + chips domaine + arbre repliable)
 - `input() public readonly competencesSelectionnees: InputSignal<string[]>`
 - `input() public readonly multiSelection: InputSignal<boolean>` (défaut `true`)
 - `output() protected readonly selectionChange: OutputEmitterRef<string[]>`
 - Injecte `CompetenceService`
 - Signal local pour la recherche, les domaines actifs, l'état déplié de chaque nœud
+- Navigation clavier WAI-ARIA Tree View (ArrowDown/Up/Left/Right/Home/End)
+- Utilisé dans : **écran Compétences uniquement**
 
 ### 7.3 `mc-eleves-concernes`
 - Implements `ControlValueAccessor`
@@ -603,14 +614,13 @@ Membres CVA communs : `onChange`, `onTouched` (callbacks `protected`, non préfi
 ### 8.5 `ecran-projets`
 - Pattern identique à élèves (colonne gauche + détail droite)
 - Chips de filtrage par domaine de compétences
-- `mc-selecteur-competences` dans les périodes
+- `mc-selecteur-competences` (autocomplete) dans les périodes pour sélectionner des compétences
 - Sous-composants avec préfixe `fp-`
 
 ### 8.6 `ecran-competences`
-- Layout 3 colonnes : filtres gauche | arbre centre | panier droite
-- Colonne gauche : `mc-champ-recherche` + chips domaines
-- Centre : arbre `mc-selecteur-competences`
-- Droite : liste du panier (depuis `ContexteService.panierCompetences`) + VIDER + boutons export vers projet/séance
+- Layout 2 zones : `mc-arbre-competences` (filtres intégrés + arbre) à gauche | panier à droite
+- Zone gauche : composant `mc-arbre-competences` — filtres (champ recherche + chips domaines) + arbre repliable intégrés dans le composant
+- Zone droite : liste du panier (depuis `ContexteService.panierCompetences`) + VIDER + boutons export vers projet/séance
 - Panier auto-effacé si une compétence du panier est désélectionnée dans l'arbre
 - **Responsive `≤ 768px`** : `.competences` → `grid-template-columns: 1fr` ; empilement arbre puis panier (ordre DOM naturel)
 

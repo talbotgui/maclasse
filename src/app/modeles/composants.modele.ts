@@ -2,7 +2,6 @@
  * Modèles partagés pour les composants de formulaire génériques et les composants riches.
  */
 
-import type { Competence } from './referentiels.modele';
 
 /**
  * Option d'un sélecteur ou d'un groupe de boutons radio.
@@ -32,8 +31,11 @@ export interface CaseCalendrier {
   estAujourdhui: boolean;
 }
 
+
+import type { Competence } from './referentiels.modele';
+
 /**
- * Nœud aplati de l'arbre des compétences, prêt à l'affichage dans `mc-selecteur-competences`.
+ * Nœud aplati de l'arbre des compétences, prêt à l'affichage dans `mc-arbre-competences`.
  * Issu du calcul de l'arbre hiérarchique avec les états de filtrage et de sélection appliqués.
  */
 export interface NoeudAffiche {
@@ -47,6 +49,17 @@ export interface NoeudAffiche {
   estDeplie: boolean;
   /** `true` si cette compétence fait partie de la sélection courante. */
   estSelectionne: boolean;
+}
+
+/**
+ * Option proposée dans la liste d'autocomplétion du sélecteur de compétences.
+ * Le libellé affiche le chemin complet depuis le domaine jusqu'à la compétence.
+ */
+export interface OptionAutoComplete {
+  /** Identifiant de la compétence. */
+  id: string;
+  /** Chemin complet, ex. `"Français › Lecture › Comprendre un texte"`. */
+  libelle: string;
 }
 
 /**

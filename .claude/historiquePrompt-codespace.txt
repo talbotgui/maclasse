@@ -503,3 +503,7 @@ les boutons "mc-btn-fantome" sont plus haut que les "mc-btn-primaire" de 4px. pk
 2026-06-20 09:52:49 [Ajuster layout colonne gauche petits écrans] développe cette correction
 ---
 2026-06-20 10:52:54 [Gérer le focus sur création du formulaire] reprend
+---
+2026-06-20 11:05:07 [Sans titre] EVO - les domaines de compétences sont nombreux et ne sont pas tous à utiliser pour une classe donnée car ils dépendent du niveau de la classe de l'enseignant. Dans l'écran de paramétrage, ajoute une section, toute à la fin, proposant toutes les compétences des deux premiers niveaux sélectionnables. Dans le reste de l'application, n'affiche que les compétences que des niveaux sélectionnés. Dans l'écran des compétences, ajoute une petite phrase, sous l'arbre indiquant que tous les domaines sont disponibles et activables dans l'écran des compétences. Reformule le besoin et propose moi une solution avant toute modification
+---
+2026-06-20 11:09:04 [Filtrer les compétences par niveau scolaire] modifie obtenirDomaines()

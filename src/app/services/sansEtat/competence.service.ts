@@ -34,12 +34,26 @@ export class CompetenceService {
   });
 
   /**
-   * Retourne les nœuds de niveau 1 de l'arbre (domaines / disciplines).
-   * Ce sont les identifiants utilisés dans `disciplinesIds` des séances et créneaux EDT.
-   * @returns Tableau des domaines, ou tableau vide si aucune donnée chargée.
+   * Retourne les nœuds de niveau 1 de l'arbre (domaines / disciplines),
+   * filtrés selon `configuration.domainesActifs`.
+   * Si `domainesActifs` est absent ou vide, retourne l'arbre complet.
+   * Si un domaine N1 est actif, tout son sous-arbre est inclus.
+   * Si seuls certains sous-domaines N2 sont actifs, seuls leurs sous-arbres sont inclus.
+   * @returns Tableau des domaines filtrés, ou tableau vide si aucune donnée chargée.
    */
   public obtenirDomaines(): Competence[] {
-    return this.donneesService.donnees()?.referentiels.competences ?? [];
+    const donnees = this.donneesService.donnees();
+    const toutes = donnees?.referentiels.competences ?? [];
+    const actifs = donnees?.configuration.domainesActifs;
+    if (!actifs || actifs.length === 0) return toutes;
+
+    const actifsSet = new Set(actifs);
+    return toutes
+      .filter(d => actifsSet.has(d.id) || d.enfants?.some(ss => actifsSet.has(ss.id)))
+      .map(d => {
+        if (actifsSet.has(d.id)) return d;
+        return { ...d, enfants: d.enfants?.filter(ss => actifsSet.has(ss.id)) };
+      });
   }
 
   /**

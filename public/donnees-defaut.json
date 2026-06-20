@@ -10203,7 +10203,8 @@
     }
   ],
   "configuration": {
-    "delaiSauvegardeAutoMinutes": 2
+    "delaiSauvegardeAutoMinutes": 2,
+    "domainesActifs": ["EMC-C2","EMC-CM1","QLM-C2","EPS-C2","EART-C2","LV-C2","FR-CM1","FR-CM2","MAT-CM1","MAT-CM2"]
   },
   "emploisDuTemps": [],
   "ppi": [],

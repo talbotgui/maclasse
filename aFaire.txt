@@ -1,9 +1,6 @@
 Bugs :
 - global
   - revoir le sélecteur de compétence
-  - 
-  - propose une homogénéisation des boutons sans libellé dans l'écran CJ et dans les autres
-  - en petite largeur d'écran, la colonne de gauche doit passer au dessus de la zone centrale
   - dans l'ensemble de l'application, filtre les domaines à partir de la sélection faite dans une nouvelle section du paramétrage
   - dans le jeu de données par défaut, ajoute des emplois du temps pour toute l'année scolaire (1 en semaine paire, un autre en semaine impaire et un dernier sur les deux).
   - dans le jeu de données par défaut, ajoute les cahiers journaux de toute une semaine. Au chargement du jeu de données, changes en les dates pour correspondre à la semaine en cours (si la date du jour est entre le lundi et le vendredi inclu) ou la semaine suivante (si la date du jour est un samedi ou un dimanche).

@@ -314,6 +314,54 @@
         </section>
       }
 
+      <!-- Section : Domaines de compétences -->
+      @case ('domainesCompetences') {
+        <section class="parametrage__section" aria-labelledby="titreDomainesCompetences">
+          <h2 id="titreDomainesCompetences" class="parametrage__titre-section">{{ LIBELLES.parametrage.sections.domainesCompetences }}</h2>
+          <div class="parametrage__actions-section">
+            <button id="btnEnregistrerDomaines" class="mc-btn-primaire" (click)="enregistrerDomainesCompetences()">{{ LIBELLES.commun.enregistrer }}</button>
+            <button id="btnAnnulerDomaines" class="mc-btn-fantome" (click)="annulerDomainesCompetences()">{{ LIBELLES.commun.annuler }}</button>
+          </div>
+          <p class="parametrage__domaines-info">{{ LIBELLES.parametrage.labelDomainesInfo }}</p>
+          <ul class="parametrage__liste-domaines" aria-label="Domaines de compétences">
+            @for (domaine of tousDomaines(); track domaine.id; let iD = $index) {
+              <li class="parametrage__domaine">
+                <label class="parametrage__domaine-label" [for]="'checkDomaine' + iD">
+                  <input
+                    [id]="'checkDomaine' + iD"
+                    type="checkbox"
+                    class="parametrage__checkbox"
+                    [checked]="estDomaineActif(domaine.id)"
+                    [attr.aria-label]="LIBELLES.parametrage.ariaCheckboxDomaine + ' ' + domaine.libelle"
+                    (change)="basculerDomaine(domaine, $any($event.target).checked)"
+                  />
+                  <span class="parametrage__domaine-libelle">{{ domaine.libelle }}</span>
+                </label>
+                @if (domaine.enfants?.length) {
+                  <ul class="parametrage__liste-sousdomaines">
+                    @for (ss of domaine.enfants!; track ss.id; let iSS = $index) {
+                      <li>
+                        <label class="parametrage__sousdomaine-label" [for]="'checkSousDomaine' + iD + '_' + iSS">
+                          <input
+                            [id]="'checkSousDomaine' + iD + '_' + iSS"
+                            type="checkbox"
+                            class="parametrage__checkbox"
+                            [checked]="estSousDomaineActif(domaine.id, ss.id)"
+                            [attr.aria-label]="LIBELLES.parametrage.ariaCheckboxSousDomaine + ' ' + ss.libelle"
+                            (change)="basculerSousDomaine(domaine, ss, $any($event.target).checked)"
+                          />
+                          <span>{{ ss.libelle }}</span>
+                        </label>
+                      </li>
+                    }
+                  </ul>
+                }
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
     }
 
   </div>

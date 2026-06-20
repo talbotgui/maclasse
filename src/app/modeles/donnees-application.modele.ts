@@ -16,6 +16,11 @@ import { Bulletin, Ppi } from './ppi-bulletin.modele';
 export interface ConfigApplication {
   /** Délai entre deux sauvegardes automatiques, en minutes (défaut : 2). */
   delaiSauvegardeAutoMinutes: number;
+  /**
+   * Identifiants des domaines (N1) et sous-domaines (N2) actifs dans l'arbre des compétences.
+   * Absent ou vide = tous les domaines sont affichés.
+   */
+  domainesActifs?: string[];
 }
 
 /**

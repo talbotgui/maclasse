@@ -6,6 +6,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   effect,
   inject,
   signal,
@@ -22,6 +23,7 @@ import { McBoutonDestructionComponent } from '../../composants/mc-bouton-destruc
 import { McBadgeStatutComponent } from '../../composants/mc-badge-statut/mc-badge-statut.component';
 import type { Enseignant } from '../../modeles/donnees-application.modele';
 import type {
+  Competence,
   FrequenceAbsence,
   Groupe,
   JourFerie,
@@ -46,7 +48,8 @@ type SectionId =
   | 'raisonsAbsence'
   | 'frequencesAbsence'
   | 'joursFeries'
-  | 'preferences';
+  | 'preferences'
+  | 'domainesCompetences';
 
 /** Entrée de navigation de la colonne gauche. */
 interface EntreeSection {
@@ -118,6 +121,7 @@ export class EcranParametrageComponent {
     { id: 'frequencesAbsence', libelle: LIBELLES.parametrage.sections.frequencesAbsence },
     { id: 'joursFeries', libelle: LIBELLES.parametrage.sections.joursFeries },
     { id: 'preferences', libelle: LIBELLES.parametrage.sections.preferences },
+    { id: 'domainesCompetences', libelle: LIBELLES.parametrage.sections.domainesCompetences },
   ];
 
   /** Section actuellement affichée. */
@@ -157,6 +161,17 @@ export class EcranParametrageComponent {
   protected copieFrequencesAbsence = signal<FrequenceAbsence[]>([]);
   /** Copies locales des jours fériés. */
   protected copieJoursFeries = signal<JourFerie[]>([]);
+
+  /**
+   * Ensemble des IDs de domaines (N1) et sous-domaines (N2) actifs dans le formulaire.
+   * Vide = tous actifs (comportement par défaut).
+   */
+  protected copieDomainesActifs = signal<Set<string>>(new Set());
+
+  /** Tous les domaines N1 de l'arbre complet (non filtré), pour affichage dans le paramétrage. */
+  protected readonly tousDomaines = computed<Competence[]>(
+    () => this.donneesService.donnees()?.referentiels.competences ?? [],
+  );
 
   /** Réinitialise les copies locales à chaque changement de section ou de données. */
   public constructor() {
@@ -208,6 +223,21 @@ export class EcranParametrageComponent {
             delaiSauvegardeAutoMinutes: d.configuration.delaiSauvegardeAutoMinutes,
           };
           break;
+        case 'domainesCompetences': {
+          const actifs = d.configuration.domainesActifs;
+          if (!actifs || actifs.length === 0) {
+            // Rien de configuré → tout cocher
+            const tousIds = new Set<string>();
+            d.referentiels.competences.forEach(n1 => {
+              tousIds.add(n1.id);
+              n1.enfants?.forEach(n2 => tousIds.add(n2.id));
+            });
+            this.copieDomainesActifs.set(tousIds);
+          } else {
+            this.copieDomainesActifs.set(new Set(actifs));
+          }
+          break;
+        }
       }
       this.cdr.markForCheck();
     });
@@ -614,5 +644,108 @@ export class EcranParametrageComponent {
   protected supprimerJourFerie(jourFerie: JourFerie): void {
     this.referentielService.supprimerJourFerie(jourFerie);
     this.copieJoursFeries.update(liste => liste.filter(j => j.id !== jourFerie.id));
+  }
+
+  /**
+   * Indique si un domaine N1 est actif dans le formulaire.
+   * @param domaineId Identifiant du domaine N1.
+   */
+  protected estDomaineActif(domaineId: string): boolean {
+    return this.copieDomainesActifs().has(domaineId);
+  }
+
+  /**
+   * Indique si un sous-domaine N2 est actif dans le formulaire.
+   * Retourne `true` si son ID ou celui de son domaine parent est dans l'ensemble.
+   * @param domaineId Identifiant du domaine N1 parent.
+   * @param sousDomId Identifiant du sous-domaine N2.
+   */
+  protected estSousDomaineActif(domaineId: string, sousDomId: string): boolean {
+    const actifs = this.copieDomainesActifs();
+    return actifs.has(sousDomId) || actifs.has(domaineId);
+  }
+
+  /**
+   * Bascule un domaine N1 entier (coche ou décoche tous ses sous-domaines N2).
+   * @param domaine Nœud N1.
+   * @param actif `true` pour activer, `false` pour désactiver.
+   */
+  protected basculerDomaine(domaine: Competence, actif: boolean): void {
+    const nouveauSet = new Set(this.copieDomainesActifs());
+    if (actif) {
+      nouveauSet.add(domaine.id);
+      domaine.enfants?.forEach(ss => nouveauSet.add(ss.id));
+    } else {
+      nouveauSet.delete(domaine.id);
+      domaine.enfants?.forEach(ss => nouveauSet.delete(ss.id));
+    }
+    this.copieDomainesActifs.set(nouveauSet);
+  }
+
+  /**
+   * Bascule un sous-domaine N2 individuellement.
+   * Si le domaine parent N1 était entièrement actif (via son ID), il est décomposé
+   * en ses sous-domaines individuels pour permettre la sélection partielle.
+   * @param domaine Nœud N1 parent.
+   * @param sousDomaine Nœud N2 à basculer.
+   * @param actif `true` pour activer, `false` pour désactiver.
+   */
+  protected basculerSousDomaine(domaine: Competence, sousDomaine: Competence, actif: boolean): void {
+    const nouveauSet = new Set(this.copieDomainesActifs());
+    if (actif) {
+      nouveauSet.add(sousDomaine.id);
+    } else {
+      if (nouveauSet.has(domaine.id)) {
+        // Décomposer le domaine parent : activer tous les autres sous-domaines sauf celui-ci
+        nouveauSet.delete(domaine.id);
+        domaine.enfants?.forEach(ss => {
+          if (ss.id !== sousDomaine.id) nouveauSet.add(ss.id);
+        });
+      } else {
+        nouveauSet.delete(sousDomaine.id);
+      }
+    }
+    this.copieDomainesActifs.set(nouveauSet);
+  }
+
+  /** Enregistre la sélection des domaines de compétences actifs. */
+  protected enregistrerDomainesCompetences(): void {
+    const d = this.donneesService.donnees();
+    if (!d) return;
+    const actifs = this.copieDomainesActifs();
+
+    // Si tous les nœuds N1 et N2 sont actifs, on stocke [] (= tout afficher)
+    const tousIds: string[] = [];
+    d.referentiels.competences.forEach(n1 => {
+      tousIds.push(n1.id);
+      n1.enfants?.forEach(n2 => tousIds.push(n2.id));
+    });
+    const toutActif = tousIds.every(id => actifs.has(id));
+
+    this.donneesService.executer(
+      new CommandeRemplacement<string[]>(
+        (data, v) => { data.configuration.domainesActifs = v; },
+        d.configuration.domainesActifs ?? [],
+        toutActif ? [] : [...actifs],
+      ),
+    );
+  }
+
+  /** Réinitialise la sélection des domaines depuis le store. */
+  protected annulerDomainesCompetences(): void {
+    const d = this.donneesService.donnees();
+    if (!d) return;
+    const actifs = d.configuration.domainesActifs;
+    if (!actifs || actifs.length === 0) {
+      const tousIds = new Set<string>();
+      d.referentiels.competences.forEach(n1 => {
+        tousIds.add(n1.id);
+        n1.enfants?.forEach(n2 => tousIds.add(n2.id));
+      });
+      this.copieDomainesActifs.set(tousIds);
+    } else {
+      this.copieDomainesActifs.set(new Set(actifs));
+    }
+    this.cdr.markForCheck();
   }
 }

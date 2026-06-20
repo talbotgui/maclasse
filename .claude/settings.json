@@ -43,7 +43,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "TMPFILE=$(mktemp) && cat > \"$TMPFILE\"; PROMPT=$(jq -r '.prompt // empty' \"$TMPFILE\"); if [ -z \"$PROMPT\" ]; then rm -f \"$TMPFILE\"; exit 0; fi; TRANSCRIPT=$(jq -r '.transcript_path // empty' \"$TMPFILE\"); rm -f \"$TMPFILE\"; TITRE=$([ -n \"$TRANSCRIPT\" ] && jq -r 'select(.aiTitle != null) | .aiTitle' \"$TRANSCRIPT\" 2>/dev/null | tail -1 || echo ''); DATE=$(date '+%Y-%m-%d %H:%M:%S'); printf '\\n---\\n%s [%s] %s' \"$DATE\" \"${TITRE:-Sans titre}\" \"$PROMPT\" >> /workspaces/maclasse/.claude/historiquePrompt-${USERNAME:-${USER:-$(whoami)}}.txt"
+            "command": "TMPFILE=$(mktemp) && cat > \"$TMPFILE\"; PROMPT=$(jq -r '.prompt // empty' \"$TMPFILE\"); if [ -z \"$PROMPT\" ]; then rm -f \"$TMPFILE\"; exit 0; fi; TRANSCRIPT=$(jq -r '.transcript_path // empty' \"$TMPFILE\"); rm -f \"$TMPFILE\"; TITRE=$([ -n \"$TRANSCRIPT\" ] && jq -r 'select(.aiTitle != null) | .aiTitle' \"$TRANSCRIPT\" 2>/dev/null | tail -1 || echo ''); DATE=$(date '+%Y-%m-%d %H:%M:%S'); printf '\\n---\\n%s [%s] %s' \"$DATE\" \"${TITRE:-Sans titre}\" \"$PROMPT\" >> /workspaces/maclasse/.claudeHistoriquePrompt-${USERNAME:-${USER:-$(whoami)}}.txt"
           }
         ]
       }

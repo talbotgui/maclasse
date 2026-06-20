@@ -80,7 +80,8 @@
               "src/**/libelles.ts",
               "src/**/composant-base.ts",
               "src/app/app.ts",
-              "src/main.ts"
+              "src/main.ts",
+              "**/*.html"
             ],
             "coverageThresholds": {
               "statements": 80,

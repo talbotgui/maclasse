@@ -47,9 +47,40 @@ import { TestBed } from '@angular/core/testing';
 ## Couverture minimale
 
 80% minimum sur les quatre métriques (lignes, branches, fonctions, statements) sur l'ensemble des services.
-Lancer `ng test --code-coverage` et corriger avant de passer à l'étape suivante si une métrique est sous le seuil.
+Lancer `ng test` (la couverture est activée par défaut dans `angular.json`) et corriger avant de passer à l'étape suivante si une métrique est sous le seuil.
 
-Fichiers exclus : `modeles/`, `gardes/`, `libelles.ts`, `composant-base.ts`, `app.ts`.
+Fichiers exclus de la couverture (configurés dans `angular.json`) : `modeles/`, `gardes/`, `libelles.ts`, `composant-base.ts`, `app.ts`, `**/*.html`.
+Les templates HTML sont exclus car Angular les compile en fonctions JavaScript internes non testables unitairement via V8 coverage.
+
+## Tester les outputs Angular
+
+`OutputEmitterRef.subscribe()` ne déclenche pas les callbacks hors contexte d'injection — ne jamais l'utiliser dans les tests.
+
+Pattern obligatoire :
+```typescript
+// CORRECT
+const spy = vi.spyOn((component as any).monOutput, 'emit');
+component['methodeQuiEmet']();
+expect(spy).toHaveBeenCalledWith(valeurAttendue);
+
+// INTERDIT — le callback n'est jamais appelé
+(component as any).monOutput.subscribe((v) => emis.push(v));
+```
+
+Corollaire : tester un output suppose toujours qu'il est émis via une **méthode du composant**, jamais via un appel direct à `emit()` depuis le test.
+
+## Composants avec `<dialog>`
+
+Tout spec d'un composant contenant un `<dialog>` — directement ou via un composant enfant (`popin-*`) — doit déclarer en `beforeAll` :
+
+```typescript
+beforeAll(() => {
+  HTMLDialogElement.prototype.showModal = vi.fn();
+  HTMLDialogElement.prototype.close = vi.fn();
+});
+```
+
+Sans ce mock, tout `fixture.detectChanges()` qui rend la dialog visible (`[visible]="true"`) lève `TypeError: el.showModal is not a function`.
 
 ## Pattern Object Mother
 

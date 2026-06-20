@@ -35,7 +35,29 @@ globs: "**/*.ts"
 - Contrôle de flux natif : `@if`, `@for`, `@switch` — jamais `*ngIf`, `*ngFor`, `*ngSwitch`
 - Interdire `ngClass` → `[class.foo]="..."` ; interdire `ngStyle` → `[style.color]="..."`
 - Pas de `new Date()` ni de globaux dans les templates
+- **Ne jamais appeler `output().emit()` directement dans un template** — toujours déléguer à une méthode `protected` du composant :
+  ```typescript
+  // INTERDIT dans le template
+  (click)="annuler.emit()"
+  // CORRECT
+  (click)="onAnnuler()"
+  // avec dans le composant :
+  protected onAnnuler(): void { this.annuler.emit(); }
+  ```
 
 ## Formulaires
 
 - Reactive Forms — pas de Template-driven Forms
+
+## Composants ControlValueAccessor
+
+Dans tout composant implémentant `ControlValueAccessor` qui encapsule un `<input>` ou `<textarea>` :
+
+- Lier `(input)` (pas `(change)`) pour notifier Angular Forms en temps réel :
+  ```html
+  <!-- CORRECT — retour immédiat -->
+  (input)="surChangement($any($event.target).value)"
+  <!-- INTERDIT — retour différé au blur -->
+  (change)="surChangement($any($event.target).value)"
+  ```
+- `(blur)` reste correct pour `onTouched()`

@@ -221,6 +221,11 @@ export class FeFormulaireEleveComponent {
     this.enregistrer.emit(structuredClone(this.formEleve));
   }
 
+  /** Émet l'annulation de la saisie au parent. */
+  protected onAnnuler(): void {
+    this.annuler.emit();
+  }
+
   /** Crée un objet Eleve vide pour les créations. */
   private creerEleveVide(): Eleve {
     return {

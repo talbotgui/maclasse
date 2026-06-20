@@ -119,6 +119,19 @@ export class DateUtils {
   }
 
   /**
+   * Retourne la date du jour au format ISO `YYYY-MM-DD` en heure locale.
+   * @returns Date du jour sans décalage UTC.
+   */
+  public static dateAujourdhui(): string {
+    const d = new Date();
+    return [
+      String(d.getFullYear()),
+      String(d.getMonth() + 1).padStart(2, '0'),
+      String(d.getDate()).padStart(2, '0'),
+    ].join('-');
+  }
+
+  /**
    * Formate un objet `Date` en heure `HH:MM` (heure locale).
    * @param date Objet `Date` à formater.
    * @returns Heure au format `HH:MM` avec zéro initial.

@@ -41,8 +41,8 @@ import { TestBed } from '@angular/core/testing';
 
 ## Ce qui est testé
 
-- **Testé :** tous les services
-- **Jamais testé :** les composants Angular
+- **Tester tous les services** à plus de 80% de couverture de code (lignes, branches, fonctions, statements).
+- **Tester tous les composants Angular** sur leurs fonctionnalités.
 
 ## Couverture minimale
 

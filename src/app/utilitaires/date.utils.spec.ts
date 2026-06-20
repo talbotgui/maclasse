@@ -148,6 +148,19 @@ describe('DateUtils', () => {
     });
   });
 
+  /** Retourne la date du jour en ISO local sans décalage UTC. */
+  describe('dateAujourdhui', () => {
+    it('retourne une date au format YYYY-MM-DD', () => {
+      expect(DateUtils.dateAujourdhui()).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    });
+
+    it('correspond à la date locale du jour', () => {
+      const d = new Date();
+      const attendu = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      expect(DateUtils.dateAujourdhui()).toBe(attendu);
+    });
+  });
+
   /** Produit une heure HH:MM avec zéro initial pour les heures et minutes à un chiffre. */
   describe('formaterHeure', () => {
     it('formate en HH:MM avec zéro initial pour l\'heure', () => {

@@ -24,28 +24,6 @@ import type { Seance, JourneeJournal } from '../../modeles/cahier-journal.modele
 import type { Competence, JourFerie } from '../../modeles/referentiels.modele';
 import type { JourSemaine } from '../../modeles/emploi-du-temps.modele';
 
-/** Nombre de millisecondes dans un jour. */
-const MS_PAR_JOUR = 24 * 60 * 60 * 1000;
-
-/**
- * Décale une date ISO de `delta` jours.
- * @param dateIso Date au format ISO.
- * @param delta Nombre de jours (positif ou négatif).
- */
-function decalerDate(dateIso: string, delta: number): string {
-  const d = new Date(dateIso + 'T00:00:00');
-  d.setTime(d.getTime() + delta * MS_PAR_JOUR);
-  return d.toISOString().slice(0, 10);
-}
-
-/**
- * Retourne la date ISO d'aujourd'hui sans décalage UTC.
- */
-function dateAujourdhui(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
 /**
  * Écran du cahier journal.
  * Navigation par mini-calendrier et boutons ±1 j / ±7 j.
@@ -77,7 +55,7 @@ export class EcranCahierJournalComponent {
   private readonly competenceService = inject(CompetenceService);
 
   /** Date actuellement sélectionnée dans le calendrier. */
-  protected readonly dateSelectionnee = signal<string>(dateAujourdhui());
+  protected readonly dateSelectionnee = signal<string>(DateUtils.dateAujourdhui());
 
   /** Séance sélectionnée pour modification (`null` si aucune). */
   protected readonly seanceEditee = signal<Seance | null>(null);
@@ -149,7 +127,7 @@ export class EcranCahierJournalComponent {
    * @param delta Nombre de jours à décaler (±1, ±7).
    */
   protected naviguerJour(delta: number): void {
-    this.dateSelectionnee.update(d => decalerDate(d, delta));
+    this.dateSelectionnee.update(d => DateUtils.ajouterJours(d, delta));
     this.fermerFormulaire();
   }
 

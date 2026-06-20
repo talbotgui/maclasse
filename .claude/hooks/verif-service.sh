@@ -15,7 +15,7 @@ except Exception:
 " 2>/dev/null || echo "")
 
 # Ne rien faire si le fichier modifié n'est ni un service ni un modèle
-if ! echo "$FILE" | grep -qE '\.(service|modele)\.ts$'; then
+if ! echo "$FILE" | grep -qE '\.(service|modele|component)\.ts$'; then
   exit 0
 fi
 

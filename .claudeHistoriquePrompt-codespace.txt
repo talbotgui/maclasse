@@ -785,3 +785,21 @@ Voici le rendu actuel :
 2026-06-20 17:07:04 [Organisation de la mémoire Claude dans le workspace] oui
 ---
 2026-06-20 17:10:16 [Organisation de la mémoire Claude dans le workspace] Les fichiers ./.claude/memory/projet*.md sont-ils chargés au démarrage d'une session ClaudeCode ?
+---
+2026-06-20 19:07:24 [Sans titre] le minicalendrier de l'écran CahierJournal est buggé. Quelle est la bonne stratégie pour tester efficacement le composant sur chaque fonctionnalité, donnée affichée et bouton disponible ?
+---
+2026-06-20 19:13:21 [Tester le minicalendrier du CahierJournal] J'ai modifié la règle sur les tests des composants. comment tester spécifiquement le composant Angular du minicalendrier ?
+---
+2026-06-20 19:15:34 [Tester le minicalendrier du CahierJournal] écris les tests et liste les problèmes du composant
+---
+2026-06-20 19:27:22 [Tester le minicalendrier du CahierJournal] corrige les deux bugs et laisse le hook exécuter les tests
+---
+2026-06-20 19:28:43 [Tester le minicalendrier du CahierJournal] je ne vois pas le résultat du HOOK dans la conversation. pourquoi ?
+---
+2026-06-20 19:34:30 [Sans titre] dans @src/app/ecrans/cahier-journal/ecran-cahier-journal.component.ts , existent deux fonctions en dehors  de la classe. Elles devraient être dans une classe utilitaire et être testées. Fait les modifications nécessaires
+---
+2026-06-20 19:35:38 [Déplacer fonctions utilitaires dans une classe] ok
+---
+2026-06-20 19:46:18 [Sans titre] le plugin "typescript-lsp" est-il actif ?
+---
+2026-06-20 19:53:22 [Sans titre] Il manque à peu près tous les tests de tous les composants applicatifs. Prépare un plan "plans-02-testsDeComposant.md" décrivant, étape après étape, la création de tous ces tests. De quels éléments as-tu besoin pour réaliser ce plan ?

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal, untracked } from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../composant-base';
 import type { JourFerie } from '../../modeles/referentiels.modele';
@@ -20,7 +20,7 @@ import { LIBELLES } from '../../libelles';
 })
 export class McMiniCalendrierComponent extends ComposantBase {
   /** En-têtes des colonnes (semaine française, lundi en premier). */
-  private static readonly ENTETES_COLONNES = LIBELLES.dates.initialeJours;
+  private static readonly ENTETES_COLONNES = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
   /** Dates ISO des journées ayant au moins une entrée dans le cahier journal. */
   public readonly journeesAvecEntrees: InputSignal<string[]> = input<string[]>([]);
@@ -130,7 +130,7 @@ export class McMiniCalendrierComponent extends ComposantBase {
       const jourSel = this.jourSelectionne();
       if (!jourSel) return;
       const date = new Date(jourSel + 'T00:00:00');
-      const affiche = this.moisAffiche();
+      const affiche = untracked(() => this.moisAffiche());
       if (date.getFullYear() !== affiche.getFullYear() || date.getMonth() !== affiche.getMonth()) {
         this.moisAffiche.set(new Date(date.getFullYear(), date.getMonth(), 1));
       }

@@ -773,3 +773,15 @@ Voici le rendu actuel :
 2026-06-20 13:01:45 [Ajouter bouton panier aux compétences] modifie la documentation/mémoire avec ces changements
 ---
 2026-06-20 13:01:51 [Analyser z-index du sélecteur de compétence] reprend
+---
+2026-06-20 16:46:32 [Sans titre] décrit moi l'organisation de la mémoire CLAUDE dans ce workspace
+---
+2026-06-20 16:53:12 [Organisation de la mémoire Claude dans le workspace] où est l'exécutable de Claude sur cette machine ?
+---
+2026-06-20 16:58:00 [Organisation de la mémoire Claude dans le workspace] quelles règles (au sens .claude/rules) proposes-tu d'extraire depuis les fichiers .MD existant dans le répertoire @.claude/memory/*.md  ?
+---
+2026-06-20 17:02:24 [Organisation de la mémoire Claude dans le workspace] vas-y
+---
+2026-06-20 17:07:04 [Organisation de la mémoire Claude dans le workspace] oui
+---
+2026-06-20 17:10:16 [Organisation de la mémoire Claude dans le workspace] Les fichiers ./.claude/memory/projet*.md sont-ils chargés au démarrage d'une session ClaudeCode ?

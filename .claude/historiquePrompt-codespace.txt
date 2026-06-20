@@ -507,3 +507,15 @@ les boutons "mc-btn-fantome" sont plus haut que les "mc-btn-primaire" de 4px. pk
 2026-06-20 11:05:07 [Sans titre] EVO - les domaines de compétences sont nombreux et ne sont pas tous à utiliser pour une classe donnée car ils dépendent du niveau de la classe de l'enseignant. Dans l'écran de paramétrage, ajoute une section, toute à la fin, proposant toutes les compétences des deux premiers niveaux sélectionnables. Dans le reste de l'application, n'affiche que les compétences que des niveaux sélectionnés. Dans l'écran des compétences, ajoute une petite phrase, sous l'arbre indiquant que tous les domaines sont disponibles et activables dans l'écran des compétences. Reformule le besoin et propose moi une solution avant toute modification
 ---
 2026-06-20 11:09:04 [Filtrer les compétences par niveau scolaire] modifie obtenirDomaines()
+---
+2026-06-20 11:32:42 [Sans titre] BUG - l'arbre, dans l'écran des compétences, n'est pas navigable au clavier. Que proposes-tu ?
+---
+2026-06-20 11:39:21 [Sans titre] EVO - nous allons revoir le sélecteur de compétence ensemble.
+Le composant actuel propose un champ de recherche, un filtre par domaine et un arbre. Ce composant est bien trop grand.
+Je souhaite un composant proposant le filtre par domaine en premier, puis un champ de recherche avec une autocomplétion dont le libellé de chaque option est complet ("domaine > sous-domaine > ..."). Les compétences sélectionnées s'affichent en dessous sous forme de CHIP avec un bouton de suppression (icône x sans libellé).
+Reformule
+---
+2026-06-20 11:40:45 [Arbre des compétences non navigable au clavier] implémente ta proposition
+---
+2026-06-20 11:42:59 [Revoir le sélecteur de compétence avec autocomplétion] le filtre par domaine utilise des CHIPS.
+Propose une solution complète

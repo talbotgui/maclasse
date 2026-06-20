@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input, output, signal, viewChildren } from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../composant-base';
 import { McChampRechercheComponent } from '../mc-champ-recherche/mc-champ-recherche.component';
@@ -42,6 +42,9 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
 
   /** Identifiants des nœuds actuellement dépliés. */
   private readonly noeudsDepliés = signal<Set<string>>(new Set());
+
+  /** Références aux boutons de libellé de l'arbre, dans l'ordre d'affichage, pour la navigation clavier. */
+  private readonly boutonsSelection = viewChildren<ElementRef<HTMLButtonElement>>('boutonSelection');
 
   /** État déplié sauvegardé avant l'activation d'une recherche, `null` si inactif. */
   private readonly noeudsDepliésAvantRecherche = signal<Set<string> | null>(null);
@@ -172,6 +175,63 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
     }
 
     this.selectionChange.emit(nouvelleSelection);
+  }
+
+  /**
+   * Gère la navigation clavier dans l'arbre selon le pattern WAI-ARIA Tree View :
+   * - ↓/↑ : nœud suivant/précédent visible.
+   * - → : déplier si fermé, sinon descendre vers le premier enfant.
+   * - ← : replier si ouvert, sinon remonter vers le nœud parent.
+   * - Début/Fin : sauter au premier/dernier nœud.
+   * @param event Événement clavier intercepté.
+   * @param indexCourant Index du nœud focalisé dans `noeudsAffiches`.
+   */
+  protected naviguerClavier(event: KeyboardEvent, indexCourant: number): void {
+    const noeuds = this.noeudsAffiches();
+    const boutons = this.boutonsSelection();
+
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        boutons[indexCourant + 1]?.nativeElement.focus();
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        boutons[indexCourant - 1]?.nativeElement.focus();
+        break;
+      case 'Home':
+        event.preventDefault();
+        boutons[0]?.nativeElement.focus();
+        break;
+      case 'End':
+        event.preventDefault();
+        boutons[boutons.length - 1]?.nativeElement.focus();
+        break;
+      case 'ArrowRight': {
+        event.preventDefault();
+        const noeud = noeuds[indexCourant];
+        if (!noeud.estFeuille && !noeud.estDeplie) {
+          this.basculerNoeud(noeud.competence.id);
+        } else if (!noeud.estFeuille && noeud.estDeplie) {
+          boutons[indexCourant + 1]?.nativeElement.focus();
+        }
+        break;
+      }
+      case 'ArrowLeft': {
+        event.preventDefault();
+        const noeud = noeuds[indexCourant];
+        if (!noeud.estFeuille && noeud.estDeplie) {
+          this.basculerNoeud(noeud.competence.id);
+        } else {
+          let i = indexCourant - 1;
+          while (i >= 0 && noeuds[i].niveau >= noeud.niveau) {
+            i--;
+          }
+          boutons[i]?.nativeElement.focus();
+        }
+        break;
+      }
+    }
   }
 
   /**

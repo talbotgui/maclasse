@@ -28,6 +28,7 @@
         [style.padding-left.rem]="noeud.niveau * 1.25"
         role="treeitem"
         [attr.aria-expanded]="noeud.estFeuille ? null : noeud.estDeplie"
+        [attr.aria-selected]="noeud.estSelectionne"
       >
         @if (!noeud.estFeuille) {
           <button
@@ -41,12 +42,14 @@
           <span class="mc-selecteur-competences__indent"></span>
         }
         <button
+          #boutonSelection
           [id]="'noeudSel_' + noeud.competence.id"
           type="button"
           class="mc-selecteur-competences__libelle"
           [class.mc-selecteur-competences__libelle--selectionne]="noeud.estSelectionne"
           [attr.aria-pressed]="noeud.estSelectionne"
           (click)="basculerSelection(noeud.competence.id)"
+          (keydown)="naviguerClavier($event, $index)"
         >{{ noeud.competence.libelle }}</button>
       </div>
     }

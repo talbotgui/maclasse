@@ -1,7 +1,6 @@
 Bugs :
 - global
   - revoir le sélecteur de compétence
-  - dans l'ensemble de l'application, filtre les domaines à partir de la sélection faite dans une nouvelle section du paramétrage
   - dans le jeu de données par défaut, ajoute des emplois du temps pour toute l'année scolaire (1 en semaine paire, un autre en semaine impaire et un dernier sur les deux).
   - dans le jeu de données par défaut, ajoute les cahiers journaux de toute une semaine. Au chargement du jeu de données, changes en les dates pour correspondre à la semaine en cours (si la date du jour est entre le lundi et le vendredi inclu) ou la semaine suivante (si la date du jour est un samedi ou un dimanche).
 - dans l'entête
@@ -15,7 +14,6 @@ Bugs :
 - écran PROJET
   - dans le formulaire d'un PROJET, il faut pouvoir sélectionner les élèves via les groupes. Ajouter un sélecteur de groupes, au dessus du sélecteur des élèves, synchronisant la sélection entre les deux me semble pertinent. Qu'en penses-tu ?
 - écran COMPETENCES
-  - l'arbre dans l'écran des compétences n'est pas navigable au clavier
   - ajoute un bouton au bout de chaque compétence, dans l'écran COMPETENCES, pour en sélectionner une pour le panier
 - écran EDT
   - le bouton SUPPRIMER est plus petit que les autres dans le formulaire d'édition de l'EDT

@@ -124,6 +124,7 @@
   <div class="edt__droite">
     @if (formEdt() !== null || creneauEdite() !== null) {
       <edt-formulaire
+        [focusDemande]="true"
         [edt]="formEdt()"
         [creneau]="creneauEdite()"
         [domaines]="domaines()"

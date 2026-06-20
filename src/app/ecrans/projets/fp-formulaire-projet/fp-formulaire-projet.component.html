@@ -2,7 +2,7 @@
 
   <!-- Bandeau -->
   <div class="form-projet__bandeau">
-    <mc-input id="champFormNomProjet" [label]="LIBELLES.projet.labelNom" [(ngModel)]="formProjet.nom" />
+    <mc-input id="champFormNomProjet" [label]="LIBELLES.projet.labelNom" [(ngModel)]="formProjet.nom" [mcAutoFocus]="focusDemande()" />
     <div class="form-projet__bandeau-actions">
       <button id="btnEnregistrerProjet" class="mc-btn-primaire" (click)="onEnregistrer()">{{ LIBELLES.commun.enregistrer }}</button>
       <button id="btnAnnulerProjet" class="mc-btn-fantome" (click)="annuler.emit()">{{ LIBELLES.commun.annuler }}</button>

@@ -3,7 +3,7 @@
   <!-- Bandeau supérieur -->
   <div class="form-eleve__bandeau">
     <div class="form-eleve__bandeau-noms">
-      <mc-input id="champFormPrenom" [label]="LIBELLES.eleve.labelPrenom" [(ngModel)]="formEleve.prenom" />
+      <mc-input id="champFormPrenom" [label]="LIBELLES.eleve.labelPrenom" [(ngModel)]="formEleve.prenom" [mcAutoFocus]="focusDemande()" />
       <mc-input id="champFormNom" [label]="LIBELLES.eleve.labelNom" [(ngModel)]="formEleve.nom" />
     </div>
     <div class="form-eleve__bandeau-actions">

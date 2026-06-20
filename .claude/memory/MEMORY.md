@@ -49,3 +49,4 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [Membres privés sans underscore](feedback-13-membres-prives.md) — `private`/`protected` en camelCase simple, jamais préfixé `_` (sauf paramètre non utilisé)
 - [DTOs dans src/app/modeles/](feedback-14-modeles-dto.md) — Toute interface/classe de données dans un fichier `*.modele.ts`, jamais dans un service
 - [Pattern Object Mother](feedback-15-object-mother.md) — Factories de données de test dans `src/app/tests/`, surcharge via `Partial<T>`, jamais de `creerXxx()` local dans les spec
+- [Focus à la création](feedback-16-focus-creation.md) — input `focusDemande` + `[mcAutoFocus]` sur premier champ ; `true` statique si sous `@if`, signal réactif sinon

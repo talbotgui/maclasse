@@ -61,6 +61,7 @@
 
     @if (enModeEdition()) {
       <fe-formulaire-eleve
+        [focusDemande]="true"
         [eleve]="eleveSelectionne()"
         [groupes]="groupes()"
         [statutsEleve]="statutsEleve()"

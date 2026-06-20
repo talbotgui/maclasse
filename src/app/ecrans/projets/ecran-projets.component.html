@@ -51,6 +51,7 @@
     }
     @if (enModeEdition()) {
       <fp-formulaire-projet
+        [focusDemande]="true"
         [projet]="projetSelectionne()"
         (enregistrer)="onEnregistrer($event)"
         (annuler)="onAnnulerEdition()"

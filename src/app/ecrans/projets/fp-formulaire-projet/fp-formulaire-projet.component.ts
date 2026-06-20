@@ -13,6 +13,7 @@ import {
   output,
 } from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
+import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { FormsModule } from '@angular/forms';
 import { LIBELLES } from '../../../libelles';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
@@ -32,6 +33,7 @@ import type { Projet, ProjetPeriode } from '../../../modeles/projet.modele';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
+    McAutoFocusDirective,
     McInputComponent,
     McTextareaComponent,
     McChipFiltreComponent,
@@ -50,6 +52,9 @@ export class FpFormulaireProjetComponent {
 
   /** Service de données pour la liste des élèves. */
   private readonly donneesService = inject(DonneesService);
+
+  /** Demande le focus sur le premier champ à l'apparition du formulaire. */
+  public readonly focusDemande: InputSignal<boolean> = input(false);
 
   /** Projet à éditer, ou `null` pour une création. */
   public readonly projet: InputSignal<Projet | null> = input<Projet | null>(null);

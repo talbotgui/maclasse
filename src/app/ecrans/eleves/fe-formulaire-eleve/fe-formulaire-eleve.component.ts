@@ -12,6 +12,7 @@ import {
   output,
 } from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
+import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { FormsModule } from '@angular/forms';
 import { LIBELLES } from '../../../libelles';
 import { McInputComponent } from '../../../composants/mc-input/mc-input.component';
@@ -34,6 +35,7 @@ import type { Groupe, StatutEleve, TypeContact } from '../../../modeles/referent
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
+    McAutoFocusDirective,
     McInputComponent,
     McTextareaComponent,
     McSelectComponent,
@@ -51,6 +53,9 @@ export class FeFormulaireEleveComponent {
 
   /** Détection de changement pour mise à jour manuelle en mode OnPush. */
   private readonly cdr = inject(ChangeDetectorRef);
+
+  /** Demande le focus sur le premier champ à l'apparition du formulaire. */
+  public readonly focusDemande: InputSignal<boolean> = input(false);
 
   /** Élève à éditer, ou `null` pour une création. */
   public readonly eleve: InputSignal<Eleve | null> = input<Eleve | null>(null);

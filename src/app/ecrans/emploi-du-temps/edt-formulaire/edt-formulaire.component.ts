@@ -14,6 +14,7 @@ import {
   output,
 } from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
+import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { FormsModule } from '@angular/forms';
 import { LIBELLES } from '../../../libelles';
 import { McInputComponent } from '../../../composants/mc-input/mc-input.component';
@@ -35,6 +36,7 @@ import type { Competence } from '../../../modeles/referentiels.modele';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
+    McAutoFocusDirective,
     McInputComponent,
     McSelectComponent,
     McChampHeureComponent,
@@ -51,6 +53,9 @@ export class EdtFormulaireComponent {
 
   /** Détection de changement pour mise à jour en mode OnPush. */
   private readonly cdr = inject(ChangeDetectorRef);
+
+  /** Demande le focus sur le premier champ à l'apparition du formulaire. */
+  public readonly focusDemande: InputSignal<boolean> = input(false);
 
   /** EDT courant (propriétés). */
   public readonly edt: InputSignal<EmploiDuTemps | null> = input<EmploiDuTemps | null>(null);

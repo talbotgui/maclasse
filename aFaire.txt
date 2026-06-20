@@ -1,7 +1,7 @@
 Bugs :
 - global
   - revoir le sélecteur de compétence
-  - A la création sur le bouton CREER, dans tous les écrans, le focus doit se placer sur le premier champ éditable
+  - 
   - propose une homogénéisation des boutons sans libellé dans l'écran CJ et dans les autres
   - en petite largeur d'écran, la colonne de gauche doit passer au dessus de la zone centrale
   - dans l'ensemble de l'application, filtre les domaines à partir de la sélection faite dans une nouvelle section du paramétrage

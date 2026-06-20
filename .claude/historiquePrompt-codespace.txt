@@ -489,3 +489,17 @@ les boutons "mc-btn-fantome" sont plus haut que les "mc-btn-primaire" de 4px. pk
 2026-06-19 20:24:47 [Homogénéiser la taille des boutons d'action] le bouton de destruction est utilisé à côté du bouton MODIFIER mais aussi dans les formulaires. Dans le premier cas, le bouton ne doit pas être mc-btn-sm. Mais dans le second cas, il doit l'être. Que proposes-tu ?
 ---
 2026-06-19 20:25:58 [Homogénéiser la taille des boutons d'action] ok
+---
+2026-06-20 09:41:44 [Sans titre] encore un bug à traiter : A la création sur le bouton CREER, dans tous les écrans, le focus doit se placer sur le premier champ éditable du formulaire de la zone centrale. Que proposes-tu ?
+---
+2026-06-20 09:43:57 [Sans titre] EVO - en petite largeur d'écran, la colonne de gauche de chaque écran doit passer au dessus de la zone centrale
+---
+2026-06-20 09:48:24 [Gérer le focus sur création du formulaire] cela me convient. Ajoute cette règle de développement dans la mémoire
+---
+2026-06-20 09:49:30 [Ajuster layout colonne gauche petits écrans] les deux propositions me conviennent. Ajoute ces choix dans la description des écrans et du plan de génération du code du projet
+---
+2026-06-20 09:50:36 [Gérer le focus sur création du formulaire] ok
+---
+2026-06-20 09:52:49 [Ajuster layout colonne gauche petits écrans] développe cette correction
+---
+2026-06-20 10:52:54 [Gérer le focus sur création du formulaire] reprend

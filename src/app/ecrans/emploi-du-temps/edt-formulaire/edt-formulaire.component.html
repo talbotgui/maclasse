@@ -11,6 +11,7 @@
         name="nom"
         [label]="LIBELLES.edt.labelNom"
         [required]="true"
+        [mcAutoFocus]="focusDemande()"
       />
 
       <mc-input
@@ -71,6 +72,7 @@
         name="heureDebut"
         [label]="LIBELLES.edt.labelHeureDebut"
         [required]="true"
+        [mcAutoFocus]="focusDemande()"
       />
 
       <mc-champ-heure

@@ -145,6 +145,7 @@
 
           @if (seanceEditee()?.id === seance.id) {
             <cj-formulaire-seance
+              [focusDemande]="true"
               [seance]="seanceEditee()"
               [journee]="journeeSelectionnee()"
               [domaines]="domaines()"
@@ -156,6 +157,7 @@
 
         @if (enCreationSeance()) {
           <cj-formulaire-seance
+            [focusDemande]="true"
             [seance]="null"
             [journee]="journeeSelectionnee()"
             [domaines]="domaines()"

@@ -69,4 +69,13 @@ export class FpFicheProjetComponent {
   protected libellesCompetences(ids: string[]): string[] {
     return ids.map(id => this.competenceService.resoudreLibelle(id)).filter(l => l.length > 0);
   }
+
+  /** Délègue au parent l'action de modification. */
+  protected onModifier(): void { this.modifier.emit(); }
+
+  /** Délègue au parent l'action de suppression. */
+  protected onSupprimer(): void { this.supprimer.emit(); }
+
+  /** Délègue au parent l'action d'impression. */
+  protected onImprimer(): void { this.imprimer.emit(); }
 }

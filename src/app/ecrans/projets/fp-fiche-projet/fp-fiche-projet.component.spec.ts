@@ -58,27 +58,21 @@ describe('FpFicheProjetComponent', () => {
   });
 
   describe('outputs', () => {
-    it('modifier émet quand la méthode est appelée', () => {
+    it('modifier émet quand onModifier() est appelée', () => {
       const spy = vi.spyOn((component as any).modifier, 'emit');
-
-      (component as any).modifier.emit();
-
+      component['onModifier']();
       expect(spy).toHaveBeenCalled();
     });
 
-    it('supprimer émet quand la méthode est appelée', () => {
+    it('supprimer émet quand onSupprimer() est appelée', () => {
       const spy = vi.spyOn((component as any).supprimer, 'emit');
-
-      (component as any).supprimer.emit();
-
+      component['onSupprimer']();
       expect(spy).toHaveBeenCalled();
     });
 
-    it('imprimer émet quand la méthode est appelée', () => {
+    it('imprimer émet quand onImprimer() est appelée', () => {
       const spy = vi.spyOn((component as any).imprimer, 'emit');
-
-      (component as any).imprimer.emit();
-
+      component['onImprimer']();
       expect(spy).toHaveBeenCalled();
     });
   });

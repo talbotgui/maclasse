@@ -4,14 +4,14 @@
   <div class="fiche-eleve__bandeau">
     <h2 class="fiche-eleve__titre">{{ eleve().nom | uppercase }}&nbsp;{{ eleve().prenom }}</h2>
     <div class="fiche-eleve__bandeau-actions">
-      <button id="btnModifierEleve" class="mc-btn-primaire" (click)="modifier.emit()">{{ LIBELLES.commun.modifier }}</button>
+      <button id="btnModifierEleve" class="mc-btn-primaire" (click)="onModifier()">{{ LIBELLES.commun.modifier }}</button>
       <mc-bouton-destruction
         id="btnSupprimerEleve"
         [desactive]="false"
         [tooltipDesactive]="''"
-        (confirme)="supprimer.emit()"
+        (confirme)="onSupprimer()"
       />
-      <button id="btnImprimerEleve" class="mc-btn-fantome" (click)="imprimer.emit()">{{ LIBELLES.eleve.boutonImprimer }}</button>
+      <button id="btnImprimerEleve" class="mc-btn-fantome" (click)="onImprimer()">{{ LIBELLES.eleve.boutonImprimer }}</button>
     </div>
   </div>
 

@@ -831,3 +831,395 @@ Voici le rendu actuel :
 2026-06-21 13:14:02 [Analyser bugs catégorie 1 et modifications requises] Corrige les problèmes de code
 ---
 2026-06-21 13:22:28 [Analyser bugs catégorie 1 et modifications requises] ajoute/complète une règle sur ce sujet dans les règles en mémoire
+---
+2026-06-21 13:27:06 [Analyser bugs catégorie 2 et détailler modifications] les sources ont été modifiées. vérifie ce que tu viens d'analyser
+---
+2026-06-21 13:27:45 [Analyser bugs catégorie 2 et détailler modifications] corrige le code
+---
+2026-06-21 13:28:37 [Analyser bugs catégorie 2 et détailler modifications] <task-notification>
+<summary>Stop hook feedback</summary>
+</task-notification>
+<system-reminder>
+Stop hook blocking error from command "PostToolUse:Edit": Fichier modifié : /workspaces/maclasse/src/app/ecrans/eleves/fe-fiche-eleve/fe-fiche-eleve.component.ts
+Lancement de la vérification (compilation + tests + couverture ≥ 80%)...
+
+=== 1/2  Compilation TypeScript (tsc --noEmit) ===
+OK
+
+=== 2/2  Tests et couverture (ng test --coverage) ===
+ÉCHEC — Tests en erreur ou couverture < 80% sur au moins une métrique :
+❯ Building...
+✔ Building...
+Initial chunk files                                                                       | Names                                                                                  |  Raw size
+spec-app-modeles-donnees-defaut.js                                                        | spec-app-modeles-donnees-defaut                                                        | 463.65 kB | 
+spec-app-ecrans-parametrage-ecran-parametrage.component.js                                | spec-app-ecrans-parametrage-ecran-parametrage.component                                | 123.89 kB | 
+spec-app-ecrans-cahier-journal-ecran-cahier-journal.component.js                          | spec-app-ecrans-cahier-journal-ecran-cahier-journal.component                          |  56.69 kB | 
+chunk-DM52RCRT.js                                                                         | -                                                                                      |  55.02 kB | 
+spec-app-ecrans-emploi-du-temps-ecran-emploi-du-temps.component.js                        | spec-app-ecrans-emploi-du-temps-ecran-emploi-du-temps.component                        |  51.05 kB | 
+spec-app-composants-mc-entete-mc-entete.component.js                                      | spec-app-composants-mc-entete-mc-entete.component                                      |  39.36 kB | 
+spec-app-ecrans-eleves-ecran-eleves.component.js                                          | spec-app-ecrans-eleves-ecran-eleves.component                                          |  31.87 kB | 
+chunk-XCYRE7W4.js                                                                         | -                                                                                      |  31.81 kB | 
+chunk-C4NO4TVK.js                                                                         | -                                                                                      |  29.91 kB | 
+spec-app-ecrans-projets-ecran-projets.component.js                                        | spec-app-ecrans-projets-ecran-projets.component                                        |  28.83 kB | 
+chunk-BPM2ZRWA.js                                                                         | -                                                                                      |  26.84 kB | 
+chunk-4SXBQGEM.js                                                                         | -                                                                                      |  25.19 kB | 
+chunk-LBLQ26Z7.js                                                                         | -                                                                                      |  25.11 kB | 
+chunk-X77LMK2M.js                                                                         | -                                                                                      |  24.13 kB | 
+spec-app-ecrans-competences-ecran-competences.component.js                                | spec-app-ecrans-competences-ecran-competences.component                                |  22.86 kB | 
+spec-app-services-sansEtat-cahier-journal.service.js                                      | spec-app-services-sansEtat-cahier-journal.service                                      |  21.61 kB | 
+chunk-I2NAQKQX.js                                                                         | -                                                                                      |  19.83 kB | 
+chunk-YITL7K3S.js                                                                         | -                                                                                      |  18.36 kB | 
+spec-app-services-sansEtat-emploi-du-temps.service.js                                     | spec-app-services-sansEtat-emploi-du-temps.service                                     |  18.25 kB | 
+chunk-CMFTOCXL.js                                                                         | -                                                                                      |  17.32 kB | 
+chunk-BVJVSJUK.js                                                                         | -                                                                                      |  17.23 kB | 
+chunk-CNRELSKZ.js                                                                         | -                                                                                      |  15.68 kB | 
+spec-app-ecrans-accueil-ecran-accueil.component.js                                        | spec-app-ecrans-accueil-ecran-accueil.component                                        |  15.36 kB | 
+styles.css                                                                                | styles                                                                                 |  14.03 kB | 
+spec-app-services-sansEtat-referentiel.service.js                                         | spec-app-services-sansEtat-referentiel.service                                         |  13.98 kB | 
+chunk-A4V7HRNK.js                                                                         | -                                                                                      |  12.27 kB | 
+chunk-XKB3O6WU.js                                                                         | -                                                                                      |  12.24 kB | 
+chunk-4QOYR755.js                                                                         | -                                                                                      |  12.15 kB | 
+spec-app-composants-mc-mini-calendrier-mc-mini-calendrier.component.js                    | spec-app-composants-mc-mini-calendrier-mc-mini-calendrier.component                    |  11.31 kB | 
+spec-app-composants-mc-checkbox-mc-checkbox.component.js                                  | spec-app-composants-mc-checkbox-mc-checkbox.component                                  |  10.27 kB | 
+chunk-ZOSJUMN3.js                                                                         | -                                                                                      |   9.96 kB | 
+spec-app-composants-mc-selecteur-competences-mc-selecteur-competences.component.js        | spec-app-composants-mc-selecteur-competences-mc-selecteur-competences.component        |   9.39 kB | 
+chunk-Z6HXBNEC.js                                                                         | -                                                                                      |   9.20 kB | 
+chunk-YIZDRDFO.js                                                                         | -                                                                                      |   8.60 kB | 
+chunk-MSJ3ZAAN.js                                                                         | -                                                                                      |   8.57 kB | 
+chunk-M5KLII24.js                                                                         | -                                                                                      |   8.45 kB | 
+chunk-TJFFMVWA.js                                                                         | -                                                                                      |   8.40 kB | 
+chunk-S4UT5WDJ.js                                                                         | -                                                                                      |   8.29 kB | 
+spec-app-services-sansEtat-eleve.service.js                                               | spec-app-services-sansEtat-eleve.service                                               |   8.17 kB | 
+chunk-QQ6YMMTT.js                                                                         | -                                                                                      |   7.62 kB | 
+spec-app-services-sansEtat-projet.service.js                                              | spec-app-services-sansEtat-projet.service                                              |   7.41 kB | 
+chunk-7HEDHOSW.js                                                                         | -                                                                                      |   7.31 kB | 
+chunk-IQB5SCOQ.js                                                                         | -                                                                                      |   7.18 kB | 
+spec-app-ecrans-emploi-du-temps-edt-formulaire-edt-formulaire.component.js                | spec-app-ecrans-emploi-du-temps-edt-formulaire-edt-formulaire.component                |   7.04 kB | 
+spec-app-composants-mc-arbre-competences-mc-arbre-competences.component.js                | spec-app-composants-mc-arbre-competences-mc-arbre-competences.component                |   6.95 kB | 
+spec-app-ecrans-eleves-fe-formulaire-eleve-fe-formulaire-eleve.component.js               | spec-app-ecrans-eleves-fe-formulaire-eleve-fe-formulaire-eleve.component               |   6.76 kB | 
+chunk-452HYMXO.js                                                                         | -                                                                                      |   6.65 kB | 
+spec-app-composants-popins-popin-export-competences-popin-export-competences.component.js | spec-app-composants-popins-popin-export-competences-popin-export-competences.component |   6.57 kB | 
+spec-app-services-avecEtat-donnees.service.js                                             | spec-app-services-avecEtat-donnees.service                                             |   6.46 kB | 
+spec-app-utilitaires-date.utils.js                                                        | spec-app-utilitaires-date.utils                                                        |   6.29 kB | 
+spec-app-composants-popins-popin-demarrage-popin-demarrage.component.js                   | spec-app-composants-popins-popin-demarrage-popin-demarrage.component                   |   6.08 kB | 
+spec-app-composants-mc-eleves-concernes-mc-eleves-concernes.component.js                  | spec-app-composants-mc-eleves-concernes-mc-eleves-concernes.component                  |   5.54 kB | 
+chunk-JOQ6UMBV.js                                                                         | -                                                                                      |   5.53 kB | 
+spec-app-ecrans-projets-fp-formulaire-projet-fp-formulaire-projet.component.js            | spec-app-ecrans-projets-fp-formulaire-projet-fp-formulaire-projet.component            |   5.27 kB | 
+chunk-FJESOJPE.js                                                                         | -                                                                                      |   5.07 kB | 
+chunk-AQRAOHF7.js                                                                         | -                                                                                      |   4.96 kB | 
+spec-app-ecrans-cahier-journal-cj-formulaire-seance-cj-formulaire-seance.component.js     | spec-app-ecrans-cahier-journal-cj-formulaire-seance-cj-formulaire-seance.component     |   4.94 kB | 
+spec-app-ecrans-demarrage-ecran-demarrage.component.js                                    | spec-app-ecrans-demarrage-ecran-demarrage.component                                    |   4.91 kB | 
+chunk-RSTWSNOR.js                                                                         | -                                                                                      |   4.75 kB | 
+chunk-S5TJIITF.js                                                                         | -                                                                                      |   4.72 kB | 
+spec-app-composants-mc-bouton-destruction-mc-bouton-destruction.component.js              | spec-app-composants-mc-bouton-destruction-mc-bouton-destruction.component              |   4.68 kB | 
+chunk-55N724LW.js                                                                         | -                                                                                      |   4.54 kB | 
+chunk-MUL5TNFL.js                                                                         | -                                                                                      |   4.53 kB | 
+spec-app-services-sansEtat-competence.service.js                                          | spec-app-services-sansEtat-competence.service                                          |   4.42 kB | 
+spec-app-services-sansEtat-recherche-globale.service.js                                   | spec-app-services-sansEtat-recherche-globale.service                                   |   4.36 kB | 
+chunk-RSXY7OV4.js                                                                         | -                                                                                      |   4.31 kB | 
+spec-app-composants-mc-champ-recherche-mc-champ-recherche.component.js                    | spec-app-composants-mc-champ-recherche-mc-champ-recherche.component                    |   3.99 kB | 
+chunk-VYB3OLQT.js                                                                         | -                                                                                      |   3.89 kB | 
+spec-app-services-sansEtat-sauvegarde-auto.service.js                                     | spec-app-services-sansEtat-sauvegarde-auto.service                                     |   3.83 kB | 
+chunk-I3CFQISK.js                                                                         | -                                                                                      |   3.81 kB | 
+chunk-X2NOHALR.js                                                                         | -                                                                                      |   3.78 kB | 
+spec-app-composants-mc-radio-group-mc-radio-group.component.js                            | spec-app-composants-mc-radio-group-mc-radio-group.component                            |   3.73 kB | 
+spec-app-services-avecEtat-contexte.service.js                                            | spec-app-services-avecEtat-contexte.service                                            |   3.61 kB | 
+spec-app-composants-mc-input-mc-input.component.js                                        | spec-app-composants-mc-input-mc-input.component                                        |   3.61 kB | 
+spec-app-composants-mc-badge-statut-mc-badge-statut.component.js                          | spec-app-composants-mc-badge-statut-mc-badge-statut.component                          |   3.60 kB | 
+spec-app-composants-mc-textarea-mc-textarea.component.js                                  | spec-app-composants-mc-textarea-mc-textarea.component                                  |   3.53 kB | 
+spec-app-composants-mc-select-mc-select.component.js                                      | spec-app-composants-mc-select-mc-select.component                                      |   3.52 kB | 
+spec-app-ecrans-projets-fp-fiche-projet-fp-fiche-projet.component.js                      | spec-app-ecrans-projets-fp-fiche-projet-fp-fiche-projet.component                      |   3.40 kB | 
+spec-app-composants-popins-popin-warnings-absences-popin-warnings-absences.component.js   | spec-app-composants-popins-popin-warnings-absences-popin-warnings-absences.component   |   3.35 kB | 
+chunk-KZAWOKVR.js                                                                         | -                                                                                      |   3.34 kB | 
+spec-app-composants-popins-popin-sauvegarde-popin-sauvegarde.component.js                 | spec-app-composants-popins-popin-sauvegarde-popin-sauvegarde.component                 |   3.26 kB | 
+spec-app-directives-mc-auto-focus.directive.js                                            | spec-app-directives-mc-auto-focus.directive                                            |   3.26 kB | 
+spec-app-ecrans-eleves-fe-fiche-eleve-fe-fiche-eleve.component.js                         | spec-app-ecrans-eleves-fe-fiche-eleve-fe-fiche-eleve.component                         |   3.25 kB | 
+spec-app-composants-mc-champ-heure-mc-champ-heure.component.js                            | spec-app-composants-mc-champ-heure-mc-champ-heure.component                            |   3.04 kB | 
+spec-app-composants-popins-popin-avertissement-popin-avertissement.component.js           | spec-app-composants-popins-popin-avertissement-popin-avertissement.component           |   3.03 kB | 
+spec-app-services-sansEtat-chiffrement.service.js                                         | spec-app-services-sansEtat-chiffrement.service                                         |   2.80 kB | 
+spec-app-composants-mc-chip-filtre-mc-chip-filtre.component.js                            | spec-app-composants-mc-chip-filtre-mc-chip-filtre.component                            |   2.45 kB | 
+spec-app-tuyaux-format-date.tuyau.js                                                      | spec-app-tuyaux-format-date.tuyau                                                      |   2.44 kB | 
+chunk-S676DCXV.js                                                                         | -                                                                                      |   2.27 kB | 
+chunk-K2EX3FUN.js                                                                         | -                                                                                      |   1.69 kB | 
+chunk-6L3NPZOE.js                                                                         | -                                                                                      |   1.23 kB | 
+init-testbed.js                                                                           | init-testbed                                                                           |   1.21 kB | 
+chunk-O2QDYJLE.js                                                                         | -                                                                                      |   1.02 kB | 
+chunk-GPRHTNJB.js                                                                         | -                                                                                      | 996 bytes | 
+vitest-mock-patch.js                                                                      | vitest-mock-patch                                                                      | 969 bytes | 
+chunk-SSHVVZ4T.js                                                                         | -                                                                                      | 903 bytes | 
+chunk-IIDRGRXU.js                                                                         | -                                                                                      | 866 bytes | 
+chunk-2D7NYGQ6.js                                                                         | -                                                                                      | 863 bytes | 
+chunk-PZLCJEM7.js                                                                         | -                                                                                      | 521 bytes | 
+chunk-IHCZFB2E.js                                                                         | -                                                                                      | 311 bytes | 
+
+                                                                                          | Initial total                                                                          |   1.59 MB
+
+Lazy chunk files                                                                          | Names                                                                                  |  Raw size
+chunk-7M6CVWYY.js                                                                         | chiffrement-service                                                                    | 166 bytes | 
+
+Application bundle generation complete. [14.490 seconds] - 2026-06-21T13:28:13.080Z
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.9 [39m[90m/workspaces/maclasse[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+Not implemented: navigation to another Document
+Not implemented: navigation to another Document
+Not implemented: navigation to another Document
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Unhandled Errors [49m[22m[31m⎯⎯⎯⎯⎯⎯[39m
+[31m[1m
+Vitest caught 2 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.[22m[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: NG04002: Cannot match any routes. URL Segment: 'eleves'[39m
+[90m [2m❯[22m Recognizer.noMatchError node_modules/@angular/router/fesm2022/_router-chunk.mjs:[2m2923:12[22m[39m
+[90m [2m❯[22m Recognizer.match node_modules/@angular/router/fesm2022/_router-chunk.mjs:[2m2957:20[22m[39m
+[90m [2m❯[22m processTicksAndRejections node:internal/process/task_queues:[2m104:5[22m[39m
+[90m [2m❯[22m Recognizer.recognize node_modules/@angular/router/fesm2022/_router-chunk.mjs:[2m2930:9[22m[39m
+[90m [2m❯[22m node_modules/@angular/router/fesm2022/_router-chunk.mjs:[2m3187:9[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ code: 4002 }[39m
+[31mThis error originated in "[1msrc/app/composants/mc-entete/mc-entete.component.spec.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: NG04002: Cannot match any routes. URL Segment: 'projets'[39m
+[90m [2m❯[22m Recognizer.noMatchError node_modules/@angular/router/fesm2022/_router-chunk.mjs:[2m2923:12[22m[39m
+[90m [2m❯[22m Recognizer.match node_modules/@angular/router/fesm2022/_router-chunk.mjs:[2m2957:20[22m[39m
+[90m [2m❯[22m processTicksAndRejections node:internal/process/task_queues:[2m104:5[22m[39m
+[90m [2m❯[22m Recognizer.recognize node_modules/@angular/router/fesm2022/_router-chunk.mjs:[2m2930:9[22m[39m
+[90m [2m❯[22m node_modules/@angular/router/fesm2022/_router-chunk.mjs:[2m3187:9[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ code: 4002 }[39m
+[31mThis error originated in "[1msrc/app/composants/mc-entete/mc-entete.component.spec.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39m
+
+
+[2m Test Files [22m [1m[32m49 passed[39m[22m[90m (49)[39m
+[2m      Tests [22m [1m[32m783 passed[39m[22m[90m (783)[39m
+[2m     Errors [22m [1m[31m2 errors[39m[22m
+[2m   Start at [22m 13:28:13
+[2m   Duration [22m 22.45s[2m (transform 2.00s, setup 1.16s, import 2.94s, tests 11.91s, environment 1.25s)[22m
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   86.76 |    84.67 |   84.38 |   88.83 |                   
+ ...re-competences |   70.08 |    65.06 |   63.15 |   70.19 |                   
+  ....component.ts |   70.08 |    65.06 |   63.15 |   70.19 | ...66,218,232-239 
+ ...mc-champ-heure |   85.71 |      100 |      80 |   88.23 |                   
+  ....component.ts |   85.71 |      100 |      80 |   88.23 | 42-45             
+ ...ts/mc-checkbox |   80.95 |      100 |      70 |   82.35 |                   
+  ....component.ts |   80.95 |      100 |      70 |   82.35 | 17,41-44          
+ ...eves-concernes |   97.43 |    89.28 |     100 |     100 |                   
+  ....component.ts |   97.43 |    89.28 |     100 |     100 | 43-49             
+ ...ants/mc-entete |   92.85 |    88.46 |   91.66 |   91.89 |                   
+  ....component.ts |   92.85 |    88.46 |   91.66 |   91.89 | 117-119           
+ ...sants/mc-input |   86.95 |      100 |      80 |   89.47 |                   
+  ....component.ts |   86.95 |      100 |      80 |   89.47 | 47-50             
+ ...ini-calendrier |   96.34 |    93.33 |     100 |     100 |                   
+  ....component.ts |   96.34 |    93.33 |     100 |     100 | 142-159           
+ ...mc-radio-group |   86.36 |      100 |      80 |   88.88 |                   
+  ....component.ts |   86.36 |      100 |      80 |   88.88 | 48-51             
+ ...ants/mc-select |   86.95 |      100 |      80 |   89.47 |                   
+  ....component.ts |   86.95 |      100 |      80 |   89.47 | 51-54             
+ ...ur-competences |   94.93 |    88.46 |   89.47 |   95.58 |                   
+  ....component.ts |   94.93 |    88.46 |   89.47 |   95.58 | 111-118           
+ ...ts/mc-textarea |   86.95 |      100 |      80 |   89.47 |                   
+  ....component.ts |   86.95 |      100 |      80 |   89.47 | 47-50             
+ ...-avertissement |   95.65 |      100 |   85.71 |     100 |                   
+  ....component.ts |   95.65 |      100 |   85.71 |     100 |                   
+ ...opin-demarrage |    90.9 |     93.1 |      75 |   91.66 |                   
+  ....component.ts |    90.9 |     93.1 |      75 |   91.66 | 68-70             
+ ...rt-competences |   86.88 |    72.72 |   85.71 |   95.74 |                   
+  ....component.ts |   86.88 |    72.72 |   85.71 |   95.74 | 100,119           
+ ...pin-sauvegarde |   96.29 |      100 |   85.71 |     100 |                   
+  ....component.ts |   96.29 |      100 |   85.71 |     100 |                   
+ ...nings-absences |   95.23 |      100 |   83.33 |     100 |                   
+  ....component.ts |   95.23 |      100 |   83.33 |     100 |                   
+ ...app/directives |     100 |       75 |     100 |     100 |                   
+  ....directive.ts |     100 |       75 |     100 |     100 | 33-35             
+ ...ecrans/accueil |   94.28 |       92 |      80 |   92.59 |                   
+  ....component.ts |   94.28 |       92 |      80 |   92.59 | 70-71             
+ ...cahier-journal |   87.91 |       84 |     100 |   87.34 |                   
+  ....component.ts |   87.91 |       84 |     100 |   87.34 | ...29-230,262-277 
+ ...ns/competences |     100 |     87.5 |     100 |     100 |                   
+  ....component.ts |     100 |     87.5 |     100 |     100 | 120-135           
+ .../ecrans/eleves |   97.77 |       90 |    93.1 |   98.66 |                   
+  ....component.ts |   97.77 |       90 |    93.1 |   98.66 | 209               
+ ...mploi-du-temps |   97.93 |    78.72 |     100 |   97.56 |                   
+  ....component.ts |   97.93 |    78.72 |     100 |   97.56 | 226,257           
+ ...ns/parametrage |   51.42 |    50.45 |   48.42 |   57.27 |                   
+  ....component.ts |   51.42 |    50.45 |   48.42 |   57.27 | ...46,705,736-749 
+ ...ecrans/projets |   90.58 |    90.24 |   77.77 |   90.14 |                   
+  ....component.ts |   90.58 |    90.24 |   77.77 |   90.14 | 86-90,146,191     
+ ...vices/sansEtat |    94.9 |    85.16 |   95.07 |    97.5 |                   
+  ...ce.service.ts |   85.71 |    78.57 |   73.33 |   88.37 | 50-55             
+  eleve.service.ts |   93.33 |    85.18 |     100 |     100 | 20,77             
+  ...et.service.ts |     100 |    93.93 |     100 |     100 | 73,116            
+  ...el.service.ts |   94.21 |     75.8 |    97.4 |   97.87 | 293-294           
+  ...to.service.ts |   96.96 |      100 |   83.33 |     100 |                   
+ src/app/tests     |   96.42 |    92.85 |     100 |   96.42 |                   
+  ...iel.mother.ts |      75 |    66.66 |     100 |      75 | 18                
+ src/app/tuyaux    |      75 |       75 |     100 |     100 |                   
+  ...date.tuyau.ts |      75 |       75 |     100 |     100 | 17                
+ ...pp/utilitaires |     100 |    83.33 |     100 |     100 |                   
+  date.utils.ts    |     100 |    83.33 |     100 |     100 | 92                
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 86.76% ( 1717/1979 )
+Branches     : 84.67% ( 989/1168 )
+Functions    : 84.38% ( 524/621 )
+Lines        : 88.83% ( 1424/1603 )
+================================================================================
+
+</system-reminder>
+---
+2026-06-21 13:28:53 [Analyser bugs catégorie 2 et détailler modifications] <task-notification>
+<summary>Stop hook feedback</summary>
+</task-notification>
+<system-reminder>
+Stop hook blocking error from command "PostToolUse:Edit": Fichier modifié : /workspaces/maclasse/src/app/ecrans/projets/fp-fiche-projet/fp-fiche-projet.component.ts
+Lancement de la vérification (compilation + tests + couverture ≥ 80%)...
+
+=== 1/2  Compilation TypeScript (tsc --noEmit) ===
+OK
+
+=== 2/2  Tests et couverture (ng test --coverage) ===
+ÉCHEC — Tests en erreur ou couverture < 80% sur au moins une métrique :
+❯ Building...
+✔ Building...
+Initial chunk files                                                                       | Names                                                                                  |  Raw size
+spec-app-modeles-donnees-defaut.js                                                        | spec-app-modeles-donnees-defaut                                                        | 463.65 kB | 
+spec-app-ecrans-parametrage-ecran-parametrage.component.js                                | spec-app-ecrans-parametrage-ecran-parametrage.component                                | 123.89 kB | 
+spec-app-ecrans-cahier-journal-ecran-cahier-journal.component.js                          | spec-app-ecrans-cahier-journal-ecran-cahier-journal.component                          |  56.69 kB | 
+chunk-X6VE2274.js                                                                         | -                                                                                      |  55.02 kB | 
+spec-app-ecrans-emploi-du-temps-ecran-emploi-du-temps.component.js                        | spec-app-ecrans-emploi-du-temps-ecran-emploi-du-temps.component                        |  51.05 kB | 
+spec-app-composants-mc-entete-mc-entete.component.js                                      | spec-app-composants-mc-entete-mc-entete.component                                      |  39.36 kB | 
+spec-app-ecrans-eleves-ecran-eleves.component.js                                          | spec-app-ecrans-eleves-ecran-eleves.component                                          |  31.87 kB | 
+chunk-7FSKOQJT.js                                                                         | -                                                                                      |  31.79 kB | 
+chunk-TECHVK4M.js                                                                         | -                                                                                      |  29.91 kB | 
+spec-app-ecrans-projets-ecran-projets.component.js                                        | spec-app-ecrans-projets-ecran-projets.component                                        |  28.83 kB | 
+chunk-BPM2ZRWA.js                                                                         | -                                                                                      |  26.84 kB | 
+chunk-FDNA4PRC.js                                                                         | -                                                                                      |  25.19 kB | 
+chunk-LBLQ26Z7.js                                                                         | -                                                                                      |  25.11 kB | 
+chunk-5CLDZDZX.js                                                                         | -                                                                                      |  24.13 kB | 
+spec-app-ecrans-competences-ecran-competences.component.js                                | spec-app-ecrans-competences-ecran-competences.component                                |  22.86 kB | 
+spec-app-services-sansEtat-cahier-journal.service.js                                      | spec-app-services-sansEtat-cahier-journal.service                                      |  21.61 kB | 
+chunk-I2NAQKQX.js                                                                         | -                                                                                      |  19.83 kB | 
+chunk-SZGHGCB7.js                                                                         | -                                                                                      |  18.66 kB | 
+spec-app-services-sansEtat-emploi-du-temps.service.js                                     | spec-app-services-sansEtat-emploi-du-temps.service                                     |  18.25 kB | 
+chunk-CMFTOCXL.js                                                                         | -                                                                                      |  17.32 kB | 
+chunk-4DRD5VPK.js                                                                         | -                                                                                      |  17.23 kB | 
+chunk-CNRELSKZ.js                                                                         | -                                                                                      |  15.68 kB | 
+spec-app-ecrans-accueil-ecran-accueil.component.js                                        | spec-app-ecrans-accueil-ecran-accueil.component                                        |  15.36 kB | 
+styles.css                                                                                | styles                                                                                 |  14.03 kB | 
+spec-app-services-sansEtat-referentiel.service.js                                         | spec-app-services-sansEtat-referentiel.service                                         |  13.98 kB | 
+chunk-HWGMORMU.js                                                                         | -                                                                                      |  12.27 kB | 
+chunk-XKB3O6WU.js                                                                         | -                                                                                      |  12.24 kB | 
+chunk-4QOYR755.js                                                                         | -                                                                                      |  12.15 kB | 
+spec-app-composants-mc-mini-calendrier-mc-mini-calendrier.component.js                    | spec-app-composants-mc-mini-calendrier-mc-mini-calendrier.component                    |  11.31 kB | 
+spec-app-composants-mc-checkbox-mc-checkbox.component.js                                  | spec-app-composants-mc-checkbox-mc-checkbox.component                                  |  10.27 kB | 
+chunk-ZOSJUMN3.js                                                                         | -                                                                                      |   9.96 kB | 
+spec-app-composants-mc-selecteur-competences-mc-selecteur-competences.component.js        | spec-app-composants-mc-selecteur-competences-mc-selecteur-competences.component        |   9.39 kB | 
+chunk-Z6HXBNEC.js                                                                         | -                                                                                      |   9.20 kB | 
+chunk-YIZDRDFO.js                                                                         | -                                                                                      |   8.60 kB | 
+chunk-MSJ3ZAAN.js                                                                         | -                                                                                      |   8.57 kB | 
+chunk-6EANKIEO.js                                                                         | -                                                                                      |   8.45 kB | 
+chunk-TJFFMVWA.js                                                                         | -                                                                                      |   8.40 kB | 
+chunk-S4UT5WDJ.js                                                                         | -                                                                                      |   8.29 kB | 
+spec-app-services-sansEtat-eleve.service.js                                               | spec-app-services-sansEtat-eleve.service                                               |   8.17 kB | 
+chunk-QQ6YMMTT.js                                                                         | -                                                                                      |   7.62 kB | 
+spec-app-services-sansEtat-projet.service.js                                              | spec-app-services-sansEtat-projet.service                                              |   7.41 kB | 
+chunk-7HEDHOSW.js                                                                         | -                                                                                      |   7.31 kB | 
+chunk-IQB5SCOQ.js                                                                         | -                                                                                      |   7.18 kB | 
+spec-app-ecrans-emploi-du-temps-edt-formulaire-edt-formulaire.component.js                | spec-app-ecrans-emploi-du-temps-edt-formulaire-edt-formulaire.component                |   7.04 kB | 
+spec-app-composants-mc-arbre-competences-mc-arbre-competences.component.js                | spec-app-composants-mc-arbre-competences-mc-arbre-competences.component                |   6.95 kB | 
+spec-app-ecrans-eleves-fe-formulaire-eleve-fe-formulaire-eleve.component.js               | spec-app-ecrans-eleves-fe-formulaire-eleve-fe-formulaire-eleve.component               |   6.76 kB | 
+chunk-452HYMXO.js                                                                         | -                                                                                      |   6.65 kB | 
+spec-app-composants-popins-popin-export-competences-popin-export-competences.component.js | spec-app-composants-popins-popin-export-competences-popin-export-competences.component |   6.57 kB | 
+spec-app-services-avecEtat-donnees.service.js                                             | spec-app-services-avecEtat-donnees.service                                             |   6.46 kB | 
+spec-app-utilitaires-date.utils.js                                                        | spec-app-utilitaires-date.utils                                                        |   6.29 kB | 
+spec-app-composants-popins-popin-demarrage-popin-demarrage.component.js                   | spec-app-composants-popins-popin-demarrage-popin-demarrage.component                   |   6.08 kB | 
+spec-app-composants-mc-eleves-concernes-mc-eleves-concernes.component.js                  | spec-app-composants-mc-eleves-concernes-mc-eleves-concernes.component                  |   5.54 kB | 
+chunk-JOQ6UMBV.js                                                                         | -                                                                                      |   5.53 kB | 
+spec-app-ecrans-projets-fp-formulaire-projet-fp-formulaire-projet.component.js            | spec-app-ecrans-projets-fp-formulaire-projet-fp-formulaire-projet.component            |   5.27 kB | 
+chunk-FJESOJPE.js                                                                         | -                                                                                      |   5.07 kB | 
+chunk-AQRAOHF7.js                                                                         | -                                                                                      |   4.96 kB | 
+spec-app-ecrans-cahier-journal-cj-formulaire-seance-cj-formulaire-seance.component.js     | spec-app-ecrans-cahier-journal-cj-formulaire-seance-cj-formulaire-seance.component     |   4.94 kB | 
+spec-app-ecrans-demarrage-ecran-demarrage.component.js                                    | spec-app-ecrans-demarrage-ecran-demarrage.component                                    |   4.91 kB | 
+chunk-RSTWSNOR.js                                                                         | -                                                                                      |   4.75 kB | 
+chunk-S5TJIITF.js                                                                         | -                                                                                      |   4.72 kB | 
+spec-app-composants-mc-bouton-destruction-mc-bouton-destruction.component.js              | spec-app-composants-mc-bouton-destruction-mc-bouton-destruction.component              |   4.68 kB | 
+chunk-55N724LW.js                                                                         | -                                                                                      |   4.54 kB | 
+chunk-33JMP3V3.js                                                                         | -                                                                                      |   4.53 kB | 
+spec-app-services-sansEtat-competence.service.js                                          | spec-app-services-sansEtat-competence.service                                          |   4.42 kB | 
+spec-app-services-sansEtat-recherche-globale.service.js                                   | spec-app-services-sansEtat-recherche-globale.service                                   |   4.36 kB | 
+chunk-RSXY7OV4.js                                                                         | -                                                                                      |   4.31 kB | 
+spec-app-composants-mc-champ-recherche-mc-champ-recherche.component.js                    | spec-app-composants-mc-champ-recherche-mc-champ-recherche.component                    |   3.99 kB | 
+chunk-VYB3OLQT.js                                                                         | -                                                                                      |   3.89 kB | 
+spec-app-services-sansEtat-sauvegarde-auto.service.js                                     | spec-app-services-sansEtat-sauvegarde-auto.service                                     |   3.83 kB | 
+chunk-I3CFQISK.js                                                                         | -                                                                                      |   3.81 kB | 
+chunk-X2NOHALR.js                                                                         | -                                                                                      |   3.78 kB | 
+spec-app-composants-mc-radio-group-mc-radio-group.component.js                            | spec-app-composants-mc-radio-group-mc-radio-group.component                            |   3.73 kB | 
+spec-app-services-avecEtat-contexte.service.js                                            | spec-app-services-avecEtat-contexte.service                                            |   3.61 kB | 
+spec-app-composants-mc-input-mc-input.component.js                                        | spec-app-composants-mc-input-mc-input.component                                        |   3.61 kB | 
+spec-app-composants-mc-badge-statut-mc-badge-statut.component.js                          | spec-app-composants-mc-badge-statut-mc-badge-statut.component                          |   3.60 kB | 
+spec-app-composants-mc-textarea-mc-textarea.component.js                                  | spec-app-composants-mc-textarea-mc-textarea.component                                  |   3.53 kB | 
+spec-app-composants-mc-select-mc-select.component.js                                      | spec-app-composants-mc-select-mc-select.component                                      |   3.52 kB | 
+spec-app-ecrans-projets-fp-fiche-projet-fp-fiche-projet.component.js                      | spec-app-ecrans-projets-fp-fiche-projet-fp-fiche-projet.component                      |   3.40 kB | 
+spec-app-composants-popins-popin-warnings-absences-popin-warnings-absences.component.js   | spec-app-composants-popins-popin-warnings-absences-popin-warnings-absences.component   |   3.35 kB | 
+chunk-KZAWOKVR.js                                                                         | -                                                                                      |   3.34 kB | 
+spec-app-composants-popins-popin-sauvegarde-popin-sauvegarde.component.js                 | spec-app-composants-popins-popin-sauvegarde-popin-sauvegarde.component                 |   3.26 kB | 
+spec-app-directives-mc-auto-focus.directive.js                                            | spec-app-directives-mc-auto-focus.directive                                            |   3.26 kB | 
+spec-app-ecrans-eleves-fe-fiche-eleve-fe-fiche-eleve.component.js                         | spec-app-ecrans-eleves-fe-fiche-eleve-fe-fiche-eleve.component                         |   3.25 kB | 
+spec-app-composants-mc-champ-heure-mc-champ-heure.component.js                            | spec-app-composants-mc-champ-heure-mc-champ-heure.component                            |   3.04 kB | 
+spec-app-composants-popins-popin-avertissement-popin-avertissement.component.js           | spec-app-composants-popins-popin-avertissement-popin-avertissement.component           |   3.03 kB | 
+spec-app-services-sansEtat-chiffrement.service.js                                         | spec-app-services-sansEtat-chiffrement.service                                         |   2.80 kB | 
+spec-app-composants-mc-chip-filtre-mc-chip-filtre.component.js                            | spec-app-composants-mc-chip-filtre-mc-chip-filtre.component                            |   2.45 kB | 
+spec-app-tuyaux-format-date.tuyau.js                                                      | spec-app-tuyaux-format-date.tuyau                                                      |   2.44 kB | 
+chunk-S676DCXV.js                                                                         | -                                                                                      |   2.27 kB | 
+chunk-K2EX3FUN.js                                                                         | -                                                                                      |   1.69 kB | 
+chunk-6L3NPZOE.js                                                                         | -                                                                                      |   1.23 kB | 
+init-testbed.js                                                                           | init-testbed                                                                           |   1.21 kB | 
+chunk-O2QDYJLE.js                                                                         | -                                                                                      |   1.02 kB | 
+chunk-GPRHTNJB.js                                                                         | -                                                                                      | 996 bytes | 
+vitest-mock-patch.js                                                                      | vitest-mock-patch                                                                      | 969 bytes | 
+chunk-SSHVVZ4T.js                                                                         | -                                                                                      | 903 bytes | 
+chunk-IIDRGRXU.js                                                                         | -                                                                                      | 866 bytes | 
+chunk-2D7NYGQ6.js                                                                         | -                                                                                      | 863 bytes | 
+chunk-PZLCJEM7.js                                                                         | -                                                                                      | 521 bytes | 
+chunk-IHCZFB2E.js                                                                         | -                                                                                      | 311 bytes | 
+
+                                                                                          | Initial total                                                                          |   1.59 MB
+
+Lazy chunk files                                                                          | Names                                                                                  |  Raw size
+chunk-7M6CVWYY.js                                                                         | chiffrement-service                                                                    | 166 bytes | 
+
+Application bundle generation complete. [15.430 seconds] - 2026-06-21T13:28:18.495Z
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.9 [39m[90m/workspaces/maclasse[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+Not implemented: navigation to another Document
+Not implemented: navigation to another Document
+Not implemented: navigation to another Document
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: Something removed the coverage directory "/workspaces/maclasse/coverage/classe/.tmp" Vitest created earlier. Make sure you are not running multiple Vitests with the same "coverage.reportsDirectory" at the same time.[39m
+[90m [2m❯[22m V8CoverageProvider.normalizeCoverageFileError node_modules/vitest/dist/chunks/coverage.DM_a_rWm.js:[2m729:128[22m[39m
+[90m [2m❯[22m node_modules/vitest/dist/chunks/coverage.DM_a_rWm.js:[2m745:15[22m[39m
+
+[31m[1mCaused by: Error[22m: ENOENT: no such file or directory, open '/workspaces/maclasse/coverage/classe/.tmp/coverage-38.json'[39m
+[90m [2m❯[22m open node:internal/fs/promises:[2m637:25[22m[39m
+[90m [2m❯[22m Object.writeFile node:internal/fs/promises:[2m1239:14[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errno: -2, code: 'ENOENT', syscall: 'open', path: '/workspaces/maclasse/coverage/classe/.tmp/coverage-38.json' }[39m
+
+</system-reminder>

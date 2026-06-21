@@ -203,3 +203,43 @@ service.creerEdt(EdtMother.base({ frequence: 'paire' }));
 ```
 
 Nouveau type testé → créer `src/app/tests/<domaine>.mother.ts` avant d'écrire les tests.
+
+## Tests E2E — Navigation avec `page.goto()`
+
+`page.goto()` en Playwright est une **navigation HTTP complète** (équivalent à saisir l'URL dans la barre d'adresse). Elle recharge l'application Angular depuis zéro, effaçant toutes les données en mémoire (`DonneesService`). Après un rechargement vers un écran protégé, la `donneesChargeesGarde` redirige vers `/demarrage` — les sélecteurs de l'écran cible ne sont jamais rendus, et les locators timeout.
+
+**Règle :** dans les tests utilisant `testAvecDonnees`, ne jamais appeler `page.goto()` vers un écran protégé. Naviguer via les liens Angular (SPA navigation) :
+
+```typescript
+// ❌ INTERDIT — reload HTTP, données perdues, garde redirige vers /demarrage
+await appAvecDonnees.goto('/eleves');
+
+// ✅ CORRECT — navigation SPA, données conservées en mémoire
+await entete.navEleves.click();
+```
+
+Cas légitimes de `page.goto()` :
+- Dans les **fixtures** pour démarrer l'application depuis zéro (`goto('/demarrage')`)
+- Dans les **tests de la garde** qui vérifient précisément le comportement de redirection (ex. E2E-01)
+- La fixture `testAvecDonnees` démarre déjà à `/accueil` : inutile d'appeler `goto('/accueil')` dans le corps du test
+
+## Tests E2E — Classes de sélecteurs Playwright
+
+Les classes de sélecteurs dans `e2e/selecteurs/` suivent des règles strictes :
+
+- Tout sélecteur est une propriété `readonly` de la classe, ciblant un `id` HTML ou une classe CSS stable.
+- **Aucune méthode ne doit accepter de paramètre.** Un sélecteur paramétré dans un test est une règle cassée : l'extraire comme propriété fixe de la classe.
+- Un appel inline (`page.getByRole(...)`, `page.locator(...)`) dans un fichier `*.spec.ts` est interdit : le déplacer dans la classe de sélecteurs correspondante.
+
+```typescript
+// ❌ INTERDIT — paramètre dans la méthode de sélecteur
+boutonEleveParNom(nom: RegExp): Locator {
+  return this.listeEleves.getByRole('button', { name: nom });
+}
+
+// ❌ INTERDIT — sélecteur inline dans le test
+const btn = page.locator('button').filter({ hasText: /^\+$/ }).first();
+
+// ✅ CORRECT — propriété readonly fixe
+readonly btnAjouterSeance: Locator = page.locator('#btnAjouterSeance');
+```

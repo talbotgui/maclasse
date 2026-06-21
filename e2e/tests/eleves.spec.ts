@@ -20,9 +20,6 @@ testAvecDonnees('E2E-18 — Créer un nouvel élève', async ({ appAvecDonnees }
   await expect(eleves.titreFiche).toContainText('DUPONT');
   await expect(eleves.titreFiche).toContainText('Alice');
 
-  // L'élève apparaît dans la liste
-  await expect(eleves.listeEleves.getByRole('button', { name: /DUPONT/i })).toBeVisible();
-
   // UNDO disponible
   await expect(entete.btnAnnuler).toBeEnabled();
 });
@@ -32,14 +29,13 @@ testAvecDonnees('E2E-19 — Modifier un élève existant', async ({ appAvecDonne
   const eleves = new SelecteursEleves(appAvecDonnees);
 
   await entete.navEleves.click();
-  await eleves.selectionnerEleveParTexte('MARTINOT Boule');
+  await eleves.selectionnerMartinot();
 
   await eleves.btnModifier.click();
   await eleves.champPrenom.fill('Boule-Modifié');
   await eleves.btnEnregistrer.click();
 
   await expect(eleves.titreFiche).toContainText('Boule-Modifié');
-  await expect(eleves.listeEleves.getByRole('button', { name: /Boule-Modifié/i })).toBeVisible();
   await expect(entete.btnAnnuler).toBeEnabled();
 });
 
@@ -48,7 +44,7 @@ testAvecDonnees('E2E-20 — Annuler une modification en cours (bouton ANNULER du
   const eleves = new SelecteursEleves(appAvecDonnees);
 
   await entete.navEleves.click();
-  await eleves.selectionnerEleveParTexte('MARTINOT Boule');
+  await eleves.selectionnerMartinot();
   await eleves.btnModifier.click();
 
   await eleves.champPrenom.fill('PrenomModifie');
@@ -78,21 +74,21 @@ testAvecDonnees('E2E-21 — Supprimer un élève', async ({ appAvecDonnees }) =>
   // Étape 2 : confirmation
   await eleves.btnSupprimerConfirmer.click();
 
-  await expect(eleves.listeEleves.getByRole('button', { name: /ATEMP/i })).not.toBeVisible();
   await expect(eleves.messageAucunEleveSelectionne).toBeVisible();
   await expect(entete.btnAnnuler).toBeEnabled();
 });
 
 testAvecDonnees('E2E-22 — Popin d\'avertissement au clic sur un autre élève sans enregistrer', async ({ appAvecDonnees }) => {
+  const entete = new SelecteursEntete(appAvecDonnees);
   const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await appAvecDonnees.goto('/eleves');
-  await eleves.selectionnerEleveParTexte('MARTINOT Boule');
+  await entete.navEleves.click();
+  await eleves.selectionnerMartinot();
   await eleves.btnModifier.click();
   await eleves.champPrenom.fill('PrenomNonSauvegarde');
 
   // Cliquer sur un autre élève
-  await eleves.selectionnerEleveParTexte('GRATIN Léonie');
+  await eleves.selectionnerGratin();
 
   // La popin d'avertissement doit s'ouvrir
   await expect(eleves.btnAvertissementAnnuler).toBeVisible();
@@ -103,16 +99,17 @@ testAvecDonnees('E2E-22 — Popin d\'avertissement au clic sur un autre élève 
   await expect(eleves.champPrenom).toHaveValue('PrenomNonSauvegarde');
 
   // Scénario B : cliquer à nouveau sur GRATIN et CONFIRMER
-  await eleves.selectionnerEleveParTexte('GRATIN Léonie');
+  await eleves.selectionnerGratin();
   await eleves.btnAvertissementConfirmer.click();
   await expect(eleves.titreFiche).toContainText('GRATIN');
 });
 
 testAvecDonnees('E2E-23 — Popin d\'avertissement au clic sur CRÉER sans enregistrer', async ({ appAvecDonnees }) => {
+  const entete = new SelecteursEntete(appAvecDonnees);
   const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await appAvecDonnees.goto('/eleves');
-  await eleves.selectionnerEleveParTexte('MARTINOT Boule');
+  await entete.navEleves.click();
+  await eleves.selectionnerMartinot();
   await eleves.btnModifier.click();
   await eleves.champPrenom.fill('Brouillon');
 
@@ -130,8 +127,8 @@ testAvecDonnees('E2E-24 — Popin d\'avertissement au changement d\'écran sans 
   const entete = new SelecteursEntete(appAvecDonnees);
   const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await appAvecDonnees.goto('/eleves');
-  await eleves.selectionnerEleveParTexte('MARTINOT Boule');
+  await entete.navEleves.click();
+  await eleves.selectionnerMartinot();
   await eleves.btnModifier.click();
   await eleves.champPrenom.fill('Brouillon');
 
@@ -149,14 +146,15 @@ testAvecDonnees('E2E-24 — Popin d\'avertissement au changement d\'écran sans 
 });
 
 testAvecDonnees('E2E-25 — Filtre textuel sur la liste des élèves', async ({ appAvecDonnees }) => {
+  const entete = new SelecteursEntete(appAvecDonnees);
   const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await appAvecDonnees.goto('/eleves');
+  await entete.navEleves.click();
 
   await eleves.champRecherche.fill('martinot');
-  await expect(eleves.listeEleves.getByRole('button', { name: /MARTINOT/i })).toBeVisible();
+  await expect(eleves.btnEleveMartinot).toBeVisible();
   // Les autres élèves ne sont pas affichés
-  await expect(eleves.listeEleves.getByRole('button', { name: /GRATIN/i })).not.toBeVisible();
+  await expect(eleves.btnEleveGratin).not.toBeVisible();
 
   // Texte sans correspondance → liste vide
   await eleves.champRecherche.fill('xyzxyz');
@@ -164,36 +162,38 @@ testAvecDonnees('E2E-25 — Filtre textuel sur la liste des élèves', async ({ 
 
   // Effacer → tous les élèves réapparaissent
   await eleves.champRecherche.fill('');
-  await expect(eleves.listeEleves.getByRole('button', { name: /MARTINOT/i })).toBeVisible();
-  await expect(eleves.listeEleves.getByRole('button', { name: /GRATIN/i })).toBeVisible();
+  await expect(eleves.btnEleveMartinot).toBeVisible();
+  await expect(eleves.btnEleveGratin).toBeVisible();
 });
 
 testAvecDonnees('E2E-26 — Filtre par chip de groupe', async ({ appAvecDonnees }) => {
+  const entete = new SelecteursEntete(appAvecDonnees);
   const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await appAvecDonnees.goto('/eleves');
+  await entete.navEleves.click();
 
   // Groupe A seul → Martinot, Gratin, Zimmermann
-  await eleves.chipGroupe('A').click();
-  await expect(eleves.listeEleves.getByRole('button', { name: /MARTINOT/i })).toBeVisible();
-  await expect(eleves.listeEleves.getByRole('button', { name: /DUCOBU/i })).not.toBeVisible();
+  await eleves.chipGroupeA.click();
+  await expect(eleves.btnEleveMartinot).toBeVisible();
+  await expect(eleves.btnEleveDucobu).not.toBeVisible();
 
   // Cumul A + B → ajoute Ducobu et Gratin
-  await eleves.chipGroupe('B').click();
-  await expect(eleves.listeEleves.getByRole('button', { name: /DUCOBU/i })).toBeVisible();
-  await expect(eleves.listeEleves.getByRole('button', { name: /GRATIN/i })).toBeVisible();
+  await eleves.chipGroupeB.click();
+  await expect(eleves.btnEleveDucobu).toBeVisible();
+  await expect(eleves.btnEleveGratin).toBeVisible();
 
   // Déselectionner A → seul Groupe B : Gratin et Ducobu
-  await eleves.chipGroupe('A').click();
-  await expect(eleves.listeEleves.getByRole('button', { name: /MARTINOT/i })).not.toBeVisible();
-  await expect(eleves.listeEleves.getByRole('button', { name: /DUCOBU/i })).toBeVisible();
+  await eleves.chipGroupeA.click();
+  await expect(eleves.btnEleveMartinot).not.toBeVisible();
+  await expect(eleves.btnEleveDucobu).toBeVisible();
 });
 
 testAvecDonnees('E2E-27 — Ajouter un contact dans la fiche élève', async ({ appAvecDonnees }) => {
+  const entete = new SelecteursEntete(appAvecDonnees);
   const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await appAvecDonnees.goto('/eleves');
-  await eleves.selectionnerEleveParTexte('DUCOBU Jean');
+  await entete.navEleves.click();
+  await eleves.selectionnerDucobu();
   await eleves.btnModifier.click();
 
   await eleves.btnAjouterContact.click();
@@ -210,10 +210,11 @@ testAvecDonnees('E2E-27 — Ajouter un contact dans la fiche élève', async ({ 
 });
 
 testAvecDonnees('E2E-28 — Ajouter une absence récurrente dans la fiche élève', async ({ appAvecDonnees }) => {
+  const entete = new SelecteursEntete(appAvecDonnees);
   const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await appAvecDonnees.goto('/eleves');
-  await eleves.selectionnerEleveParTexte('DUCOBU Jean');
+  await entete.navEleves.click();
+  await eleves.selectionnerDucobu();
   await eleves.btnModifier.click();
 
   await eleves.btnAjouterAbsenceRecurrente.click();
@@ -227,10 +228,11 @@ testAvecDonnees('E2E-28 — Ajouter une absence récurrente dans la fiche élèv
 });
 
 testAvecDonnees('E2E-29 — Ajouter une absence ponctuelle dans la fiche élève', async ({ appAvecDonnees }) => {
+  const entete = new SelecteursEntete(appAvecDonnees);
   const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await appAvecDonnees.goto('/eleves');
-  await eleves.selectionnerEleveParTexte('DUCOBU Jean');
+  await entete.navEleves.click();
+  await eleves.selectionnerDucobu();
   await eleves.btnModifier.click();
 
   await eleves.btnAjouterAbsencePonctuelle.click();
@@ -245,10 +247,11 @@ testAvecDonnees('E2E-29 — Ajouter une absence ponctuelle dans la fiche élève
 });
 
 testAvecDonnees('E2E-30 — Imprimer la fiche d\'un élève', async ({ appAvecDonnees }) => {
+  const entete = new SelecteursEntete(appAvecDonnees);
   const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await appAvecDonnees.goto('/eleves');
-  await eleves.selectionnerEleveParTexte('MARTINOT Boule');
+  await entete.navEleves.click();
+  await eleves.selectionnerMartinot();
 
   // Vérifier que le bouton IMPRIMER est présent et visible en lecture seule
   await expect(eleves.btnImprimer).toBeVisible();

@@ -44,6 +44,20 @@ export class SelecteursEleves extends SelecteursBase {
   /** Bouton AJOUTER dans la section Absences ponctuelles. */
   readonly btnAjouterAbsencePonctuelle: Locator;
 
+  // --- Chips de filtre par groupe ---
+  /** Chip de filtre Groupe A. */
+  readonly chipGroupeA: Locator;
+  /** Chip de filtre Groupe B. */
+  readonly chipGroupeB: Locator;
+
+  // --- Boutons d'élèves du jeu de données fixture ---
+  /** Bouton de l'élève MARTINOT Boule dans la liste. */
+  readonly btnEleveMartinot: Locator;
+  /** Bouton de l'élève GRATIN Léonie dans la liste. */
+  readonly btnEleveGratin: Locator;
+  /** Bouton de l'élève DUCOBU Jean dans la liste. */
+  readonly btnEleveDucobu: Locator;
+
   constructor(page: Page) {
     super(page);
     this.btnCreerEleve = page.locator('#btnCreerEleve');
@@ -66,21 +80,28 @@ export class SelecteursEleves extends SelecteursBase {
     this.btnAjouterContact = page.locator('#btnAjouterContact');
     this.btnAjouterAbsenceRecurrente = page.locator('#btnAjouterAbsRec');
     this.btnAjouterAbsencePonctuelle = page.locator('#btnAjouterAbsPonct');
+
+    this.chipGroupeA = page.locator('#chipGroupeA');
+    this.chipGroupeB = page.locator('#chipGroupeB');
+
+    this.btnEleveMartinot = this.listeEleves.getByRole('button', { name: /MARTINOT/i });
+    this.btnEleveGratin = this.listeEleves.getByRole('button', { name: /GRATIN/i });
+    this.btnEleveDucobu = this.listeEleves.getByRole('button', { name: /DUCOBU/i });
   }
 
-  /** Retourne le bouton de sélection d'un élève par son id. */
-  boutonEleve(id: string): Locator {
-    return this.page.locator(`#btnEleve${id}`);
+  /** Sélectionne MARTINOT Boule dans la liste. */
+  async selectionnerMartinot(): Promise<void> {
+    await this.btnEleveMartinot.click();
   }
 
-  /** Retourne le chip de filtre par groupe. */
-  chipGroupe(groupeId: string): Locator {
-    return this.page.locator(`#chipGroupe${groupeId}`);
+  /** Sélectionne GRATIN Léonie dans la liste. */
+  async selectionnerGratin(): Promise<void> {
+    await this.btnEleveGratin.click();
   }
 
-  /** Sélectionne un élève dans la liste par son texte affiché (NOM Prénom). */
-  async selectionnerEleveParTexte(texte: string): Promise<void> {
-    await this.listeEleves.getByRole('button', { name: texte }).click();
+  /** Sélectionne DUCOBU Jean dans la liste. */
+  async selectionnerDucobu(): Promise<void> {
+    await this.btnEleveDucobu.click();
   }
 
   /** Crée un élève avec prénom et nom dans le bandeau du formulaire. */

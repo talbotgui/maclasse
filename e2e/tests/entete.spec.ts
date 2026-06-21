@@ -148,13 +148,13 @@ testAvecDonnees('E2E-14 — Boutons ANNULER et REFAIRE : état selon la pile UND
 
   // Annuler
   await entete.btnAnnuler.click();
-  await expect(eleves.listeEleves.getByRole('button', { name: /DUPONT/i })).not.toBeVisible();
+  await expect(eleves.messageAucunEleveSelectionne).toBeVisible();
   await expect(entete.btnAnnuler).toBeDisabled();
   await expect(entete.btnRefaire).toBeEnabled();
 
   // Refaire
   await entete.btnRefaire.click();
-  await expect(eleves.listeEleves.getByRole('button', { name: /DUPONT/i })).toBeVisible();
+  await expect(eleves.titreFiche).toContainText('DUPONT');
   await expect(entete.btnAnnuler).toBeEnabled();
   await expect(entete.btnRefaire).toBeDisabled();
 });

@@ -55,7 +55,7 @@
                   <button [id]="'btnEnregistrerPeriode' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerPeriode(i)">{{ LIBELLES.commun.enregistrer }}</button>
                   <mc-bouton-destruction
                     [petit]="true"
-                    [id]="'btnSupprimerPeriode' + i"
+                    [idBase]="'btnSupprimerPeriode' + i"
                     [desactive]="estPeriodeUtilisee(periode)"
                     [tooltipDesactive]="LIBELLES.parametrage.tooltipValeurUtilisee"
                     (confirme)="supprimerPeriode(periode)"
@@ -110,7 +110,7 @@
                   <button [id]="'btnEnregistrerGroupe' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerGroupe(i)">{{ LIBELLES.commun.enregistrer }}</button>
                   <mc-bouton-destruction
                     [petit]="true"
-                    [id]="'btnSupprimerGroupe' + i"
+                    [idBase]="'btnSupprimerGroupe' + i"
                     [desactive]="estGroupeUtilise(groupe)"
                     [tooltipDesactive]="LIBELLES.parametrage.tooltipValeurUtilisee"
                     (confirme)="supprimerGroupe(groupe)"
@@ -145,7 +145,7 @@
                   <button [id]="'btnEnregistrerStatut' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerStatutAcquisition(i)">{{ LIBELLES.commun.enregistrer }}</button>
                   <mc-bouton-destruction
                     [petit]="true"
-                    [id]="'btnSupprimerStatut' + i"
+                    [idBase]="'btnSupprimerStatut' + i"
                     [desactive]="estStatutAcquisitionUtilise(statut)"
                     [tooltipDesactive]="LIBELLES.parametrage.tooltipValeurUtilisee"
                     (confirme)="supprimerStatutAcquisition(statut)"
@@ -173,7 +173,7 @@
                   <button [id]="'btnEnregistrerStatutEleve' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerStatutEleve(i)">{{ LIBELLES.commun.enregistrer }}</button>
                   <mc-bouton-destruction
                     [petit]="true"
-                    [id]="'btnSupprimerStatutEleve' + i"
+                    [idBase]="'btnSupprimerStatutEleve' + i"
                     [desactive]="estStatutEleveUtilise(statut)"
                     [tooltipDesactive]="LIBELLES.parametrage.tooltipValeurUtilisee"
                     (confirme)="supprimerStatutEleve(statut)"
@@ -201,7 +201,7 @@
                   <button [id]="'btnEnregistrerTypeContact' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerTypeContact(i)">{{ LIBELLES.commun.enregistrer }}</button>
                   <mc-bouton-destruction
                     [petit]="true"
-                    [id]="'btnSupprimerTypeContact' + i"
+                    [idBase]="'btnSupprimerTypeContact' + i"
                     [desactive]="estTypeContactUtilise(type)"
                     [tooltipDesactive]="LIBELLES.parametrage.tooltipValeurUtilisee"
                     (confirme)="supprimerTypeContact(type)"
@@ -228,7 +228,7 @@
                   <button [id]="'btnEnregistrerRaison' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerRaisonAbsence(i)">{{ LIBELLES.commun.enregistrer }}</button>
                   <mc-bouton-destruction
                     [petit]="true"
-                    [id]="'btnSupprimerRaison' + i"
+                    [idBase]="'btnSupprimerRaison' + i"
                     [desactive]="false"
                     [tooltipDesactive]="''"
                     (confirme)="supprimerRaisonAbsence(raison)"
@@ -255,7 +255,7 @@
                   <button [id]="'btnEnregistrerFrequence' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerFrequenceAbsence(i)">{{ LIBELLES.commun.enregistrer }}</button>
                   <mc-bouton-destruction
                     [petit]="true"
-                    [id]="'btnSupprimerFrequence' + i"
+                    [idBase]="'btnSupprimerFrequence' + i"
                     [desactive]="false"
                     [tooltipDesactive]="''"
                     (confirme)="supprimerFrequenceAbsence(freq)"
@@ -283,7 +283,7 @@
                   <button [id]="'btnEnregistrerJourFerie' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerJourFerie(i)">{{ LIBELLES.commun.enregistrer }}</button>
                   <mc-bouton-destruction
                     [petit]="true"
-                    [id]="'btnSupprimerJourFerie' + i"
+                    [idBase]="'btnSupprimerJourFerie' + i"
                     [desactive]="false"
                     [tooltipDesactive]="''"
                     (confirme)="supprimerJourFerie(jourFerie)"

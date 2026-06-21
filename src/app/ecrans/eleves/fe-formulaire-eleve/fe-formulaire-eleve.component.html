@@ -54,7 +54,7 @@
           <mc-input [id]="'champContactEmail' + i" [label]="LIBELLES.eleve.labelContactEmail" type="email" [(ngModel)]="contact.email" />
           <mc-input [id]="'champContactTel' + i" [label]="LIBELLES.eleve.labelContactTelephone" type="tel" [(ngModel)]="contact.telephone" />
           <mc-textarea [id]="'champContactAdresse' + i" [label]="LIBELLES.eleve.labelContactAdresse" [lignes]="2" [(ngModel)]="contact.adressePostale" />
-          <mc-bouton-destruction [id]="'btnSupprimerContact' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerContact(i)" />
+          <mc-bouton-destruction [idBase]="'btnSupprimerContact' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerContact(i)" />
         </li>
       }
     </ul>
@@ -72,7 +72,7 @@
           <mc-champ-heure [id]="'champAbsRecDebut' + i" [label]="LIBELLES.eleve.labelAbsenceHeureDebut" [(ngModel)]="abs.heureDebut" />
           <mc-champ-heure [id]="'champAbsRecFin' + i" [label]="LIBELLES.eleve.labelAbsenceHeureFin" [(ngModel)]="abs.heureFin" />
           <mc-select [id]="'champAbsRecParite' + i" [label]="LIBELLES.eleve.labelAbsenceParite" [options]="optionsFrequence" [(ngModel)]="abs.paritesSemaine" />
-          <mc-bouton-destruction [id]="'btnSupprimerAbsRec' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerAbsenceRecurrente(i)" />
+          <mc-bouton-destruction [idBase]="'btnSupprimerAbsRec' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerAbsenceRecurrente(i)" />
         </li>
       }
     </ul>
@@ -87,7 +87,7 @@
         <li class="form-eleve__sous-item">
           <mc-input [id]="'champAbsPonctDate' + i" [label]="LIBELLES.eleve.labelAbsenceDate" type="date" [(ngModel)]="abs.date" />
           <mc-textarea [id]="'champAbsPonctJustif' + i" [label]="LIBELLES.eleve.labelAbsenceJustification" [lignes]="2" [(ngModel)]="abs.justification" />
-          <mc-bouton-destruction [id]="'btnSupprimerAbsPonct' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerAbsencePonctuelle(i)" />
+          <mc-bouton-destruction [idBase]="'btnSupprimerAbsPonct' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerAbsencePonctuelle(i)" />
         </li>
       }
     </ul>
@@ -104,7 +104,7 @@
           <mc-input [id]="'champCursusNiveau' + i" [label]="LIBELLES.eleve.labelCursusNiveau" [(ngModel)]="annee.niveau" />
           <mc-input [id]="'champCursusEtab' + i" [label]="LIBELLES.eleve.labelCursusEtablissement" [(ngModel)]="annee.etablissement" />
           <mc-textarea [id]="'champCursusAccomp' + i" [label]="LIBELLES.eleve.labelCursusAccompagnement" [lignes]="2" [(ngModel)]="annee.accompagnement" />
-          <mc-bouton-destruction [id]="'btnSupprimerCursus' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerCursus(i)" />
+          <mc-bouton-destruction [idBase]="'btnSupprimerCursus' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerCursus(i)" />
         </li>
       }
     </ul>

@@ -1,22 +1,22 @@
 @if (!etatConfirmation()) {
   <button
-    [id]="id()"
+    [id]="idBase()"
     type="button"
     class="mc-btn-danger"
     [class.mc-btn-sm]="petit()"
     [disabled]="desactive()"
-    [attr.aria-describedby]="tooltipDesactive() ? id() + '_desc' : null"
+    [attr.aria-describedby]="tooltipDesactive() ? idBase() + '_desc' : null"
     (click)="demanderConfirmation()"
   >
     {{ LIBELLES.commun.supprimer }}
   </button>
   @if (tooltipDesactive()) {
-    <span [id]="id() + '_desc'" class="sr-only">{{ tooltipDesactive() }}</span>
+    <span [id]="idBase() + '_desc'" class="sr-only">{{ tooltipDesactive() }}</span>
   }
 } @else {
   <div class="mc-bouton-destruction__confirmation">
     <button
-      [id]="id() + '_annuler'"
+      [id]="idBase() + '_annuler'"
       type="button"
       class="mc-btn-fantome"
       [class.mc-btn-sm]="petit()"
@@ -25,7 +25,7 @@
       {{ LIBELLES.commun.annuler }}
     </button>
     <button
-      [id]="id() + '_confirmer'"
+      [id]="idBase() + '_confirmer'"
       type="button"
       class="mc-btn-danger"
       [class.mc-btn-sm]="petit()"

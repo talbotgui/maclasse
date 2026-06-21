@@ -68,11 +68,6 @@ export class SelecteursBase {
     this.btnSauvegardeAnnuler = page.locator('#btnSauvegardeAnnuler');
   }
 
-  /** Retourne le résultat de recherche globale identifié par l'id de l'élément. */
-  resultatRecherche(id: string): Locator {
-    return this.page.locator(`#resRecherche_${id}`);
-  }
-
   /** Retourne le premier résultat de la liste de recherche globale. */
   get premierResultatRecherche(): Locator {
     return this.listeResultatsRecherche.locator('[role="option"]').first();

@@ -19,7 +19,7 @@ import { ComposantBase } from '../../composant-base';
 })
 export class McBoutonDestructionComponent extends ComposantBase {
   /** Identifiant de base du composant. Préfixe les IDs des boutons internes. */
-  public readonly id: InputSignal<string> = input.required<string>();
+  public readonly idBase: InputSignal<string> = input.required<string>();
 
   /** Si `true`, le bouton SUPPRIMER est désactivé (non cliquable). */
   public readonly desactive: InputSignal<boolean> = input(false);

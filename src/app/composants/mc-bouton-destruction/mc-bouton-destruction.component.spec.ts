@@ -18,7 +18,7 @@ describe('McBoutonDestructionComponent', () => {
     TestBed.configureTestingModule({});
     fixture = TestBed.createComponent(McBoutonDestructionComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('id', 'Base');
+    fixture.componentRef.setInput('idBase', 'Base');
     fixture.detectChanges();
   });
 

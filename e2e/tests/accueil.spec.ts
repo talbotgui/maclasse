@@ -1,5 +1,6 @@
 import { testAvecDonnees, expect } from '../fixtures';
 import { SelecteursAccueil } from '../selecteurs/selecteurs-accueil';
+import { SelecteursCahierJournal } from '../selecteurs/selecteurs-cahier-journal';
 import { SelecteursEntete } from '../selecteurs/selecteurs-entete';
 
 // Les données d'exemple (donnees-defaut.json) n'ont aucune entrée de cahier journal
@@ -9,25 +10,24 @@ import { SelecteursEntete } from '../selecteurs/selecteurs-entete';
 testAvecDonnees('E2E-16 — Accueil affiche le résumé du cahier journal du jour (cas rempli)', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
   const accueil = new SelecteursAccueil(appAvecDonnees);
+  const cj = new SelecteursCahierJournal(appAvecDonnees);
 
   // Créer une séance pour aujourd'hui via le Cahier Journal
   await entete.navCahierJournal.click();
   await expect(appAvecDonnees).toHaveURL(/\/cahier-journal/);
 
   // Initialiser une journée vide pour aujourd'hui
-  const btnInitialiserVide = appAvecDonnees.getByRole('button', { name: /initialiser vide/i });
-  await expect(btnInitialiserVide).toBeVisible();
-  await btnInitialiserVide.click();
+  await expect(cj.btnInitialiserVide).toBeVisible();
+  await cj.btnInitialiserVide.click();
 
   // Ajouter une séance via le bouton "+"
-  const btnAjouter = appAvecDonnees.locator('button').filter({ hasText: /^\+$/ }).first();
-  await btnAjouter.click();
+  await cj.btnAjouterSeance.click();
 
   // Remplir la séance : heure début, heure fin, type Pédagogique
   await appAvecDonnees.locator('#champHeureDebut input, [id*="HeureDebut"] input').first().fill('09:00');
   await appAvecDonnees.locator('#champHeureFin input, [id*="HeureFin"] input').first().fill('10:00');
   await appAvecDonnees.locator('#champTitreSeance input, [id*="Titre"] input').first().fill('Lecture du matin');
-  await appAvecDonnees.getByRole('button', { name: /enregistrer/i }).first().click();
+  await cj.btnEnregistrerSeance.click();
 
   // Retourner à l'accueil
   await entete.navAccueil.click();
@@ -43,7 +43,7 @@ testAvecDonnees('E2E-17 — Accueil affiche "Aucun journal pour aujourd\'hui" qu
   const accueil = new SelecteursAccueil(appAvecDonnees);
 
   // Les données d'exemple n'ont aucune entrée CJ pour aujourd'hui
-  await appAvecDonnees.goto('/accueil');
+  // (la fixture testAvecDonnees démarre déjà à /accueil)
 
   await expect(accueil.titreDateJour).toBeVisible();
   await expect(accueil.messageAucunJournal).toBeVisible();

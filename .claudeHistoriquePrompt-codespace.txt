@@ -1280,3 +1280,26 @@ Peux-tu faire générer tous les résultats des tests e2e dans le répertoire ".
 - "./.e2e/test-results" avec le détail de chaque exécution de chaque scénario
 ---
 2026-06-21 15:22:36 [Consolider les résultats Playwright dans le répertoire .e2e] vas-y
+---
+2026-06-21 19:27:58 [Sans titre] Analyse les scripts e2e dans le répertoire @e2e et liste les appels à la méthode getByRole. Ces méthodes n'utilisent pas toute un sélecteur présent dans les classes du répertoire @e2e/selecteurs/  . Trouve les sélecteurs manquants et ajoute les (si necessaire)
+---
+2026-06-21 19:30:24 [Analyser et compléter les sélecteurs e2e manquants] ok
+---
+2026-06-21 19:36:59 [Analyser et compléter les sélecteurs e2e manquants] Le script @e2e/tests/accueil.spec.ts utilise encore un sélecteur paramétrable utilisé en ligne 24 pour la variable "btnAjouter". 
+Ajoute une règle en mémoire pour que les méthodes des classes SELECTEURS n'acceptent jamais de paramètre.
+---
+2026-06-21 19:40:39 [Analyser et compléter les sélecteurs e2e manquants] liste les méthodes de sélecteur avec des paramètres et corrige les
+---
+2026-06-21 19:45:45 [Analyser et compléter les sélecteurs e2e manquants] bascule sur "titreFiche"
+---
+2026-06-21 20:02:27 [Sans titre] Il existe deux boutons "btnSupprimerEleve" dans le code HTML car l'ID du composant de suppression et le bouton à l'intérieur ont le même ID. Modifie l'ID du bouton et toutes les références à ce bouton (dont les tests)
+---
+2026-06-21 20:07:18 [Fix duplicate button IDs and update references] vas-y
+---
+2026-06-21 20:23:22 [Fix duplicate button IDs and update references] Le test E2E-25 échoue à cause d'un timeout sur testAvecDonnees puis d'un timeout sur le locator "eleves.champRecherche". Peux-tu analyser le problème avec le timeout sur la méthode testAvecDonnees  ?
+---
+2026-06-21 20:33:36 [Fix duplicate button IDs and update references] corrige
+---
+2026-06-21 20:36:40 [Fix duplicate button IDs and update references] il reste des ".goto" dans le code
+---
+2026-06-21 20:37:59 [Fix duplicate button IDs and update references] ajoute une règle sur l'usage de la méthode GOTO

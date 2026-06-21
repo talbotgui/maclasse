@@ -246,8 +246,8 @@ describe('EcranCahierJournalComponent', () => {
   });
 
   describe('dateFormatee', () => {
-    it('est une chaîne non vide', () => {
-      expect((component as any).dateFormatee()).toBeTruthy();
+    it('retourne la date sélectionnée formatée en français long', () => {
+      expect((component as any).dateFormatee()).toBe(DateUtils.formaterDateLong(dateTest));
     });
   });
 });

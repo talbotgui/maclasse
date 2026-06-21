@@ -162,6 +162,28 @@ beforeAll(() => {
 
 Sans ce mock, tout `fixture.detectChanges()` qui rend la dialog visible (`[visible]="true"`) lève `TypeError: el.showModal is not a function`.
 
+## Assertions sur les chaînes formatées
+
+`toBeTruthy()` et `typeof x === 'string'` sont insuffisants pour tester une valeur textuelle :
+- `"undefined"` est truthy
+- `String(undefined)` vaut `"undefined"`, dont `typeof` est `'string'`
+
+Ces assertions passent même si la méthode est cassée.
+
+**Règle :** toujours asserter la valeur exacte attendue. Quand la valeur est calculée par un utilitaire, utiliser ce même utilitaire pour produire la valeur de référence dans le test.
+
+```typescript
+// ❌ INTERDIT — passe même si la méthode retourne "undefined" ou "06/15/2026"
+expect((component as any).dateFormatee()).toBeTruthy();
+expect(typeof (component as any).dateFormatee()).toBe('string');
+
+// ✅ CORRECT — date fixe connue → valeur exacte
+expect((component as any).dateFormatee()).toBe(DateUtils.formaterDateLong(dateTest));
+
+// ✅ CORRECT — date dynamique → calculer la référence avec le même utilitaire
+expect((component as any).dateFormatee).toBe(DateUtils.formaterDateLong(dateAujourdhui));
+```
+
 ## Pattern Object Mother
 
 Toute donnée de test réutilisée dans plus d'un test doit passer par un Object Mother dans `src/app/tests/`.

@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { McBadgeStatutComponent } from './mc-badge-statut.component';
 import { StatutAcquisitionMother } from '../../tests/referentiel.mother';
 
@@ -18,7 +17,6 @@ describe('McBadgeStatutComponent', () => {
       fixture.componentRef.setInput('statut', statut);
       fixture.detectChanges();
 
-      const badge = fixture.debugElement.query(By.css('[class*="badge"]') ?? By.css('span'));
       expect(fixture.nativeElement.textContent).toContain(statut.glyphe);
     });
 

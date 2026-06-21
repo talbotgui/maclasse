@@ -77,26 +77,17 @@ expect(spy).toHaveBeenCalledWith(valeurAttendue);
 
 ---
 
-## CAT-5 MODÉRÉ — Tests trop faibles sur `dateFormatee`
+## CAT-5 MODÉRÉ ✅ RÉSOLU (2026-06-21) — Tests trop faibles sur `dateFormatee`
 
-**Fichier 1 :** `src/app/ecrans/cahier-journal/ecran-cahier-journal.component.spec.ts` — ligne 249
-```typescript
-expect((component as any).dateFormatee()).toBeTruthy();
-```
-Vérifie seulement non-vide/non-falsy. Un retour `"undefined"` ou un format anglais `"6/20/2026"` passerait.
+**Correction appliquée :**
+- `ecran-cahier-journal.component.spec.ts` : `toBeTruthy()` → `toBe(DateUtils.formaterDateLong(dateTest))` — date fixe `'2026-06-15'` connue dans le test
+- `ecran-accueil.component.spec.ts` : double assertion faible → `toBe(DateUtils.formaterDateLong(dateAujourdhui))` + import `DateUtils` ajouté
 
-**Fichier 2 :** `src/app/ecrans/accueil/ecran-accueil.component.spec.ts` — lignes 136-138
-```typescript
-expect((component as any).dateFormatee()).toBeTruthy();
-expect(typeof (component as any).dateFormatee()).toBe('string');
-```
-Même constat : `"undefined"` est falsy mais `String(undefined)` vaut `"undefined"` qui est truthy.
-
-**Correction attendue :** vérifier le format réel, ex. `expect(result).toMatch(/^\w+ \d{1,2} \w+ \d{4}$/)` ou une valeur fixe via une date mockée.
+**Règle ajoutée dans `tests.md`** : section "Assertions sur les chaînes formatées" — interdire `toBeTruthy()` et `typeof x === 'string'` pour tester du contenu textuel ; toujours asserter la valeur exacte avec le même utilitaire.
 
 ---
 
-## CAT-6 MINEUR — Code mort dans `mc-badge-statut.component.spec.ts`
+## CAT-6 MINEUR ✅ RÉSOLU (2026-06-21) — Code mort dans `mc-badge-statut.component.spec.ts`
 
 **Fichier :** `src/app/composants/mc-badge-statut/mc-badge-statut.component.spec.ts` — ligne 21
 
@@ -132,6 +123,6 @@ const badge = fixture.debugElement.query(By.css('[class*="badge"]')) ?? By.css('
 | 2 | Tests tautologiques emit direct | ~~MAJEUR~~ ✅ RÉSOLU | `fe-fiche-eleve.spec.ts`, `fp-fiche-projet.spec.ts` | Méthodes `onXxx()` ajoutées, templates + specs corrigés |
 | 3 | Branche EDT non couverte | ~~MAJEUR~~ ✅ RÉSOLU | `referentiel.service.spec.ts` | Test `EstGroupeUtilise` + EDT ajouté |
 | 4 | Mocks de services réels | MODÉRÉ | `mc-entete.component.spec.ts` | Évaluer si contournable |
-| 5 | Tests dateFormatee trop faibles | MODÉRÉ | `ecran-accueil.spec.ts`, `ecran-cahier-journal.spec.ts` | Assertion de format précis |
+| 5 | Tests dateFormatee trop faibles | ~~MODÉRÉ~~ ✅ RÉSOLU | `ecran-accueil.spec.ts`, `ecran-cahier-journal.spec.ts` | `toBe(DateUtils.formaterDateLong(...))` + règle ajoutée dans `tests.md` |
 | 6 | Commentaires de bug obsolètes | MINEUR | `mc-mini-calendrier.component.spec.ts` | Supprimer les commentaires |
-| 7 | Code mort `??` sur fonction | MINEUR | `mc-badge-statut.component.spec.ts` | Supprimer la fallback |
+| 7 | Code mort `??` sur fonction | ~~MINEUR~~ ✅ RÉSOLU | `mc-badge-statut.component.spec.ts` | Import `By` + variable `badge` supprimés |

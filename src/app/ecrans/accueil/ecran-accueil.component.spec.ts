@@ -5,6 +5,7 @@ import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { SeanceMother } from '../../tests/cahier-journal.mother';
 import { EleveMother } from '../../tests/eleve.mother';
+import { DateUtils } from '../../utilitaires/date.utils';
 
 describe('EcranAccueilComponent', () => {
   let fixture: ComponentFixture<EcranAccueilComponent>;
@@ -130,11 +131,10 @@ describe('EcranAccueilComponent', () => {
   });
 
   describe('dateFormatee', () => {
-    it('est une chaîne non vide', () => {
+    it('retourne la date du jour formatée en français long', () => {
       fixture.detectChanges();
 
-      expect((component as any).dateFormatee).toBeTruthy();
-      expect(typeof (component as any).dateFormatee).toBe('string');
+      expect((component as any).dateFormatee).toBe(DateUtils.formaterDateLong(dateAujourdhui));
     });
   });
 });

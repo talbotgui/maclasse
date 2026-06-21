@@ -44,6 +44,7 @@ globs: "**/*.ts"
   // avec dans le composant :
   protected onAnnuler(): void { this.annuler.emit(); }
   ```
+  **Convention de nommage :** la méthode de délégation s'appelle `on` + nom de l'output avec première lettre en majuscule (`modifier` → `onModifier()`, `annuler` → `onAnnuler()`). Tout output déclaré dans un composant **doit** avoir son `onXxx()` correspondant — sans quoi le template n'a aucun autre moyen légal de le déclencher.
 
 ## Formulaires
 

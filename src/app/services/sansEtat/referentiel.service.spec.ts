@@ -5,6 +5,7 @@ import { DonneesService } from '../avecEtat/donnees.service';
 import { Groupe, Periode, JourFerie, StatutEleve, TypeContact, ConfigEmploiDuTemps } from '../../modeles/referentiels.modele';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { EleveMother } from '../../tests/eleve.mother';
+import { EdtMother, CreneauMother } from '../../tests/emploi-du-temps.mother';
 
 describe('ReferentielService', () => {
   let service: ReferentielService;
@@ -32,6 +33,17 @@ describe('ReferentielService', () => {
       d.classe.eleves.push(EleveMother.base('e1', 'MARTIN', 'Paul', { groupes: ['A'] }));
       donneesService.charger(d);
       expect(service.estGroupeUtilise('A')).toBe(true);
+    });
+
+    it('retourne true si groupe utilisé dans un créneau EDT', () => {
+      const d = DonneesMother.base();
+      d.emploisDuTemps.push(EdtMother.base({
+        creneaux: [CreneauMother.lundi9h10({
+          elevesConcernes: { type: 'groupes', groupes: ['C'], elevesIds: [] },
+        })],
+      }));
+      donneesService.charger(d);
+      expect(service.estGroupeUtilise('C')).toBe(true);
     });
 
     it('retourne true si groupe utilisé dans une séance', () => {

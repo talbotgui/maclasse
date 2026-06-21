@@ -52,6 +52,19 @@ Lancer `ng test` (la couverture est activée par défaut dans `angular.json`) et
 Fichiers exclus de la couverture (configurés dans `angular.json`) : `modeles/`, `gardes/`, `libelles.ts`, `composant-base.ts`, `app.ts`, `**/*.html`.
 Les templates HTML sont exclus car Angular les compile en fonctions JavaScript internes non testables unitairement via V8 coverage.
 
+## Couverture des branches dans les expressions `||` / `&&`
+
+Toute méthode contenant une expression `||` ou `&&` multi-branches doit avoir un test dédié pour chaque branche, dans lequel **seule** cette branche est vraie — les autres sources de données restant vides.
+
+Piège fréquent : `DonneesMother.base()` initialise les tableaux à `[]`. Si un test pousse une donnée dans `cahierJournal` mais laisse `emploisDuTemps = []`, la branche EDT ne sera jamais atteinte même si le test passe.
+
+```typescript
+// ✅ Un test par branche — chaque branche est isolée
+it('retourne true via la branche élève', () => { /* ne peuple QUE eleves */ });
+it('retourne true via la branche EDT',   () => { /* ne peuple QUE emploisDuTemps */ });
+it('retourne true via la branche CJ',    () => { /* ne peuple QUE cahierJournal */ });
+```
+
 ## Tester les outputs Angular
 
 `OutputEmitterRef.subscribe()` ne déclenche pas les callbacks hors contexte d'injection — ne jamais l'utiliser dans les tests.
@@ -90,9 +103,14 @@ expect(spy).toHaveBeenLastCalledWith('');
 // ❌ INTERDIT — appel direct à emit() depuis le test (tautologie)
 (component as any).monOutput.emit();
 expect(spy).toHaveBeenCalled(); // toujours vrai, ne teste rien
+
+// ✅ CORRECT — appeler la méthode onXxx() du composant (voir angular-typescript.md)
+const spy = vi.spyOn((component as any).monOutput, 'emit');
+component['onMonOutput']();
+expect(spy).toHaveBeenCalled();
 ```
 
-Corollaire : tester un output suppose toujours qu'il est émis via une **méthode du composant**, jamais via un appel direct à `emit()` depuis le test.
+Corollaire : tester un output suppose toujours qu'il est émis via la méthode `onXxx()` du composant, jamais via un appel direct à `emit()` depuis le test. La convention de nommage `onXxx()` est définie dans `angular-typescript.md`.
 
 ## Composants avec `<dialog>`
 

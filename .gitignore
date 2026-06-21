@@ -21,6 +21,9 @@
 # TypeScript cache
 *.tsbuildinfo
 
+# Tests E2E — screenshots et artefacts d'exécution
+/.e2e/
+
 # Logs
 /npm-debug.log*
 /yarn-debug.log*

@@ -33,3 +33,4 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [Plan génération initiale](plans-01-generationInitiale.md) — 9 étapes séquentielles : config → modèles → services → composants → écrans → en-tête
 - [Plan tests composants](plans-02-testsDeComposant.md) — 11 étapes : 31 composants à couvrir, du plus simple (pur/CVA) aux écrans complexes
 - [Problèmes dans les tests](plans-03-problemesTests.md) — 7 catégories : subscribe() interdit (25 occ.), tests tautologiques, branche EDT manquante, mocks, assertions trop faibles
+- [Tests E2E fonctionnels](plans-04-testsE2E.md) — 104 scénarios couvrant démarrage, entête, accueil, élèves, projets, compétences, EDT, CJ, paramétrage, UNDO/REDO, sauvegarde auto, responsive, RGAA, versions

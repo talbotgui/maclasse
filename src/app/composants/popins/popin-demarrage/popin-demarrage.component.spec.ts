@@ -32,13 +32,11 @@ describe('PopinDemarrageComponent', () => {
         ok: true,
         json: () => Promise.resolve(donnees),
       }));
-      const emis: DonneesApplication[] = [];
-      (component as any).demarrageTermine.subscribe((d: DonneesApplication) => emis.push(d));
+      const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
 
       await component['creer']();
 
-      expect(emis).toHaveLength(1);
-      expect(emis[0].version).toBe('1.0');
+      expect(spy).toHaveBeenCalledWith(expect.objectContaining({ version: '1.0' }));
     });
 
     it('fetch réussi → enChargement repasse à false', async () => {
@@ -71,13 +69,12 @@ describe('PopinDemarrageComponent', () => {
 
     it('appel pendant enChargement → ignoré', async () => {
       vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(DonneesMother.base()) }));
-      const emis: DonneesApplication[] = [];
-      (component as any).demarrageTermine.subscribe((d: DonneesApplication) => emis.push(d));
+      const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
       (component as any).enChargement.set(true);
 
       await component['creer']();
 
-      expect(emis).toHaveLength(0);
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 
@@ -87,23 +84,21 @@ describe('PopinDemarrageComponent', () => {
     it('sans fichier sélectionné → ne fait rien', async () => {
       (component as any).fichierSelectionne = null;
       (component as any).motDePasse.set('secret');
-      const emis: DonneesApplication[] = [];
-      (component as any).demarrageTermine.subscribe((d: DonneesApplication) => emis.push(d));
+      const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
 
       await component['charger']();
 
-      expect(emis).toHaveLength(0);
+      expect(spy).not.toHaveBeenCalled();
     });
 
     it('sans mot de passe → ne fait rien', async () => {
       (component as any).fichierSelectionne = fichierZip;
       (component as any).motDePasse.set('');
-      const emis: DonneesApplication[] = [];
-      (component as any).demarrageTermine.subscribe((d: DonneesApplication) => emis.push(d));
+      const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
 
       await component['charger']();
 
-      expect(emis).toHaveLength(0);
+      expect(spy).not.toHaveBeenCalled();
     });
 
     it('succès → émet demarrageTermine', async () => {
@@ -114,12 +109,11 @@ describe('PopinDemarrageComponent', () => {
 
       (component as any).fichierSelectionne = fichierZip;
       (component as any).motDePasse.set('secret');
-      const emis: DonneesApplication[] = [];
-      (component as any).demarrageTermine.subscribe((d: DonneesApplication) => emis.push(d));
+      const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
 
       await component['charger']();
 
-      expect(emis).toHaveLength(1);
+      expect(spy).toHaveBeenCalledTimes(1);
     });
 
     it('DOMException → affiche erreur mot de passe', async () => {

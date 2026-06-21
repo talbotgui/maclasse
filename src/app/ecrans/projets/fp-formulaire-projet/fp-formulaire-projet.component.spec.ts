@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { FpFormulaireProjetComponent } from './fp-formulaire-projet.component';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
@@ -129,14 +129,14 @@ describe('FpFormulaireProjetComponent', () => {
       fixture.componentRef.setInput('projet', projet);
       fixture.detectChanges();
 
-      const emis: Projet[] = [];
-      (component as any).enregistrer.subscribe((v: Projet) => emis.push(v));
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
 
       (component as any).onEnregistrer();
 
-      expect(emis).toHaveLength(1);
-      expect(emis[0].nom).toBe('Sciences');
-      expect(emis[0]).not.toBe((component as any).formProjet);
+      expect(spy).toHaveBeenCalledTimes(1);
+      const emis = spy.mock.calls[0][0] as Projet;
+      expect(emis.nom).toBe('Sciences');
+      expect(emis).not.toBe((component as any).formProjet);
     });
   });
 });

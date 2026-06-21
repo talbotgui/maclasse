@@ -171,14 +171,14 @@ describe('FeFormulaireEleveComponent', () => {
       fixture.componentRef.setInput('eleve', eleve);
       fixture.detectChanges();
 
-      const emis: Eleve[] = [];
-      (component as any).enregistrer.subscribe((v: Eleve) => emis.push(v));
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
 
       (component as any).onEnregistrer();
 
-      expect(emis).toHaveLength(1);
-      expect(emis[0].nom).toBe('MARTIN');
-      expect(emis[0]).not.toBe((component as any).formEleve);
+      expect(spy).toHaveBeenCalledTimes(1);
+      const emis = spy.mock.calls[0][0] as Eleve;
+      expect(emis.nom).toBe('MARTIN');
+      expect(emis).not.toBe((component as any).formEleve);
     });
   });
 

@@ -5,7 +5,6 @@ import { DonneesService } from '../../../services/avecEtat/donnees.service';
 import { DonneesMother } from '../../../tests/donnees.mother';
 import { ProjetMother } from '../../../tests/projet.mother';
 import { SeanceMother } from '../../../tests/cahier-journal.mother';
-import type { ResultatExportCompetences } from '../../../modeles/composants.modele';
 
 beforeAll(() => {
   HTMLDialogElement.prototype.showModal = vi.fn();
@@ -152,8 +151,7 @@ describe('PopinExportCompetencesComponent', () => {
 
   describe('surConfirmation', () => {
     it('si peutConfirmer → émet ResultatExportCompetences correct', () => {
-      const emis: ResultatExportCompetences[] = [];
-      (component as any).confirme.subscribe((v: ResultatExportCompetences) => emis.push(v));
+      const spy = vi.spyOn((component as any).confirme, 'emit');
       fixture.componentRef.setInput('mode', 'projet');
       fixture.componentRef.setInput('competencesIds', ['c1']);
       (component as any).selectionPrimaire.set('p1');
@@ -161,17 +159,15 @@ describe('PopinExportCompetencesComponent', () => {
 
       component['surConfirmation']();
 
-      expect(emis).toHaveLength(1);
-      expect(emis[0]).toEqual({ cibleType: 'projet', cibleId: 'p1', secondaireId: '0' });
+      expect(spy).toHaveBeenCalledWith({ cibleType: 'projet', cibleId: 'p1', secondaireId: '0' });
     });
 
     it('si peutConfirmer=false → n\'émet pas', () => {
-      const emis: ResultatExportCompetences[] = [];
-      (component as any).confirme.subscribe((v: ResultatExportCompetences) => emis.push(v));
+      const spy = vi.spyOn((component as any).confirme, 'emit');
 
       component['surConfirmation']();
 
-      expect(emis).toHaveLength(0);
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 

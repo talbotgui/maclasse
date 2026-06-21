@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { McMiniCalendrierComponent } from './mc-mini-calendrier.component';
 import { CalendrierMother } from '../../tests/calendrier.mother';
 
@@ -217,38 +217,32 @@ describe('McMiniCalendrierComponent', () => {
 
   describe('sélection d\'un jour', () => {
     it('clic sur un jour ouvrable émet la date ISO via jourChange', () => {
-      const emis: string[] = [];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (component as any).jourChange.subscribe((d: string) => emis.push(d));
+      const spy = vi.spyOn((component as any).jourChange, 'emit');
       // 9 juin 2026 = mardi ouvré
       const btn = fixture.nativeElement.querySelector('#calendrierJour_2026-06-09') as HTMLButtonElement;
       btn.click();
       fixture.detectChanges();
-      expect(emis).toEqual(['2026-06-09']);
+      expect(spy).toHaveBeenCalledWith('2026-06-09');
     });
 
     it('clic sur un samedi n\'émet rien', () => {
-      const emis: string[] = [];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (component as any).jourChange.subscribe((d: string) => emis.push(d));
+      const spy = vi.spyOn((component as any).jourChange, 'emit');
       // 6 juin 2026 = samedi grisé
       const btn = fixture.nativeElement.querySelector('#calendrierJour_2026-06-06') as HTMLButtonElement;
       btn.click();
       fixture.detectChanges();
-      expect(emis).toHaveLength(0);
+      expect(spy).not.toHaveBeenCalled();
     });
 
     it('clic sur un jour férié n\'émet rien', () => {
       fixture.componentRef.setInput('joursFeries', [CalendrierMother.jourFerie('2026-06-03')]);
       fixture.detectChanges();
-      const emis: string[] = [];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (component as any).jourChange.subscribe((d: string) => emis.push(d));
+      const spy = vi.spyOn((component as any).jourChange, 'emit');
       // 3 juin 2026 = mercredi transformé en férié
       const btn = fixture.nativeElement.querySelector('#calendrierJour_2026-06-03') as HTMLButtonElement;
       btn.click();
       fixture.detectChanges();
-      expect(emis).toHaveLength(0);
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 

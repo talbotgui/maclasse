@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { CjFormulaireSeanceComponent } from './cj-formulaire-seance.component';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
@@ -101,16 +101,16 @@ describe('CjFormulaireSeanceComponent', () => {
       fixture.componentRef.setInput('seance', seance);
       fixture.detectChanges();
 
-      const emis: Seance[] = [];
-      (component as any).enregistrer.subscribe((v: Seance) => emis.push(v));
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
 
       (component as any).onEnregistrer();
 
-      expect(emis).toHaveLength(1);
-      expect(emis[0].titre).toBeUndefined();
-      expect(emis[0].objectifs).toBeUndefined();
-      expect(emis[0].deroulement).toBe('déroulement');
-      expect(emis[0]).not.toBe((component as any).formSeance);
+      expect(spy).toHaveBeenCalledTimes(1);
+      const emis = spy.mock.calls[0][0] as Seance;
+      expect(emis.titre).toBeUndefined();
+      expect(emis.objectifs).toBeUndefined();
+      expect(emis.deroulement).toBe('déroulement');
+      expect(emis).not.toBe((component as any).formSeance);
     });
 
     it('émet une séance avec toutes les chaînes présentes conservées', () => {
@@ -121,13 +121,13 @@ describe('CjFormulaireSeanceComponent', () => {
       fixture.componentRef.setInput('seance', seance);
       fixture.detectChanges();
 
-      const emis: Seance[] = [];
-      (component as any).enregistrer.subscribe((v: Seance) => emis.push(v));
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
 
       (component as any).onEnregistrer();
 
-      expect(emis[0].titre).toBe('Titre');
-      expect(emis[0].objectifs).toBe('Objectifs');
+      const emis = spy.mock.calls[0][0] as Seance;
+      expect(emis.titre).toBe('Titre');
+      expect(emis.objectifs).toBe('Objectifs');
     });
   });
 });

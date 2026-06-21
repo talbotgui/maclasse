@@ -30,24 +30,21 @@ describe('McChampRechercheComponent', () => {
 
   describe('émission immédiate (delaiMs=0, défaut)', () => {
     it('saisie → émet immédiatement la valeur', () => {
-      const emis: string[] = [];
-      (component as any).rechercheChange.subscribe((v: string) => emis.push(v));
+      const spy = vi.spyOn((component as any).rechercheChange, 'emit');
 
       saisir('maths');
 
-      expect(emis).toEqual(['maths']);
+      expect(spy).toHaveBeenCalledWith('maths');
     });
 
     it('reinitialiser → émet une chaîne vide', () => {
-      const emis: string[] = [];
-      (component as any).rechercheChange.subscribe((v: string) => emis.push(v));
+      const spy = vi.spyOn((component as any).rechercheChange, 'emit');
       saisir('maths');
-      emis.length = 0;
 
       component['reinitialiser']();
       fixture.detectChanges();
 
-      expect(emis).toEqual(['']);
+      expect(spy).toHaveBeenLastCalledWith('');
     });
 
     it('reinitialiser → valeurCourante vaut chaîne vide', () => {
@@ -68,34 +65,32 @@ describe('McChampRechercheComponent', () => {
     });
 
     it('saisie → n\'émet pas avant le délai', () => {
-      const emis: string[] = [];
-      (component as any).rechercheChange.subscribe((v: string) => emis.push(v));
+      const spy = vi.spyOn((component as any).rechercheChange, 'emit');
 
       saisir('sc');
 
-      expect(emis).toHaveLength(0);
+      expect(spy).not.toHaveBeenCalled();
     });
 
     it('après le délai → émet la valeur', () => {
-      const emis: string[] = [];
-      (component as any).rechercheChange.subscribe((v: string) => emis.push(v));
+      const spy = vi.spyOn((component as any).rechercheChange, 'emit');
 
       saisir('sc');
       vi.advanceTimersByTime(300);
 
-      expect(emis).toEqual(['sc']);
+      expect(spy).toHaveBeenCalledWith('sc');
     });
 
     it('2e frappe avant délai → annule la 1re, émet seulement la 2e', () => {
-      const emis: string[] = [];
-      (component as any).rechercheChange.subscribe((v: string) => emis.push(v));
+      const spy = vi.spyOn((component as any).rechercheChange, 'emit');
 
       saisir('s');
       vi.advanceTimersByTime(100);
       saisir('sc');
       vi.advanceTimersByTime(300);
 
-      expect(emis).toEqual(['sc']);
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith('sc');
     });
   });
 
@@ -107,14 +102,14 @@ describe('McChampRechercheComponent', () => {
     });
 
     it('reinitialiser → émet \'\' immédiatement et annule le timer', () => {
-      const emis: string[] = [];
-      (component as any).rechercheChange.subscribe((v: string) => emis.push(v));
+      const spy = vi.spyOn((component as any).rechercheChange, 'emit');
 
       saisir('sc');
       component['reinitialiser']();
       vi.advanceTimersByTime(300);
 
-      expect(emis).toEqual(['']);
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith('');
     });
   });
 
@@ -126,14 +121,13 @@ describe('McChampRechercheComponent', () => {
     });
 
     it('détruire le composant avec timer actif → pas d\'émission tardive', () => {
-      const emis: string[] = [];
-      (component as any).rechercheChange.subscribe((v: string) => emis.push(v));
+      const spy = vi.spyOn((component as any).rechercheChange, 'emit');
 
       saisir('sc');
       fixture.destroy();
       vi.advanceTimersByTime(300);
 
-      expect(emis).toHaveLength(0);
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 });

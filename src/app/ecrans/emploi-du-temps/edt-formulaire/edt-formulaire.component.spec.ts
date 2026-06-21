@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { EdtFormulaireComponent } from './edt-formulaire.component';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
@@ -153,26 +153,25 @@ describe('EdtFormulaireComponent', () => {
       fixture.componentRef.setInput('edt', edt);
       fixture.detectChanges();
 
-      const emis: EmploiDuTemps[] = [];
-      (component as any).edtEnregistre.subscribe((v: EmploiDuTemps) => emis.push(v));
+      const spy = vi.spyOn((component as any).edtEnregistre, 'emit');
 
       (component as any).onEnregistrerEdt();
 
-      expect(emis).toHaveLength(1);
-      expect(emis[0].nom).toBe('Semaine A');
-      expect(emis[0]).not.toBe((component as any).formEdt);
+      expect(spy).toHaveBeenCalledTimes(1);
+      const emis = spy.mock.calls[0][0] as EmploiDuTemps;
+      expect(emis.nom).toBe('Semaine A');
+      expect(emis).not.toBe((component as any).formEdt);
     });
 
     it('n\'émet pas si formEdt=null', () => {
       fixture.componentRef.setInput('edt', null);
       fixture.detectChanges();
 
-      const emis: EmploiDuTemps[] = [];
-      (component as any).edtEnregistre.subscribe((v: EmploiDuTemps) => emis.push(v));
+      const spy = vi.spyOn((component as any).edtEnregistre, 'emit');
 
       (component as any).onEnregistrerEdt();
 
-      expect(emis).toHaveLength(0);
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 
@@ -182,26 +181,25 @@ describe('EdtFormulaireComponent', () => {
       fixture.componentRef.setInput('creneau', creneau);
       fixture.detectChanges();
 
-      const emis: CreneauEdt[] = [];
-      (component as any).creneauEnregistre.subscribe((v: CreneauEdt) => emis.push(v));
+      const spy = vi.spyOn((component as any).creneauEnregistre, 'emit');
 
       (component as any).onEnregistrerCreneau();
 
-      expect(emis).toHaveLength(1);
-      expect(emis[0].heureDebut).toBe('09:00');
-      expect(emis[0]).not.toBe((component as any).formCreneau);
+      expect(spy).toHaveBeenCalledTimes(1);
+      const emis = spy.mock.calls[0][0] as CreneauEdt;
+      expect(emis.heureDebut).toBe('09:00');
+      expect(emis).not.toBe((component as any).formCreneau);
     });
 
     it('n\'émet pas si formCreneau=null', () => {
       fixture.componentRef.setInput('creneau', null);
       fixture.detectChanges();
 
-      const emis: CreneauEdt[] = [];
-      (component as any).creneauEnregistre.subscribe((v: CreneauEdt) => emis.push(v));
+      const spy = vi.spyOn((component as any).creneauEnregistre, 'emit');
 
       (component as any).onEnregistrerCreneau();
 
-      expect(emis).toHaveLength(0);
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 });

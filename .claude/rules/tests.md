@@ -13,6 +13,8 @@ Vitest pour tous les tests de services.
 
 **Jamais de mocks** — instancier ou injecter les dépendances réellement.
 
+**Exception unique — APIs navigateur absentes de jsdom :** une méthode qui appelle `URL.createObjectURL`, déclenche un téléchargement (`<a>.click()`), ou utilise `SubtleCrypto` ne peut pas s'exécuter dans jsdom. Mocker *uniquement cette méthode* est alors justifié. Ne jamais mocker le service entier ni une méthode sans effet de bord.
+
 ## Structure
 
 ```typescript
@@ -111,6 +113,41 @@ expect(spy).toHaveBeenCalled();
 ```
 
 Corollaire : tester un output suppose toujours qu'il est émis via la méthode `onXxx()` du composant, jamais via un appel direct à `emit()` depuis le test. La convention de nommage `onXxx()` est définie dans `angular-typescript.md`.
+
+## Services sans effets de bord
+
+Un service qui lit des données et retourne un résultat (lecture pure) ne doit jamais être mocké, même si le test vise un comportement conditionnel. Charger les données adéquates dans le `beforeEach` via les Object Mothers suffit.
+
+```typescript
+// ❌ INTERDIT — service pur, aucun effet de bord, mock inutile
+vi.spyOn(rechercheGlobaleService, 'rechercher').mockReturnValue([...]);
+
+// ✅ CORRECT — les données réelles produisent le résultat attendu
+donneesService.charger(DonneesMother.base({
+  classe: { eleves: [EleveMother.base('e1', 'MARTIN', 'Alice')] },
+}));
+component['surRecherche']('Martin'); // retourne l'élève depuis les données réelles
+```
+
+## Nettoyage des timers — afterEach
+
+Quand un test appelle réellement une méthode de service qui démarre un `setInterval` ou `setTimeout`, arrêter le timer en `afterEach`. Les services singleton (`providedIn: 'root'`) survivent entre les tests du même `describe` ; un timer actif peut déclencher des effets de bord dans les tests suivants.
+
+```typescript
+afterEach(() => {
+  sauvegardeAutoService.arreter();
+});
+```
+
+Ne jamais mocker la méthode de démarrage (`demarrer()`) pour contourner ce problème — annuler le timer dans `afterEach` est la bonne approche. Le spy sans `.mockImplementation` permet de vérifier l'appel tout en laissant la méthode s'exécuter réellement.
+
+```typescript
+// ❌ INTERDIT — masque l'exécution réelle pour éviter le timer
+const spyDemarrer = vi.spyOn(sauvegardeAutoService, 'demarrer').mockImplementation(() => {});
+
+// ✅ CORRECT — spy observateur uniquement, timer nettoyé en afterEach
+const spyDemarrer = vi.spyOn(sauvegardeAutoService, 'demarrer');
+```
 
 ## Composants avec `<dialog>`
 

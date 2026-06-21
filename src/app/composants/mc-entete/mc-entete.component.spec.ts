@@ -1,11 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { McEnteteComponent } from './mc-entete.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
 import { SauvegardeAutoService } from '../../services/sansEtat/sauvegarde-auto.service';
-import { RechercheGlobaleService } from '../../services/sansEtat/recherche-globale.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { EleveMother } from '../../tests/eleve.mother';
 import { ResultatRechercheMother } from '../../tests/recherche.mother';
@@ -15,14 +14,12 @@ describe('McEnteteComponent', () => {
   let donneesService: DonneesService;
   let contexteService: ContexteService;
   let sauvegardeAutoService: SauvegardeAutoService;
-  let rechercheGlobaleService: RechercheGlobaleService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
     donneesService = TestBed.inject(DonneesService);
     contexteService = TestBed.inject(ContexteService);
     sauvegardeAutoService = TestBed.inject(SauvegardeAutoService);
-    rechercheGlobaleService = TestBed.inject(RechercheGlobaleService);
     donneesService.charger(DonneesMother.base({
       classe: {
         niveau: 'CM2',
@@ -33,6 +30,10 @@ describe('McEnteteComponent', () => {
     const fixture = TestBed.createComponent(McEnteteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    sauvegardeAutoService.arreter();
   });
 
   describe('surSauvegarder', () => {
@@ -58,7 +59,6 @@ describe('McEnteteComponent', () => {
   describe('surConfirmationSauvegarde', () => {
     it('mémorise le mot de passe dans contexteService', async () => {
       vi.spyOn(sauvegardeAutoService, 'sauvegarder').mockResolvedValue(undefined);
-      vi.spyOn(sauvegardeAutoService, 'demarrer').mockImplementation(() => {});
 
       await component['surConfirmationSauvegarde']('secret123');
 
@@ -67,7 +67,6 @@ describe('McEnteteComponent', () => {
 
     it('ferme la popin', async () => {
       vi.spyOn(sauvegardeAutoService, 'sauvegarder').mockResolvedValue(undefined);
-      vi.spyOn(sauvegardeAutoService, 'demarrer').mockImplementation(() => {});
       (component as any).popinSauvegardeVisible.set(true);
 
       await component['surConfirmationSauvegarde']('secret123');
@@ -77,7 +76,7 @@ describe('McEnteteComponent', () => {
 
     it('appelle sauvegarder puis demarrer', async () => {
       const spySauvegarder = vi.spyOn(sauvegardeAutoService, 'sauvegarder').mockResolvedValue(undefined);
-      const spyDemarrer = vi.spyOn(sauvegardeAutoService, 'demarrer').mockImplementation(() => {});
+      const spyDemarrer = vi.spyOn(sauvegardeAutoService, 'demarrer');
 
       await component['surConfirmationSauvegarde']('secret123');
 
@@ -98,8 +97,6 @@ describe('McEnteteComponent', () => {
 
   describe('surRecherche', () => {
     it('terme avec résultats → liste visible', () => {
-      vi.spyOn(rechercheGlobaleService, 'rechercher').mockReturnValue([ResultatRechercheMother.eleve()]);
-
       component['surRecherche']('Martin');
 
       expect((component as any).listeResultatsVisible()).toBe(true);
@@ -107,8 +104,6 @@ describe('McEnteteComponent', () => {
     });
 
     it('terme sans résultats → liste masquée', () => {
-      vi.spyOn(rechercheGlobaleService, 'rechercher').mockReturnValue([]);
-
       component['surRecherche']('zzz');
 
       expect((component as any).listeResultatsVisible()).toBe(false);

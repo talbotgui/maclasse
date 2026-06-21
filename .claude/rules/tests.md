@@ -55,16 +55,41 @@ Les templates HTML sont exclus car Angular les compile en fonctions JavaScript i
 ## Tester les outputs Angular
 
 `OutputEmitterRef.subscribe()` ne déclenche pas les callbacks hors contexte d'injection — ne jamais l'utiliser dans les tests.
+Interdire aussi le tableau intermédiaire `const emis: T[] = []` combiné à `.subscribe()`.
 
-Pattern obligatoire :
+Patterns obligatoires selon le cas :
+
 ```typescript
-// CORRECT
+// ✅ Output émis avec une valeur simple
 const spy = vi.spyOn((component as any).monOutput, 'emit');
 component['methodeQuiEmet']();
 expect(spy).toHaveBeenCalledWith(valeurAttendue);
 
-// INTERDIT — le callback n'est jamais appelé
+// ✅ Output émis : vérifier le payload avec plusieurs assertions
+const spy = vi.spyOn((component as any).monOutput, 'emit');
+component['methodeQuiEmet']();
+expect(spy).toHaveBeenCalledTimes(1);
+const emis = spy.mock.calls[0][0] as MonType;
+expect(emis.champ).toBe('valeur');
+expect(emis).not.toBe(objetOriginal); // clone
+
+// ✅ Output N'est PAS émis (garde, condition false…)
+const spy = vi.spyOn((component as any).monOutput, 'emit');
+component['methodeAvecGarde']();
+expect(spy).not.toHaveBeenCalled();
+
+// ✅ Vérifier la DERNIÈRE émission quand une action préalable émet déjà
+const spy = vi.spyOn((component as any).monOutput, 'emit');
+component['actionPrelim']();          // émet une 1re fois
+component['reinitialiser']();         // émet une 2e fois avec ''
+expect(spy).toHaveBeenLastCalledWith('');
+
+// ❌ INTERDIT — le callback n'est jamais déclenché
 (component as any).monOutput.subscribe((v) => emis.push(v));
+
+// ❌ INTERDIT — appel direct à emit() depuis le test (tautologie)
+(component as any).monOutput.emit();
+expect(spy).toHaveBeenCalled(); // toujours vrai, ne teste rien
 ```
 
 Corollaire : tester un output suppose toujours qu'il est émis via une **méthode du composant**, jamais via un appel direct à `emit()` depuis le test.

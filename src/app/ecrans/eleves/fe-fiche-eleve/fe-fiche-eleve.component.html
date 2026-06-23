@@ -56,7 +56,7 @@
   @if (eleve().contacts.length > 0) {
     <section class="fiche-eleve__section" aria-labelledby="titreContacts">
       <h3 id="titreContacts" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionContacts }}</h3>
-      <ul class="fiche-eleve__liste-resumee">
+      <ul class="fiche-eleve__liste-resumee-contacts">
         @for (contact of eleve().contacts; track $index) {
           <li>{{ libelleTypeContact(contact.type) }} — {{ contact.nom }}@if (contact.telephone) { — {{ contact.telephone }}}</li>
         }
@@ -68,7 +68,7 @@
   @if (eleve().absencesRecurrentes.length > 0) {
     <section class="fiche-eleve__section" aria-labelledby="titreAbsencesRec">
       <h3 id="titreAbsencesRec" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionAbsencesRecurrentes }}</h3>
-      <ul class="fiche-eleve__liste-resumee">
+      <ul class="fiche-eleve__liste-resumee-absences-rec">
         @for (abs of eleve().absencesRecurrentes; track abs.id) {
           <li>{{ abs.libelle }} — {{ abs.jour }} {{ abs.heureDebut }}–{{ abs.heureFin }}</li>
         }
@@ -80,7 +80,7 @@
   @if (eleve().absencesPonctuelles.length > 0) {
     <section class="fiche-eleve__section" aria-labelledby="titreAbsencesPonct">
       <h3 id="titreAbsencesPonct" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionAbsencesPonctuelles }}</h3>
-      <ul class="fiche-eleve__liste-resumee">
+      <ul class="fiche-eleve__liste-resumee-absences-ponct">
         @for (abs of eleve().absencesPonctuelles; track abs.id) {
           <li>{{ DateUtils.formaterDateCourt(abs.date) }} — {{ abs.justification || '—' }}</li>
         }
@@ -92,7 +92,7 @@
   @if (eleve().cursus.length > 0) {
     <section class="fiche-eleve__section" aria-labelledby="titreCursus">
       <h3 id="titreCursus" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionCursus }}</h3>
-      <ul class="fiche-eleve__liste-resumee">
+      <ul class="fiche-eleve__liste-resumee-cursus">
         @for (annee of eleve().cursus; track annee.annee) {
           <li>{{ annee.annee }}–{{ annee.annee + 1 }} — {{ annee.niveau }} — {{ annee.etablissement }}</li>
         }

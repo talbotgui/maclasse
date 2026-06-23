@@ -24,9 +24,9 @@ testAvecDonnees('E2E-16 — Accueil affiche le résumé du cahier journal du jou
   await cj.btnAjouterSeance.click();
 
   // Remplir la séance : heure début, heure fin, type Pédagogique
-  await appAvecDonnees.locator('#champHeureDebut input, [id*="HeureDebut"] input').first().fill('09:00');
-  await appAvecDonnees.locator('#champHeureFin input, [id*="HeureFin"] input').first().fill('10:00');
-  await appAvecDonnees.locator('#champTitreSeance input, [id*="Titre"] input').first().fill('Lecture du matin');
+  await cj.champHeureDebutSeance.fill('09:00');
+  await cj.champHeureFinSeance.fill('10:00');
+  await cj.champTitreSeance.fill('Lecture du matin');
   await cj.btnEnregistrerSeance.click();
 
   // Retourner à l'accueil

@@ -118,6 +118,8 @@ testAvecDonnees('E2E-23 — Popin d\'avertissement au clic sur CRÉER sans enreg
   await expect(eleves.btnAvertissementConfirmer).toBeVisible();
   await eleves.btnAvertissementConfirmer.click();
 
+  await eleves.btnCreerEleve.click();
+
   // Formulaire vide pour un nouvel élève
   await expect(eleves.champPrenom).toHaveValue('');
   await expect(eleves.champNom).toHaveValue('');
@@ -198,15 +200,13 @@ testAvecDonnees('E2E-27 — Ajouter un contact dans la fiche élève', async ({ 
 
   await eleves.btnAjouterContact.click();
 
-  // Remplir le contact à l'index 0 (dernier ajouté en fin de liste)
-  const indexContact = await appAvecDonnees.locator('[id^="champContactNom"]').count() - 1;
-  await appAvecDonnees.locator(`#champContactNom${indexContact} input`).fill('René Ducobu');
-  await appAvecDonnees.locator(`#champContactTel${indexContact} input`).fill('06 12 34 56 78');
+  await eleves.champNouveauContactNom.fill('René Ducobu');
+  await eleves.champNouveauContactTel.fill('06 12 34 56 78');
 
   await eleves.btnEnregistrer.click();
 
   // En lecture seule, le contact apparaît
-  await expect(appAvecDonnees.locator('.fiche-eleve__liste-resumee')).toContainText('René Ducobu');
+  await expect(eleves.listeResumeeContacts).toContainText('René Ducobu');
 });
 
 testAvecDonnees('E2E-28 — Ajouter une absence récurrente dans la fiche élève', async ({ appAvecDonnees }) => {
@@ -219,12 +219,11 @@ testAvecDonnees('E2E-28 — Ajouter une absence récurrente dans la fiche élèv
 
   await eleves.btnAjouterAbsenceRecurrente.click();
 
-  const indexAbs = await appAvecDonnees.locator('[id^="champAbsRecLibelle"]').count() - 1;
-  await appAvecDonnees.locator(`#champAbsRecLibelle${indexAbs} input`).fill('Orthophonie');
+  await eleves.champNouvelleAbsenceRecurrenteLibelle.fill('Orthophonie');
 
   await eleves.btnEnregistrer.click();
 
-  await expect(appAvecDonnees.locator('.fiche-eleve__liste-resumee')).toContainText('Orthophonie');
+  await expect(eleves.listeResumeeAbsencesRec).toContainText('Orthophonie');
 });
 
 testAvecDonnees('E2E-29 — Ajouter une absence ponctuelle dans la fiche élève', async ({ appAvecDonnees }) => {
@@ -237,13 +236,12 @@ testAvecDonnees('E2E-29 — Ajouter une absence ponctuelle dans la fiche élève
 
   await eleves.btnAjouterAbsencePonctuelle.click();
 
-  const indexAbs = await appAvecDonnees.locator('[id^="champAbsPonctDate"]').count() - 1;
-  await appAvecDonnees.locator(`#champAbsPonctDate${indexAbs} input`).fill('2026-06-09');
-  await appAvecDonnees.locator(`#champAbsPonctJustif${indexAbs} textarea`).fill('Maladie');
+  await eleves.champNouvelleAbsencePonctuelleDate.fill('2026-06-09');
+  await eleves.champNouvelleAbsencePonctuelleJustification.fill('Maladie');
 
   await eleves.btnEnregistrer.click();
 
-  await expect(appAvecDonnees.locator('.fiche-eleve__liste-resumee')).toContainText('Maladie');
+  await expect(eleves.listeResumeeAbsencesPonct).toContainText('Maladie');
 });
 
 testAvecDonnees('E2E-30 — Imprimer la fiche d\'un élève', async ({ appAvecDonnees }) => {
@@ -260,5 +258,5 @@ testAvecDonnees('E2E-30 — Imprimer la fiche d\'un élève', async ({ appAvecDo
   // On ne déclenche pas la boîte d'impression du navigateur (non testable en headless)
   // mais on vérifie que la colonne gauche ne sera pas imprimée
   // via l'attribut aria / classe qui sera masqué en @media print
-  await expect(appAvecDonnees.locator('.mc-colonne-gauche, .eleves__gauche')).toBeVisible();
+  await expect(eleves.colonneGauche).toBeVisible();
 });

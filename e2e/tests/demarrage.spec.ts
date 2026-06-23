@@ -2,12 +2,13 @@ import { test, expect, testAvecZip, testAvecDonnees } from '../fixtures';
 import { SelecteursDemarrage } from '../selecteurs/selecteurs-demarrage';
 
 test('E2E-01 — Accès direct à un écran sans données redirige vers /demarrage', async ({ page }) => {
+  const demarrage = new SelecteursDemarrage(page);
   await page.goto('/eleves');
   await expect(page).toHaveURL(/\/demarrage/);
-  await expect(page.locator('#btnCreer')).toBeVisible();
-  await expect(page.locator('#navAccueil')).not.toBeVisible();
-  await expect(page.locator('#btnSauvegarder')).not.toBeVisible();
-  await expect(page.locator('#btnTheme')).toBeVisible();
+  await expect(demarrage.btnCreer).toBeVisible();
+  await expect(demarrage.navAccueil).not.toBeVisible();
+  await expect(demarrage.btnSauvegarder).not.toBeVisible();
+  await expect(demarrage.btnTheme).toBeVisible();
 });
 
 test('E2E-02 — Créer un nouveau fichier depuis les données d\'exemple', async ({ page }) => {

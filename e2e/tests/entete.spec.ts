@@ -41,9 +41,8 @@ testAvecDonnees('E2E-09 — Recherche globale : trouver un élève', async ({ ap
   await entete.rechercherEtAttendre('martinot');
 
   await expect(entete.listeResultatsRecherche).toBeVisible();
-  const premierResultat = entete.listeResultatsRecherche.locator('[role="option"]').first();
-  await expect(premierResultat.locator('.mc-entete__resultat-type')).toHaveText('eleve');
-  await expect(premierResultat.locator('.mc-entete__resultat-titre')).toContainText('Martinot');
+  await expect(entete.typeDuPremierResultat).toHaveText('eleve');
+  await expect(entete.titreDuPremierResultat).toContainText('Martinot');
 });
 
 testAvecDonnees('E2E-10 — Recherche globale : naviguer vers un élève au clic sur le résultat', async ({ appAvecDonnees }) => {
@@ -63,12 +62,8 @@ testAvecDonnees('E2E-11 — Recherche globale : trouver et naviguer vers un proj
 
   await entete.rechercherEtAttendre('potager');
 
-  const projetResultat = entete.listeResultatsRecherche
-    .locator('[role="option"]')
-    .filter({ hasText: 'Potager' })
-    .first();
-  await expect(projetResultat.locator('.mc-entete__resultat-type')).toHaveText('projet');
-  await projetResultat.click();
+  await expect(entete.typeDuResultatPotager).toHaveText('projet');
+  await entete.resultatPotager.click();
 
   await expect(appAvecDonnees).toHaveURL(/\/projets/);
 });
@@ -86,15 +81,16 @@ testAvecDonnees('E2E-12 — Première sauvegarde : popin de saisie du mot de pas
   // Maintenant SAUVEGARDER doit être actif
   await expect(entete.btnSauvegarder).toBeEnabled();
 
-  const [download] = await Promise.all([
-    appAvecDonnees.waitForEvent('download'),
-    entete.btnSauvegarder.click(),
-  ]);
+  await entete.btnSauvegarder.click();
 
   // La popin de sauvegarde s'ouvre (premier enregistrement : mot de passe demandé)
   await expect(entete.champMotDePasseSauvegarde).toBeVisible();
   await entete.champMotDePasseSauvegarde.fill('monmdptest');
-  await entete.btnSauvegardeConfirmer.click();
+
+  const [download] = await Promise.all([
+    appAvecDonnees.waitForEvent('download'),
+    entete.btnSauvegardeConfirmer.click(),
+  ]);
 
   // Le téléchargement a eu lieu
   expect(download.suggestedFilename()).toMatch(/\.zip$/);
@@ -162,21 +158,24 @@ testAvecDonnees('E2E-14 — Boutons ANNULER et REFAIRE : état selon la pile UND
 testAvecDonnees('E2E-15 — Changement de thème : cycle entre les thèmes', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
   const html = appAvecDonnees.locator('html');
-
+  
+  let cycles = 0;
   const theme1 = await html.getAttribute('data-theme');
+
   await entete.btnTheme.click();
+  cycles++;
   const theme2 = await html.getAttribute('data-theme');
   expect(theme2).not.toBe(theme1);
 
   await entete.btnTheme.click();
+  cycles++;
   const theme3 = await html.getAttribute('data-theme');
   expect(theme3).not.toBe(theme2);
 
   // Après N clics, cycle revient au début
-  let cycles = 0;
   while (await html.getAttribute('data-theme') !== theme1 && cycles < 10) {
     await entete.btnTheme.click();
     cycles++;
   }
-  await expect(html).toHaveAttribute('data-theme', theme1 ?? '');
+  expect(cycles).toBe(5);
 });

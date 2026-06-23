@@ -44,6 +44,34 @@ export class SelecteursEleves extends SelecteursBase {
   /** Bouton AJOUTER dans la section Absences ponctuelles. */
   readonly btnAjouterAbsencePonctuelle: Locator;
 
+  // --- Sous-formulaire contact (index fixe : DUCOBU a déjà 2 contacts dans le jeu de données) ---
+  /** Champ Nom du nouveau contact ajouté (index 2). */
+  readonly champNouveauContactNom: Locator;
+  /** Champ Téléphone du nouveau contact ajouté (index 2). */
+  readonly champNouveauContactTel: Locator;
+
+  // --- Sous-formulaire absence récurrente (index fixe : DUCOBU a déjà 1 absence récurrente) ---
+  /** Champ Libellé de la nouvelle absence récurrente ajoutée (index 1). */
+  readonly champNouvelleAbsenceRecurrenteLibelle: Locator;
+
+  // --- Sous-formulaire absence ponctuelle (index fixe : DUCOBU n'a aucune absence ponctuelle) ---
+  /** Champ Date de la nouvelle absence ponctuelle ajoutée (index 0). */
+  readonly champNouvelleAbsencePonctuelleDate: Locator;
+  /** Champ Justification de la nouvelle absence ponctuelle ajoutée (index 0). */
+  readonly champNouvelleAbsencePonctuelleJustification: Locator;
+
+  // --- Lecture seule ---
+  /** Liste résumée affichant contacts en mode lecture. */
+  readonly listeResumeeContacts: Locator;
+  /** Liste résumée affichant les absences récurrentes en mode lecture. */
+  readonly listeResumeeAbsencesRec: Locator;
+  /** Liste résumée affichant les absences ponctuelles en mode lecture. */
+  readonly listeResumeeAbsencesPonct: Locator;
+  /** Liste résumée affichant les cursus en mode lecture. */
+  readonly listeResumeeCursus: Locator;
+  /** Colonne gauche de l'écran (masquée à l'impression). */
+  readonly colonneGauche: Locator;
+
   // --- Chips de filtre par groupe ---
   /** Chip de filtre Groupe A. */
   readonly chipGroupeA: Locator;
@@ -80,6 +108,17 @@ export class SelecteursEleves extends SelecteursBase {
     this.btnAjouterContact = page.locator('#btnAjouterContact');
     this.btnAjouterAbsenceRecurrente = page.locator('#btnAjouterAbsRec');
     this.btnAjouterAbsencePonctuelle = page.locator('#btnAjouterAbsPonct');
+
+    this.champNouveauContactNom = page.locator('#champContactNom2');
+    this.champNouveauContactTel = page.locator('#champContactTel2');
+    this.champNouvelleAbsenceRecurrenteLibelle = page.locator('#champAbsRecLibelle1');
+    this.champNouvelleAbsencePonctuelleDate = page.locator('#champAbsPonctDate0');
+    this.champNouvelleAbsencePonctuelleJustification = page.locator('#champAbsPonctJustif0');
+    this.listeResumeeContacts = page.locator('.fiche-eleve__liste-resumee-contacts');
+    this.listeResumeeAbsencesRec = page.locator('.fiche-eleve__liste-resumee-absences-rec');
+    this.listeResumeeAbsencesPonct = page.locator('.fiche-eleve__liste-resumee-absences-ponct');
+    this.listeResumeeCursus = page.locator('.fiche-eleve__liste-resumee-cursus');
+    this.colonneGauche = page.locator('.mc-colonne-gauche, .eleves__gauche');
 
     this.chipGroupeA = page.locator('#chipGroupeA');
     this.chipGroupeB = page.locator('#chipGroupeB');

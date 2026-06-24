@@ -393,16 +393,7 @@
         "statut": "DE",
         "bilans": "Orientation en ULIS depuis 2024. Suivi SESSAD : Mme Leduc (psychologue), M. Renard (psychomotricien). PAP établi le 12/11/2024.",
         "accueil": "Accueil avec AESH (M. Baraka) toute la journée.",
-        "inclusion": {
-          "ecoleNom": "IME Les Cèdres",
-          "ecoleAdresse": "8 avenue du Bois, 75016 Paris",
-          "nomContact": "Mme Lefeuvre",
-          "emailContact": "direction@ime-cedres.fr",
-          "telContact": "01 44 55 66 77",
-          "niveau": "CE2 adapté",
-          "enseignant": "M. Bernstein",
-          "telephoneEnseignant": "01 44 55 66 78"
-        },
+        "inclusion": "école : IME Les Cèdres\nadresse : 8 avenue du Bois, 75016 Paris\ncontact : Mme Lefeuvre (direction@ime-cedres.fr - 01 44 55 66 77\nclasse : CE2 adapté avec M. Bernstein (01 00 00 66 78)",
         "contacts": [
           {
             "type": "P",

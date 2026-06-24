@@ -24,6 +24,9 @@
 # Tests E2E — screenshots et artefacts d'exécution
 /.e2e/
 
+# Tests E2E — données de test
+/e2e/donnees/maclasse-test.zip
+
 # Logs
 /npm-debug.log*
 /yarn-debug.log*

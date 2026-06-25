@@ -192,6 +192,13 @@ export const LIBELLES = {
     typePauseDejeuner:          'Pause déjeuner',
     boutonAjouter:              'Ajouter un créneau',
     aucunCreneau:               'Aucun créneau',
+    joursLibelles: {
+      lundi:    'Lundi',
+      mardi:    'Mardi',
+      mercredi: 'Mercredi',
+      jeudi:    'Jeudi',
+      vendredi: 'Vendredi',
+    },
   },
 
   /** Libellés de l'écran Cahier journal. */

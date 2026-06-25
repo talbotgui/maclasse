@@ -71,15 +71,6 @@ export class EcranEmploiDuTempsComponent {
   /** Constante centralisée des libellés. */
   protected readonly LIBELLES = LIBELLES;
 
-  /** Map jours→libellés exposée au template. */
-  protected readonly LIBELLES_JOURS: Record<JourSemaine, string> = {
-    lundi: 'Lundi',
-    mardi: 'Mardi',
-    mercredi: 'Mercredi',
-    jeudi: 'Jeudi',
-    vendredi: 'Vendredi',
-  };
-
   /** Accès aux données de l'application. */
   private readonly donneesService = inject(DonneesService);
 

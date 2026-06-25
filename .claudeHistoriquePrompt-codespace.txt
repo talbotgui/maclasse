@@ -1873,3 +1873,6 @@ Reformule la demande, analyse les impacts
 insère 2 séances, 1 récréation et 2 séances chaque matin. Suit une pause déjeuner. Et l'après midi doit contenir aussi 2 séances, 1 récréation et 2 séances.
 ---
 2026-06-25 19:36:42 [Ajouter trois emplois du temps au jeu de données] Ajoute un titre à chaque séance de chaque emploi du temps présent dans le jeu de données par défaut
+---
+2026-06-25 19:40:30 [Sans titre] dans l'écran des emplois du temps, dans le formulaire de droite, au dessus de l'heure de début, ajoute un libellé avec le nom du jour de la séance.
+Reformule et propose des améliorations

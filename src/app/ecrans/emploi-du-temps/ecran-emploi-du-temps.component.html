@@ -57,7 +57,7 @@
             <tr>
               <th class="edt__grille-th edt__grille-th--heure" scope="col">Heure</th>
               @for (jour of joursOuvres(); track jour) {
-                <th class="edt__grille-th" scope="col">{{ LIBELLES_JOURS[jour] }}</th>
+                <th class="edt__grille-th" scope="col">{{ LIBELLES.edt.joursLibelles[jour] }}</th>
               }
               <!-- Colonne d'ajout de créneau par jour -->
             </tr>
@@ -92,7 +92,7 @@
                       <button
                         [id]="'btnAjouterCreneau' + jour + ligne.heureDebut"
                         class="edt__btn-ajouter-creneau"
-                        [attr.aria-label]="'Ajouter un créneau ' + LIBELLES_JOURS[jour]"
+                        [attr.aria-label]="'Ajouter un créneau ' + LIBELLES.edt.joursLibelles[jour]"
                         (click)="ajouterCreneauPourJour(jour)"
                       >+</button>
                     }
@@ -108,7 +108,7 @@
                   <button
                     [id]="'btnNouveauCreneauJour' + jour"
                     class="edt__btn-nouveau-creneau"
-                    [attr.aria-label]="LIBELLES.edt.boutonAjouter + ' ' + LIBELLES_JOURS[jour]"
+                    [attr.aria-label]="LIBELLES.edt.boutonAjouter + ' ' + LIBELLES.edt.joursLibelles[jour]"
                     (click)="ajouterCreneauPourJour(jour)"
                   >{{ LIBELLES.edt.boutonAjouter }}</button>
                 </td>

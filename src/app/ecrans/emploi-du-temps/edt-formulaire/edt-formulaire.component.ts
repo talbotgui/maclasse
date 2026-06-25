@@ -106,6 +106,12 @@ export class EdtFormulaireComponent {
     () => this.creneau() !== null && !!this.creneau()?.id,
   );
 
+  /** Libellé du jour de la semaine du créneau courant, ou chaîne vide si aucun créneau. */
+  protected readonly jourLibelle = computed(() => {
+    const jour = this.creneau()?.jour;
+    return jour ? LIBELLES.edt.joursLibelles[jour] : '';
+  });
+
   /** Charge les copies locales à chaque changement des entrées. */
   public constructor() {
     effect(() => {

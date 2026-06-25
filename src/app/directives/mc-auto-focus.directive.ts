@@ -1,9 +1,6 @@
 import { Directive, ElementRef, effect, inject, input } from '@angular/core';
 import type { InputSignal } from '@angular/core';
 
-/** Sélecteur CSS des éléments nativement focusables non désactivés. */
-const SELECTEUR_FOCUSABLE = 'input:not([disabled]), button:not([disabled]), select:not([disabled]), textarea:not([disabled])';
-
 /**
  * Directive d'attribut qui applique automatiquement le focus lorsque
  * l'input `mcAutoFocus` passe à `true`.
@@ -19,6 +16,10 @@ const SELECTEUR_FOCUSABLE = 'input:not([disabled]), button:not([disabled]), sele
   selector: '[mcAutoFocus]',
 })
 export class McAutoFocusDirective {
+  /** Sélecteur CSS des éléments nativement focusables non désactivés. */
+  private static readonly SELECTEUR_FOCUSABLE =
+    'input:not([disabled]), button:not([disabled]), select:not([disabled]), textarea:not([disabled])';
+
   /** Déclenche le focus quand la valeur est `true`. */
   public readonly mcAutoFocus: InputSignal<boolean> = input(false);
 
@@ -30,9 +31,9 @@ export class McAutoFocusDirective {
     effect(() => {
       if (this.mcAutoFocus()) {
         const el = this.elementRef.nativeElement;
-        const cible = el.matches(SELECTEUR_FOCUSABLE)
+        const cible = el.matches(McAutoFocusDirective.SELECTEUR_FOCUSABLE)
           ? el
-          : ((el.querySelector(SELECTEUR_FOCUSABLE) as HTMLElement | null) ?? el);
+          : ((el.querySelector(McAutoFocusDirective.SELECTEUR_FOCUSABLE) as HTMLElement | null) ?? el);
         cible.focus();
       }
     });

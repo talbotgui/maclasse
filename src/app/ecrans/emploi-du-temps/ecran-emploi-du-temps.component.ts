@@ -13,50 +13,6 @@ import { DateUtils } from '../../utilitaires/date.utils';
 import type { EmploiDuTemps, CreneauEdt, JourSemaine, FrequenceSemaine } from '../../modeles/emploi-du-temps.modele';
 import type { Competence } from '../../modeles/referentiels.modele';
 
-/** Libellés français des jours de semaine. */
-const LIBELLES_JOURS: Record<JourSemaine, string> = {
-  lundi: 'Lundi',
-  mardi: 'Mardi',
-  mercredi: 'Mercredi',
-  jeudi: 'Jeudi',
-  vendredi: 'Vendredi',
-};
-
-/** Ordre canonique des jours ouvrés. */
-const ORDRE_JOURS: JourSemaine[] = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'];
-
-/** Crée un EDT vide prêt pour la saisie. */
-function creerEdtVide(): EmploiDuTemps {
-  return {
-    id: crypto.randomUUID(),
-    nom: '',
-    dateDebut: null,
-    dateFin: null,
-    frequence: 'lesDeux' as FrequenceSemaine,
-    creneaux: [],
-  };
-}
-
-/**
- * Crée un créneau vide pour le jour donné.
- * Si des créneaux existent déjà pour ce jour, `heureDebut` est initialisée à la
- * `heureFin` la plus tardive parmi eux, et `heureFin` à `heureDebut + 1h`.
- * @param jour Jour de la semaine du nouveau créneau.
- * @param creneauxDuJour Créneaux existants pour ce jour dans l'EDT courant.
- */
-function creerCreneauVide(jour: JourSemaine, creneauxDuJour: CreneauEdt[] = []): CreneauEdt {
-  const derniereHeureFin = creneauxDuJour.map(c => c.heureFin).sort().at(-1);
-  const heureDebut = derniereHeureFin ?? '08:00';
-  return {
-    id: crypto.randomUUID(),
-    jour,
-    heureDebut,
-    heureFin: DateUtils.ajouterHeures(heureDebut, 1),
-    type: 'pedagogique',
-    disciplinesIds: [],
-    elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
-  };
-}
 
 /**
  * Écran emploi du temps.
@@ -72,11 +28,57 @@ function creerCreneauVide(jour: JourSemaine, creneauxDuJour: CreneauEdt[] = []):
   styleUrl: './ecran-emploi-du-temps.component.scss',
 })
 export class EcranEmploiDuTempsComponent {
+  /** Ordre canonique des jours ouvrés. */
+  private static readonly ORDRE_JOURS: JourSemaine[] = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'];
+
+  /**
+   * Crée un EDT vide prêt pour la saisie.
+   * @returns Emploi du temps initialisé avec des valeurs par défaut.
+   */
+  private static creerEdtVide(): EmploiDuTemps {
+    return {
+      id: crypto.randomUUID(),
+      nom: '',
+      dateDebut: null,
+      dateFin: null,
+      frequence: 'lesDeux' as FrequenceSemaine,
+      creneaux: [],
+    };
+  }
+
+  /**
+   * Crée un créneau vide pour le jour donné.
+   * Si des créneaux existent déjà pour ce jour, `heureDebut` est initialisée à la
+   * `heureFin` la plus tardive parmi eux, et `heureFin` à `heureDebut + 1h`.
+   * @param jour Jour de la semaine du nouveau créneau.
+   * @param creneauxDuJour Créneaux existants pour ce jour dans l'EDT courant.
+   * @returns Créneau initialisé.
+   */
+  private static creerCreneauVide(jour: JourSemaine, creneauxDuJour: CreneauEdt[] = []): CreneauEdt {
+    const derniereHeureFin = creneauxDuJour.map(c => c.heureFin).sort().at(-1);
+    const heureDebut = derniereHeureFin ?? '08:00';
+    return {
+      id: crypto.randomUUID(),
+      jour,
+      heureDebut,
+      heureFin: DateUtils.ajouterHeures(heureDebut, 1),
+      type: 'pedagogique',
+      disciplinesIds: [],
+      elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
+    };
+  }
+
   /** Constante centralisée des libellés. */
   protected readonly LIBELLES = LIBELLES;
 
   /** Map jours→libellés exposée au template. */
-  protected readonly LIBELLES_JOURS = LIBELLES_JOURS;
+  protected readonly LIBELLES_JOURS: Record<JourSemaine, string> = {
+    lundi: 'Lundi',
+    mardi: 'Mardi',
+    mercredi: 'Mercredi',
+    jeudi: 'Jeudi',
+    vendredi: 'Vendredi',
+  };
 
   /** Accès aux données de l'application. */
   private readonly donneesService = inject(DonneesService);
@@ -105,7 +107,7 @@ export class EcranEmploiDuTempsComponent {
   protected readonly joursOuvres = computed<JourSemaine[]>(() => {
     const jours =
       this.donneesService.donnees()?.referentiels.configEmploiDuTemps.joursOuvres ?? [];
-    return ORDRE_JOURS.filter(j => jours.includes(j));
+    return EcranEmploiDuTempsComponent.ORDRE_JOURS.filter((j: JourSemaine) => jours.includes(j));
   });
 
   /** Domaines de niveau 1 pour les chips de disciplines du formulaire créneau. */
@@ -176,7 +178,7 @@ export class EcranEmploiDuTempsComponent {
   /** Lance la création d'un nouvel EDT (formulaire vide, grille vide). */
   protected creerEdt(): void {
     this.edtSelectionne.set(null);
-    this.formEdt.set(creerEdtVide());
+    this.formEdt.set(EcranEmploiDuTempsComponent.creerEdtVide());
     this.creneauEdite.set(null);
   }
 
@@ -197,7 +199,7 @@ export class EcranEmploiDuTempsComponent {
   protected ajouterCreneauPourJour(jour: JourSemaine): void {
     this.formEdt.set(null);
     const creneauxDuJour = this.edtSelectionne()?.creneaux.filter(c => c.jour === jour) ?? [];
-    this.creneauEdite.set(creerCreneauVide(jour, creneauxDuJour));
+    this.creneauEdite.set(EcranEmploiDuTempsComponent.creerCreneauVide(jour, creneauxDuJour));
   }
 
   /**

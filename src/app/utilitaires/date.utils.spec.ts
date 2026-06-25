@@ -161,6 +161,29 @@ describe('DateUtils', () => {
     });
   });
 
+  /** Ajoute des heures entières à HH:MM avec wrap modulo 24h. */
+  describe('ajouterHeures', () => {
+    it('ajoute 1 heure à 09:00', () => {
+      expect(DateUtils.ajouterHeures('09:00', 1)).toBe('10:00');
+    });
+
+    it('ajoute 1 heure à 22:30', () => {
+      expect(DateUtils.ajouterHeures('22:30', 1)).toBe('23:30');
+    });
+
+    it('gère le wrap minuit (23:00 + 1h → 00:00)', () => {
+      expect(DateUtils.ajouterHeures('23:00', 1)).toBe('00:00');
+    });
+
+    it('gère le wrap minuit avec minutes (23:30 + 1h → 00:30)', () => {
+      expect(DateUtils.ajouterHeures('23:30', 1)).toBe('00:30');
+    });
+
+    it('ajoute 0 heure (identité)', () => {
+      expect(DateUtils.ajouterHeures('08:00', 0)).toBe('08:00');
+    });
+  });
+
   /** Produit une heure HH:MM avec zéro initial pour les heures et minutes à un chiffre. */
   describe('formaterHeure', () => {
     it('formate en HH:MM avec zéro initial pour l\'heure', () => {

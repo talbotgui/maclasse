@@ -9,6 +9,7 @@ import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { EmploiDuTempsService } from '../../services/sansEtat/emploi-du-temps.service';
 import { CompetenceService } from '../../services/sansEtat/competence.service';
 import { EdtFormulaireComponent } from './edt-formulaire/edt-formulaire.component';
+import { DateUtils } from '../../utilitaires/date.utils';
 import type { EmploiDuTemps, CreneauEdt, JourSemaine, FrequenceSemaine } from '../../modeles/emploi-du-temps.modele';
 import type { Competence } from '../../modeles/referentiels.modele';
 
@@ -36,13 +37,21 @@ function creerEdtVide(): EmploiDuTemps {
   };
 }
 
-/** Crée un créneau vide pour le jour donné. */
-function creerCreneauVide(jour: JourSemaine): CreneauEdt {
+/**
+ * Crée un créneau vide pour le jour donné.
+ * Si des créneaux existent déjà pour ce jour, `heureDebut` est initialisée à la
+ * `heureFin` la plus tardive parmi eux, et `heureFin` à `heureDebut + 1h`.
+ * @param jour Jour de la semaine du nouveau créneau.
+ * @param creneauxDuJour Créneaux existants pour ce jour dans l'EDT courant.
+ */
+function creerCreneauVide(jour: JourSemaine, creneauxDuJour: CreneauEdt[] = []): CreneauEdt {
+  const derniereHeureFin = creneauxDuJour.map(c => c.heureFin).sort().at(-1);
+  const heureDebut = derniereHeureFin ?? '08:00';
   return {
     id: crypto.randomUUID(),
     jour,
-    heureDebut: '08:00',
-    heureFin: '09:00',
+    heureDebut,
+    heureFin: DateUtils.ajouterHeures(heureDebut, 1),
     type: 'pedagogique',
     disciplinesIds: [],
     elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
@@ -182,11 +191,13 @@ export class EcranEmploiDuTempsComponent {
 
   /**
    * Ouvre le formulaire créneau pour un nouveau créneau sur le jour donné.
+   * L'heure de début est initialisée à la fin du dernier créneau existant pour ce jour.
    * @param jour Jour de la semaine du nouveau créneau.
    */
   protected ajouterCreneauPourJour(jour: JourSemaine): void {
     this.formEdt.set(null);
-    this.creneauEdite.set(creerCreneauVide(jour));
+    const creneauxDuJour = this.edtSelectionne()?.creneaux.filter(c => c.jour === jour) ?? [];
+    this.creneauEdite.set(creerCreneauVide(jour, creneauxDuJour));
   }
 
   /**

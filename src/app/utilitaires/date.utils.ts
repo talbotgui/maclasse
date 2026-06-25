@@ -142,4 +142,20 @@ export class DateUtils {
       String(date.getMinutes()).padStart(2, '0'),
     ].join(':');
   }
+
+  /**
+   * Ajoute un nombre d'heures entières à une heure `HH:MM`, avec wrap modulo 24h.
+   * Exemple : `'23:00'` + 1 → `'00:00'`.
+   * @param hhmm Heure de départ au format `HH:MM`.
+   * @param heures Nombre d'heures à ajouter.
+   * @returns Nouvelle heure au format `HH:MM`.
+   */
+  public static ajouterHeures(hhmm: string, heures: number): string {
+    const [h, m] = hhmm.split(':').map(Number);
+    const totalMinutes = ((h * 60 + m + heures * 60) % (24 * 60) + 24 * 60) % (24 * 60);
+    return [
+      String(Math.floor(totalMinutes / 60)).padStart(2, '0'),
+      String(totalMinutes % 60).padStart(2, '0'),
+    ].join(':');
+  }
 }

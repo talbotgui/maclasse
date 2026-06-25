@@ -68,13 +68,45 @@ describe('EcranEmploiDuTempsComponent', () => {
   });
 
   describe('ajouterCreneauPourJour', () => {
-    it('crée un créneau vide pour le jour donné', () => {
+    it('initialise à 08:00/09:00 si le jour est vide', () => {
       (component as any).ajouterCreneauPourJour('mardi');
 
       const creneau = (component as any).creneauEdite() as CreneauEdt;
       expect(creneau.jour).toBe('mardi');
       expect(creneau.heureDebut).toBe('08:00');
+      expect(creneau.heureFin).toBe('09:00');
       expect((component as any).formEdt()).toBeNull();
+    });
+
+    it('initialise heureDebut à la heureFin du dernier créneau du jour', () => {
+      (component as any).edtSelectionne.set(edtBase);
+      fixture.detectChanges();
+
+      (component as any).ajouterCreneauPourJour('lundi');
+
+      const creneau = (component as any).creneauEdite() as CreneauEdt;
+      expect(creneau.jour).toBe('lundi');
+      expect(creneau.heureDebut).toBe('10:00');
+      expect(creneau.heureFin).toBe('11:00');
+    });
+
+    it('prend la heureFin la plus tardive si plusieurs créneaux existent pour le jour', () => {
+      const edt = EdtMother.base({
+        id: 'edt2',
+        creneaux: [
+          CreneauMother.lundi9h10({ id: 'ca', heureDebut: '08:00', heureFin: '09:00' }),
+          CreneauMother.lundi9h10({ id: 'cb', heureDebut: '11:00', heureFin: '12:30' }),
+          CreneauMother.lundi9h10({ id: 'cc', heureDebut: '09:30', heureFin: '10:30' }),
+        ],
+      });
+      (component as any).edtSelectionne.set(edt);
+      fixture.detectChanges();
+
+      (component as any).ajouterCreneauPourJour('lundi');
+
+      const creneau = (component as any).creneauEdite() as CreneauEdt;
+      expect(creneau.heureDebut).toBe('12:30');
+      expect(creneau.heureFin).toBe('13:30');
     });
   });
 

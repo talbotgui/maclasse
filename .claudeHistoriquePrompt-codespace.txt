@@ -1876,3 +1876,10 @@ insère 2 séances, 1 récréation et 2 séances chaque matin. Suit une pause d�
 ---
 2026-06-25 19:40:30 [Sans titre] dans l'écran des emplois du temps, dans le formulaire de droite, au dessus de l'heure de début, ajoute un libellé avec le nom du jour de la séance.
 Reformule et propose des améliorations
+---
+2026-06-25 19:49:43 [Sans titre] Dans l'écran du cahier journal, les boutons MONTER et DESCENDRE des séances d'une journée ne fonctionnent pas. Pourquoi ?
+---
+2026-06-25 19:54:35 [Boutons monter/descendre non fonctionnels au cahier journal] non. Les boutons MONTER et DESCENDRE ne doivent pas modifier l'ordre des séances dans la journée. Les heures de début et de fin doivent être inversées entre la séance cliquée et celle qui la suit (au clic sur DESCENDRE) ou qui la précède (au clic sur MONTER).
+Reformule et liste les impacts
+---
+2026-06-25 19:56:16 [Boutons monter/descendre non fonctionnels au cahier journal] applique

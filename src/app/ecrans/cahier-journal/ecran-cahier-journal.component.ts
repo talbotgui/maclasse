@@ -254,14 +254,19 @@ export class EcranCahierJournalComponent {
   }
 
   /**
-   * Déplace une séance vers le haut (indice − 1) ou vers le bas (indice + 1).
+   * Échange les heures de la séance à `indexSource` avec celles de la séance adjacente.
    * @param indexSource Indice courant dans la liste triée.
-   * @param direction −1 pour monter, +1 pour descendre.
+   * @param direction −1 pour monter (avec la précédente), +1 pour descendre (avec la suivante).
    */
   protected deplacerSeance(indexSource: number, direction: -1 | 1): void {
     const indexCible = indexSource + direction;
-    if (indexCible < 0 || indexCible >= this.seances().length) return;
-    this.cahierJournalService.deplacerSeance(this.dateSelectionnee(), indexSource, indexCible);
+    const seances = this.seances();
+    if (indexCible < 0 || indexCible >= seances.length) return;
+    this.cahierJournalService.echangerHeuresSeances(
+      this.dateSelectionnee(),
+      seances[indexSource].id,
+      seances[indexCible].id,
+    );
   }
 
   /**

@@ -148,26 +148,24 @@ export class CahierJournalService {
   }
 
   /**
-   * Déplace une séance de `indexSource` à `indexCible` dans la liste des séances de la journée.
-   * Sans effet si la journée n'existe pas ou si les index sont hors limites.
+   * Échange les heures de début et de fin entre deux séances d'une même journée.
+   * L'ordre du tableau de stockage n'est pas modifié : seuls `heureDebut` et `heureFin` sont permutés.
+   * Sans effet si la journée n'existe pas ou si l'un des identifiants est introuvable.
    * @param date Date ISO de la journée.
-   * @param indexSource Index d'origine de la séance.
-   * @param indexCible Index de destination.
+   * @param idSeanceA Identifiant de la première séance.
+   * @param idSeanceB Identifiant de la seconde séance.
    */
-  public deplacerSeance(date: string, indexSource: number, indexCible: number): void {
+  public echangerHeuresSeances(date: string, idSeanceA: string, idSeanceB: string): void {
     const ancienneJournee = this.donneesService.donnees()?.cahierJournal.find(j => j.date === date);
     if (!ancienneJournee) return;
-    if (
-      indexSource < 0 ||
-      indexCible < 0 ||
-      indexSource >= ancienneJournee.seances.length ||
-      indexCible >= ancienneJournee.seances.length
-    ) {
-      return;
-    }
-    const seances = [...ancienneJournee.seances];
-    const [seanceDeplacement] = seances.splice(indexSource, 1);
-    seances.splice(indexCible, 0, seanceDeplacement);
+    const seanceA = ancienneJournee.seances.find(s => s.id === idSeanceA);
+    const seanceB = ancienneJournee.seances.find(s => s.id === idSeanceB);
+    if (!seanceA || !seanceB) return;
+    const seances = ancienneJournee.seances.map(s => {
+      if (s.id === idSeanceA) return { ...s, heureDebut: seanceB.heureDebut, heureFin: seanceB.heureFin };
+      if (s.id === idSeanceB) return { ...s, heureDebut: seanceA.heureDebut, heureFin: seanceA.heureFin };
+      return s;
+    });
     const nouvelleJournee: JourneeJournal = { ...ancienneJournee, seances };
     this.donneesService.executer(
       new CommandeModification<JourneeJournal>(d => d.cahierJournal, ancienneJournee, nouvelleJournee),

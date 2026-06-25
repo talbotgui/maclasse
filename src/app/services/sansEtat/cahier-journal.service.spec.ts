@@ -213,43 +213,49 @@ describe('CahierJournalService', () => {
     });
   });
 
-  /** Réordonne les séances de la journée ; sans effet si index hors limites. */
-  describe('deplacerSeance', () => {
-    it('inverse l\'ordre de deux séances', () => {
+  /** Échange heureDebut/heureFin entre deux séances ; sans effet si ID introuvable ou journée absente. */
+  describe('echangerHeuresSeances', () => {
+    it('échange les heures sans modifier l\'ordre du tableau', () => {
       service.initialiserJourneeVide(DATES_TEST.lundiPaire);
       service.ajouterSeance(DATES_TEST.lundiPaire, SeanceMother.pedagogique());
       service.ajouterSeance(DATES_TEST.lundiPaire, SeanceMother.recreation());
-      service.deplacerSeance(DATES_TEST.lundiPaire, 0, 1);
+      service.echangerHeuresSeances(DATES_TEST.lundiPaire, 's1', 's2');
       const seances = donneesService.donnees()?.cahierJournal[0].seances ?? [];
-      expect(seances[0].id).toBe('s2');
-      expect(seances[1].id).toBe('s1');
+      expect(seances[0].id).toBe('s1');
+      expect(seances[0].heureDebut).toBe('10:00');
+      expect(seances[0].heureFin).toBe('11:00');
+      expect(seances[1].id).toBe('s2');
+      expect(seances[1].heureDebut).toBe('09:00');
+      expect(seances[1].heureFin).toBe('10:00');
     });
 
     it('sans effet si la journée n\'existe pas', () => {
-      expect(() => service.deplacerSeance(DATES_TEST.lundiPaire, 0, 1)).not.toThrow();
+      expect(() => service.echangerHeuresSeances(DATES_TEST.lundiPaire, 's1', 's2')).not.toThrow();
     });
 
-    it('sans effet si index source hors limites', () => {
+    it('sans effet si l\'ID source est introuvable', () => {
       service.initialiserJourneeVide(DATES_TEST.lundiPaire);
       service.ajouterSeance(DATES_TEST.lundiPaire, SeanceMother.pedagogique());
-      expect(() => service.deplacerSeance(DATES_TEST.lundiPaire, 5, 0)).not.toThrow();
-      expect(donneesService.donnees()?.cahierJournal[0].seances[0].id).toBe('s1');
+      expect(() => service.echangerHeuresSeances(DATES_TEST.lundiPaire, 'inconnu', 's1')).not.toThrow();
+      expect(donneesService.donnees()?.cahierJournal[0].seances[0].heureDebut).toBe('09:00');
     });
 
-    it('sans effet si index cible hors limites', () => {
+    it('sans effet si l\'ID cible est introuvable', () => {
       service.initialiserJourneeVide(DATES_TEST.lundiPaire);
       service.ajouterSeance(DATES_TEST.lundiPaire, SeanceMother.pedagogique());
-      expect(() => service.deplacerSeance(DATES_TEST.lundiPaire, 0, 5)).not.toThrow();
-      expect(donneesService.donnees()?.cahierJournal[0].seances[0].id).toBe('s1');
+      expect(() => service.echangerHeuresSeances(DATES_TEST.lundiPaire, 's1', 'inconnu')).not.toThrow();
+      expect(donneesService.donnees()?.cahierJournal[0].seances[0].heureDebut).toBe('09:00');
     });
 
     it('supporte le UNDO', () => {
       service.initialiserJourneeVide(DATES_TEST.lundiPaire);
       service.ajouterSeance(DATES_TEST.lundiPaire, SeanceMother.pedagogique());
       service.ajouterSeance(DATES_TEST.lundiPaire, SeanceMother.recreation());
-      service.deplacerSeance(DATES_TEST.lundiPaire, 0, 1);
+      service.echangerHeuresSeances(DATES_TEST.lundiPaire, 's1', 's2');
       donneesService.annuler();
-      expect(donneesService.donnees()?.cahierJournal[0].seances[0].id).toBe('s1');
+      const seances = donneesService.donnees()?.cahierJournal[0].seances ?? [];
+      expect(seances[0].heureDebut).toBe('09:00');
+      expect(seances[1].heureDebut).toBe('10:00');
     });
   });
 

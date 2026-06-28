@@ -12,6 +12,7 @@ import { CommandeSuppression } from '../../commandes/commande-suppression';
 import { DonneesService } from '../avecEtat/donnees.service';
 import { DateUtils } from '../../utilitaires/date.utils';
 import { TexteUtils } from '../../utilitaires/texte.utils';
+import { LIBELLES } from '../../libelles';
 
 /**
  * Service sans état exposant le CRUD des élèves et le calcul des conflits d'absences.
@@ -26,7 +27,7 @@ export class EleveService {
    * @param eleve Élève à ajouter (doit posséder un `id` unique).
    */
   public creerEleve(eleve: Eleve): void {
-    this.donneesService.executer(new CommandeCreation(d => d.classe.eleves, eleve));
+    this.donneesService.executer(new CommandeCreation(d => d.classe.eleves, eleve, LIBELLES.commandes.ajoutEleve));
   }
 
   /**
@@ -40,7 +41,7 @@ export class EleveService {
     const ancien = donnees.classe.eleves.find(e => e.id === eleve.id);
     if (!ancien) return;
     this.donneesService.executer(
-      new CommandeModification(d => d.classe.eleves, ancien, eleve),
+      new CommandeModification(d => d.classe.eleves, ancien, eleve, LIBELLES.commandes.modificationEleve),
     );
   }
 
@@ -55,7 +56,7 @@ export class EleveService {
     const index = donnees.classe.eleves.findIndex(e => e.id === id);
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeSuppression(d => d.classe.eleves, donnees.classe.eleves[index], index),
+      new CommandeSuppression(d => d.classe.eleves, donnees.classe.eleves[index], index, LIBELLES.commandes.suppressionEleve),
     );
   }
 

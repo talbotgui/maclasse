@@ -36,6 +36,18 @@ export class DonneesService {
   /** `true` si la pile REDO contient au moins une commande. */
   public readonly peutRefaire: Signal<boolean> = computed(() => this.pileRedo().length > 0);
 
+  /** Libellé de la prochaine commande annulable, ou `null` si la pile est vide. */
+  public readonly libelleSommetUndo: Signal<string | null> = computed(() => {
+    const pile = this.pileUndo();
+    return pile.length > 0 ? pile[pile.length - 1].libelle : null;
+  });
+
+  /** Libellé de la prochaine commande rétablissable, ou `null` si la pile est vide. */
+  public readonly libelleSommetRedo: Signal<string | null> = computed(() => {
+    const pile = this.pileRedo();
+    return pile.length > 0 ? pile[pile.length - 1].libelle : null;
+  });
+
   /** `true` si des données ont été modifiées depuis la dernière sauvegarde. */
   public readonly aDonneesModifiees: Signal<boolean> =
     this.modifieeDepuisSauvegarde.asReadonly();

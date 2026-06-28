@@ -11,6 +11,9 @@ import { DonneesApplication } from './donnees-application.modele';
  * (via `structuredClone`) sans muter l'argument reçu.
  */
 export interface Commande {
+  /** Description courte de l'action, affichée dans le tooltip UNDO/REDO. */
+  readonly libelle: string;
+
   /**
    * Applique la commande et retourne le nouvel état des données.
    * @param donnees État courant des données de l'application.

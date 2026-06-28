@@ -16,11 +16,13 @@ export class CommandeDeplacement<T> implements Commande {
    * @param accesseur Fonction retournant le tableau cible depuis les données.
    * @param indexSource Index d'origine de l'élément à déplacer.
    * @param indexCible Index de destination.
+   * @param libelle Description courte affichée dans le tooltip UNDO/REDO.
    */
   public constructor(
     private readonly accesseur: (d: DonneesApplication) => T[],
     private readonly indexSource: number,
     private readonly indexCible: number,
+    public readonly libelle: string,
   ) {}
 
   /**

@@ -10,6 +10,7 @@ import { CommandeModification } from '../../commandes/commande-modification';
 import { CommandeSuppression } from '../../commandes/commande-suppression';
 import { DonneesService } from '../avecEtat/donnees.service';
 import { DateUtils } from '../../utilitaires/date.utils';
+import { LIBELLES } from '../../libelles';
 
 /**
  * Service sans état exposant toutes les opérations du cahier journal :
@@ -30,11 +31,11 @@ export class CahierJournalService {
     if (!donnees) return;
     if (donnees.cahierJournal.some(j => j.date === date)) return;
     this.donneesService.executer(
-      new CommandeCreation<JourneeJournal>(d => d.cahierJournal, {
-        id: crypto.randomUUID(),
-        date,
-        seances: [],
-      }),
+      new CommandeCreation<JourneeJournal>(
+        d => d.cahierJournal,
+        { id: crypto.randomUUID(), date, seances: [] },
+        LIBELLES.commandes.initialisationJourneeVide,
+      ),
     );
   }
 
@@ -84,11 +85,11 @@ export class CahierJournalService {
     }
     seances.sort((a, b) => a.heureDebut.localeCompare(b.heureDebut));
     this.donneesService.executer(
-      new CommandeCreation<JourneeJournal>(d => d.cahierJournal, {
-        id: crypto.randomUUID(),
-        date,
-        seances,
-      }),
+      new CommandeCreation<JourneeJournal>(
+        d => d.cahierJournal,
+        { id: crypto.randomUUID(), date, seances },
+        LIBELLES.commandes.initialisationDepuisEdt,
+      ),
     );
   }
 
@@ -107,7 +108,12 @@ export class CahierJournalService {
       seances: [...ancienneJournee.seances, seance],
     };
     this.donneesService.executer(
-      new CommandeModification<JourneeJournal>(d => d.cahierJournal, ancienneJournee, nouvelleJournee),
+      new CommandeModification<JourneeJournal>(
+        d => d.cahierJournal,
+        ancienneJournee,
+        nouvelleJournee,
+        LIBELLES.commandes.ajoutSeance,
+      ),
     );
   }
 
@@ -125,7 +131,12 @@ export class CahierJournalService {
       seances: ancienneJournee.seances.map(s => (s.id === seance.id ? seance : s)),
     };
     this.donneesService.executer(
-      new CommandeModification<JourneeJournal>(d => d.cahierJournal, ancienneJournee, nouvelleJournee),
+      new CommandeModification<JourneeJournal>(
+        d => d.cahierJournal,
+        ancienneJournee,
+        nouvelleJournee,
+        LIBELLES.commandes.modificationSeance,
+      ),
     );
   }
 
@@ -143,7 +154,12 @@ export class CahierJournalService {
       seances: ancienneJournee.seances.filter(s => s.id !== seanceId),
     };
     this.donneesService.executer(
-      new CommandeModification<JourneeJournal>(d => d.cahierJournal, ancienneJournee, nouvelleJournee),
+      new CommandeModification<JourneeJournal>(
+        d => d.cahierJournal,
+        ancienneJournee,
+        nouvelleJournee,
+        LIBELLES.commandes.suppressionSeance,
+      ),
     );
   }
 
@@ -168,7 +184,12 @@ export class CahierJournalService {
     });
     const nouvelleJournee: JourneeJournal = { ...ancienneJournee, seances };
     this.donneesService.executer(
-      new CommandeModification<JourneeJournal>(d => d.cahierJournal, ancienneJournee, nouvelleJournee),
+      new CommandeModification<JourneeJournal>(
+        d => d.cahierJournal,
+        ancienneJournee,
+        nouvelleJournee,
+        LIBELLES.commandes.reordonnancementSeances,
+      ),
     );
   }
 
@@ -187,6 +208,7 @@ export class CahierJournalService {
         d => d.cahierJournal,
         donnees.cahierJournal[index],
         index,
+        LIBELLES.commandes.suppressionJournee,
       ),
     );
   }
@@ -211,11 +233,11 @@ export class CahierJournalService {
     const journeeCible = donnees.cahierJournal.find(j => j.date === dateCible);
     if (!journeeCible) {
       this.donneesService.executer(
-        new CommandeCreation<JourneeJournal>(d => d.cahierJournal, {
-          id: crypto.randomUUID(),
-          date: dateCible,
-          seances: [nouvelleSeance],
-        }),
+        new CommandeCreation<JourneeJournal>(
+          d => d.cahierJournal,
+          { id: crypto.randomUUID(), date: dateCible, seances: [nouvelleSeance] },
+          LIBELLES.commandes.duplicationSeance,
+        ),
       );
     } else {
       const nouvelleJournee: JourneeJournal = {
@@ -223,7 +245,12 @@ export class CahierJournalService {
         seances: [...journeeCible.seances, nouvelleSeance],
       };
       this.donneesService.executer(
-        new CommandeModification<JourneeJournal>(d => d.cahierJournal, journeeCible, nouvelleJournee),
+        new CommandeModification<JourneeJournal>(
+          d => d.cahierJournal,
+          journeeCible,
+          nouvelleJournee,
+          LIBELLES.commandes.duplicationSeance,
+        ),
       );
     }
   }
@@ -249,16 +276,21 @@ export class CahierJournalService {
     const journeeCible = donnees.cahierJournal.find(j => j.date === dateCible);
     if (!journeeCible) {
       this.donneesService.executer(
-        new CommandeCreation<JourneeJournal>(d => d.cahierJournal, {
-          id: crypto.randomUUID(),
-          date: dateCible,
-          seances: seancesClonees,
-        }),
+        new CommandeCreation<JourneeJournal>(
+          d => d.cahierJournal,
+          { id: crypto.randomUUID(), date: dateCible, seances: seancesClonees },
+          LIBELLES.commandes.duplicationJournee,
+        ),
       );
     } else {
       const nouvelleJournee: JourneeJournal = { ...journeeCible, seances: seancesClonees };
       this.donneesService.executer(
-        new CommandeModification<JourneeJournal>(d => d.cahierJournal, journeeCible, nouvelleJournee),
+        new CommandeModification<JourneeJournal>(
+          d => d.cahierJournal,
+          journeeCible,
+          nouvelleJournee,
+          LIBELLES.commandes.duplicationJournee,
+        ),
       );
     }
   }

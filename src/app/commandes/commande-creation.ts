@@ -15,10 +15,12 @@ export class CommandeCreation<T extends { id: string }> implements Commande {
   /**
    * @param accesseur Fonction retournant le tableau cible depuis les données (par référence dans le clone).
    * @param element Élément à ajouter — cloné à l'exécution.
+   * @param libelle Description courte affichée dans le tooltip UNDO/REDO.
    */
   public constructor(
     private readonly accesseur: (d: DonneesApplication) => T[],
     private readonly element: T,
+    public readonly libelle: string,
   ) {}
 
   /**

@@ -1883,3 +1883,12 @@ Reformule et propose des améliorations
 Reformule et liste les impacts
 ---
 2026-06-25 19:56:16 [Boutons monter/descendre non fonctionnels au cahier journal] applique
+---
+2026-06-25 20:03:21 [Sans titre] Il faut ajouter un libellé sur les boutons ANNULER et REFAIRE.
+Ce libellé est la description de l'objet sur lequel s'appliquer l'annulation (ou le REDO).
+Reformule le besoin et décrit les impacts
+---
+2026-06-25 20:07:09 [Ajouter libellés descriptifs aux boutons ANNULER et REFAIRE] un tooltip au survol.
+Tu peux implémenter
+---
+2026-06-25 20:16:07 [Ajouter libellés descriptifs aux boutons ANNULER et REFAIRE] reprend

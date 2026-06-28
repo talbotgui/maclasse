@@ -16,11 +16,13 @@ export class CommandeSuppressionParIndex<T> implements Commande {
    * @param accesseur Fonction retournant le tableau cible.
    * @param element Élément supprimé — conservé pour l'annulation.
    * @param index Index de l'élément au moment de la suppression.
+   * @param libelle Description courte affichée dans le tooltip UNDO/REDO.
    */
   public constructor(
     private readonly accesseur: (d: DonneesApplication) => T[],
     private readonly element: T,
     private readonly index: number,
+    public readonly libelle: string,
   ) {}
 
   /**
@@ -56,11 +58,13 @@ export class CommandeRemplacement<T> implements Commande {
    * @param ecrire Fonction d'écriture dans le clone des données.
    * @param ancienneValeur Valeur à restaurer lors de l'annulation.
    * @param nouvelleValeur Valeur à écrire lors de l'exécution.
+   * @param libelle Description courte affichée dans le tooltip UNDO/REDO.
    */
   public constructor(
     private readonly ecrire: (d: DonneesApplication, valeur: T) => void,
     private readonly ancienneValeur: T,
     private readonly nouvelleValeur: T,
+    public readonly libelle: string,
   ) {}
 
   /**

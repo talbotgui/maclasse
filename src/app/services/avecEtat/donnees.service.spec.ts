@@ -10,6 +10,7 @@ import { DonneesMother } from '../../tests/donnees.mother';
  * le supprime lors de l'annulation.
  */
 class CommandeTest implements Commande {
+  public readonly libelle = 'test';
   public executer(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
     clone.version = clone.version + '-modifie';

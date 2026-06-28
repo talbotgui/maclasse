@@ -56,6 +56,22 @@ export class McEnteteComponent extends ComposantBase {
   /** Contrôle la visibilité du panneau de résultats de recherche. */
   protected readonly listeResultatsVisible: WritableSignal<boolean> = signal(false);
 
+  /** Texte du tooltip du bouton ANNULER : préfixe + libellé de la commande en sommet de pile. */
+  protected readonly tooltipAnnuler: Signal<string> = computed(() => {
+    const libelle = this.donneesService.libelleSommetUndo();
+    return libelle
+      ? this.LIBELLES.entete.tooltipPrefixeAnnuler + libelle
+      : this.LIBELLES.entete.annuler;
+  });
+
+  /** Texte du tooltip du bouton REFAIRE : préfixe + libellé de la commande en sommet de pile. */
+  protected readonly tooltipRefaire: Signal<string> = computed(() => {
+    const libelle = this.donneesService.libelleSommetRedo();
+    return libelle
+      ? this.LIBELLES.entete.tooltipPrefixeRefaire + libelle
+      : this.LIBELLES.entete.refaire;
+  });
+
   /** Texte du tooltip du bouton SAUVEGARDER : horodatage ou message d'absence. */
   protected readonly tooltipSauvegarder: Signal<string> = computed(() => {
     const date = this.sauvegardeAutoService.dateDerniereSauvegarde();

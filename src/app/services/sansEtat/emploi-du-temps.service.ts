@@ -10,6 +10,7 @@ import { CommandeModification } from '../../commandes/commande-modification';
 import { CommandeSuppression } from '../../commandes/commande-suppression';
 import { DonneesService } from '../avecEtat/donnees.service';
 import { DateUtils } from '../../utilitaires/date.utils';
+import { LIBELLES } from '../../libelles';
 
 /**
  * Service sans état exposant le CRUD des emplois du temps, de leurs créneaux,
@@ -25,7 +26,7 @@ export class EmploiDuTempsService {
    * @param edt Emploi du temps à créer (doit posséder un `id` unique).
    */
   public creerEdt(edt: EmploiDuTemps): void {
-    this.donneesService.executer(new CommandeCreation(d => d.emploisDuTemps, edt));
+    this.donneesService.executer(new CommandeCreation(d => d.emploisDuTemps, edt, LIBELLES.commandes.ajoutEdt));
   }
 
   /**
@@ -38,7 +39,7 @@ export class EmploiDuTempsService {
     if (!donnees) return;
     const ancien = donnees.emploisDuTemps.find(e => e.id === edt.id);
     if (!ancien) return;
-    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, edt));
+    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, edt, LIBELLES.commandes.modificationEdt));
   }
 
   /**
@@ -52,7 +53,7 @@ export class EmploiDuTempsService {
     const index = donnees.emploisDuTemps.findIndex(e => e.id === id);
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeSuppression(d => d.emploisDuTemps, donnees.emploisDuTemps[index], index),
+      new CommandeSuppression(d => d.emploisDuTemps, donnees.emploisDuTemps[index], index, LIBELLES.commandes.suppressionEdt),
     );
   }
 
@@ -77,7 +78,7 @@ export class EmploiDuTempsService {
     const ancien = donnees.emploisDuTemps.find(e => e.id === edtId);
     if (!ancien) return;
     const nouveau: EmploiDuTemps = { ...ancien, creneaux: [...ancien.creneaux, creneau] };
-    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau));
+    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau, LIBELLES.commandes.ajoutCreneau));
   }
 
   /**
@@ -93,7 +94,7 @@ export class EmploiDuTempsService {
     if (!ancien) return;
     const creneaux = ancien.creneaux.map(c => (c.id === creneau.id ? creneau : c));
     const nouveau: EmploiDuTemps = { ...ancien, creneaux };
-    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau));
+    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau, LIBELLES.commandes.modificationCreneau));
   }
 
   /**
@@ -111,7 +112,7 @@ export class EmploiDuTempsService {
       ...ancien,
       creneaux: ancien.creneaux.filter(c => c.id !== creneauId),
     };
-    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau));
+    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau, LIBELLES.commandes.suppressionCreneau));
   }
 
   /**

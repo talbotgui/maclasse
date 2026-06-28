@@ -268,6 +268,7 @@ export class EcranParametrageComponent {
         },
         ancienEnseignant,
         nouvelEnseignant,
+        LIBELLES.commandes.modificationEnseignant,
       ),
     );
     const ancienneClasse = d.classe;
@@ -278,6 +279,7 @@ export class EcranParametrageComponent {
         },
         ancienneClasse.niveau,
         this.formEnseignantClasse.niveauClasse,
+        LIBELLES.commandes.modificationNiveauClasse,
       ),
     );
   }
@@ -343,6 +345,7 @@ export class EcranParametrageComponent {
         },
         d.configuration.delaiSauvegardeAutoMinutes,
         this.formPreferences.delaiSauvegardeAutoMinutes,
+        LIBELLES.commandes.modificationPreferences,
       ),
     );
   }
@@ -727,6 +730,7 @@ export class EcranParametrageComponent {
         (data, v) => { data.configuration.domainesActifs = v; },
         d.configuration.domainesActifs ?? [],
         toutActif ? [] : [...actifs],
+        LIBELLES.commandes.modificationDomainesActifs,
       ),
     );
   }

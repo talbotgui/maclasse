@@ -16,11 +16,13 @@ export class CommandeSuppression<T extends { id: string }> implements Commande {
    * @param accesseur Fonction retournant le tableau cible depuis les données.
    * @param element Élément à supprimer — conservé pour l'annulation.
    * @param index Index de l'élément dans le tableau au moment de la suppression.
+   * @param libelle Description courte affichée dans le tooltip UNDO/REDO.
    */
   public constructor(
     private readonly accesseur: (d: DonneesApplication) => T[],
     private readonly element: T,
     private readonly index: number,
+    public readonly libelle: string,
   ) {}
 
   /**

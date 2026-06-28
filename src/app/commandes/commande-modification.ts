@@ -16,11 +16,13 @@ export class CommandeModification<T extends { id: string }> implements Commande 
    * @param accesseur Fonction retournant le tableau cible depuis les données.
    * @param ancienneValeur Valeur à remplacer — clonée à l'annulation.
    * @param nouvelleValeur Valeur de remplacement — clonée à l'exécution.
+   * @param libelle Description courte affichée dans le tooltip UNDO/REDO.
    */
   public constructor(
     private readonly accesseur: (d: DonneesApplication) => T[],
     private readonly ancienneValeur: T,
     private readonly nouvelleValeur: T,
+    public readonly libelle: string,
   ) {}
 
   /**

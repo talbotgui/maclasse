@@ -70,7 +70,8 @@
         type="button"
         class="mc-entete__btn-action"
         [disabled]="!donneesService.peutAnnuler()"
-        [attr.aria-label]="LIBELLES.entete.annuler"
+        [title]="tooltipAnnuler()"
+        [attr.aria-label]="tooltipAnnuler()"
         (click)="surAnnuler()"
       >↶</button>
 
@@ -79,7 +80,8 @@
         type="button"
         class="mc-entete__btn-action"
         [disabled]="!donneesService.peutRefaire()"
-        [attr.aria-label]="LIBELLES.entete.refaire"
+        [title]="tooltipRefaire()"
+        [attr.aria-label]="tooltipRefaire()"
         (click)="surRefaire()"
       >↷</button>
     </div>

@@ -46,6 +46,7 @@
             <span class="form-projet__label-competences">{{ LIBELLES.projet.labelPeriodeCompetences }}</span>
             <mc-selecteur-competences
               [id]="'selecteurCompetences' + i"
+              [contexteId]="'Periode' + i"
               [competencesSelectionnees]="periode.competencesIds"
               [multiSelection]="true"
               (selectionChange)="surSelectionCompetences(i, $event)"

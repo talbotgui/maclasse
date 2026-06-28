@@ -22,6 +22,12 @@ import type { OptionAutoComplete } from '../../modeles/composants.modele';
   styleUrl: './mc-selecteur-competences.component.scss',
 })
 export class McSelecteurCompetencesComponent extends ComposantBase {
+  /**
+   * Suffixe contextuel ajouté aux IDs internes pour garantir l'unicité du DOM
+   * quand le composant est instancié plusieurs fois simultanément.
+   */
+  public readonly contexteId: InputSignal<string> = input('');
+
   /** Identifiants des compétences actuellement sélectionnées. */
   public readonly competencesSelectionnees: InputSignal<string[]> = input<string[]>([]);
 

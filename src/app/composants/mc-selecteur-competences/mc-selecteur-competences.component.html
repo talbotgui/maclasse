@@ -16,14 +16,14 @@
 
   <div class="mc-selecteur-competences__combobox">
     <input
-      id="rechercheCompetences"
+      [id]="'rechercheCompetences' + contexteId()"
       type="text"
       role="combobox"
       class="mc-selecteur-competences__input"
       [attr.placeholder]="LIBELLES.selecteurCompetences.placeholder"
       [attr.aria-expanded]="estOuvert()"
       aria-autocomplete="list"
-      aria-controls="listeSuggestionsCompetences"
+      [attr.aria-controls]="'listeSuggestionsCompetences' + contexteId()"
       [attr.aria-activedescendant]="idOptionFocalisee() ? 'optionComp_' + idOptionFocalisee() : null"
       [value]="saisie()"
       (input)="surSaisie($event)"
@@ -34,7 +34,7 @@
 
     @if (estOuvert() && suggestions().length > 0) {
       <ul
-        id="listeSuggestionsCompetences"
+        [id]="'listeSuggestionsCompetences' + contexteId()"
         role="listbox"
         class="mc-selecteur-competences__liste"
         [attr.aria-label]="LIBELLES.selecteurCompetences.ariaSuggestions"

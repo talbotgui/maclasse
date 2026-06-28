@@ -128,19 +128,19 @@ describe('EcranEmploiDuTempsComponent', () => {
     });
   });
 
-  describe('creneauDeGrille', () => {
+  describe('obtenirCreneauDeGrille', () => {
     beforeEach(() => {
       (component as any).edtSelectionne.set(edtBase);
       fixture.detectChanges();
     });
 
     it('retourne le créneau correspondant', () => {
-      const result = (component as any).creneauDeGrille('lundi', { heureDebut: '09:00', heureFin: '10:00' });
+      const result = (component as any).obtenirCreneauDeGrille('lundi', { heureDebut: '09:00', heureFin: '10:00' });
       expect(result?.id).toBe('c1');
     });
 
     it('retourne undefined pour une cellule vide', () => {
-      const result = (component as any).creneauDeGrille('mardi', { heureDebut: '09:00', heureFin: '10:00' });
+      const result = (component as any).obtenirCreneauDeGrille('mardi', { heureDebut: '09:00', heureFin: '10:00' });
       expect(result).toBeUndefined();
     });
   });

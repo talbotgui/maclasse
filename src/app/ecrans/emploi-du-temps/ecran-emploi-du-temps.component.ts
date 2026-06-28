@@ -149,7 +149,7 @@ export class EcranEmploiDuTempsComponent {
    * @param jour Jour de la semaine.
    * @param ligne Plage {heureDebut, heureFin}.
    */
-  protected creneauDeGrille(
+  protected obtenirCreneauDeGrille(
     jour: JourSemaine,
     ligne: { heureDebut: string; heureFin: string },
   ): CreneauEdt | undefined {

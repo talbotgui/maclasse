@@ -138,14 +138,14 @@ export class McMiniCalendrierComponent extends ComposantBase {
   }
 
   /** Navigue vers le mois précédent si autorisé. */
-  protected moisPrecedent(): void {
+  protected naviguerMoisPrecedent(): void {
     if (!this.peutNaviguerArriere()) return;
     const m = this.moisAffiche();
     this.moisAffiche.set(new Date(m.getFullYear(), m.getMonth() - 1, 1));
   }
 
   /** Navigue vers le mois suivant si autorisé. */
-  protected moisSuivant(): void {
+  protected naviguerMoisSuivant(): void {
     if (!this.peutNaviguerAvant()) return;
     const m = this.moisAffiche();
     this.moisAffiche.set(new Date(m.getFullYear(), m.getMonth() + 1, 1));

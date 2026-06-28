@@ -46,13 +46,13 @@ describe('FpFicheProjetComponent', () => {
     });
   });
 
-  describe('libellesCompetences', () => {
+  describe('obtenirLibellesCompetences', () => {
     it('retourne un tableau vide si ids vides', () => {
-      expect((component as any).libellesCompetences([])).toEqual([]);
+      expect((component as any).obtenirLibellesCompetences([])).toEqual([]);
     });
 
     it('filtre les ids non résolus (libellé vide)', () => {
-      const result = (component as any).libellesCompetences(['id-inexistant']);
+      const result = (component as any).obtenirLibellesCompetences(['id-inexistant']);
       expect(result).toEqual([]);
     });
   });

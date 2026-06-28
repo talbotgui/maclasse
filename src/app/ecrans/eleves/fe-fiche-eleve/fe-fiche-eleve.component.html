@@ -32,10 +32,10 @@
       <dd>{{ eleve().niveau || '—' }}</dd>
 
       <dt>{{ LIBELLES.eleve.labelGroupes }}</dt>
-      <dd>{{ eleve().groupes.length ? eleve().groupes.map(g => libelleGroupe(g)).join(', ') : '—' }}</dd>
+      <dd>{{ eleve().groupes.length ? eleve().groupes.map(g => obtenirLibelleGroupe(g)).join(', ') : '—' }}</dd>
 
       <dt>{{ LIBELLES.eleve.labelStatut }}</dt>
-      <dd>{{ libelleDuStatut(eleve().statut) || '—' }}</dd>
+      <dd>{{ obtenirLibelleStatut(eleve().statut) || '—' }}</dd>
 
       @if (eleve().bilans) {
         <dt>{{ LIBELLES.eleve.labelBilans }}</dt>
@@ -58,7 +58,7 @@
       <h3 id="titreContacts" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionContacts }}</h3>
       <ul class="fiche-eleve__liste-resumee-contacts">
         @for (contact of eleve().contacts; track $index) {
-          <li>{{ libelleTypeContact(contact.type) }} — {{ contact.nom }}@if (contact.telephone) { — {{ contact.telephone }}}</li>
+          <li>{{ obtenirLibelleTypeContact(contact.type) }} — {{ contact.nom }}@if (contact.telephone) { — {{ contact.telephone }}}</li>
         }
       </ul>
     </section>

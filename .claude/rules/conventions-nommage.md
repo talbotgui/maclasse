@@ -16,6 +16,55 @@ Tout ce qui est nommé dans le projet l'est en français : fichiers, classes, m�
 
 **Exceptions** : ce qu'impose Angular/TypeScript/les librairies reste en anglais (`@Component`, `signal`, `RouterOutlet`…) ainsi que les acronymes techniques (`JsonValue`, `JsonPath`).
 
+## Nommage des méthodes
+
+Toute méthode de classe doit commencer par un verbe français à l'infinitif.
+
+### Préfixes autorisés
+
+| Préfixe | Usage |
+|---|---|
+| `sur` | méthode déclenchée par un événement |
+| `est` | méthode récupérant un état depuis un template HTML |
+
+### Préfixes exceptionnels imposés par Angular
+
+Ces préfixes dérogent à la règle de l'infinitif car ils sont imposés par le framework ou la convention du projet :
+
+| Préfixe | Contexte | Exemples |
+|---|---|---|
+| `on` + nom d'output (majuscule) | Délégation d'un `output()` vers le parent — **imposé par `angular-typescript.md`** | `onModifier()`, `onEnregistrer()` |
+| `ng` | Cycle de vie Angular (anglais imposé) | `ngOnDestroy()` |
+| `writeValue`, `registerOnChange`, `registerOnTouched`, `setDisabledState` | Interface `ControlValueAccessor` (anglais imposé) | — |
+| `transform` | Interface `PipeTransform` du tuyau (anglais imposé) | — |
+
+### Anti-patterns à éviter
+
+```typescript
+// ❌ NOM : préfixe nominal → utiliser obtenir*
+protected libelleGroupe(id: string): string { ... }
+protected creneauDeGrille(...): CreneauEdt { ... }
+protected moisPrecedent(): void { ... }
+
+// ✅ CORRECT
+protected obtenirLibelleGroupe(id: string): string { ... }
+protected obtenirCreneauDeGrille(...): CreneauEdt { ... }
+protected naviguerMoisPrecedent(): void { ... }
+
+// ❌ CONJUGUÉ : verbe conjugué au présent → utiliser verifier* ou obtenir*
+protected estGroupeUtilise(id: string): boolean { ... }
+
+// ✅ CORRECT
+protected verifierGroupeUtilise(id: string): boolean { ... }
+
+// ❌ PRÉPOSITION : 'sur' est une préposition, pas un verbe
+protected surChangement(valeur: string): void { ... }
+
+// ✅ CORRECT — choisir le verbe qui décrit l'action effectuée
+protected traiterChangement(valeur: string): void { ... }
+protected enregistrerChangement(valeur: string): void { ... }
+```
+
 ## Pas d'underscore sur les membres privés/protégés
 
 Les membres `private` ou `protected` s'écrivent en camelCase simple, sans préfixe `_`.

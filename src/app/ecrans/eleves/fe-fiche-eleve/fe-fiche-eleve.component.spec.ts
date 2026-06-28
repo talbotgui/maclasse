@@ -29,33 +29,33 @@ describe('FeFicheEleveComponent', () => {
     fixture.detectChanges();
   });
 
-  describe('libelleDuStatut', () => {
+  describe('obtenirLibelleStatut', () => {
     it('retourne le libellé correspondant à l\'id', () => {
-      expect((component as any).libelleDuStatut('DC')).toBe('Dans la classe');
+      expect((component as any).obtenirLibelleStatut('DC')).toBe('Dans la classe');
     });
 
     it('retourne l\'id brut si statut non trouvé', () => {
-      expect((component as any).libelleDuStatut('inconnu')).toBe('inconnu');
+      expect((component as any).obtenirLibelleStatut('inconnu')).toBe('inconnu');
     });
   });
 
-  describe('libelleTypeContact', () => {
+  describe('obtenirLibelleTypeContact', () => {
     it('retourne le libellé correspondant à l\'id', () => {
-      expect((component as any).libelleTypeContact('P')).toBe('Père');
+      expect((component as any).obtenirLibelleTypeContact('P')).toBe('Père');
     });
 
     it('retourne l\'id brut si type non trouvé', () => {
-      expect((component as any).libelleTypeContact('X')).toBe('X');
+      expect((component as any).obtenirLibelleTypeContact('X')).toBe('X');
     });
   });
 
-  describe('libelleGroupe', () => {
+  describe('obtenirLibelleGroupe', () => {
     it('retourne le libellé du groupe', () => {
-      expect((component as any).libelleGroupe('GA')).toBe('Groupe A');
+      expect((component as any).obtenirLibelleGroupe('GA')).toBe('Groupe A');
     });
 
     it('retourne l\'id brut si groupe non trouvé', () => {
-      expect((component as any).libelleGroupe('GZ')).toBe('GZ');
+      expect((component as any).obtenirLibelleGroupe('GZ')).toBe('GZ');
     });
   });
 

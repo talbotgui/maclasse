@@ -55,7 +55,7 @@ export class FeFicheEleveComponent {
    * @param id Identifiant du statut.
    * @returns Libellé ou l'identifiant brut si non trouvé.
    */
-  protected libelleDuStatut(id: string): string {
+  protected obtenirLibelleStatut(id: string): string {
     return this.statutsEleve().find(s => s.id === id)?.libelle ?? id;
   }
 
@@ -64,7 +64,7 @@ export class FeFicheEleveComponent {
    * @param id Identifiant du type.
    * @returns Libellé ou l'identifiant brut si non trouvé.
    */
-  protected libelleTypeContact(id: string): string {
+  protected obtenirLibelleTypeContact(id: string): string {
     return this.typesContact().find(t => t.id === id)?.libelle ?? id;
   }
 
@@ -73,7 +73,7 @@ export class FeFicheEleveComponent {
    * @param id Identifiant du groupe.
    * @returns Libellé ou l'identifiant brut si non trouvé.
    */
-  protected libelleGroupe(id: string): string {
+  protected obtenirLibelleGroupe(id: string): string {
     return this.groupes().find(g => g.id === id)?.libelle ?? id;
   }
 

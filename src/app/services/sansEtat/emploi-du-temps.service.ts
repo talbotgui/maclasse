@@ -128,7 +128,7 @@ export class EmploiDuTempsService {
     const autresEdts =
       this.donneesService.donnees()?.emploisDuTemps.filter(e => e.id !== edt.id) ?? [];
     for (const autre of autresEdts) {
-      if (!this.frequencesCompatibles(edt.frequence, autre.frequence)) continue;
+      if (!this.verifierCompatibiliteFrequences(edt.frequence, autre.frequence)) continue;
       const debut1 = edt.dateDebut ?? '0000-01-01';
       const fin1 = edt.dateFin ?? '9999-12-31';
       const debut2 = autre.dateDebut ?? '0000-01-01';
@@ -209,7 +209,7 @@ export class EmploiDuTempsService {
    * @param f2 Fréquence du second EDT.
    * @returns `true` si les deux fréquences peuvent coïncider sur une même semaine.
    */
-  private frequencesCompatibles(f1: FrequenceSemaine, f2: FrequenceSemaine): boolean {
+  private verifierCompatibiliteFrequences(f1: FrequenceSemaine, f2: FrequenceSemaine): boolean {
     if (f1 === 'lesDeux' || f2 === 'lesDeux') return true;
     return f1 === f2;
   }

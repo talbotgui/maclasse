@@ -44,7 +44,7 @@
             }
             @if (periode.competencesIds.length > 0) {
               <ul class="fiche-projet__competences">
-                @for (libelle of libellesCompetences(periode.competencesIds); track libelle) {
+                @for (libelle of obtenirLibellesCompetences(periode.competencesIds); track libelle) {
                   <li>{{ libelle }}</li>
                 }
               </ul>

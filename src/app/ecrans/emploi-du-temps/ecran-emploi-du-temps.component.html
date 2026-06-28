@@ -69,7 +69,7 @@
                   {{ ligne.heureDebut }}–{{ ligne.heureFin }}
                 </td>
                 @for (jour of joursOuvres(); track jour) {
-                  @let creneau = creneauDeGrille(jour, ligne);
+                  @let creneau = obtenirCreneauDeGrille(jour, ligne);
                   <td
                     class="edt__grille-cellule"
                     [class.edt__grille-cellule--pedagogique]="creneau?.type === 'pedagogique'"

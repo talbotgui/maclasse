@@ -6,7 +6,7 @@
       class="mc-btn-icone"
       [disabled]="!peutNaviguerArriere()"
       [attr.aria-label]="LIBELLES.aria.calendrierMoisPrecedent"
-      (click)="moisPrecedent()"
+      (click)="naviguerMoisPrecedent()"
     >&#8249;</button>
     <strong class="mc-mini-calendrier__libelle-mois">{{ libelleMois() }}</strong>
     <button
@@ -15,7 +15,7 @@
       class="mc-btn-icone"
       [disabled]="!peutNaviguerAvant()"
       [attr.aria-label]="LIBELLES.aria.calendrierMoisSuivant"
-      (click)="moisSuivant()"
+      (click)="naviguerMoisSuivant()"
     >&#8250;</button>
   </div>
 

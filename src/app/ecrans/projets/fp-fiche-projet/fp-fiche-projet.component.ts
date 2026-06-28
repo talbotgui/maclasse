@@ -66,7 +66,7 @@ export class FpFicheProjetComponent {
    * @param ids Identifiants des compétences.
    * @returns Tableau de libellés résolus.
    */
-  protected libellesCompetences(ids: string[]): string[] {
+  protected obtenirLibellesCompetences(ids: string[]): string[] {
     return ids.map(id => this.competenceService.resoudreLibelle(id)).filter(l => l.length > 0);
   }
 

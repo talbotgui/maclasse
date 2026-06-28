@@ -644,7 +644,7 @@ button {
 
 @media print {
   .mc-colonne-gauche {
-    display: none;
+    display: none!important;
   }
 
   .mc-btn-primaire,
@@ -654,5 +654,10 @@ button {
   .mc-btn-ajouter,
   .mc-btn-supprimer {
     display: none;
+  }
+
+  section {
+    margin-bottom:0px!important;
+    padding-bottom:0px!important;
   }
 }

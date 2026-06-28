@@ -1,7 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { McEnteteComponent } from './mc-entete.component';
+
+/** Composant vide utilisé comme cible des routes de test. */
+@Component({ template: '' })
+class RouteStub {}
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
 import { SauvegardeAutoService } from '../../services/sansEtat/sauvegarde-auto.service';
@@ -16,7 +21,7 @@ describe('McEnteteComponent', () => {
   let sauvegardeAutoService: SauvegardeAutoService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    TestBed.configureTestingModule({ providers: [provideRouter([{ path: '**', component: RouteStub }])] });
     donneesService = TestBed.inject(DonneesService);
     contexteService = TestBed.inject(ContexteService);
     sauvegardeAutoService = TestBed.inject(SauvegardeAutoService);

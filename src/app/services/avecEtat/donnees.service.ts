@@ -6,6 +6,7 @@
 import { Injectable, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { Commande } from '../../modeles/commande.modele';
 import { DonneesApplication } from '../../modeles/donnees-application.modele';
+import { DateUtils } from '../../utilitaires/date.utils';
 
 /**
  * Service stateful singleton : contient les données de l'application
@@ -54,14 +55,43 @@ export class DonneesService {
 
   /**
    * Charge un jeu de données et réinitialise les piles UNDO/REDO.
+   * Les dates du cahier journal sont décalées pour correspondre à la semaine
+   * suivant la date courante, afin que les données soient immédiatement pertinentes.
    * Appeler cette méthode au chargement d'un fichier ou à la création d'un nouveau fichier.
    * @param donnees Données à charger — clonées pour isolation.
    */
   public charger(donnees: DonneesApplication): void {
-    this.donneesModifiables.set(structuredClone(donnees));
+    const clone = structuredClone(donnees);
+    this.decalerCahierJournalVersSemaineSuivante(clone);
+    this.donneesModifiables.set(clone);
     this.pileUndo.set([]);
     this.pileRedo.set([]);
     this.modifieeDepuisSauvegarde.set(false);
+  }
+
+  /**
+   * Décale toutes les dates du cahier journal pour qu'elles tombent dans la semaine
+   * suivant la date courante, en conservant le jour de la semaine de chaque journée.
+   * Sans effet si le cahier journal est vide.
+   * @param donnees Données à muter (déjà clonées).
+   */
+  private decalerCahierJournalVersSemaineSuivante(donnees: DonneesApplication): void {
+    if (donnees.cahierJournal.length === 0) {
+      return;
+    }
+    const premierDate = donnees.cahierJournal.reduce(
+      (min, j) => (j.date < min ? j.date : min),
+      donnees.cahierJournal[0].date,
+    );
+    const lundiOrigine = DateUtils.lundiDeLaSemaine(premierDate);
+    const lundiCible = DateUtils.ajouterJours(
+      DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()),
+      7,
+    );
+    const delta = DateUtils.differenceEnJours(lundiOrigine, lundiCible);
+    donnees.cahierJournal.forEach(j => {
+      j.date = DateUtils.ajouterJours(j.date, delta);
+    });
   }
 
   /**

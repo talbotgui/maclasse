@@ -1,15 +1,11 @@
 Bugs :
 - global
-  - revoir le sélecteur de compétence
-  - dans le jeu de données par défaut, ajoute des emplois du temps pour toute l'année scolaire (1 en semaine paire, un autre en semaine impaire et un dernier sur les deux).
-  - dans le jeu de données par défaut, ajoute les cahiers journaux de toute une semaine. Au chargement du jeu de données, changes en les dates pour correspondre à la semaine en cours (si la date du jour est entre le lundi et le vendredi inclu) ou la semaine suivante (si la date du jour est un samedi ou un dimanche).
 - dans l'entête
   - dans l'entête, si la largeur de l'écran est trop petite pour afficher les boutons des écrans, affiche un bouton "BURGER" pour afficher le contenu de l'entête
   - dans la recherche, permet la saisie d'une date pour sélectionner et afficher le calendrier à la date demandée
   - dans la recherche, recherche aussi dans les noms des emplois du temps
   - transforme le bouton de thème pour qu'il affiche un tout petit popin contenant un bouton pour chaque thème
 - écran ELEVE
-  - dans l'impression de la page ELEVE, la colonne de gauche est encore visible.
   - dans l'entête du formulaire des élèves, en mode EDITION, les champs de saisie et les 2 boutons ne sont pas responsive. Propose une amélioration.
 - écran PROJET
   - dans le formulaire d'un PROJET, il faut pouvoir sélectionner les élèves via les groupes. Ajouter un sélecteur de groupes, au dessus du sélecteur des élèves, synchronisant la sélection entre les deux me semble pertinent. Qu'en penses-tu ?

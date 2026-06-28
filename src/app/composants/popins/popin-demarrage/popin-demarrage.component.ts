@@ -72,6 +72,8 @@ export class PopinDemarrageComponent extends ComposantBase {
 
   /**
    * Crée un nouveau fichier depuis les données d'exemple `donnees-defaut.json`.
+   * Les dates du cahier journal sont décalées vers la semaine suivant la date courante
+   * afin que les données d'exemple soient immédiatement pertinentes à l'ouverture.
    * Émet `demarrageTermine` en cas de succès, affiche une erreur sinon.
    */
   protected async creer(): Promise<void> {

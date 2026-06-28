@@ -7,6 +7,7 @@ import { DonneesMother } from '../../tests/donnees.mother';
 import { ProjetMother } from '../../tests/projet.mother';
 import { SeanceMother } from '../../tests/cahier-journal.mother';
 import type { ResultatExportCompetences } from '../../composants/popins/popin-export-competences/popin-export-competences.component';
+import { DateUtils } from '../../utilitaires/date.utils';
 
 describe('EcranCompetencesComponent', () => {
   let fixture: ComponentFixture<EcranCompetencesComponent>;
@@ -14,13 +15,15 @@ describe('EcranCompetencesComponent', () => {
   let contexteService: ContexteService;
   let donneesService: DonneesService;
 
+  const dateCJ = DateUtils.ajouterJours(DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()), 7);
+
   beforeEach(() => {
     TestBed.configureTestingModule({});
     donneesService = TestBed.inject(DonneesService);
     contexteService = TestBed.inject(ContexteService);
     donneesService.charger(DonneesMother.base({
       projets: [ProjetMother.base({ id: 'p1', periodes: [{ periodeNom: 'P1', debut: '', fin: '', description: '', competencesIds: [] }] })],
-      cahierJournal: [{ id: 'j1', date: '2026-06-15', seances: [SeanceMother.pedagogique({ id: 's1', competencesIds: [] })] }],
+      cahierJournal: [{ id: 'j1', date: dateCJ, seances: [SeanceMother.pedagogique({ id: 's1', competencesIds: [] })] }],
     }));
     fixture = TestBed.createComponent(EcranCompetencesComponent);
     component = fixture.componentInstance;
@@ -123,11 +126,11 @@ describe('EcranCompetencesComponent', () => {
     it('ajoute les compétences à la séance et vide le panier', () => {
       contexteService.panierCompetences.set(['c3']);
 
-      const resultat: ResultatExportCompetences = { cibleType: 'seance', cibleId: '2026-06-15', secondaireId: 's1' };
+      const resultat: ResultatExportCompetences = { cibleType: 'seance', cibleId: dateCJ, secondaireId: 's1' };
 
       (component as any).confirmerExport(resultat);
 
-      const journee = donneesService.donnees()?.cahierJournal.find(j => j.date === '2026-06-15');
+      const journee = donneesService.donnees()?.cahierJournal.find(j => j.date === dateCJ);
       expect(journee?.seances.find(s => s.id === 's1')?.competencesIds).toContain('c3');
       expect(contexteService.panierCompetences()).toEqual([]);
     });

@@ -148,6 +148,44 @@ describe('DateUtils', () => {
     });
   });
 
+  /** Retourne toujours le lundi de la même semaine ISO, quel que soit le jour fourni. */
+  describe('lundiDeLaSemaine', () => {
+    it('retourne la date elle-même pour un lundi', () => {
+      expect(DateUtils.lundiDeLaSemaine('2026-06-15')).toBe('2026-06-15');
+    });
+
+    it('retourne le lundi précédent pour un mercredi', () => {
+      expect(DateUtils.lundiDeLaSemaine('2026-06-17')).toBe('2026-06-15');
+    });
+
+    it('retourne le lundi précédent pour un vendredi', () => {
+      expect(DateUtils.lundiDeLaSemaine('2026-06-19')).toBe('2026-06-15');
+    });
+
+    it('retourne le lundi précédent pour un dimanche', () => {
+      expect(DateUtils.lundiDeLaSemaine('2026-06-21')).toBe('2026-06-15');
+    });
+  });
+
+  /** Calcule la différence signée en jours entre deux dates ISO. */
+  describe('differenceEnJours', () => {
+    it('retourne 7 entre un lundi et le lundi suivant', () => {
+      expect(DateUtils.differenceEnJours('2026-06-15', '2026-06-22')).toBe(7);
+    });
+
+    it('retourne -7 dans l\'ordre inverse', () => {
+      expect(DateUtils.differenceEnJours('2026-06-22', '2026-06-15')).toBe(-7);
+    });
+
+    it('retourne 0 pour deux dates identiques', () => {
+      expect(DateUtils.differenceEnJours('2026-06-15', '2026-06-15')).toBe(0);
+    });
+
+    it('retourne 1 pour deux jours consécutifs', () => {
+      expect(DateUtils.differenceEnJours('2026-06-15', '2026-06-16')).toBe(1);
+    });
+  });
+
   /** Retourne la date du jour en ISO local sans décalage UTC. */
   describe('dateAujourdhui', () => {
     it('retourne une date au format YYYY-MM-DD', () => {

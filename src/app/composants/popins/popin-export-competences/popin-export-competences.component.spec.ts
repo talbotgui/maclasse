@@ -5,6 +5,7 @@ import { DonneesService } from '../../../services/avecEtat/donnees.service';
 import { DonneesMother } from '../../../tests/donnees.mother';
 import { ProjetMother } from '../../../tests/projet.mother';
 import { SeanceMother } from '../../../tests/cahier-journal.mother';
+import { DateUtils } from '../../../utilitaires/date.utils';
 
 beforeAll(() => {
   HTMLDialogElement.prototype.showModal = vi.fn();
@@ -40,10 +41,12 @@ describe('PopinExportCompetencesComponent', () => {
     fixture.detectChanges();
   };
 
+  const dateCjSeance = DateUtils.ajouterJours(DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()), 12);
+
   const chargerDonneesAvecSeance = () => {
     const seance = SeanceMother.pedagogique({ id: 's1' });
     donneesService.charger(DonneesMother.base({
-      cahierJournal: [{ id: 'j1', date: '2026-06-20', seances: [seance] }],
+      cahierJournal: [{ id: 'j1', date: dateCjSeance, seances: [seance] }],
     }));
     fixture.detectChanges();
   };
@@ -113,11 +116,11 @@ describe('PopinExportCompetencesComponent', () => {
     it('optionsPrimaires = journées CJ avec séances pédago', () => {
       const options = (component as any).optionsPrimaires() as { valeur: string }[];
       expect(options).toHaveLength(1);
-      expect(options[0].valeur).toBe('2026-06-20');
+      expect(options[0].valeur).toBe(dateCjSeance);
     });
 
     it('sélection d\'une journée → optionsSecondaires = séances pédago', () => {
-      component['surChangementPrimaire']('2026-06-20');
+      component['surChangementPrimaire'](dateCjSeance);
       fixture.detectChanges();
 
       const options = (component as any).optionsSecondaires() as { valeur: string }[];

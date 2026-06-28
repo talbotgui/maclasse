@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { EcranAccueilComponent } from './ecran-accueil.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
+import { CahierJournalService } from '../../services/sansEtat/cahier-journal.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { SeanceMother } from '../../tests/cahier-journal.mother';
 import { EleveMother } from '../../tests/eleve.mother';
@@ -11,15 +12,14 @@ describe('EcranAccueilComponent', () => {
   let fixture: ComponentFixture<EcranAccueilComponent>;
   let component: EcranAccueilComponent;
   let donneesService: DonneesService;
+  let cahierJournalService: CahierJournalService;
 
-  const dateAujourdhui = (() => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  })();
+  const dateAujourdhui = DateUtils.dateAujourdhui();
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
     donneesService = TestBed.inject(DonneesService);
+    cahierJournalService = TestBed.inject(CahierJournalService);
     fixture = TestBed.createComponent(EcranAccueilComponent);
     component = fixture.componentInstance;
   });
@@ -41,16 +41,10 @@ describe('EcranAccueilComponent', () => {
     });
 
     it('filtre les récréations et pauses déjeuner', () => {
-      donneesService.charger(DonneesMother.base({
-        cahierJournal: [{
-          id: 'j1',
-          date: dateAujourdhui,
-          seances: [
-            SeanceMother.pedagogique({ id: 's1' }),
-            SeanceMother.recreation({ id: 's2' }),
-          ],
-        }],
-      }));
+      donneesService.charger(DonneesMother.base({ cahierJournal: [] }));
+      cahierJournalService.initialiserJourneeVide(dateAujourdhui);
+      cahierJournalService.ajouterSeance(dateAujourdhui, SeanceMother.pedagogique({ id: 's1' }));
+      cahierJournalService.ajouterSeance(dateAujourdhui, SeanceMother.recreation({ id: 's2' }));
       fixture.detectChanges();
 
       const seances = (component as any).seancesResumees();
@@ -62,13 +56,11 @@ describe('EcranAccueilComponent', () => {
       const bob = EleveMother.base('e2', 'D', 'B');
       donneesService.charger(DonneesMother.base({
         classe: { ...DonneesMother.base().classe, eleves: [alice, bob] },
-        cahierJournal: [{
-          id: 'j1',
-          date: dateAujourdhui,
-          seances: [SeanceMother.pedagogique({
-            elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
-          })],
-        }],
+        cahierJournal: [],
+      }));
+      cahierJournalService.initialiserJourneeVide(dateAujourdhui);
+      cahierJournalService.ajouterSeance(dateAujourdhui, SeanceMother.pedagogique({
+        elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
       }));
       fixture.detectChanges();
 
@@ -81,13 +73,11 @@ describe('EcranAccueilComponent', () => {
       const bob = EleveMother.base('e2', 'D', 'B');
       donneesService.charger(DonneesMother.base({
         classe: { ...DonneesMother.base().classe, eleves: [alice, bob] },
-        cahierJournal: [{
-          id: 'j1',
-          date: dateAujourdhui,
-          seances: [SeanceMother.pedagogique({
-            elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e1'] },
-          })],
-        }],
+        cahierJournal: [],
+      }));
+      cahierJournalService.initialiserJourneeVide(dateAujourdhui);
+      cahierJournalService.ajouterSeance(dateAujourdhui, SeanceMother.pedagogique({
+        elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e1'] },
       }));
       fixture.detectChanges();
 
@@ -100,13 +90,11 @@ describe('EcranAccueilComponent', () => {
       const bob = EleveMother.base('e2', 'D', 'B', { groupes: ['GB'] });
       donneesService.charger(DonneesMother.base({
         classe: { ...DonneesMother.base().classe, eleves: [alice, bob] },
-        cahierJournal: [{
-          id: 'j1',
-          date: dateAujourdhui,
-          seances: [SeanceMother.pedagogique({
-            elevesConcernes: { type: 'groupes', groupes: ['GA'], elevesIds: [] },
-          })],
-        }],
+        cahierJournal: [],
+      }));
+      cahierJournalService.initialiserJourneeVide(dateAujourdhui);
+      cahierJournalService.ajouterSeance(dateAujourdhui, SeanceMother.pedagogique({
+        elevesConcernes: { type: 'groupes', groupes: ['GA'], elevesIds: [] },
       }));
       fixture.detectChanges();
 
@@ -115,13 +103,9 @@ describe('EcranAccueilComponent', () => {
     });
 
     it('mappe heureDebut et heureFin correctement', () => {
-      donneesService.charger(DonneesMother.base({
-        cahierJournal: [{
-          id: 'j1',
-          date: dateAujourdhui,
-          seances: [SeanceMother.pedagogique({ heureDebut: '09:00', heureFin: '10:30' })],
-        }],
-      }));
+      donneesService.charger(DonneesMother.base({ cahierJournal: [] }));
+      cahierJournalService.initialiserJourneeVide(dateAujourdhui);
+      cahierJournalService.ajouterSeance(dateAujourdhui, SeanceMother.pedagogique({ heureDebut: '09:00', heureFin: '10:30' }));
       fixture.detectChanges();
 
       const seances = (component as any).seancesResumees();

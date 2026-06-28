@@ -119,6 +119,33 @@ export class DateUtils {
   }
 
   /**
+   * Retourne la date du lundi de la semaine ISO contenant la date donnée.
+   * @param date Date au format `YYYY-MM-DD`.
+   * @returns Date du lundi correspondant au format `YYYY-MM-DD`.
+   */
+  public static lundiDeLaSemaine(date: string): string {
+    const [annee, mois, jour] = date.split('-').map(Number);
+    const jourSemaine = new Date(annee, mois - 1, jour).getDay();
+    return DateUtils.ajouterJours(date, -((jourSemaine + 6) % DateUtils.JOURS_PAR_SEMAINE));
+  }
+
+  /**
+   * Calcule le nombre de jours entre deux dates ISO (`fin - debut`).
+   * Le résultat est positif si `fin` est après `debut`, négatif sinon.
+   * @param debut Date de départ au format `YYYY-MM-DD`.
+   * @param fin Date de fin au format `YYYY-MM-DD`.
+   * @returns Nombre entier de jours entre les deux dates.
+   */
+  public static differenceEnJours(debut: string, fin: string): number {
+    const [ay, am, ad] = debut.split('-').map(Number);
+    const [by, bm, bd] = fin.split('-').map(Number);
+    return Math.round(
+      (new Date(by, bm - 1, bd).getTime() - new Date(ay, am - 1, ad).getTime()) /
+        DateUtils.MS_PAR_JOUR,
+    );
+  }
+
+  /**
    * Retourne la date du jour au format ISO `YYYY-MM-DD` en heure locale.
    * @returns Date du jour sans décalage UTC.
    */

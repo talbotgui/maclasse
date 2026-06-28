@@ -7,6 +7,7 @@ import { EmploiDuTemps } from '../../modeles/emploi-du-temps.modele';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { EleveMother } from '../../tests/eleve.mother';
 import { DATES_TEST, SeanceMother } from '../../tests/cahier-journal.mother';
+import { DateUtils } from '../../utilitaires/date.utils';
 
 describe('CahierJournalService', () => {
   let service: CahierJournalService;
@@ -398,15 +399,16 @@ describe('CahierJournalService', () => {
     });
 
     it('détecte un conflit pour un élève de la classe entière', () => {
+      const lundiTest = DateUtils.ajouterJours(DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()), 7);
       const d = DonneesMother.base();
       d.classe.eleves = [
         EleveMother.base('e1', 'MARTIN', 'Paul', {
           absencesRecurrentes: [{ id: 'a1', libelle: 'Orthophonie', jour: 'lundi', heureDebut: '09:30', heureFin: '10:30', paritesSemaine: 'lesDeux' }],
         }),
       ];
-      d.cahierJournal = [{ id: 'j1', date: DATES_TEST.lundiPaire, seances: [SeanceMother.pedagogique()] }];
+      d.cahierJournal = [{ id: 'j1', date: lundiTest, seances: [SeanceMother.pedagogique()] }];
       donneesService.charger(d);
-      const conflits = service.calculerConflitsAbsences(DATES_TEST.lundiPaire, 's1');
+      const conflits = service.calculerConflitsAbsences(lundiTest, 's1');
       expect(conflits).toHaveLength(1);
       expect(conflits[0]).toBe('MARTIN Paul — Orthophonie');
     });
@@ -424,6 +426,7 @@ describe('CahierJournalService', () => {
     });
 
     it('filtre les élèves par groupe', () => {
+      const lundiTest = DateUtils.ajouterJours(DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()), 7);
       const d = DonneesMother.base();
       d.classe.eleves = [
         EleveMother.base('e1', 'MARTIN', 'Paul', {
@@ -439,14 +442,15 @@ describe('CahierJournalService', () => {
         id: 'sg', heureDebut: '09:00', heureFin: '10:00', type: 'pedagogique',
         elevesConcernes: { type: 'groupes', groupes: ['GA'], elevesIds: [] },
       };
-      d.cahierJournal = [{ id: 'j1', date: DATES_TEST.lundiPaire, seances: [seanceGroupe] }];
+      d.cahierJournal = [{ id: 'j1', date: lundiTest, seances: [seanceGroupe] }];
       donneesService.charger(d);
-      const conflits = service.calculerConflitsAbsences(DATES_TEST.lundiPaire, 'sg');
+      const conflits = service.calculerConflitsAbsences(lundiTest, 'sg');
       expect(conflits).toHaveLength(1);
       expect(conflits[0]).toContain('MARTIN');
     });
 
     it('filtre les élèves par ID explicite', () => {
+      const lundiTest = DateUtils.ajouterJours(DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()), 7);
       const d = DonneesMother.base();
       d.classe.eleves = [
         EleveMother.base('e1', 'MARTIN', 'Paul', {
@@ -460,9 +464,9 @@ describe('CahierJournalService', () => {
         id: 'se', heureDebut: '09:00', heureFin: '10:00', type: 'pedagogique',
         elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e1'] },
       };
-      d.cahierJournal = [{ id: 'j1', date: DATES_TEST.lundiPaire, seances: [seanceEleves] }];
+      d.cahierJournal = [{ id: 'j1', date: lundiTest, seances: [seanceEleves] }];
       donneesService.charger(d);
-      const conflits = service.calculerConflitsAbsences(DATES_TEST.lundiPaire, 'se');
+      const conflits = service.calculerConflitsAbsences(lundiTest, 'se');
       expect(conflits).toHaveLength(1);
       expect(conflits[0]).toContain('MARTIN');
     });

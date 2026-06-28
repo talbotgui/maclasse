@@ -13,7 +13,7 @@ describe('EcranCahierJournalComponent', () => {
   let component: EcranCahierJournalComponent;
   let donneesService: DonneesService;
 
-  const dateTest = '2026-06-15';
+  const dateTest = DateUtils.ajouterJours(DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()), 7);
   const seance1 = SeanceMother.pedagogique({ id: 's1', heureDebut: '09:00', heureFin: '10:00' });
   const seance2 = SeanceMother.recreation({ id: 's2', heureDebut: '10:00', heureFin: '10:30' });
 

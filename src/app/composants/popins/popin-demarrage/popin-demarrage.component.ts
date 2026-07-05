@@ -81,7 +81,7 @@ export class PopinDemarrageComponent extends ComposantBase {
     this.enChargement.set(true);
     this.erreur.set(null);
     try {
-      const reponse = await fetch('/donnees-defaut.json');
+      const reponse = await fetch('/maclasse/donnees-defaut.json');
       if (!reponse.ok) throw new Error('Fichier introuvable');
       const donnees = (await reponse.json()) as DonneesApplication;
       this.demarrageTermine.emit(donnees);

@@ -2117,3 +2117,5 @@ Aucun fichier n'a été modifié — analyse uniquement, conformément à la dem
 3/ change le routing en withHashLocation
 ---
 2026-07-05 15:41:50 [Héberger l'application sur GitHub Pages] la commande "git" est interdite. Reprend et demande moi d'exécuter, au besoin, les commandes GIT
+---
+2026-07-05 16:19:12 [Sans titre] je veux revoir la modale affichée avant le chargement des données. Décrit là sommairement

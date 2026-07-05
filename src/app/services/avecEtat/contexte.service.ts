@@ -35,6 +35,13 @@ export class ContexteService {
   /** Mot de passe de chiffrement saisi au chargement — jamais persisté. */
   public motDePasse: string | null = null;
 
+  /**
+   * `true` quand les données ont été chargées uniquement pour consulter le référentiel
+   * de compétences depuis la popin de démarrage (bouton "Accéder aux programmes").
+   * Dans ce mode, seule la route `/competences` reste accessible (voir `referentielSeulGarde`).
+   */
+  public readonly modeConsultationReferentiel: WritableSignal<boolean> = signal(false);
+
   /** Initialise le thème depuis le `localStorage` et l'applique immédiatement. */
   public constructor() {
     const themeStocke = localStorage.getItem(ContexteService.CLE_THEME) ?? 'defaut';

@@ -10,81 +10,85 @@
   @if (donneesService.donnees()) {
 
     <nav class="mc-entete__nav" [attr.aria-label]="LIBELLES.aria.navigationPrincipale">
-      <a id="navAccueil"        class="mc-entete__nav-lien" routerLink="/accueil"          routerLinkActive="actif">{{ LIBELLES.navigation.accueil }}</a>
-      <a id="navEleves"         class="mc-entete__nav-lien" routerLink="/eleves"           routerLinkActive="actif">{{ LIBELLES.navigation.eleves }}</a>
-      <a id="navProjets"        class="mc-entete__nav-lien" routerLink="/projets"          routerLinkActive="actif">{{ LIBELLES.navigation.projets }}</a>
+      <a id="navAccueil"        class="mc-entete__nav-lien" [class.mc-entete__nav-lien--desactive]="navRestreinte()" [routerLink]="navRestreinte() ? null : '/accueil'"          [attr.aria-disabled]="navRestreinte() ? 'true' : null" [attr.tabindex]="navRestreinte() ? -1 : null" routerLinkActive="actif">{{ LIBELLES.navigation.accueil }}</a>
+      <a id="navEleves"         class="mc-entete__nav-lien" [class.mc-entete__nav-lien--desactive]="navRestreinte()" [routerLink]="navRestreinte() ? null : '/eleves'"           [attr.aria-disabled]="navRestreinte() ? 'true' : null" [attr.tabindex]="navRestreinte() ? -1 : null" routerLinkActive="actif">{{ LIBELLES.navigation.eleves }}</a>
+      <a id="navProjets"        class="mc-entete__nav-lien" [class.mc-entete__nav-lien--desactive]="navRestreinte()" [routerLink]="navRestreinte() ? null : '/projets'"          [attr.aria-disabled]="navRestreinte() ? 'true' : null" [attr.tabindex]="navRestreinte() ? -1 : null" routerLinkActive="actif">{{ LIBELLES.navigation.projets }}</a>
       <a id="navCompetences"    class="mc-entete__nav-lien" routerLink="/competences"      routerLinkActive="actif">{{ LIBELLES.navigation.competences }}</a>
-      <a id="navEmploiDuTemps"  class="mc-entete__nav-lien" routerLink="/emploi-du-temps"  routerLinkActive="actif">{{ LIBELLES.navigation.emploiDuTemps }}</a>
-      <a id="navCahierJournal"  class="mc-entete__nav-lien" routerLink="/cahier-journal"   routerLinkActive="actif">{{ LIBELLES.navigation.cahierJournal }}</a>
-      <a id="navParametrage"    class="mc-entete__nav-lien" routerLink="/parametrage"      routerLinkActive="actif">{{ LIBELLES.navigation.parametrage }}</a>
+      <a id="navEmploiDuTemps"  class="mc-entete__nav-lien" [class.mc-entete__nav-lien--desactive]="navRestreinte()" [routerLink]="navRestreinte() ? null : '/emploi-du-temps'"  [attr.aria-disabled]="navRestreinte() ? 'true' : null" [attr.tabindex]="navRestreinte() ? -1 : null" routerLinkActive="actif">{{ LIBELLES.navigation.emploiDuTemps }}</a>
+      <a id="navCahierJournal"  class="mc-entete__nav-lien" [class.mc-entete__nav-lien--desactive]="navRestreinte()" [routerLink]="navRestreinte() ? null : '/cahier-journal'"   [attr.aria-disabled]="navRestreinte() ? 'true' : null" [attr.tabindex]="navRestreinte() ? -1 : null" routerLinkActive="actif">{{ LIBELLES.navigation.cahierJournal }}</a>
+      <a id="navParametrage"    class="mc-entete__nav-lien" [class.mc-entete__nav-lien--desactive]="navRestreinte()" [routerLink]="navRestreinte() ? null : '/parametrage'"      [attr.aria-disabled]="navRestreinte() ? 'true' : null" [attr.tabindex]="navRestreinte() ? -1 : null" routerLinkActive="actif">{{ LIBELLES.navigation.parametrage }}</a>
     </nav>
 
-    <!-- Zone de recherche globale avec panneau de résultats -->
-    <div class="mc-entete__zone-recherche" (focusout)="surBlurZoneRecherche($event)">
-      <mc-champ-recherche
-        id="rechercheGlobale"
-        [placeholder]="LIBELLES.commun.rechercher"
-        [delaiMs]="300"
-        (rechercheChange)="surRecherche($event)"
-      />
-      @if (listeResultatsVisible() && resultatsRecherche().length > 0) {
-        <ul
-          id="listeResultatsRecherche"
-          class="mc-entete__resultats"
-          role="listbox"
-          [attr.aria-label]="LIBELLES.entete.rechercheAria"
-        >
-          @for (res of resultatsRecherche(); track res.id) {
-            <li
-              [id]="'resRecherche_' + res.id"
-              class="mc-entete__resultat-item"
-              role="option"
-              tabindex="0"
-              (click)="surSelectionResultat(res)"
-              (keydown.enter)="surSelectionResultat(res)"
-              (keydown.space)="$event.preventDefault(); surSelectionResultat(res)"
-            >
-              <span class="mc-entete__resultat-type">{{ res.type }}</span>
-              <span class="mc-entete__resultat-titre">{{ res.titre }}</span>
-            </li>
-          }
-        </ul>
-      }
-    </div>
+    @if (!navRestreinte()) {
 
-    <!-- Actions SAUVEGARDER / ANNULER / REFAIRE -->
-    <div class="mc-entete__actions" role="group" [attr.aria-label]="LIBELLES.entete.sauvegarder">
-      <button
-        id="btnSauvegarder"
-        type="button"
-        class="mc-entete__btn-action mc-entete__btn-sauvegarder"
-        [disabled]="!donneesService.aDonneesModifiees()"
-        [title]="tooltipSauvegarder()"
-        [attr.aria-describedby]="'btnSauvegarder_desc'"
-        (click)="surSauvegarder()"
-      >{{ LIBELLES.entete.sauvegarder }}</button>
-      <span id="btnSauvegarder_desc" class="sr-only">{{ tooltipSauvegarder() }}</span>
+      <!-- Zone de recherche globale avec panneau de résultats -->
+      <div class="mc-entete__zone-recherche" (focusout)="surBlurZoneRecherche($event)">
+        <mc-champ-recherche
+          id="rechercheGlobale"
+          [placeholder]="LIBELLES.commun.rechercher"
+          [delaiMs]="300"
+          (rechercheChange)="surRecherche($event)"
+        />
+        @if (listeResultatsVisible() && resultatsRecherche().length > 0) {
+          <ul
+            id="listeResultatsRecherche"
+            class="mc-entete__resultats"
+            role="listbox"
+            [attr.aria-label]="LIBELLES.entete.rechercheAria"
+          >
+            @for (res of resultatsRecherche(); track res.id) {
+              <li
+                [id]="'resRecherche_' + res.id"
+                class="mc-entete__resultat-item"
+                role="option"
+                tabindex="0"
+                (click)="surSelectionResultat(res)"
+                (keydown.enter)="surSelectionResultat(res)"
+                (keydown.space)="$event.preventDefault(); surSelectionResultat(res)"
+              >
+                <span class="mc-entete__resultat-type">{{ res.type }}</span>
+                <span class="mc-entete__resultat-titre">{{ res.titre }}</span>
+              </li>
+            }
+          </ul>
+        }
+      </div>
 
-      <button
-        id="btnAnnuler"
-        type="button"
-        class="mc-entete__btn-action"
-        [disabled]="!donneesService.peutAnnuler()"
-        [title]="tooltipAnnuler()"
-        [attr.aria-label]="tooltipAnnuler()"
-        (click)="surAnnuler()"
-      >↶</button>
+      <!-- Actions SAUVEGARDER / ANNULER / REFAIRE -->
+      <div class="mc-entete__actions" role="group" [attr.aria-label]="LIBELLES.entete.sauvegarder">
+        <button
+          id="btnSauvegarder"
+          type="button"
+          class="mc-entete__btn-action mc-entete__btn-sauvegarder"
+          [disabled]="!donneesService.aDonneesModifiees()"
+          [title]="tooltipSauvegarder()"
+          [attr.aria-describedby]="'btnSauvegarder_desc'"
+          (click)="surSauvegarder()"
+        >{{ LIBELLES.entete.sauvegarder }}</button>
+        <span id="btnSauvegarder_desc" class="sr-only">{{ tooltipSauvegarder() }}</span>
 
-      <button
-        id="btnRefaire"
-        type="button"
-        class="mc-entete__btn-action"
-        [disabled]="!donneesService.peutRefaire()"
-        [title]="tooltipRefaire()"
-        [attr.aria-label]="tooltipRefaire()"
-        (click)="surRefaire()"
-      >↷</button>
-    </div>
+        <button
+          id="btnAnnuler"
+          type="button"
+          class="mc-entete__btn-action"
+          [disabled]="!donneesService.peutAnnuler()"
+          [title]="tooltipAnnuler()"
+          [attr.aria-label]="tooltipAnnuler()"
+          (click)="surAnnuler()"
+        >↶</button>
+
+        <button
+          id="btnRefaire"
+          type="button"
+          class="mc-entete__btn-action"
+          [disabled]="!donneesService.peutRefaire()"
+          [title]="tooltipRefaire()"
+          [attr.aria-label]="tooltipRefaire()"
+          (click)="surRefaire()"
+        >↷</button>
+      </div>
+
+    }
 
   }
 

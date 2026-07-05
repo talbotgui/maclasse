@@ -145,6 +145,59 @@ describe('PopinDemarrageComponent', () => {
     });
   });
 
+  describe('accederReferentiel()', () => {
+    it('fetch réussi → émet referentielDemande avec les données', async () => {
+      const donnees: DonneesApplication = DonneesMother.base();
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(donnees),
+      }));
+      const spy = vi.spyOn((component as any).referentielDemande, 'emit');
+
+      await component['accederReferentiel']();
+
+      expect(spy).toHaveBeenCalledWith(expect.objectContaining({ version: '1.0' }));
+    });
+
+    it('fetch réussi → enChargement repasse à false', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(DonneesMother.base()),
+      }));
+
+      await component['accederReferentiel']();
+
+      expect((component as any).enChargement()).toBe(false);
+    });
+
+    it('fetch ok=false → affiche une erreur', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
+
+      await component['accederReferentiel']();
+
+      expect((component as any).erreur()).toBeTruthy();
+      expect((component as any).enChargement()).toBe(false);
+    });
+
+    it('erreur réseau → affiche une erreur', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('réseau')));
+
+      await component['accederReferentiel']();
+
+      expect((component as any).erreur()).toBeTruthy();
+    });
+
+    it('appel pendant enChargement → ignoré', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(DonneesMother.base()) }));
+      const spy = vi.spyOn((component as any).referentielDemande, 'emit');
+      (component as any).enChargement.set(true);
+
+      await component['accederReferentiel']();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
+
   describe('peutCharger', () => {
     it('false si pas de fichier', () => {
       (component as any).fichierSelectionne = null;

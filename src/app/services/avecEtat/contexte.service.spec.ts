@@ -38,6 +38,11 @@ describe('ContexteService', () => {
       const service = new ContexteService();
       expect(service.motDePasse).toBeNull();
     });
+
+    it('modeConsultationReferentiel initialement false', () => {
+      const service = new ContexteService();
+      expect(service.modeConsultationReferentiel()).toBe(false);
+    });
   });
 
   describe('appliquerTheme', () => {
@@ -95,6 +100,12 @@ describe('ContexteService', () => {
       const service = new ContexteService();
       service.motDePasse = 'secret';
       expect(service.motDePasse).toBe('secret');
+    });
+
+    it('modeConsultationReferentiel peut être modifié', () => {
+      const service = new ContexteService();
+      service.modeConsultationReferentiel.set(true);
+      expect(service.modeConsultationReferentiel()).toBe(true);
     });
   });
 });

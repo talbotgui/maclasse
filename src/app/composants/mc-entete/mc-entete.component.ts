@@ -35,8 +35,8 @@ export class McEnteteComponent extends ComposantBase {
   /** Données courantes et signaux UNDO/REDO/modifications. */
   protected readonly donneesService = inject(DonneesService);
 
-  /** Contexte applicatif : thème, sélections, mot de passe. */
-  private readonly contexteService = inject(ContexteService);
+  /** Contexte applicatif : thème, sélections, mot de passe, mode consultation référentiel. */
+  protected readonly contexteService = inject(ContexteService);
 
   /** Service de sauvegarde automatique et manuelle. */
   private readonly sauvegardeAutoService = inject(SauvegardeAutoService);
@@ -55,6 +55,14 @@ export class McEnteteComponent extends ComposantBase {
 
   /** Contrôle la visibilité du panneau de résultats de recherche. */
   protected readonly listeResultatsVisible: WritableSignal<boolean> = signal(false);
+
+  /**
+   * `true` quand la navigation doit être restreinte à `/competences` (mode consultation
+   * du référentiel seul, sans classe réellement chargée).
+   */
+  protected readonly navRestreinte: Signal<boolean> = computed(() =>
+    this.contexteService.modeConsultationReferentiel(),
+  );
 
   /** Texte du tooltip du bouton ANNULER : préfixe + libellé de la commande en sommet de pile. */
   protected readonly tooltipAnnuler: Signal<string> = computed(() => {

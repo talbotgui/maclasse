@@ -59,13 +59,17 @@ export const LIBELLES = {
   /** Libellés de l'écran de démarrage (popin obligatoire). */
   demarrage: {
     bienvenue:                 'Bienvenue dans MaClasse — gérez votre classe, à votre façon.',
-    titreNouveauFichier:       'Première utilisation ? Créez votre espace de classe.',
+    titreNouveau:              'Première utilisation ?',
+    texteNouveau:              'Créez votre espace de classe à partir d\'un jeu de données d\'exemple.',
     boutonCreer:               'Créer ma classe à partir d\'un jeu de données d\'exemple',
     titreCharger:              'Sélectionner la dernière version des données de votre classe',
     labelFichier:              'Fichier ZIP',
     labelMotDePasse:           'Mot de passe',
     boutonCharger:             'Charger',
     boutonChargement:          'Chargement…',
+    titreReferentiel:          'Référentiel de compétences',
+    texteReferentiel:          'L\'application contient un référentiel des compétences issues des BO de l\'EN.',
+    boutonReferentiel:         'Accéder aux programmes',
     erreurFichier:             'Fichier invalide ou corrompu.',
     erreurMotDePasse:          'Mot de passe incorrect.',
     erreurVersionIncompatible: 'Ce fichier a été créé avec une version plus récente de MaClasse. Veuillez mettre à jour l\'application.',

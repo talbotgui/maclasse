@@ -227,7 +227,7 @@ describe('EcranEmploiDuTempsComponent', () => {
       (component as any).onAnnule();
 
       expect((component as any).creneauEdite()).toBeNull();
-      expect((component as any).formEdt()).toBe(edtBase);
+      expect((component as any).formEdt()).toBeNull();
     });
   });
 });

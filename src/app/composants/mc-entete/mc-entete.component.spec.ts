@@ -164,6 +164,18 @@ describe('McEnteteComponent', () => {
     });
   });
 
+  describe('navRestreinte', () => {
+    it('false par défaut', () => {
+      expect((component as any).navRestreinte()).toBe(false);
+    });
+
+    it('true quand modeConsultationReferentiel est actif', () => {
+      contexteService.modeConsultationReferentiel.set(true);
+
+      expect((component as any).navRestreinte()).toBe(true);
+    });
+  });
+
   describe('tooltipSauvegarder', () => {
     it('sans sauvegarde → message absence', () => {
       sauvegardeAutoService.dateDerniereSauvegarde.set(null);

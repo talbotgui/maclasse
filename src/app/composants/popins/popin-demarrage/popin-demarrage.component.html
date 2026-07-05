@@ -17,66 +17,90 @@
         <p class="mc-popin__erreur" role="alert">{{ erreur() }}</p>
       }
 
-      <!-- Zone Première utilisation -->
-      <section class="mc-popin__section">
-        <h2 class="mc-section-titre">{{ LIBELLES.demarrage.titreNouveauFichier }}</h2>
-        <button
-          id="btnCreer"
-          type="button"
-          class="mc-btn-primaire"
-          [disabled]="enChargement()"
-          autofocus
-          (click)="creer()"
-        >
-          @if (enChargement()) {
-            {{ LIBELLES.commun.chargement }}
-          } @else {
-            {{ LIBELLES.demarrage.boutonCreer }}
-          }
-        </button>
-      </section>
+      <div class="mc-popin--demarrage__cartes">
 
-      <!-- Zone Charger -->
-      <section class="mc-popin__section">
-        <h2 class="mc-section-titre">{{ LIBELLES.demarrage.titreCharger }}</h2>
-
-        <div class="mc-champ">
-          <label for="fichierZip">{{ LIBELLES.demarrage.labelFichier }}</label>
-          <input
-            id="fichierZip"
-            type="file"
-            accept=".zip"
+        <!-- Carte Première utilisation -->
+        <section class="mc-popin--demarrage__carte-choix">
+          <h2 class="mc-popin--demarrage__carte-titre">{{ LIBELLES.demarrage.titreNouveau }}</h2>
+          <p class="mc-popin--demarrage__carte-texte">{{ LIBELLES.demarrage.texteNouveau }}</p>
+          <button
+            id="btnCreer"
+            type="button"
+            class="mc-btn-primaire mc-popin--demarrage__carte-bouton"
             [disabled]="enChargement()"
-            (change)="surSelectionFichier($event)"
-          />
-        </div>
+            autofocus
+            (click)="creer()"
+          >
+            @if (enChargement()) {
+              {{ LIBELLES.commun.chargement }}
+            } @else {
+              {{ LIBELLES.demarrage.boutonCreer }}
+            }
+          </button>
+        </section>
 
-        <div class="mc-champ">
-          <label for="motDePasseChargement">{{ LIBELLES.demarrage.labelMotDePasse }}</label>
-          <input
-            id="motDePasseChargement"
-            type="password"
-            [value]="motDePasse()"
+        <!-- Carte Charger -->
+        <section class="mc-popin--demarrage__carte-choix">
+          <h2 class="mc-popin--demarrage__carte-titre">{{ LIBELLES.demarrage.titreCharger }}</h2>
+
+          <div class="mc-champ">
+            <label for="fichierZip">{{ LIBELLES.demarrage.labelFichier }}</label>
+            <input
+              id="fichierZip"
+              type="file"
+              accept=".zip"
+              [disabled]="enChargement()"
+              (change)="surSelectionFichier($event)"
+            />
+          </div>
+
+          <div class="mc-champ">
+            <label for="motDePasseChargement">{{ LIBELLES.demarrage.labelMotDePasse }}</label>
+            <input
+              id="motDePasseChargement"
+              type="password"
+              [value]="motDePasse()"
+              [disabled]="enChargement()"
+              (input)="motDePasse.set($any($event.target).value)"
+              (keydown.enter)="charger()"
+            />
+          </div>
+
+          <button
+            id="btnCharger"
+            type="button"
+            class="mc-btn-primaire mc-popin--demarrage__carte-bouton"
+            [disabled]="!peutCharger"
+            (click)="charger()"
+          >
+            @if (enChargement()) {
+              {{ LIBELLES.demarrage.boutonChargement }}
+            } @else {
+              {{ LIBELLES.demarrage.boutonCharger }}
+            }
+          </button>
+        </section>
+
+        <!-- Carte Référentiel de compétences -->
+        <section class="mc-popin--demarrage__carte-choix">
+          <h2 class="mc-popin--demarrage__carte-titre">{{ LIBELLES.demarrage.titreReferentiel }}</h2>
+          <p class="mc-popin--demarrage__carte-texte">{{ LIBELLES.demarrage.texteReferentiel }}</p>
+          <button
+            id="btnAccederReferentiel"
+            type="button"
+            class="mc-btn-fantome mc-popin--demarrage__carte-bouton"
             [disabled]="enChargement()"
-            (input)="motDePasse.set($any($event.target).value)"
-            (keydown.enter)="charger()"
-          />
-        </div>
+            (click)="accederReferentiel()"
+          >
+            @if (enChargement()) {
+              {{ LIBELLES.commun.chargement }}
+            } @else {
+              {{ LIBELLES.demarrage.boutonReferentiel }}
+            }
+          </button>
+        </section>
 
-        <button
-          id="btnCharger"
-          type="button"
-          class="mc-btn-primaire"
-          [disabled]="!peutCharger"
-          (click)="charger()"
-        >
-          @if (enChargement()) {
-            {{ LIBELLES.demarrage.boutonChargement }}
-          } @else {
-            {{ LIBELLES.demarrage.boutonCharger }}
-          }
-        </button>
-      </section>
+      </div>
     </div>
   </div>
 </dialog>

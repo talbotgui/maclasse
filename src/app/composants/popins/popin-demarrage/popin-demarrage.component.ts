@@ -12,12 +12,15 @@ import type { DonneesApplication } from '../../../modeles/donnees-application.mo
  * Popin de démarrage obligatoire affichée au lancement de l'application.
  * Non fermable (pas d'Échap, pas de bouton Fermer).
  *
- * Deux chemins possibles :
+ * Trois chemins possibles :
  * - **Créer** : charge `donnees-defaut.json` via `fetch()`.
  * - **Charger** : déchiffre un fichier ZIP avec le mot de passe saisi.
+ * - **Référentiel** : charge `donnees-defaut.json` pour la seule consultation du référentiel
+ *   de compétences, sans donner accès au reste de l'application.
  *
- * Émet `demarrageTermine` avec les données chargées ;
- * l'écran démarrage appelle alors `DonneesService.charger()` et navigue.
+ * Émet `demarrageTermine` (Créer/Charger) ou `referentielDemande` (Référentiel)
+ * avec les données chargées ; l'écran démarrage appelle alors `DonneesService.charger()`
+ * et navigue vers l'écran approprié.
  * En cas d'erreur, un message inline est affiché et la popin reste ouverte.
  */
 @Component({
@@ -29,6 +32,10 @@ import type { DonneesApplication } from '../../../modeles/donnees-application.mo
 export class PopinDemarrageComponent extends ComposantBase {
   /** Émis avec les données chargées ou déchiffrées dès qu'elles sont disponibles. */
   protected readonly demarrageTermine: OutputEmitterRef<DonneesApplication> =
+    output<DonneesApplication>();
+
+  /** Émis avec les données d'exemple quand seule la consultation du référentiel est demandée. */
+  protected readonly referentielDemande: OutputEmitterRef<DonneesApplication> =
     output<DonneesApplication>();
 
   /** Référence à l'élément `<dialog>` natif. */
@@ -119,5 +126,26 @@ export class PopinDemarrageComponent extends ComposantBase {
   /** `true` si le formulaire de chargement est valide (fichier et mot de passe présents). */
   protected get peutCharger(): boolean {
     return !!this.fichierSelectionne && !!this.motDePasse().trim() && !this.enChargement();
+  }
+
+  /**
+   * Charge les données d'exemple `donnees-defaut.json` pour la seule consultation
+   * du référentiel de compétences. Émet `referentielDemande` en cas de succès,
+   * affiche une erreur sinon.
+   */
+  protected async accederReferentiel(): Promise<void> {
+    if (this.enChargement()) return;
+    this.enChargement.set(true);
+    this.erreur.set(null);
+    try {
+      const reponse = await fetch('/maclasse/donnees-defaut.json');
+      if (!reponse.ok) throw new Error('Fichier introuvable');
+      const donnees = (await reponse.json()) as DonneesApplication;
+      this.referentielDemande.emit(donnees);
+    } catch {
+      this.erreur.set(this.LIBELLES.demarrage.erreurFichier);
+    } finally {
+      this.enChargement.set(false);
+    }
   }
 }

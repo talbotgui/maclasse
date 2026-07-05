@@ -2119,3 +2119,16 @@ Aucun fichier n'a été modifié — analyse uniquement, conformément à la dem
 2026-07-05 15:41:50 [Héberger l'application sur GitHub Pages] la commande "git" est interdite. Reprend et demande moi d'exécuter, au besoin, les commandes GIT
 ---
 2026-07-05 16:19:12 [Sans titre] je veux revoir la modale affichée avant le chargement des données. Décrit là sommairement
+---
+2026-07-05 16:51:33 [Revoir la modale de chargement des données] Les modifications sont décrites dans le fichier @design_handoff_accueil_modale/README.md 
+Décrit les modifications à réaliser
+---
+2026-07-05 16:57:59 [Revoir la modale de chargement des données] - Au clic sur "Accéder aux programmes", il faut charger donnees-defaut mais bloquer l'accès aux autres routes de l'application que '/competences'
+- crée un modificateur local .mc-popin--demarrage__carte
+- scinde les libellés
+- utilise les variables de couleur
+As-tu d'autres questions ?
+---
+2026-07-05 17:02:27 [Revoir la modale de chargement des données] vas-y
+---
+2026-07-05 17:09:13 [Revoir la modale de chargement des données] reprend

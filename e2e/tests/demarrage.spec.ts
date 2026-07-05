@@ -3,7 +3,7 @@ import { SelecteursDemarrage } from '../selecteurs/selecteurs-demarrage';
 
 test('E2E-01 — Accès direct à un écran sans données redirige vers /demarrage', async ({ page }) => {
   const demarrage = new SelecteursDemarrage(page);
-  await page.goto('/eleves');
+  await page.goto('/maclasse/#/eleves');
   await expect(page).toHaveURL(/\/demarrage/);
   await expect(demarrage.btnCreer).toBeVisible();
   await expect(demarrage.navAccueil).not.toBeVisible();
@@ -13,7 +13,7 @@ test('E2E-01 — Accès direct à un écran sans données redirige vers /demarra
 
 test('E2E-02 — Créer un nouveau fichier depuis les données d\'exemple', async ({ page }) => {
   const demarrage = new SelecteursDemarrage(page);
-  await page.goto('/demarrage');
+  await page.goto('/maclasse/#/demarrage');
 
   await demarrage.btnCreer.click();
   await page.waitForURL('**/accueil');

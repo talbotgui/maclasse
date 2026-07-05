@@ -63,6 +63,17 @@
       background-color: color-mix(in srgb, var(--texte-sur-primaire) 20%, transparent);
     }
 
+    &--desactive {
+      opacity: 0.35;
+      cursor: not-allowed;
+      pointer-events: none;
+
+      &:hover {
+        opacity: 0.35;
+        background-color: transparent;
+      }
+    }
+
     &:focus-visible {
       outline: 3px solid var(--couleur-focus);
       outline-offset: 2px;

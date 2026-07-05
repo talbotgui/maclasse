@@ -16,7 +16,7 @@ export const test = avecScreenshots.extend<FixturesZip>({
     await use(MOT_DE_PASSE_TEST);
   },
   appVersDemanrage: async ({ page }, use) => {
-    await page.goto('/demarrage');
+    await page.goto('/maclasse/#/demarrage');
     await use(page);
   },
 });

@@ -90,6 +90,12 @@
               "lines": 80
             }
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "baseHref": "/maclasse/"
+          }
         }
       }
     }

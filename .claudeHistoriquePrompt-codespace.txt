@@ -2109,3 +2109,11 @@ Aucun fichier n'a été modifié — analyse uniquement, conformément à la dem
 2026-07-05 15:03:04 [Extract hardcoded labels from HTML to labels file] crée/utilise les libellés
 ---
 2026-07-05 15:07:02 [Analyser couverture de code pour tests E2E] tu peux faire les modifications
+---
+2026-07-05 15:31:54 [Sans titre] Je souhaite héberger l'application buildée sur GithubPages. Quelles sont les possibilités ?
+---
+2026-07-05 15:38:24 [Héberger l'application sur GitHub Pages] 1/ angular-cli-ghpages et documente son usage dans la documentation du projet
+2/ ajoute un --base-href /maclasse/
+3/ change le routing en withHashLocation
+---
+2026-07-05 15:41:50 [Héberger l'application sur GitHub Pages] la commande "git" est interdite. Reprend et demande moi d'exécuter, au besoin, les commandes GIT

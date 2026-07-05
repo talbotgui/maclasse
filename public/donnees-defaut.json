@@ -11685,7 +11685,7 @@
       "id": "et000003-0000-4000-8000-000000000001",
       "nom": "Semaine complète — 2ème partie",
       "dateDebut": "2026-02-01",
-      "dateFin": "2026-07-04",
+      "dateFin": "2026-12-31",
       "frequence": "lesDeux",
       "creneaux": [
         {

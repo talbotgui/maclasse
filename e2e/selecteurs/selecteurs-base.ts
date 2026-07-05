@@ -76,8 +76,8 @@ export class SelecteursBase {
     this.btnSauvegardeConfirmer = page.locator('#btnSauvegardeConfirmer');
     this.btnSauvegardeAnnuler = page.locator('#btnSauvegardeAnnuler');
 
-    this.exportSelectPrimaire = page.locator('#exportSelectPrimaire select');
-    this.exportSelectSecondaire = page.locator('#exportSelectSecondaire select');
+    this.exportSelectPrimaire = page.locator('#exportSelectPrimaire');
+    this.exportSelectSecondaire = page.locator('#exportSelectSecondaire');
     this.btnExportAnnuler = page.locator('#btnExportAnnuler');
     this.btnExportConfirmer = page.locator('#btnExportConfirmer');
   }

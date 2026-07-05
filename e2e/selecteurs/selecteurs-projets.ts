@@ -6,9 +6,9 @@ import { SelecteursBase } from './selecteurs-base';
  * L'écran comporte trois colonnes : liste gauche, fiche centrale, formulaire droit (mode édition).
  *
  * Projets du jeu de données d'exemple :
- *   - "Journal de la classe"          (id : 11111111-aaaa-bbbb-cccc-journal00001)
- *   - "Potager pédagogique"           (id : 22222222-aaaa-bbbb-cccc-potager00002)
- *   - "Spectacle de fin d'année"      (id : 33333333-aaaa-bbbb-cccc-spectacle0003)
+ *   - "Journal de la classe"     (id : 11111111-aaaa-bbbb-cccc-journal00001)  — domaines : FR, EMC, QLM
+ *   - "Potager pédagogique"      (id : 22222222-aaaa-bbbb-cccc-potager00002)  — domaines : MAT, QLM
+ *   - "Spectacle de fin d'année" (id : 33333333-aaaa-bbbb-cccc-spectacle0003) — domaines : EMC, EPS
  */
 export class SelecteursProjets extends SelecteursBase {
 
@@ -18,12 +18,10 @@ export class SelecteursProjets extends SelecteursBase {
   /** Champ de recherche dans la liste des projets. */
   readonly champRechercheProjet: Locator;
 
-  // --- Chips de filtre par domaine (jeu de données : 18 domaines) ---
-  /** Chip de filtre domaine Activités physiques. */
-  readonly chipDomaineAPS: Locator;
-  /** Chip de filtre domaine Français. */
+  // --- Chips de filtre par domaine ---
+  /** Chip de filtre domaine Français (FR — présent dans Journal). */
   readonly chipDomaineFR: Locator;
-  /** Chip de filtre domaine Mathématiques. */
+  /** Chip de filtre domaine Mathématiques (MAT — présent dans Potager). */
   readonly chipDomaineMAT: Locator;
 
   // --- Boutons de sélection des projets du jeu de données ---
@@ -35,6 +33,14 @@ export class SelecteursProjets extends SelecteursBase {
   readonly btnProjetSpectacle: Locator;
 
   // --- Fiche projet (lecture seule) ---
+  /** Titre du projet (h2.fiche-projet__titre) en mode lecture seule. */
+  readonly titreFiche: Locator;
+  /** Description du projet en mode lecture seule. */
+  readonly descriptionFiche: Locator;
+  /** Liste des périodes en mode lecture seule. */
+  readonly listePeriodesFiche: Locator;
+  /** Message affiché quand aucun projet n'est sélectionné. */
+  readonly messageAucunProjetSelectionne: Locator;
   /** Bouton MODIFIER sur la fiche projet. */
   readonly btnModifierProjet: Locator;
   /** Bouton IMPRIMER sur la fiche projet. */
@@ -62,7 +68,7 @@ export class SelecteursProjets extends SelecteursBase {
   /** Bouton AJOUTER PÉRIODE. */
   readonly btnAjouterPeriodeProjet: Locator;
 
-  // --- Première période (index 0 — toutes les périodes du jeu de données en ont au moins une) ---
+  // --- Première période (index 0) ---
   /** Champ Nom de la première période (mc-input, index 0). */
   readonly champPeriodeNomProjet0: Locator;
   /** Champ Date de début de la première période (mc-input type date, index 0). */
@@ -76,13 +82,16 @@ export class SelecteursProjets extends SelecteursBase {
   /** Bouton CONFIRMER la suppression de la première période (index 0). */
   readonly btnSupprimerPeriodeProjet0Confirmer: Locator;
 
+  // --- Troisième période (index 2 — Spectacle a 2 périodes, la nouvelle ajoutée est en index 2) ---
+  /** Champ Nom de la troisième période (mc-input, index 2). */
+  readonly champPeriodeNomProjet2: Locator;
+
   constructor(page: Page) {
     super(page);
 
     this.btnCreerProjet = page.locator('#btnCreerProjet');
     this.champRechercheProjet = page.locator('#rechercheProjet input');
 
-    this.chipDomaineAPS = page.locator('#chipDomaineAPS');
     this.chipDomaineFR = page.locator('#chipDomaineFR');
     this.chipDomaineMAT = page.locator('#chipDomaineMAT');
 
@@ -90,12 +99,17 @@ export class SelecteursProjets extends SelecteursBase {
     this.btnProjetPotager = page.locator('#btnProjet22222222-aaaa-bbbb-cccc-potager00002');
     this.btnProjetSpectacle = page.locator('#btnProjet33333333-aaaa-bbbb-cccc-spectacle0003');
 
+    this.titreFiche = page.locator('.fiche-projet__titre');
+    this.descriptionFiche = page.locator('.fiche-projet__description');
+    this.listePeriodesFiche = page.locator('.fiche-projet__periodes');
+    this.messageAucunProjetSelectionne = page.locator('.projets__vide');
+
     this.btnModifierProjet = page.locator('#btnModifierProjet');
     this.btnImprimerProjet = page.locator('#btnImprimerProjet');
     this.btnSupprimerProjet = page.locator('#btnSupprimerProjet');
     this.btnSupprimerProjetConfirmer = page.locator('#btnSupprimerProjet_confirmer');
 
-    this.champFormNomProjet = page.locator('#champFormNomProjet input');
+    this.champFormNomProjet = page.locator('#champFormNomProjet-input');
     this.champFormDescProjet = page.locator('#champFormDescProjet textarea');
     this.btnEnregistrerProjet = page.locator('#btnEnregistrerProjet');
     this.btnAnnulerProjet = page.locator('#btnAnnulerProjet');
@@ -104,11 +118,14 @@ export class SelecteursProjets extends SelecteursBase {
 
     this.btnAjouterPeriodeProjet = page.locator('#btnAjouterPeriodeProjet');
 
-    this.champPeriodeNomProjet0 = page.locator('#champPeriodeNomProjet0 input');
-    this.champPeriodeDebutProjet0 = page.locator('#champPeriodeDebutProjet0 input');
-    this.champPeriodeFinProjet0 = page.locator('#champPeriodeFinProjet0 input');
-    this.champPeriodeDescProjet0 = page.locator('#champPeriodeDescProjet0 textarea');
+    // [id] dynamique → l'id est sur le <input> interne, pas sur <mc-input> → pas de suffixe "input"
+    this.champPeriodeNomProjet0 = page.locator('#champPeriodeNomProjet0-input');
+    this.champPeriodeDebutProjet0 = page.locator('#champPeriodeDebutProjet0-input');
+    this.champPeriodeFinProjet0 = page.locator('#champPeriodeFinProjet0-input');
+    this.champPeriodeDescProjet0 = page.locator('#champPeriodeDescProjet0-input');
     this.btnSupprimerPeriodeProjet0 = page.locator('#btnSupprimerPeriodeProjet0');
     this.btnSupprimerPeriodeProjet0Confirmer = page.locator('#btnSupprimerPeriodeProjet0_confirmer');
+
+    this.champPeriodeNomProjet2 = page.locator('#champPeriodeNomProjet2-input');
   }
 }

@@ -15,6 +15,8 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
   // --- Colonne gauche : liste des EDT ---
   /** Bouton CRÉER un nouvel EDT. */
   readonly btnCreerEdt: Locator;
+  /** Liste `<ul>` des EDT (pour vérifier qu'un nouvel EDT y apparaît). */
+  readonly listeEdts: Locator;
   /** Bouton de sélection de l'EDT "Semaine paire" (jeu de données). */
   readonly btnEdtSemainePaire: Locator;
   /** Bouton de sélection de l'EDT "Semaine impaire" (jeu de données). */
@@ -23,10 +25,23 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
   readonly btnEdtSemaineComplete: Locator;
 
   // --- Grille hebdomadaire ---
+  /** En-tête de la grille hebdomadaire (contient les noms des colonnes jour). */
+  readonly grilleEntete: Locator;
+  /** Tableau complet de la grille (pour vérifier le texte des créneaux). */
+  readonly conteneurGrille: Locator;
+  /** Message affiché dans la zone grille quand aucun EDT n'est sélectionné. */
+  readonly grilleVide: Locator;
+  /** Message affiché dans la zone droite quand aucun formulaire n'est ouvert. */
+  readonly droiteVide: Locator;
   /** Bouton IMPRIMER l'EDT sélectionné. */
   readonly btnImprimerEdt: Locator;
-  /** Premier créneau existant dans la grille (index 0). */
+  /** Premier créneau existant dans la grille (index 0 — tout EDT confondu). */
   readonly premierCreneauGrille: Locator;
+  /**
+   * Premier créneau de l'EDT "Semaine paire" dans la grille.
+   * id=cr000001-0000-4000-8000-000000000001 (lundi 08:30-09:15).
+   */
+  readonly premierCreneauSemainePaire: Locator;
   /** Premier bouton "+" d'ajout de créneau dans une cellule vide de la grille. */
   readonly btnAjouterCreneauCelluleVide: Locator;
   /** Premier bouton "AJOUTER" en ligne basse de la grille (par jour). */
@@ -72,18 +87,24 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
     super(page);
 
     this.btnCreerEdt = page.locator('#btnCreerEdt');
+    this.listeEdts = page.locator('.edt__liste');
     this.btnEdtSemainePaire = page.locator('#btnSelectionnerEdtet000001-0000-4000-8000-000000000001');
     this.btnEdtSemaineImpaire = page.locator('#btnSelectionnerEdtet000002-0000-4000-8000-000000000001');
     this.btnEdtSemaineComplete = page.locator('#btnSelectionnerEdtet000003-0000-4000-8000-000000000001');
 
+    this.grilleEntete = page.locator('.edt__grille thead');
+    this.conteneurGrille = page.locator('.edt__grille');
+    this.grilleVide = page.locator('.edt__grille-vide');
+    this.droiteVide = page.locator('.edt__droite-vide');
     this.btnImprimerEdt = page.locator('#btnImprimerEdt');
     this.premierCreneauGrille = page.locator('[id^="btnCreneau"]').first();
+    this.premierCreneauSemainePaire = page.locator('#btnCreneaucr000001-0000-4000-8000-000000000001');
     this.btnAjouterCreneauCelluleVide = page.locator('[id^="btnAjouterCreneau"]').first();
     this.btnNouveauCreneauLigne = page.locator('[id^="btnNouveauCreneauJour"]').first();
 
-    this.inputNomEdt = page.locator('#inputNomEdt input');
-    this.inputDateDebutEdt = page.locator('#inputDateDebutEdt input');
-    this.inputDateFinEdt = page.locator('#inputDateFinEdt input');
+    this.inputNomEdt = page.locator('#inputNomEdt-input');
+    this.inputDateDebutEdt = page.locator('#inputDateDebutEdt-input');
+    this.inputDateFinEdt = page.locator('#inputDateFinEdt-input');
     this.selectFrequenceEdt = page.locator('#selectFrequenceEdt select');
     this.btnEnregistrerEdt = page.locator('#btnEnregistrerEdt');
     this.btnAnnulerEdt = page.locator('#btnAnnulerEdt');

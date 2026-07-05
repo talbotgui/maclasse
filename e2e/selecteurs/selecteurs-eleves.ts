@@ -112,10 +112,10 @@ export class SelecteursEleves extends SelecteursBase {
     this.btnAjouterCursus = page.locator('#btnAjouterCursus');
     this.btnAjouterAbsencePonctuelle = page.locator('#btnAjouterAbsPonct');
 
-    this.champNouveauContactNom = page.locator('#champContactNom2');
-    this.champNouveauContactTel = page.locator('#champContactTel2');
-    this.champNouvelleAbsenceRecurrenteLibelle = page.locator('#champAbsRecLibelle1');
-    this.champNouvelleAbsencePonctuelleDate = page.locator('#champAbsPonctDate0');
+    this.champNouveauContactNom = page.locator('#champContactNom2-input');
+    this.champNouveauContactTel = page.locator('#champContactTel2-input');
+    this.champNouvelleAbsenceRecurrenteLibelle = page.locator('#champAbsRecLibelle1-input');
+    this.champNouvelleAbsencePonctuelleDate = page.locator('#champAbsPonctDate0-input');
     this.champNouvelleAbsencePonctuelleJustification = page.locator('#champAbsPonctJustif0');
     this.listeResumeeContacts = page.locator('.fiche-eleve__liste-resumee-contacts');
     this.listeResumeeAbsencesRec = page.locator('.fiche-eleve__liste-resumee-absences-rec');

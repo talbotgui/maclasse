@@ -7,8 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "e2e": "playwright test",
     "e2e:avec-visu": "playwright test --headed",
-    "e2e:sans-visu": "playwright test",
     "e2e:ui": "playwright test --ui",
     "e2e:rapport": "playwright show-report"
   },

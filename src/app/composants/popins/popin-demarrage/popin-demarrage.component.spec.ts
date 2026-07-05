@@ -82,7 +82,7 @@ describe('PopinDemarrageComponent', () => {
     const fichierZip = new File(['contenu'], 'donnees.zip', { type: 'application/zip' });
 
     it('sans fichier sélectionné → ne fait rien', async () => {
-      (component as any).fichierSelectionne = null;
+      (component as any).fichierSelectionne.set(null);
       (component as any).motDePasse.set('secret');
       const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
 
@@ -92,7 +92,7 @@ describe('PopinDemarrageComponent', () => {
     });
 
     it('sans mot de passe → ne fait rien', async () => {
-      (component as any).fichierSelectionne = fichierZip;
+      (component as any).fichierSelectionne.set(fichierZip);
       (component as any).motDePasse.set('');
       const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
 
@@ -107,7 +107,7 @@ describe('PopinDemarrageComponent', () => {
       const chiffrementService = TestBed.inject(ChiffrementService);
       vi.spyOn(chiffrementService, 'dechiffrer').mockResolvedValue(donnees);
 
-      (component as any).fichierSelectionne = fichierZip;
+      (component as any).fichierSelectionne.set(fichierZip);
       (component as any).motDePasse.set('secret');
       const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
 
@@ -121,7 +121,7 @@ describe('PopinDemarrageComponent', () => {
       const chiffrementService = TestBed.inject(ChiffrementService);
       vi.spyOn(chiffrementService, 'dechiffrer').mockRejectedValue(new DOMException('decrypt'));
 
-      (component as any).fichierSelectionne = fichierZip;
+      (component as any).fichierSelectionne.set(fichierZip);
       (component as any).motDePasse.set('mauvais');
 
       await component['charger']();
@@ -135,7 +135,7 @@ describe('PopinDemarrageComponent', () => {
       const chiffrementService = TestBed.inject(ChiffrementService);
       vi.spyOn(chiffrementService, 'dechiffrer').mockRejectedValue(new Error('corrompu'));
 
-      (component as any).fichierSelectionne = fichierZip;
+      (component as any).fichierSelectionne.set(fichierZip);
       (component as any).motDePasse.set('secret');
 
       await component['charger']();
@@ -200,21 +200,21 @@ describe('PopinDemarrageComponent', () => {
 
   describe('peutCharger', () => {
     it('false si pas de fichier', () => {
-      (component as any).fichierSelectionne = null;
+      (component as any).fichierSelectionne.set(null);
       (component as any).motDePasse.set('secret');
 
       expect(component['peutCharger']).toBe(false);
     });
 
     it('false si motDePasse vide', () => {
-      (component as any).fichierSelectionne = new File(['x'], 'f.zip');
+      (component as any).fichierSelectionne.set(new File(['x'], 'f.zip'));
       (component as any).motDePasse.set('');
 
       expect(component['peutCharger']).toBe(false);
     });
 
     it('false si enChargement=true', () => {
-      (component as any).fichierSelectionne = new File(['x'], 'f.zip');
+      (component as any).fichierSelectionne.set(new File(['x'], 'f.zip'));
       (component as any).motDePasse.set('secret');
       (component as any).enChargement.set(true);
 
@@ -222,7 +222,7 @@ describe('PopinDemarrageComponent', () => {
     });
 
     it('true si fichier + mdp + pas en chargement', () => {
-      (component as any).fichierSelectionne = new File(['x'], 'f.zip');
+      (component as any).fichierSelectionne.set(new File(['x'], 'f.zip'));
       (component as any).motDePasse.set('secret');
       (component as any).enChargement.set(false);
 

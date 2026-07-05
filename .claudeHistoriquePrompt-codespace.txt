@@ -2137,3 +2137,7 @@ As-tu d'autres questions ?
 ---
 2026-07-05 18:23:08 [Ajouter tooltip sur liens désactivés navigation] le title n'est pas visible quand la sourie passe sur l'ancre désactivée. Pourquoi ? Comment contourner ce problème ?
 Si la solution est complexe, est-il possible d'afficher une modale depuis la garde ?
+---
+2026-07-05 18:57:06 [Sans titre] sur la modale d'accueil @src/app/composants/popins/popin-demarrage/ , propose moi un visuel plus moderne pour l'input[@type=file]
+---
+2026-07-05 19:13:31 [Moderniser le design de l'input file dans la popin] Est-il possible d'éliminer le libellé "Aucun fichier choisi" et modifier le libellé "CHoisir un fichier" ?

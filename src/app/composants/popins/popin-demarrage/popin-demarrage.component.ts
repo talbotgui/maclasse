@@ -1,6 +1,6 @@
 import {
   ChangeDetectionStrategy, Component, ElementRef, afterNextRender,
-  inject, output, signal, viewChild,
+  computed, inject, output, signal, viewChild,
 } from '@angular/core';
 import type { OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../../composant-base';
@@ -48,7 +48,10 @@ export class PopinDemarrageComponent extends ComposantBase {
   private readonly contexteService = inject(ContexteService);
 
   /** Fichier ZIP sélectionné par l'utilisateur, `null` si aucun. */
-  private fichierSelectionne: File | null = null;
+  private readonly fichierSelectionne = signal<File | null>(null);
+
+  /** Nom du fichier sélectionné à afficher, `null` si aucun. */
+  protected readonly nomFichierSelectionne = computed(() => this.fichierSelectionne()?.name ?? null);
 
   /** Valeur courante du champ mot de passe. */
   protected readonly motDePasse = signal('');
@@ -73,7 +76,7 @@ export class PopinDemarrageComponent extends ComposantBase {
    */
   protected surSelectionFichier(event: Event): void {
     const fichiers = (event.target as HTMLInputElement).files;
-    this.fichierSelectionne = fichiers?.[0] ?? null;
+    this.fichierSelectionne.set(fichiers?.[0] ?? null);
     this.erreur.set(null);
   }
 
@@ -104,12 +107,13 @@ export class PopinDemarrageComponent extends ComposantBase {
    * Émet `demarrageTermine` en cas de succès, affiche l'erreur adaptée sinon.
    */
   protected async charger(): Promise<void> {
-    if (this.enChargement() || !this.fichierSelectionne || !this.motDePasse().trim()) return;
+    const fichier = this.fichierSelectionne();
+    if (this.enChargement() || !fichier || !this.motDePasse().trim()) return;
     this.enChargement.set(true);
     this.erreur.set(null);
     try {
       const mdp = this.motDePasse().trim();
-      const donnees = await this.chiffrementService.dechiffrer(this.fichierSelectionne, mdp);
+      const donnees = await this.chiffrementService.dechiffrer(fichier, mdp);
       this.contexteService.motDePasse = mdp;
       this.demarrageTermine.emit(donnees);
     } catch (e) {
@@ -125,7 +129,7 @@ export class PopinDemarrageComponent extends ComposantBase {
 
   /** `true` si le formulaire de chargement est valide (fichier et mot de passe présents). */
   protected get peutCharger(): boolean {
-    return !!this.fichierSelectionne && !!this.motDePasse().trim() && !this.enChargement();
+    return !!this.fichierSelectionne() && !!this.motDePasse().trim() && !this.enChargement();
   }
 
   /**

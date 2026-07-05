@@ -44,14 +44,24 @@
           <h2 class="mc-popin--demarrage__carte-titre">{{ LIBELLES.demarrage.titreCharger }}</h2>
 
           <div class="mc-champ">
-            <label for="fichierZip">{{ LIBELLES.demarrage.labelFichier }}</label>
-            <input
-              id="fichierZip"
-              type="file"
-              accept=".zip"
-              [disabled]="enChargement()"
-              (change)="surSelectionFichier($event)"
-            />
+            <span id="labelFichierZip" class="mc-champ-legende">{{ LIBELLES.demarrage.labelFichier }}</span>
+            <div class="mc-champ-fichier">
+              <input
+                id="fichierZip"
+                type="file"
+                accept=".zip"
+                class="sr-only"
+                aria-describedby="labelFichierZip"
+                [disabled]="enChargement()"
+                (change)="surSelectionFichier($event)"
+              />
+              <label for="fichierZip" class="mc-btn-fantome mc-btn-sm">
+                {{ LIBELLES.demarrage.boutonParcourirFichier }}
+              </label>
+              @if (nomFichierSelectionne()) {
+                <span class="mc-champ-fichier__nom">{{ nomFichierSelectionne() }}</span>
+              }
+            </div>
           </div>
 
           <div class="mc-champ">

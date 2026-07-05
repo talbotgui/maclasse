@@ -61,6 +61,42 @@ dialog.mc-popin {
   text-align: center;
 }
 
+.mc-champ-legende {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--texte-secondaire);
+}
+
+.mc-champ-fichier {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  > label {
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  > input:focus-visible + label {
+    outline: 3px solid var(--couleur-focus);
+    outline-offset: 2px;
+  }
+
+  > input:disabled + label {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.mc-champ-fichier__nom {
+  font-size: 0.875rem;
+  color: var(--texte-secondaire);
+  overflow-wrap: anywhere;
+}
+
 .mc-popin__erreur {
   margin: 0;
   padding: 0.625rem 0.875rem;

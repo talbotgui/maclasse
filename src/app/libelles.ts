@@ -65,6 +65,7 @@ export const LIBELLES = {
     boutonCreer:               'Créer ma classe à partir d\'un jeu de données d\'exemple',
     titreCharger:              'Sélectionner la dernière version des données de votre classe',
     labelFichier:              'Fichier ZIP',
+    boutonParcourirFichier:    'Parcourir…',
     labelMotDePasse:           'Mot de passe',
     boutonCharger:             'Charger',
     boutonChargement:          'Chargement…',

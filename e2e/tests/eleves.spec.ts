@@ -244,6 +244,12 @@ testAvecDonnees('E2E-29 — Ajouter une absence ponctuelle dans la fiche élève
   await expect(eleves.listeResumeeAbsencesPonct).toContainText('Maladie');
 });
 
+testAvecDonnees('E2E-31 — Ajouter un cursus dans la fiche élève', async ({ appAvecDonnees }) => {
+  // TODO: naviguer vers Élèves, sélectionner un élève, cliquer MODIFIER,
+  // cliquer btnAjouterCursus, remplir les champs de cursus (niveau, année…),
+  // cliquer ENREGISTRER, vérifier que le cursus apparaît en lecture seule dans la fiche
+});
+
 testAvecDonnees('E2E-30 — Imprimer la fiche d\'un élève', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
   const eleves = new SelecteursEleves(appAvecDonnees);

@@ -43,6 +43,15 @@ export class SelecteursBase {
   /** Bouton ANNULER de la popin de sauvegarde. */
   readonly btnSauvegardeAnnuler: Locator;
 
+  /** Select de destination principale dans la popin d'export de compétences (projet ou séance). */
+  readonly exportSelectPrimaire: Locator;
+  /** Select de destination secondaire dans la popin d'export de compétences. */
+  readonly exportSelectSecondaire: Locator;
+  /** Bouton ANNULER de la popin d'export de compétences. */
+  readonly btnExportAnnuler: Locator;
+  /** Bouton EXPORTER (confirmer) de la popin d'export de compétences. */
+  readonly btnExportConfirmer: Locator;
+
   constructor(protected readonly page: Page) {
     this.btnSauvegarder = page.locator('#btnSauvegarder');
     this.btnAnnuler = page.locator('#btnAnnuler');
@@ -66,6 +75,11 @@ export class SelecteursBase {
     this.champMotDePasseSauvegarde = page.locator('#motDePasseSauvegarde');
     this.btnSauvegardeConfirmer = page.locator('#btnSauvegardeConfirmer');
     this.btnSauvegardeAnnuler = page.locator('#btnSauvegardeAnnuler');
+
+    this.exportSelectPrimaire = page.locator('#exportSelectPrimaire select');
+    this.exportSelectSecondaire = page.locator('#exportSelectSecondaire select');
+    this.btnExportAnnuler = page.locator('#btnExportAnnuler');
+    this.btnExportConfirmer = page.locator('#btnExportConfirmer');
   }
 
   /** Retourne le premier résultat de la liste de recherche globale. */

@@ -43,6 +43,8 @@ export class SelecteursEleves extends SelecteursBase {
   readonly btnAjouterAbsenceRecurrente: Locator;
   /** Bouton AJOUTER dans la section Absences ponctuelles. */
   readonly btnAjouterAbsencePonctuelle: Locator;
+  /** Bouton AJOUTER dans la section Cursus. */
+  readonly btnAjouterCursus: Locator;
 
   // --- Sous-formulaire contact (index fixe : DUCOBU a déjà 2 contacts dans le jeu de données) ---
   /** Champ Nom du nouveau contact ajouté (index 2). */
@@ -107,6 +109,7 @@ export class SelecteursEleves extends SelecteursBase {
 
     this.btnAjouterContact = page.locator('#btnAjouterContact');
     this.btnAjouterAbsenceRecurrente = page.locator('#btnAjouterAbsRec');
+    this.btnAjouterCursus = page.locator('#btnAjouterCursus');
     this.btnAjouterAbsencePonctuelle = page.locator('#btnAjouterAbsPonct');
 
     this.champNouveauContactNom = page.locator('#champContactNom2');

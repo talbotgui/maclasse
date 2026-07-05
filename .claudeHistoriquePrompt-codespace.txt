@@ -1892,3 +1892,98 @@ Reformule le besoin et décrit les impacts
 Tu peux implémenter
 ---
 2026-06-25 20:16:07 [Ajouter libellés descriptifs aux boutons ANNULER et REFAIRE] reprend
+---
+2026-06-28 18:50:38 [Sans titre] Liste tous les éléments tabulables ou permettant des interactions présents dans l'application dont le sélecteur n'est pas présents dans les classes @/e2e/selecteurs/selecteurs-*.ts
+---
+2026-06-28 19:06:14 [Sans titre] Dans la page des projets, l'identifiant 'rechercheCompetences' est présent plusieurs fois. Ce n'est pas une bonne pratique.
+---
+2026-06-28 19:07:24 [Audit éléments tabulables sans sélecteurs définis] Crée un fichier contenant la liste des sélecteurs répartis par écran
+---
+2026-06-28 19:07:46 [Éliminer les identifiants en double dans la page projets] vas-y
+---
+2026-06-28 19:19:47 [Sans titre] Au chargement de l'application, le service 'charger' de @src/app/services/avecEtat/donnees.service.ts  est appelé. Modifie la date des cahiers journaux présents dans le jeu de données pour correspondre à la semaine suivant la date courante
+---
+2026-06-28 19:22:36 [Audit éléments tabulables sans sélecteurs définis] vas-y
+---
+2026-06-28 19:23:20 [Modifier dates cahiers journaux semaine suivante] vas-y
+---
+2026-06-28 19:28:28 [Modifier dates cahiers journaux semaine suivante] continue
+---
+2026-06-28 19:52:22 [Modifier dates cahiers journaux semaine suivante] pourquoi la méthode decalerCahierJournalVersSemaineSuivante est développée deux fois ?
+---
+2026-06-28 19:53:29 [Modifier dates cahiers journaux semaine suivante] à quoi sert la méthode PopinDemarrageComponent.decalerCahierJournalVersSemaineSuivante ?
+---
+2026-06-28 19:54:28 [Modifier dates cahiers journaux semaine suivante] <task-notification>
+<summary>Stop hook feedback</summary>
+</task-notification>
+<system-reminder>
+Stop hook blocking error from command "PostToolUse:Edit": Fichier modifié : /workspaces/maclasse/src/app/composants/popins/popin-demarrage/popin-demarrage.component.ts
+Lancement de la vérification (compilation + tests + couverture ≥ 80%)...
+
+=== 1/2  Compilation TypeScript (tsc --noEmit) ===
+OK
+
+=== 2/2  Tests et couverture (ng test --coverage) ===
+ÉCHEC — Tests en erreur ou couverture < 80% sur au moins une métrique :
+❯ Building...
+✔ Building...
+Application bundle generation failed. [16.876 seconds] - 2026-06-28T19:54:26.630Z
+
+✘ [ERROR] TS2304: Cannot find name 'DateUtils'. [plugin angular-compiler]
+
+    src/app/composants/popins/popin-demarrage/popin-demarrage.component.ts:110:25:
+      110 │     const lundiOrigine = DateUtils.lundiDeLaSemaine(premierDate);
+          ╵                          ~~~~~~~~~
+
+
+✘ [ERROR] TS2304: Cannot find name 'DateUtils'. [plugin angular-compiler]
+
+    src/app/composants/popins/popin-demarrage/popin-demarrage.component.ts:111:23:
+      111 │     const lundiCible = DateUtils.ajouterJours(
+          ╵                        ~~~~~~~~~
+
+
+✘ [ERROR] TS2304: Cannot find name 'DateUtils'. [plugin angular-compiler]
+
+    src/app/composants/popins/popin-demarrage/popin-demarrage.component.ts:112:6:
+      112 │       DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()),
+          ╵       ~~~~~~~~~
+
+
+✘ [ERROR] TS2304: Cannot find name 'DateUtils'. [plugin angular-compiler]
+
+    src/app/composants/popins/popin-demarrage/popin-demarrage.component.ts:112:33:
+      112 │       DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()),
+          ╵                                  ~~~~~~~~~
+
+
+✘ [ERROR] TS2304: Cannot find name 'DateUtils'. [plugin angular-compiler]
+
+    src/app/composants/popins/popin-demarrage/popin-demarrage.component.ts:115:18:
+      115 │     const delta = DateUtils.differenceEnJours(lundiOrigine, lundi...
+          ╵                   ~~~~~~~~~
+
+
+✘ [ERROR] TS2304: Cannot find name 'DateUtils'. [plugin angular-compiler]
+
+    src/app/composants/popins/popin-demarrage/popin-demarrage.component.ts:117:15:
+      117 │       j.date = DateUtils.ajouterJours(j.date, delta);
+          ╵                ~~~~~~~~~
+
+</system-reminder>
+---
+2026-06-28 19:55:52 [Sans titre] liste toutes les méthodes de classe TS dont le nom ne commence pas par un verbe à l'infinitif
+---
+2026-06-28 20:03:31 [Lister les méthodes de classe TS sans verbe infinitif] corrige le nom des méthodes de la catégorie 3
+---
+2026-06-28 20:03:55 [Lister les méthodes de classe TS sans verbe infinitif] vas-y
+---
+2026-06-28 20:12:41 [Lister les méthodes de classe TS sans verbe infinitif] enrichit les règles de développement TS avec des éléments sur les noms de méthode
+---
+2026-06-28 20:19:47 [Sans titre] Certains tests automatisés exécutés par "npm run test" sont KO. pourquoi ?
+---
+2026-06-28 20:23:35 [Déboguer les tests automatisés échoués] vas-y
+---
+2026-06-28 20:27:42 [Audit éléments tabulables sans sélecteurs définis] liste les tests nécessaires pour utiliser les nouveaux sélecteurs et augmenter le nombre de fonctionnalités testées par les tests E2E. Pour chaque test nécessaire, ajoute un test mais uniquement la déclaration de la méthode avec un commentaire TODO
+---
+2026-07-05 09:16:50 [Audit éléments tabulables sans sélecteurs définis] reprend

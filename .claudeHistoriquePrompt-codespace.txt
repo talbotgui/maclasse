@@ -2007,3 +2007,105 @@ Application bundle generation failed. [16.876 seconds] - 2026-06-28T19:54:26.630
 2026-07-05 14:53:23 [Planifier implémentation tests E2E et sélecteurs] développe la phase 6
 ---
 2026-07-05 14:57:56 [Sans titre] liste les libellés présents en dur dans les pages HTML au lieu d'être présents dans le fichier @src/app/libelles.ts
+---
+2026-07-05 15:00:21 [Extract hardcoded labels from HTML to labels file] <task-notification>
+<task-id>ac58bc5f064fea9b5</task-id>
+<tool-use-id>toolu_01CNqCLrbkmC39b2mQ5SzqWb</tool-use-id>
+<output-file>/tmp/claude-1000/-workspaces-maclasse/ee67a91f-c05e-42a0-8392-bccbedc0c584/tasks/ac58bc5f064fea9b5.output</output-file>
+<status>completed</status>
+<summary>Agent "Find hardcoded labels in HTML templates" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>## Résultat de l'analyse
+
+J'ai lu `libelles.ts` (structure confirmée : `commun`, `entete`, `navigation`, `demarrage`, `accueil`, `eleve`, `projet`, `competences`, `selecteurCompetences`, `edt`, `cahierJournal`, `parametrage`, `popins`, `elevesConcernes`, `commandes`, `aria`) puis les 35 fichiers `.html` sous `src/app/`. La grande majorité des fichiers (24/35) sont propres — tout texte français passe déjà par `LIBELLES.xxx`. **11 fichiers** contiennent du texte français en dur. **31 occurrences** au total.
+
+### `src/app/composants/mc-arbre-competences/mc-arbre-competences.component.html`
+| Ligne | Texte en dur | Suggestion |
+|---|---|---|
+| 9 | `aria-label="Filtrer par domaine"` | Match exact existant : `LIBELLES.selecteurCompetences.ariaFiltreDomaine` |
+| 38 | `(noeud.estDeplie ? 'Replier ' : 'Déplier ') + ...` | Pas de match — créer `competences.ariaReplierNoeud` / `ariaDeplierNoeud` |
+
+### `src/app/composants/mc-eleves-concernes/mc-eleves-concernes.component.html`
+| Ligne | Texte en dur | Suggestion |
+|---|---|---|
+| 43 | `aria-label="Groupes"` | Semantiquement proche de `LIBELLES.parametrage.sections.groupes` ('Groupes') mais domaine différent — pas de clé partagée idéale, à créer localement ou dans `commun` |
+| 61 | `aria-label="Élèves"` | Pas de match exact (`LIBELLES.navigation.eleves` = 'Élèves' est le plus proche) |
+
+### `src/app/ecrans/cahier-journal/ecran-cahier-journal.component.html`
+| Ligne | Texte en dur | Suggestion |
+|---|---|---|
+| 6 | `title="-7 jours"`, `aria-label="7 jours en arrière"` | Pas de match |
+| 7 | `title="-1 jour"`, `aria-label="Jour précédent"` | Pas de match |
+| 9 | `title="+1 jour"`, `aria-label="Jour suivant"` | Pas de match |
+| 10 | `title="+7 jours"`, `aria-label="7 jours en avant"` | Pas de match |
+| 51 | `aria-label="Duplication"` | Pas de match |
+| 110 | `aria-label="Monter la séance"` | Pas de match |
+| 117 | `aria-label="Descendre la séance"` | Pas de match |
+| 123 | `aria-label="Modifier la séance"` | Proche de `LIBELLES.commun.modifier` mais phrase complète différente — pas de match direct |
+| 135 | `aria-label="Supprimer la séance"` | Proche de `LIBELLES.commun.supprimer` mais phrase complète différente — pas de match direct |
+| 176 | `+ Ajouter une séance` (texte bouton) | Pas de match (`LIBELLES.commun.ajouter` = 'Ajouter' seul) |
+
+### `src/app/ecrans/cahier-journal/cj-formulaire-seance/cj-formulaire-seance.component.html`
+| Ligne | Texte en dur | Suggestion |
+|---|---|---|
+| 5 | `... une séance` (suffixe après `LIBELLES.commun.modifier/creer`) | Pas de match — créer ex. `cahierJournal.suffixeSeance` |
+
+### `src/app/ecrans/competences/ecran-competences.component.html`
+| Ligne | Texte en dur | Suggestion |
+|---|---|---|
+| 19 | `aria-label="Panier de compétences"` | Pas de match |
+| 26 | `[attr.aria-label]="'Retirer ' + item.libelle"` | Pas de match (préfixe 'Retirer ' en dur) |
+
+### `src/app/ecrans/eleves/ecran-eleves.component.html`
+| Ligne | Texte en dur | Suggestion |
+|---|---|---|
+| 27 | `aria-label="Liste des élèves"` | Pas de match |
+
+### `src/app/ecrans/eleves/fe-formulaire-eleve/fe-formulaire-eleve.component.html`
+| Ligne | Texte en dur | Suggestion |
+|---|---|---|
+| 19 | `[label]="'Sexe'"` | Pas de match (`eleve.labelSexeM`/`labelSexeF` existent pour les valeurs, pas pour le libellé du champ) |
+
+### `src/app/ecrans/emploi-du-temps/ecran-emploi-du-temps.component.html`
+| Ligne | Texte en dur | Suggestion |
+|---|---|---|
+| 15 | `aria-label="Liste des emplois du temps"` | Pas de match |
+| 55 | `aria-label="Grille hebdomadaire"` | Pas de match |
+| 58 | `&lt;th&gt;Heure&lt;/th&gt;` (texte statique) | Pas de match |
+| 95 | `[attr.aria-label]="'Ajouter un créneau ' + LIBELLES.edt.joursLibelles[jour]"` | **Match existant réutilisable** : `LIBELLES.edt.boutonAjouter` = 'Ajouter un créneau' (déjà utilisé ligne 111/113 du même fichier — duplication du littéral à corriger) |
+
+### `src/app/ecrans/emploi-du-temps/edt-formulaire/edt-formulaire.component.html`
+| Ligne | Texte en dur | Suggestion |
+|---|---|---|
+| 66 | `{{ ... }} créneau – {{ jourLibelle() }}` (texte " créneau – " en dur) | Pas de match |
+
+### `src/app/ecrans/parametrage/ecran-parametrage.component.html`
+| Ligne | Texte en dur | Suggestion |
+|---|---|---|
+| 4 | `aria-label="Sections de paramétrage"` | Pas de match |
+| 326 | `aria-label="Domaines de compétences"` | **Match exact existant** : `LIBELLES.parametrage.sections.domainesCompetences` |
+
+### `src/app/ecrans/projets/ecran-projets.component.html`
+| Ligne | Texte en dur | Suggestion |
+|---|---|---|
+| 22 | `aria-label="Liste des projets"` | Pas de match |
+
+---
+
+### Total : 31 occurrences de texte français en dur, réparties sur 11 fichiers sur les 35 examinés.
+
+Fichiers vérifiés et jugés conformes (aucune occurrence) : `app.html`, `mc-badge-statut`, `mc-bouton-destruction`, `mc-champ-heure`, `mc-champ-recherche`, `mc-checkbox`, `mc-chip-filtre`, `mc-entete`, `mc-input`, `mc-mini-calendrier`, `mc-radio-group`, `mc-select`, `mc-selecteur-competences`, `mc-textarea`, toutes les popins (`popin-avertissement`, `popin-demarrage`, `popin-export-competences`, `popin-sauvegarde`, `popin-warnings-absences`), `ecran-accueil`, `ecran-demarrage`, `fe-fiche-eleve`, `fp-fiche-projet`, `fp-formulaire-projet`.
+
+Deux points notables pour remédiation prioritaire (matches exacts déjà présents, simple remplacement) :
+- `ecran-emploi-du-temps.component.html:95` → remplacer par `LIBELLES.edt.boutonAjouter`
+- `ecran-parametrage.component.html:326` → remplacer par `LIBELLES.parametrage.sections.domainesCompetences`
+
+Aucun fichier n'a été modifié — analyse uniquement, conformément à la demande.</result>
+<usage><subagent_tokens>96736</subagent_tokens><tool_uses>37</tool_uses><duration_ms>116504</duration_ms></usage>
+</task-notification>
+---
+2026-07-05 15:00:27 [Sans titre] analyse le fichier @package.json et propose moi  des solutions de calcul de la couverture de code des tests E2E (en excluant les pages HTML et les classes de modèle)
+---
+2026-07-05 15:03:04 [Extract hardcoded labels from HTML to labels file] crée/utilise les libellés
+---
+2026-07-05 15:07:02 [Analyser couverture de code pour tests E2E] tu peux faire les modifications

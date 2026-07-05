@@ -1,4 +1,4 @@
-import { test as base } from '@playwright/test';
+import { test as base } from './avec-couverture.fixture';
 import { mkdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { Frame } from '@playwright/test';

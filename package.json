@@ -10,7 +10,8 @@
     "e2e": "playwright test",
     "e2e:avec-visu": "playwright test --headed",
     "e2e:ui": "playwright test --ui",
-    "e2e:rapport": "playwright show-report"
+    "e2e:rapport": "playwright show-report",
+    "e2e:couverture": "COUVERTURE_E2E=1 playwright test"
   },
   "private": true,
   "packageManager": "npm@11.9.0",
@@ -33,6 +34,7 @@
     "@types/node": "^26.0.0",
     "@vitest/coverage-v8": "^4.1.9",
     "jsdom": "^28.0.0",
+    "monocart-reporter": "^2.12.2",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"

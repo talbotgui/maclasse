@@ -67,16 +67,13 @@ testAvecDonnees('E2E-55 — Annuler les modifications des propriétés d\'un EDT
   await entete.navEmploiDuTemps.click();
   await edt.btnEdtSemainePaire.click();
   
-  // Modifier le nom, enregistrer
+  // Modifier le nom, annule
   await edt.inputNomEdt.fill('Nom modifié temporaire');
-  await edt.btnEnregistrerEdt.click();
-  
-  // Annuler et raffraichir
   await edt.btnAnnulerEdt.click();
-  await edt.btnEdtSemainePaire.click();
 
-  // Le nom d'origine est restauré
-  await expect(edt.inputNomEdt).toHaveValue('Semaine paire — 1ère partie');
+  // Le champ n'existe plus dans le DOM
+  await expect(edt.inputNomEdt).toHaveCount(0);
+
   // Aucune mutation → ANNULER entête inactif
   await expect(entete.btnAnnuler).toBeDisabled();
 });

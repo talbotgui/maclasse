@@ -251,9 +251,9 @@ export class EcranEmploiDuTempsComponent {
 
   /** Annule l'édition en cours et réaffiche les propriétés de l'EDT sélectionné. */
   protected onAnnule(): void {
-    const edt = this.edtSelectionne();
+    this.edtSelectionne.set(null);
     this.creneauEdite.set(null);
-    this.formEdt.set(edt);
+    this.formEdt.set(null);
   }
 
   /** Lance l'impression de la grille de l'EDT sélectionné. */

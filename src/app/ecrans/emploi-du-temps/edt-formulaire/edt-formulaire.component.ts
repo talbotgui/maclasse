@@ -79,7 +79,7 @@ export class EdtFormulaireComponent {
   public readonly creneauSupprime: OutputEmitterRef<string> = output<string>();
 
   /** Émis quand l'utilisateur annule. */
-  public readonly annule: OutputEmitterRef<void> = output<void>();
+  public readonly edtAnnule: OutputEmitterRef<void> = output<void>();
 
   /** Options de fréquence pour l'EDT. */
   protected readonly optionsFrequence = [

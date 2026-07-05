@@ -46,7 +46,7 @@
           id="btnAnnulerEdt"
           type="button"
           class="mc-btn-fantome"
-          (click)="annule.emit()"
+          (click)="edtAnnule.emit()"
         >{{ LIBELLES.commun.annuler }}</button>
         <mc-bouton-destruction
           [idBase]="'btnSupprimerEdt'"
@@ -134,7 +134,7 @@
           id="btnAnnulerCreneau"
           type="button"
           class="mc-btn-fantome"
-          (click)="annule.emit()"
+          (click)="edtAnnule.emit()"
         >{{ LIBELLES.commun.annuler }}</button>
         @if (estEditionCreneau()) {
           <mc-bouton-destruction

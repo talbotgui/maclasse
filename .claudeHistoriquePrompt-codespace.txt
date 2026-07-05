@@ -2132,3 +2132,8 @@ As-tu d'autres questions ?
 2026-07-05 17:02:27 [Revoir la modale de chargement des données] vas-y
 ---
 2026-07-05 17:09:13 [Revoir la modale de chargement des données] reprend
+---
+2026-07-05 18:14:19 [Sans titre] dans @src/app/composants/mc-entete/ , quand  la navigation est restreinte (navRestreinte()==true), ajoute un tooltip/titre sur les liens désactivés avec le libellé "Pour accéder à ces fonctionnalités, créer un jeu de données depuis l'écran d'accueil"
+---
+2026-07-05 18:23:08 [Ajouter tooltip sur liens désactivés navigation] le title n'est pas visible quand la sourie passe sur l'ancre désactivée. Pourquoi ? Comment contourner ce problème ?
+Si la solution est complexe, est-il possible d'afficher une modale depuis la garde ?

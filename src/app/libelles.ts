@@ -43,6 +43,7 @@ export const LIBELLES = {
     rechercheLabel:            'Recherche globale',
     rechercheAria:             'Résultats de recherche',
     boutonTheme:               'Changer de thème',
+    tooltipNavRestreinte:      'Pour accéder à ces fonctionnalités, créer un jeu de données après avoir recharger la page',
   },
 
   /** Libellés de la navigation principale. */

@@ -2003,3 +2003,7 @@ Application bundle generation failed. [16.876 seconds] - 2026-06-28T19:54:26.630
 2026-07-05 12:22:02 [Sans titre] le test E2E-76, développé dans la classe @e2e/tests/cahier-journal.spec.ts ,  échoue. Le jeu de donnée par défaut ne déclenche pas d'avertissement à la sélection du prochain vendredi + initialisation avec l'emploi du temps. Pourquoi ?
 ---
 2026-07-05 12:23:05 [Debugging E2E-76 test failure for Friday scheduling] le test E2E-76, développé dans la classe @e2e/tests/cahier-journal.spec.ts ,  échoue. Le jeu de donnée par défaut (@donnees-defaut.json) ne déclenche pas d'avertissement à la sélection du prochain vendredi + initialisation avec l'emploi du temps. Pourquoi ?
+---
+2026-07-05 14:53:23 [Planifier implémentation tests E2E et sélecteurs] développe la phase 6
+---
+2026-07-05 14:57:56 [Sans titre] liste les libellés présents en dur dans les pages HTML au lieu d'être présents dans le fichier @src/app/libelles.ts

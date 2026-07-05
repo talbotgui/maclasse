@@ -62,6 +62,10 @@ export class SelecteursEleves extends SelecteursBase {
   /** Champ Justification de la nouvelle absence ponctuelle ajoutée (index 0). */
   readonly champNouvelleAbsencePonctuelleJustification: Locator;
 
+  // --- Sous-formulaire cursus (index fixe : MARTINOT a déjà 2 cursus) ---
+  /** Champ Niveau du nouveau cursus ajouté (index 2). */
+  readonly champNouveauCursusNiveau: Locator;
+
   // --- Lecture seule ---
   /** Liste résumée affichant contacts en mode lecture. */
   readonly listeResumeeContacts: Locator;
@@ -117,6 +121,7 @@ export class SelecteursEleves extends SelecteursBase {
     this.champNouvelleAbsenceRecurrenteLibelle = page.locator('#champAbsRecLibelle1-input');
     this.champNouvelleAbsencePonctuelleDate = page.locator('#champAbsPonctDate0-input');
     this.champNouvelleAbsencePonctuelleJustification = page.locator('#champAbsPonctJustif0');
+    this.champNouveauCursusNiveau = page.locator('#champCursusNiveau2-input');
     this.listeResumeeContacts = page.locator('.fiche-eleve__liste-resumee-contacts');
     this.listeResumeeAbsencesRec = page.locator('.fiche-eleve__liste-resumee-absences-rec');
     this.listeResumeeAbsencesPonct = page.locator('.fiche-eleve__liste-resumee-absences-ponct');

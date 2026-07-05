@@ -245,9 +245,24 @@ testAvecDonnees('E2E-29 — Ajouter une absence ponctuelle dans la fiche élève
 });
 
 testAvecDonnees('E2E-31 — Ajouter un cursus dans la fiche élève', async ({ appAvecDonnees }) => {
-  // TODO: naviguer vers Élèves, sélectionner un élève, cliquer MODIFIER,
-  // cliquer btnAjouterCursus, remplir les champs de cursus (niveau, année…),
-  // cliquer ENREGISTRER, vérifier que le cursus apparaît en lecture seule dans la fiche
+  const entete = new SelecteursEntete(appAvecDonnees);
+  const eleves = new SelecteursEleves(appAvecDonnees);
+
+  await entete.navEleves.click();
+
+  // MARTINOT a déjà 2 cursus (index 0 et 1) → le nouveau sera à l'index 2
+  await eleves.selectionnerMartinot();
+  await eleves.btnModifier.click();
+
+  await eleves.btnAjouterCursus.click();
+
+  // Remplir le niveau du nouveau cursus (index 2)
+  await eleves.champNouveauCursusNiveau.fill('CM2');
+  await eleves.btnEnregistrer.click();
+
+  // Le cursus apparaît en lecture seule dans la fiche
+  await expect(eleves.listeResumeeCursus).toContainText('CM2');
+  await expect(entete.btnAnnuler).toBeEnabled();
 });
 
 testAvecDonnees('E2E-30 — Imprimer la fiche d\'un élève', async ({ appAvecDonnees }) => {

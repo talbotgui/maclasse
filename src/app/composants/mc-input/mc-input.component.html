@@ -1,12 +1,12 @@
 <div class="mc-champ">
-  <label [for]="id()">
+  <label [for]="id() + '-input'">
     {{ label() }}
     @if (required()) {
       <span class="mc-champ-requis" aria-hidden="true"> *</span>
     }
   </label>
   <input
-    [id]="id()+'-input'"
+    [id]="id() + '-input'"
     [type]="type()"
     [placeholder]="placeholder()"
     [required]="required()"

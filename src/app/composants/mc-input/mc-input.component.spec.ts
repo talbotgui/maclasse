@@ -88,8 +88,8 @@ describe('McInputComponent', () => {
     });
 
     it('label for correspond à l\'id de l\'input', () => {
-      expect(labelEl().getAttribute('for')).toBe('champTest');
-      expect(inputEl().id).toBe('champTest');
+      expect(labelEl().getAttribute('for')).toBe('champTest-input');
+      expect(inputEl().id).toBe('champTest-input');
     });
 
     it('type par défaut est "text"', () => {

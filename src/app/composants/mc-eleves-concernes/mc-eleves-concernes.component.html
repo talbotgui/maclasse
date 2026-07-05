@@ -40,7 +40,7 @@
   </fieldset>
 
   @if (valeurInterne().type === 'groupes') {
-    <div class="mc-eleves-concernes__chips" role="group" aria-label="Groupes">
+    <div class="mc-eleves-concernes__chips" role="group" [attr.aria-label]="LIBELLES.elevesConcernes.ariaGroupes">
       @if (groupes().length === 0) {
         <p class="mc-liste-vide">{{ LIBELLES.commun.aucunResultat }}</p>
       }
@@ -58,7 +58,7 @@
   }
 
   @if (valeurInterne().type === 'eleves') {
-    <div class="mc-eleves-concernes__chips" role="group" aria-label="Élèves">
+    <div class="mc-eleves-concernes__chips" role="group" [attr.aria-label]="LIBELLES.elevesConcernes.ariaEleves">
       @if (eleves().length === 0) {
         <p class="mc-liste-vide">{{ LIBELLES.commun.aucunResultat }}</p>
       }

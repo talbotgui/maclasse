@@ -12,7 +12,7 @@
     @if (edts().length === 0) {
       <p class="edt__liste-vide">{{ LIBELLES.edt.aucunEdtSelectionne }}</p>
     } @else {
-      <ul class="edt__liste" role="listbox" aria-label="Liste des emplois du temps">
+      <ul class="edt__liste" role="listbox" [attr.aria-label]="LIBELLES.edt.ariaListeEdt">
         @for (edt of edts(); track edt.id) {
           <li>
             <button
@@ -52,10 +52,10 @@
       </div>
 
       <div class="edt__grille-defilement">
-        <table class="edt__grille" aria-label="Grille hebdomadaire">
+        <table class="edt__grille" [attr.aria-label]="LIBELLES.edt.ariaGrilleHebdomadaire">
           <thead>
             <tr>
-              <th class="edt__grille-th edt__grille-th--heure" scope="col">Heure</th>
+              <th class="edt__grille-th edt__grille-th--heure" scope="col">{{ LIBELLES.edt.colonneHeure }}</th>
               @for (jour of joursOuvres(); track jour) {
                 <th class="edt__grille-th" scope="col">{{ LIBELLES.edt.joursLibelles[jour] }}</th>
               }
@@ -92,7 +92,7 @@
                       <button
                         [id]="'btnAjouterCreneau' + jour + ligne.heureDebut"
                         class="edt__btn-ajouter-creneau"
-                        [attr.aria-label]="'Ajouter un créneau ' + LIBELLES.edt.joursLibelles[jour]"
+                        [attr.aria-label]="LIBELLES.edt.boutonAjouter + ' ' + LIBELLES.edt.joursLibelles[jour]"
                         (click)="ajouterCreneauPourJour(jour)"
                       >+</button>
                     }

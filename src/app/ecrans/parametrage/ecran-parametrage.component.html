@@ -1,7 +1,7 @@
 <div class="parametrage">
 
   <!-- Colonne gauche : navigation par section -->
-  <nav class="parametrage__nav" aria-label="Sections de paramétrage">
+  <nav class="parametrage__nav" [attr.aria-label]="LIBELLES.parametrage.ariaSectionsParametrage">
     <ul class="parametrage__liste-sections">
       @for (section of listeSections; track section.id) {
         <li>
@@ -323,7 +323,7 @@
             <button id="btnAnnulerDomaines" class="mc-btn-fantome" (click)="annulerDomainesCompetences()">{{ LIBELLES.commun.annuler }}</button>
           </div>
           <p class="parametrage__domaines-info">{{ LIBELLES.parametrage.labelDomainesInfo }}</p>
-          <ul class="parametrage__liste-domaines" aria-label="Domaines de compétences">
+          <ul class="parametrage__liste-domaines" [attr.aria-label]="LIBELLES.parametrage.sections.domainesCompetences">
             @for (domaine of tousDomaines(); track domaine.id; let iD = $index) {
               <li class="parametrage__domaine">
                 <label class="parametrage__domaine-label" [for]="'checkDomaine' + iD">

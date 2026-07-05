@@ -16,7 +16,7 @@
   <section class="form-eleve__section" aria-labelledby="titreFormIdentite">
     <h3 id="titreFormIdentite" class="form-eleve__titre-section">{{ LIBELLES.eleve.sectionIdentite }}</h3>
     <div class="form-eleve__grille">
-      <mc-radio-group id="champFormSexe" [label]="'Sexe'" [options]="optionsSexe" [(ngModel)]="formEleve.sexe" />
+      <mc-radio-group id="champFormSexe" [label]="LIBELLES.eleve.labelSexe" [options]="optionsSexe" [(ngModel)]="formEleve.sexe" />
       <mc-input id="champFormDateNaissance" [label]="LIBELLES.eleve.labelDateNaissance" type="date" [(ngModel)]="formEleve.dateNaissance" />
       <mc-input id="champFormDateArrivee" [label]="LIBELLES.eleve.labelDateArrivee" type="date" [(ngModel)]="formEleve.dateArrivee" />
       <mc-input id="champFormNiveau" [label]="LIBELLES.eleve.labelNiveau" [(ngModel)]="formEleve.niveau" />

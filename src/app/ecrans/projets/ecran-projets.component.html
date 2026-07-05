@@ -19,7 +19,7 @@
       }
     </div>
 
-    <ul class="projets__liste" aria-label="Liste des projets">
+    <ul class="projets__liste" [attr.aria-label]="LIBELLES.projet.ariaListeProjets">
       @if (projetsAffiches().length === 0) {
         <li class="projets__liste-vide">{{ LIBELLES.projet.aucunProjet }}</li>
       }

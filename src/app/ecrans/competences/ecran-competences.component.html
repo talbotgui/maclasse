@@ -16,14 +16,14 @@
     @if (panierAvecLibelles().length === 0) {
       <p class="competences__panier-vide">{{ LIBELLES.competences.panierVide }}</p>
     } @else {
-      <ul class="competences__panier-liste" aria-label="Panier de compétences">
+      <ul class="competences__panier-liste" [attr.aria-label]="LIBELLES.competences.ariaPanier">
         @for (item of panierAvecLibelles(); track item.id) {
           <li class="competences__panier-item">
             <span class="competences__panier-libelle">{{ item.libelle }}</span>
             <button
               [id]="'btnRetirerCompetence' + item.id"
               class="mc-btn-icone mc-btn-xs"
-              [attr.aria-label]="'Retirer ' + item.libelle"
+              [attr.aria-label]="LIBELLES.competences.ariaRetirer + item.libelle"
               (click)="retirerDuPanier(item.id)"
             >✕</button>
           </li>

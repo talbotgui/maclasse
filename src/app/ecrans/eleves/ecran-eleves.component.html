@@ -24,7 +24,7 @@
       }
     </div>
 
-    <ul class="eleves__liste" aria-label="Liste des élèves">
+    <ul class="eleves__liste" [attr.aria-label]="LIBELLES.eleve.ariaListeEleves">
       @if (elevesAffiches().length === 0) {
         <li class="eleves__liste-vide">{{ LIBELLES.eleve.aucunEleve }}</li>
       }

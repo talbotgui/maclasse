@@ -127,6 +127,8 @@ export const LIBELLES = {
     labelAutorisationBaignade:  'Autorisation baignade',
     labelPPA:                   'PPA',
     labelESS:                   'ESS',
+    labelSexe:                  'Sexe',
+    ariaListeEleves:            'Liste des élèves',
   },
 
   /** Libellés de l'écran Projets. */
@@ -147,6 +149,7 @@ export const LIBELLES = {
     labelPeriodeDescription: 'Description de la période',
     labelPeriodeCompetences: 'Compétences',
     boutonAjouterPeriode:    'Ajouter une période',
+    ariaListeProjets:        'Liste des projets',
   },
 
   /** Libellés de l'écran Compétences. */
@@ -158,6 +161,10 @@ export const LIBELLES = {
     boutonEnvoyerSeance: 'Envoyer vers une séance',
     infoDomainesParametrage: 'Tous les domaines sont disponibles et activables dans l\'écran Paramétrage.',
     ariaAjouterAuPanier: 'Ajouter au panier : ',
+    ariaPanier:          'Panier de compétences',
+    ariaRetirer:         'Retirer ',
+    ariaReplierNoeud:    'Replier ',
+    ariaDeplierNoeud:    'Déplier ',
   },
 
   /** Libellés du composant sélecteur de compétences (`mc-selecteur-competences`). */
@@ -194,6 +201,10 @@ export const LIBELLES = {
     typePauseDejeuner:          'Pause déjeuner',
     boutonAjouter:              'Ajouter un créneau',
     aucunCreneau:               'Aucun créneau',
+    ariaListeEdt:               'Liste des emplois du temps',
+    ariaGrilleHebdomadaire:     'Grille hebdomadaire',
+    colonneHeure:               'Heure',
+    suffixeCreneau:             'créneau',
     joursLibelles: {
       lundi:    'Lundi',
       mardi:    'Mardi',
@@ -227,6 +238,21 @@ export const LIBELLES = {
     labelRessources:            'Ressources',
     labelCompetences:           'Compétences',
     labelEleves:                'Élèves concernés',
+    suffixeSeance:              'une séance',
+    boutonAjouterSeance:        'Ajouter une séance',
+    tooltipMoins7Jours:         '-7 jours',
+    ariaMoins7Jours:            '7 jours en arrière',
+    tooltipMoins1Jour:          '-1 jour',
+    ariaJourPrecedent:          'Jour précédent',
+    tooltipPlus1Jour:           '+1 jour',
+    ariaJourSuivant:            'Jour suivant',
+    tooltipPlus7Jours:          '+7 jours',
+    ariaPlus7Jours:             '7 jours en avant',
+    ariaDuplication:            'Duplication',
+    ariaMonterSeance:           'Monter la séance',
+    ariaDescendreSeance:        'Descendre la séance',
+    ariaModifierSeance:         'Modifier la séance',
+    ariaSupprimerSeance:        'Supprimer la séance',
   },
 
   /** Libellés de l'écran Paramétrage. */
@@ -278,6 +304,7 @@ export const LIBELLES = {
     labelDomainesInfo:            'Cochez les domaines et sous-domaines à utiliser dans votre classe. Décochez tout pour tout afficher.',
     ariaCheckboxDomaine:          'Activer le domaine',
     ariaCheckboxSousDomaine:      'Activer le sous-domaine',
+    ariaSectionsParametrage:      'Sections de paramétrage',
   },
 
   /** Libellés des fenêtres modales (popins). */
@@ -318,6 +345,8 @@ export const LIBELLES = {
     modeClasse:  'Toute la classe',
     modeGroupes: 'Par groupes',
     modeEleves:  'Élèves spécifiques',
+    ariaGroupes: 'Groupes',
+    ariaEleves:  'Élèves',
   },
 
   /** Libellés des actions soumises au mécanisme UNDO/REDO, affichés dans les tooltips. */

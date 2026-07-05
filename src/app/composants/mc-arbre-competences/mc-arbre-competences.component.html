@@ -6,7 +6,7 @@
   />
 
   @if (domaines().length > 0) {
-    <div class="mc-arbre-competences__domaines" role="group" aria-label="Filtrer par domaine">
+    <div class="mc-arbre-competences__domaines" role="group" [attr.aria-label]="LIBELLES.selecteurCompetences.ariaFiltreDomaine">
       @for (domaine of domaines(); track domaine.id) {
         <mc-chip-filtre
           [id]="'filtreDomaine_' + domaine.id"
@@ -35,7 +35,7 @@
             [id]="'noeudToggle_' + noeud.competence.id"
             type="button"
             class="mc-arbre-competences__toggle"
-            [attr.aria-label]="(noeud.estDeplie ? 'Replier ' : 'Déplier ') + noeud.competence.libelle"
+            [attr.aria-label]="(noeud.estDeplie ? LIBELLES.competences.ariaReplierNoeud : LIBELLES.competences.ariaDeplierNoeud) + noeud.competence.libelle"
             (click)="basculerNoeud(noeud.competence.id)"
           >{{ noeud.estDeplie ? '▼' : '▶' }}</button>
         } @else {

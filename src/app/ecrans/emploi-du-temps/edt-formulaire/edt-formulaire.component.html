@@ -63,7 +63,7 @@
   @if (formCreneau) {
     <form class="edt-formulaire" id="formCreneau" (ngSubmit)="onEnregistrerCreneau()">
       <h2 class="edt-formulaire__titre">
-        {{ estEditionCreneau() ? LIBELLES.commun.modifier : LIBELLES.commun.creer }} créneau – {{ jourLibelle() }}
+        {{ estEditionCreneau() ? LIBELLES.commun.modifier : LIBELLES.commun.creer }} {{ LIBELLES.edt.suffixeCreneau }} – {{ jourLibelle() }}
       </h2>
 
       <mc-champ-heure

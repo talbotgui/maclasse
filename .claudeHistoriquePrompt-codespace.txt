@@ -2141,3 +2141,170 @@ Si la solution est complexe, est-il possible d'afficher une modale depuis la gar
 2026-07-05 18:57:06 [Sans titre] sur la modale d'accueil @src/app/composants/popins/popin-demarrage/ , propose moi un visuel plus moderne pour l'input[@type=file]
 ---
 2026-07-05 19:13:31 [Moderniser le design de l'input file dans la popin] Est-il possible d'éliminer le libellé "Aucun fichier choisi" et modifier le libellé "CHoisir un fichier" ?
+---
+2026-07-05 19:47:05 [Sans titre] dans la pages des élèves et des projets, au clic sur le bouton SAUVEGARDER, le focus devrait être placé sur le bouton MODIFIER
+---
+2026-07-05 19:48:07 [Focus sur bouton modifier après sauvegarde] <task-notification>
+<task-id>a32e79d02bdfcc830</task-id>
+<tool-use-id>toolu_0171waurkVhtGuGjtMBav9mi</tool-use-id>
+<output-file>/tmp/claude-1000/-workspaces-maclasse/a08a25bf-e880-4f93-b766-55c186d7ef7c/tasks/a32e79d02bdfcc830.output</output-file>
+<status>completed</status>
+<summary>Agent "Explore fiche élève et projet save/modify buttons" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>J'ai exploré l'ensemble du flux pour les deux écrans. Voici le rapport complet, sans aucune modification de fichier.
+
+## Écran ÉLÈVES
+
+**Fichiers concernés :**
+- `src/app/ecrans/eleves/ecran-eleves.component.ts` / `.html` — orchestre le mode lecture/édition
+- `src/app/ecrans/eleves/fe-fiche-eleve/fe-fiche-eleve.component.ts` / `.html` — bouton MODIFIER
+- `src/app/ecrans/eleves/fe-formulaire-eleve/fe-formulaire-eleve.component.ts` / `.html` — bouton ENREGISTRER
+
+### 1-2. HTML des boutons
+
+MODIFIER — `fe-fiche-eleve.component.html:7` :
+```html
+&lt;button id="btnModifierEleve" class="mc-btn-primaire" (click)="onModifier()"&gt;{{ LIBELLES.commun.modifier }}&lt;/button&gt;
+```
+
+ENREGISTRER — `fe-formulaire-eleve.component.html:10-11` :
+```html
+&lt;button id="btnEnregistrerEleve" class="mc-btn-primaire" (click)="onEnregistrer()"&gt;{{ LIBELLES.commun.enregistrer }}&lt;/button&gt;
+&lt;button id="btnAnnulerEleve" class="mc-btn-fantome" (click)="onAnnuler()"&gt;{{ LIBELLES.commun.annuler }}&lt;/button&gt;
+```
+
+### 3. Bascule lecture/édition
+
+Le booléen vit dans l'écran parent, pas dans les sous-composants : `ecran-eleves.component.ts:58` — `protected readonly enModeEdition = signal(false);`
+
+- `fe-fiche-eleve` émet `modifier` → `activerEdition()` (ecran-eleves.component.ts:160-162) fait `this.enModeEdition.set(true)`.
+- `fe-formulaire-eleve` émet `enregistrer` → `onEnregistrer(eleve)` (lignes 168-176) persiste via `EleveService` puis `this.enModeEdition.set(false)`.
+- `fe-formulaire-eleve.component.ts:220-222` : `onEnregistrer()` ne fait qu'émettre `structuredClone(this.formEleve)` — la logique de bascule de mode est entièrement côté écran parent.
+- Le template `ecran-eleves.component.html:46-72` utilise `@if (eleveSelectionne() &amp;&amp; !enModeEdition())` pour la fiche, `@if (enModeEdition())` pour le formulaire.
+
+### 4. Focus automatique — déjà en place
+
+- `fe-formulaire-eleve` expose `focusDemande = input(false)` (ligne 58), passé statiquement `[focusDemande]="true"` par le parent (`ecran-eleves.component.html:64`), car le formulaire est recréé (`@if`).
+- Utilisé sur le premier champ éditable, `champFormPrenom` (`fe-formulaire-eleve.component.html:6`) :
+```html
+&lt;mc-input id="champFormPrenom" ... [mcAutoFocus]="focusDemande()" /&gt;
+```
+
+## Écran PROJETS
+
+**Fichiers concernés :** structure identique, préfixe `fp-` au lieu de `fe-`.
+- `src/app/ecrans/projets/ecran-projets.component.ts` / `.html`
+- `src/app/ecrans/projets/fp-fiche-projet/fp-fiche-projet.component.ts` / `.html`
+- `src/app/ecrans/projets/fp-formulaire-projet/fp-formulaire-projet.component.ts` / `.html`
+
+### 1-2. HTML des boutons
+
+MODIFIER — `fp-fiche-projet.component.html:7` :
+```html
+&lt;button id="btnModifierProjet" class="mc-btn-primaire" (click)="onModifier()"&gt;{{ LIBELLES.commun.modifier }}&lt;/button&gt;
+```
+
+ENREGISTRER — `fp-formulaire-projet.component.html:7-8` :
+```html
+&lt;button id="btnEnregistrerProjet" class="mc-btn-primaire" (click)="onEnregistrer()"&gt;{{ LIBELLES.commun.enregistrer }}&lt;/button&gt;
+&lt;button id="btnAnnulerProjet" class="mc-btn-fantome" (click)="annuler.emit()"&gt;{{ LIBELLES.commun.annuler }}&lt;/button&gt;
+```
+Remarque (hors périmètre de l'exploration mais notable) : le bouton ANNULER appelle `annuler.emit()` directement dans le template, ce qui contrevient à la règle `angular-typescript.md` (« ne jamais appeler `output().emit()` directement dans un template » — il manque un `onAnnuler()`). Côté élèves, `fe-formulaire-eleve` respecte bien le pattern avec `onAnnuler()` (lignes 225-227).
+
+### 3. Bascule lecture/édition
+
+Même pattern : `ecran-projets.component.ts:66` — `protected readonly enModeEdition = signal(false);`
+- `activerEdition()` (lignes 145-147) → `set(true)`
+- `onEnregistrer(projet)` (lignes 153-161) persiste via `ProjetService`, sélectionne le projet dans le contexte, puis `set(false)`
+- Template `ecran-projets.component.html:41-59` : mêmes gardes `@if (... &amp;&amp; !enModeEdition())` / `@if (enModeEdition())`.
+
+### 4. Focus automatique — déjà en place
+
+- `fp-formulaire-projet` expose aussi `focusDemande = input(false)` (ligne 57), passé `[focusDemande]="true"` (`ecran-projets.component.html:54`).
+- Appliqué sur `champFormNomProjet` (`fp-formulaire-projet.component.html:5`) :
+```html
+&lt;mc-input id="champFormNomProjet" ... [mcAutoFocus]="focusDemande()" /&gt;
+```
+
+## 5. `src/app/directives/mc-auto-focus.directive.ts`
+
+Points clés :
+- Ligne 24 : `public readonly mcAutoFocus: InputSignal&lt;boolean&gt; = input(false);`
+- Lignes 30-40 : le focus est déclenché **dans un `effect()`** au sein du constructeur, pas seulement à `ngOnInit`/création :
+```ts
+public constructor() {
+  effect(() =&gt; {
+    if (this.mcAutoFocus()) {
+      const el = this.elementRef.nativeElement;
+      const cible = el.matches(McAutoFocusDirective.SELECTEUR_FOCUSABLE)
+        ? el
+        : ((el.querySelector(McAutoFocusDirective.SELECTEUR_FOCUSABLE) as HTMLElement | null) ?? el);
+      cible.focus();
+    }
+  });
+}
+```
+
+**Réponse à la question posée** : la directive est bien réactive à un signal, pas seulement déclenchée à la création. Le commentaire de la classe le dit explicitement (lignes 12-13) : « L'implémentation via `effect()` garantit la réactivité même si la directive est portée par un élément déjà présent dans le DOM. » Concrètement, tant que l'élément hôte reste dans le DOM et que `mcAutoFocus` passe de `false` à `true` (signal réactif, ex. un `computed()` ou signal local passé en `[mcAutoFocus]`), l'effet se redéclenche et refocalise. C'est ce mécanisme qui est déjà utilisé ailleurs dans le projet avec des signaux réactifs (ex. cahier journal selon la mémoire projet, formulaire toujours présent dans le DOM). Dans les écrans élèves/projets actuels, le formulaire est recréé via `@if` donc `focusDemande` est passé statiquement à `true` — mais rien n'empêche de passer un signal réactif si le formulaire restait dans le DOM.</result>
+<usage><subagent_tokens>67370</subagent_tokens><tool_uses>14</tool_uses><duration_ms>51596</duration_ms></usage>
+</task-notification>
+---
+2026-07-05 19:58:36 [Focus sur bouton modifier après sauvegarde] Dans la page des élèves, au clic sur le bouton "Ajouter un contact", placer le focus sur le premier champ du formulaire ajouté. Le même comportement doit être mis en place sur les formulaires du même type.
+---
+2026-07-05 20:00:49 [Focus sur bouton modifier après sauvegarde] <task-notification>
+<task-id>a3d2f84adfbb94ef6</task-id>
+<tool-use-id>toolu_016AVyuVkBXm6dLTYtqqnbZE</tool-use-id>
+<output-file>/tmp/claude-1000/-workspaces-maclasse/a08a25bf-e880-4f93-b766-55c186d7ef7c/tasks/a3d2f84adfbb94ef6.output</output-file>
+<status>completed</status>
+<summary>Agent "Explore boutons AJOUTER inline et formulaires associés" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>I have enough detail now. Here's the full report.
+
+## Pattern général
+
+Le pattern « AJOUTER inline » est : un `&lt;button (click)="ajouterXxx()"&gt;` situé au-dessus d'une `&lt;ul&gt;`/`&lt;div&gt;` contenant un `@for (item of liste; track ...; let i = $index)`. La méthode `ajouterXxx()` pousse un objet vide/par défaut dans le tableau (immuablement, via spread ou `.update()`), ce qui fait apparaître un nouveau `&lt;li&gt;` avec ses propres champs. **Aucun de ces blocs n'utilise `[mcAutoFocus]`/`focusDemande` aujourd'hui** — seul le premier champ du formulaire parent global (`champFormPrenom`, `champFormNomProjet`) a `[mcAutoFocus]="focusDemande()"`.
+
+## Détail — `fe-formulaire-eleve` (fichiers : `src/app/ecrans/eleves/fe-formulaire-eleve/fe-formulaire-eleve.component.{html,ts}`)
+
+Le composant parent `FeFormulaireEleveComponent` est lui-même instancié sous `@if (enModeEdition())` dans `ecran-eleves.component.html` (ligne 63-65, `[focusDemande]="true"` statique) — recréé à chaque entrée en édition, donc le pattern « statique » de `rgaa-accessibilite.md` s'applique à ce niveau. À l'intérieur, 4 sections ont un bouton AJOUTER inline :
+
+1. **Contacts** — bouton `#btnAjouterContact` (html:48) → `ajouterContact()` (ts:142-147, spread avec objet vide). Liste : `@for (contact of formEleve.contacts; track $index; let i = $index)` (html:50). IDs déjà présents : `champContactType{i}`, `champContactNom{i}`, `champContactEmail{i}`, `champContactTel{i}`, `champContactAdresse{i}` (html:52-56).
+2. **Absences récurrentes** — bouton `#btnAjouterAbsRec` (html:66) → `ajouterAbsenceRecurrente()` (ts:158-168, objet avec `id: crypto.randomUUID()`). Liste : `@for (abs of formEleve.absencesRecurrentes; track abs.id; let i = $index)` (html:68). IDs : `champAbsRecLibelle{i}`, `champAbsRecJour{i}`, `champAbsRecDebut{i}`, `champAbsRecFin{i}`, `champAbsRecParite{i}` (html:70-74).
+3. **Absences ponctuelles** — bouton `#btnAjouterAbsPonct` (html:84) → `ajouterAbsencePonctuelle()` (ts:181-188, `id: crypto.randomUUID()`). Liste : `@for (abs of formEleve.absencesPonctuelles; track abs.id; let i = $index)` (html:86). IDs : `champAbsPonctDate{i}`, `champAbsPonctJustif{i}` (html:88-89).
+4. **Cursus** — bouton `#btnAjouterCursus` (html:99) → `ajouterCursus()` (ts:201-209, pas d'id sur l'objet). Liste : `@for (annee of formEleve.cursus; track $index; let i = $index)` (html:101). IDs : `champCursusAnnee{i}`, `champCursusNiveau{i}`, `champCursusEtab{i}`, `champCursusAccomp{i}` (html:103-106).
+
+Constat : le `track` est incohérent — `$index` pour contacts/cursus (pas d'`id` unique dans l'objet), `abs.id` pour les deux types d'absence. Pour appliquer le focus, il faudra un signal réactif type `contactAFocusIndex()` (ou équivalent) pointant sur le dernier élément ajouté, car le formulaire parent est déjà présent (statique `focusDemande=true` ne suffit pas ici — il faudrait un signal par sous-liste, pattern proche de celui du CJ).
+
+## Autre pattern comparable déjà conforme — `fp-formulaire-projet`
+
+Fichier `src/app/ecrans/projets/fp-formulaire-projet/fp-formulaire-projet.component.html`. Une seule section concernée : **Périodes** — bouton `#btnAjouterPeriodeProjet` (html:34) → `ajouterPeriode()`. Liste : `@for (periode of formProjet.periodes; track $index; let i = $index)` (html:36). IDs : `champPeriodeNomProjet{i}`, `champPeriodeDebutProjet{i}`, `champPeriodeFinProjet{i}` (html:39-41), plus `selecteurCompetences{i}`. Même absence de focus auto. Le composant parent est aussi sous `@if (enModeEdition())` avec `[focusDemande]="true"` statique (ecran-projets.component.html:53-55).
+
+## Autres endroits avec un pattern similaire (bouton AJOUTER → nouvel objet dans une liste rendue en `@for`)
+
+- **`src/app/ecrans/parametrage/ecran-parametrage.component.html`** — écran toujours dans le DOM (navigation par `@switch`/`@case`, pas de `@if` de recréation). 7 sections de référentiels, chacune avec bouton « Ajouter » (libellé `LIBELLES.commun.ajouter`) suivi d'un `@for (... ; track x.id; let i = $index)` :
+  - `btnAjouterPeriode` → `ajouterPeriode()` (ts:364)
+  - `btnAjouterGroupe` → `ajouterGroupe()` (ts:402)
+  - `btnAjouterStatut` → `ajouterStatutAcquisition()` (ts:440)
+  - `btnAjouterStatutEleve` → `ajouterStatutEleve()`
+  - `btnAjouterTypeContact` → `ajouterTypeContact()`
+  - `btnAjouterRaison` → `ajouterRaisonAbsence()`
+  - `btnAjouterFrequence` → `ajouterFrequenceAbsence()`
+  - `btnAjouterJourFerie` → `ajouterJourFerie()`
+  
+  Chaque ligne a déjà des IDs `[id]="'champXxx' + i"` et un bouton ENREGISTRER/mc-bouton-destruction (`petit=true`) inline par ligne — pattern exactement visé par la note `scss-css.md` (« boutons ENREGISTRER/ANNULER dans les lignes de référentiels du paramétrage »). Comme l'écran est un singleton toujours monté, le focus devra être piloté par un signal réactif (pas un `focusDemande` statique).
+
+- **`src/app/ecrans/emploi-du-temps/ecran-emploi-du-temps.component.html`** — boutons `+` dans la grille (`btnAjouterCreneau{jour}{heureDebut}`, ligne 93 ; `btnNouveauCreneauJour{jour}`, ligne ~108) → `ajouterCreneauPourJour(jour)` (ts:190). Ce n'est pas un `@for` qui grandit avec un bloc de champs inline dans la grille : le clic sélectionne/ouvre un formulaire dans la colonne de droite (composant séparé avec `[focusDemande]="true"`, html:127), donc **déjà conforme**, différent du pattern « inline dans une liste ».
+
+- **`src/app/ecrans/cahier-journal/ecran-cahier-journal.component.html`** — `btnAjouterSeance` (ligne 172) → `creerSeance()`, qui affiche `&lt;cj-formulaire-seance [focusDemande]="true"&gt;` sous `@if (enCreationSeance())` (lignes 158-166) : formulaire complet, pas une liste de mini-blocs inline, **déjà conforme** (signal réactif comme prescrit par la règle pour CJ). Pas de bouton "Ajouter" produisant un sous-bloc de champs répétés dans une liste dans cet écran (la duplication de journée/séance utilise une popup date, hors périmètre de ce pattern).
+
+- **`src/app/composants/mc-arbre-competences/mc-arbre-competences.component.html`** — `btnAjouterPanier_{id}` (ligne 53) → `ajouterAuPanier(id)` : ajoute une compétence au panier d'export, ne fait apparaître aucun champ de formulaire. **Hors périmètre.**
+
+## Synthèse pour la conception à venir
+
+Deux catégories à traiter différemment selon la règle RGAA :
+1. **Formulaire parent recréé par `@if`** (fe-formulaire-eleve, fp-formulaire-projet) : le `focusDemande="true"` statique du parent ne peut pas cibler un ajout ultérieur dans une sous-liste — il faudra un signal local par section (ex. `indexAFocaliser` par liste) mis à jour dans `ajouterContact()`/`ajouterPeriode()`/etc., et un binding `[mcAutoFocus]` conditionnel sur `$index === indexAFocaliser()` du premier champ de chaque `&lt;li&gt;`.
+2. **Écran/formulaire toujours monté** (ecran-parametrage) : même mécanique obligatoire (signal réactif), pas de statique possible, cohérent avec la règle déjà énoncée pour le Cahier Journal.
+
+Tous les champs des sous-blocs concernés ont déjà des `id` uniques conformes à `html-ids.md` (`'champXxx' + i`) — aucun travail requis sur les IDs, seulement sur l'ajout de `[mcAutoFocus]` piloté par un signal.</result>
+<usage><subagent_tokens>57466</subagent_tokens><tool_uses>20</tool_uses><duration_ms>113580</duration_ms></usage>
+</task-notification>

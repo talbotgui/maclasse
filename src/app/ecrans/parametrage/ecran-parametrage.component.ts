@@ -16,6 +16,7 @@ import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ReferentielService } from '../../services/sansEtat/referentiel.service';
 import { CommandeRemplacement } from '../../commandes/commande-par-index';
+import { McAutoFocusDirective } from '../../directives/mc-auto-focus.directive';
 import { McInputComponent } from '../../composants/mc-input/mc-input.component';
 import { McChampHeureComponent } from '../../composants/mc-champ-heure/mc-champ-heure.component';
 import { McChipFiltreComponent } from '../../composants/mc-chip-filtre/mc-chip-filtre.component';
@@ -68,6 +69,7 @@ interface EntreeSection {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
+    McAutoFocusDirective,
     McInputComponent,
     McChampHeureComponent,
     McChipFiltreComponent,
@@ -162,6 +164,23 @@ export class EcranParametrageComponent {
   /** Copies locales des jours fériés. */
   protected copieJoursFeries = signal<JourFerie[]>([]);
 
+  /** Index de la ligne venant d'être ajoutée à focaliser, par section (`null` si aucune). */
+  protected readonly indexAFocaliserPeriode = signal<number | null>(null);
+  /** Index du groupe venant d'être ajouté à focaliser (`null` si aucun). */
+  protected readonly indexAFocaliserGroupe = signal<number | null>(null);
+  /** Index du statut d'acquisition venant d'être ajouté à focaliser (`null` si aucun). */
+  protected readonly indexAFocaliserBareme = signal<number | null>(null);
+  /** Index du statut élève venant d'être ajouté à focaliser (`null` si aucun). */
+  protected readonly indexAFocaliserStatutEleve = signal<number | null>(null);
+  /** Index du type de contact venant d'être ajouté à focaliser (`null` si aucun). */
+  protected readonly indexAFocaliserTypeContact = signal<number | null>(null);
+  /** Index de la raison d'absence venant d'être ajoutée à focaliser (`null` si aucune). */
+  protected readonly indexAFocaliserRaisonAbsence = signal<number | null>(null);
+  /** Index de la fréquence d'absence venant d'être ajoutée à focaliser (`null` si aucune). */
+  protected readonly indexAFocaliserFrequenceAbsence = signal<number | null>(null);
+  /** Index du jour férié venant d'être ajouté à focaliser (`null` si aucun). */
+  protected readonly indexAFocaliserJourFerie = signal<number | null>(null);
+
   /**
    * Ensemble des IDs de domaines (N1) et sous-domaines (N2) actifs dans le formulaire.
    * Vide = tous actifs (comportement par défaut).
@@ -191,32 +210,40 @@ export class EcranParametrageComponent {
           break;
         case 'periodes':
           this.copiePeriodes.set(structuredClone(d.referentiels.periodes));
+          this.indexAFocaliserPeriode.set(null);
           break;
         case 'semaineHoraires':
           this.formSemaineHoraires = structuredClone(d.referentiels.configEmploiDuTemps);
           break;
         case 'groupes':
           this.copieGroupes.set(structuredClone(d.referentiels.groupes));
+          this.indexAFocaliserGroupe.set(null);
           break;
         case 'bareme':
           this.copieBareme.set(structuredClone(d.referentiels.statutsAcquisition));
+          this.indexAFocaliserBareme.set(null);
           break;
         case 'statutsEleve':
           this.copieStatutsEleve.set(structuredClone(d.referentiels.statutsEleve));
+          this.indexAFocaliserStatutEleve.set(null);
           break;
         case 'typesContact':
           this.copieTypesContact.set(structuredClone(d.referentiels.typesContact));
+          this.indexAFocaliserTypeContact.set(null);
           break;
         case 'raisonsAbsence':
           this.copieRaisonsAbsence.set(structuredClone(d.referentiels.raisonsAbsence));
+          this.indexAFocaliserRaisonAbsence.set(null);
           break;
         case 'frequencesAbsence':
           this.copieFrequencesAbsence.set(
             structuredClone(d.referentiels.frequencesAbsence),
           );
+          this.indexAFocaliserFrequenceAbsence.set(null);
           break;
         case 'joursFeries':
           this.copieJoursFeries.set(structuredClone(d.referentiels.joursFeries));
+          this.indexAFocaliserJourFerie.set(null);
           break;
         case 'preferences':
           this.formPreferences = {
@@ -360,12 +387,13 @@ export class EcranParametrageComponent {
     this.cdr.markForCheck();
   }
 
-  /** Ajoute une période vide en bas de la liste. */
+  /** Ajoute une période vide en bas de la liste et demande le focus dessus. */
   protected ajouterPeriode(): void {
     this.copiePeriodes.update(liste => [
       ...liste,
       { id: crypto.randomUUID(), nom: '', debut: '', fin: '' },
     ]);
+    this.indexAFocaliserPeriode.set(this.copiePeriodes().length - 1);
   }
 
   /**
@@ -391,6 +419,7 @@ export class EcranParametrageComponent {
   protected supprimerPeriode(periode: Periode): void {
     this.referentielService.supprimerPeriode(periode);
     this.copiePeriodes.update(liste => liste.filter(p => p.id !== periode.id));
+    this.indexAFocaliserPeriode.set(null);
   }
 
   /** @returns `true` si la période est utilisée et ne peut être supprimée. */
@@ -398,12 +427,13 @@ export class EcranParametrageComponent {
     return this.referentielService.estPeriodeUtilisee(periode.nom);
   }
 
-  /** Ajoute un groupe vide. */
+  /** Ajoute un groupe vide et demande le focus dessus. */
   protected ajouterGroupe(): void {
     this.copieGroupes.update(liste => [
       ...liste,
       { id: crypto.randomUUID(), libelle: '' },
     ]);
+    this.indexAFocaliserGroupe.set(this.copieGroupes().length - 1);
   }
 
   /**
@@ -429,6 +459,7 @@ export class EcranParametrageComponent {
   protected supprimerGroupe(groupe: Groupe): void {
     this.referentielService.supprimerGroupe(groupe);
     this.copieGroupes.update(liste => liste.filter(g => g.id !== groupe.id));
+    this.indexAFocaliserGroupe.set(null);
   }
 
   /** @returns `true` si le groupe est utilisé. */
@@ -436,12 +467,13 @@ export class EcranParametrageComponent {
     return this.referentielService.estGroupeUtilise(groupe.id);
   }
 
-  /** Ajoute un statut d'acquisition vide. */
+  /** Ajoute un statut d'acquisition vide et demande le focus dessus. */
   protected ajouterStatutAcquisition(): void {
     this.copieBareme.update(liste => [
       ...liste,
       { id: '', glyphe: '', libelle: '', couleur: '#000000', fond: '#ffffff' },
     ]);
+    this.indexAFocaliserBareme.set(this.copieBareme().length - 1);
   }
 
   /**
@@ -467,6 +499,7 @@ export class EcranParametrageComponent {
   protected supprimerStatutAcquisition(statut: StatutAcquisition): void {
     this.referentielService.supprimerStatutAcquisition(statut);
     this.copieBareme.update(liste => liste.filter(s => s.id !== statut.id));
+    this.indexAFocaliserBareme.set(null);
   }
 
   /** @returns `true` si le statut d'acquisition est utilisé. */
@@ -474,12 +507,13 @@ export class EcranParametrageComponent {
     return this.referentielService.estStatutAcquisitionUtilise(statut.id);
   }
 
-  /** Ajoute un statut élève vide. */
+  /** Ajoute un statut élève vide et demande le focus dessus. */
   protected ajouterStatutEleve(): void {
     this.copieStatutsEleve.update(liste => [
       ...liste,
       { id: '', libelle: '' },
     ]);
+    this.indexAFocaliserStatutEleve.set(this.copieStatutsEleve().length - 1);
   }
 
   /**
@@ -505,6 +539,7 @@ export class EcranParametrageComponent {
   protected supprimerStatutEleve(statut: StatutEleve): void {
     this.referentielService.supprimerStatutEleve(statut);
     this.copieStatutsEleve.update(liste => liste.filter(s => s.id !== statut.id));
+    this.indexAFocaliserStatutEleve.set(null);
   }
 
   /** @returns `true` si le statut élève est utilisé. */
@@ -512,12 +547,13 @@ export class EcranParametrageComponent {
     return this.referentielService.estStatutEleveUtilise(statut.id);
   }
 
-  /** Ajoute un type de contact vide. */
+  /** Ajoute un type de contact vide et demande le focus dessus. */
   protected ajouterTypeContact(): void {
     this.copieTypesContact.update(liste => [
       ...liste,
       { id: '', libelle: '' },
     ]);
+    this.indexAFocaliserTypeContact.set(this.copieTypesContact().length - 1);
   }
 
   /**
@@ -543,6 +579,7 @@ export class EcranParametrageComponent {
   protected supprimerTypeContact(type: TypeContact): void {
     this.referentielService.supprimerTypeContact(type);
     this.copieTypesContact.update(liste => liste.filter(t => t.id !== type.id));
+    this.indexAFocaliserTypeContact.set(null);
   }
 
   /** @returns `true` si le type de contact est utilisé. */
@@ -550,12 +587,13 @@ export class EcranParametrageComponent {
     return this.referentielService.estTypeContactUtilise(type.id);
   }
 
-  /** Ajoute une raison d'absence vide. */
+  /** Ajoute une raison d'absence vide et demande le focus dessus. */
   protected ajouterRaisonAbsence(): void {
     this.copieRaisonsAbsence.update(liste => [
       ...liste,
       { id: crypto.randomUUID(), libelle: '' },
     ]);
+    this.indexAFocaliserRaisonAbsence.set(this.copieRaisonsAbsence().length - 1);
   }
 
   /**
@@ -581,14 +619,16 @@ export class EcranParametrageComponent {
   protected supprimerRaisonAbsence(raison: RaisonAbsence): void {
     this.referentielService.supprimerRaisonAbsence(raison);
     this.copieRaisonsAbsence.update(liste => liste.filter(r => r.id !== raison.id));
+    this.indexAFocaliserRaisonAbsence.set(null);
   }
 
-  /** Ajoute une fréquence d'absence vide. */
+  /** Ajoute une fréquence d'absence vide et demande le focus dessus. */
   protected ajouterFrequenceAbsence(): void {
     this.copieFrequencesAbsence.update(liste => [
       ...liste,
       { id: crypto.randomUUID(), libelle: '' },
     ]);
+    this.indexAFocaliserFrequenceAbsence.set(this.copieFrequencesAbsence().length - 1);
   }
 
   /**
@@ -614,14 +654,16 @@ export class EcranParametrageComponent {
   protected supprimerFrequenceAbsence(frequence: FrequenceAbsence): void {
     this.referentielService.supprimerFrequenceAbsence(frequence);
     this.copieFrequencesAbsence.update(liste => liste.filter(f => f.id !== frequence.id));
+    this.indexAFocaliserFrequenceAbsence.set(null);
   }
 
-  /** Ajoute un jour férié vide. */
+  /** Ajoute un jour férié vide et demande le focus dessus. */
   protected ajouterJourFerie(): void {
     this.copieJoursFeries.update(liste => [
       ...liste,
       { id: crypto.randomUUID(), nom: '', date: '' },
     ]);
+    this.indexAFocaliserJourFerie.set(this.copieJoursFeries().length - 1);
   }
 
   /**
@@ -647,6 +689,7 @@ export class EcranParametrageComponent {
   protected supprimerJourFerie(jourFerie: JourFerie): void {
     this.referentielService.supprimerJourFerie(jourFerie);
     this.copieJoursFeries.update(liste => liste.filter(j => j.id !== jourFerie.id));
+    this.indexAFocaliserJourFerie.set(null);
   }
 
   /**

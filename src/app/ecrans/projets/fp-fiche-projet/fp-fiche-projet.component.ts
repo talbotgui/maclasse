@@ -5,6 +5,7 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
 import { LIBELLES } from '../../../libelles';
+import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { McBoutonDestructionComponent } from '../../../composants/mc-bouton-destruction/mc-bouton-destruction.component';
 import { CompetenceService } from '../../../services/sansEtat/competence.service';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
@@ -18,7 +19,7 @@ import type { Projet } from '../../../modeles/projet.modele';
 @Component({
   selector: 'fp-fiche-projet',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [McBoutonDestructionComponent],
+  imports: [McAutoFocusDirective, McBoutonDestructionComponent],
   templateUrl: './fp-fiche-projet.component.html',
   styleUrl: './fp-fiche-projet.component.scss',
 })
@@ -37,6 +38,9 @@ export class FpFicheProjetComponent {
 
   /** Projet à afficher. */
   public readonly projet: InputSignal<Projet> = input.required<Projet>();
+
+  /** Demande le focus sur le bouton MODIFIER à l'apparition de la fiche. */
+  public readonly focusDemande: InputSignal<boolean> = input(false);
 
   /** Émis quand l'utilisateur clique sur MODIFIER. */
   public readonly modifier: OutputEmitterRef<void> = output<void>();

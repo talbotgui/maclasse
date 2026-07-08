@@ -11,8 +11,9 @@ import {
   inject,
   input,
   output,
+  signal,
 } from '@angular/core';
-import type { InputSignal, OutputEmitterRef } from '@angular/core';
+import type { InputSignal, OutputEmitterRef, WritableSignal } from '@angular/core';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { FormsModule } from '@angular/forms';
 import { LIBELLES } from '../../../libelles';
@@ -73,6 +74,9 @@ export class FpFormulaireProjetComponent {
   /** Copie locale mutable du projet en cours de saisie. */
   protected formProjet: Projet = this.creerProjetVide();
 
+  /** Index de la période venant d'être ajoutée, à focaliser (`null` si aucune). */
+  protected readonly indexAFocaliserPeriode: WritableSignal<number | null> = signal(null);
+
   /** Charge la copie locale à chaque changement du projet reçu en entrée. */
   public constructor() {
     effect(() => {
@@ -95,7 +99,7 @@ export class FpFormulaireProjetComponent {
     }
   }
 
-  /** Ajoute une période vide à la fin de la liste. */
+  /** Ajoute une période vide à la fin de la liste et demande le focus dessus. */
   protected ajouterPeriode(): void {
     const nouvellePeriode: ProjetPeriode = {
       periodeNom: '',
@@ -105,6 +109,7 @@ export class FpFormulaireProjetComponent {
       competencesIds: [],
     };
     this.formProjet.periodes = [...this.formProjet.periodes, nouvellePeriode];
+    this.indexAFocaliserPeriode.set(this.formProjet.periodes.length - 1);
   }
 
   /**
@@ -113,6 +118,7 @@ export class FpFormulaireProjetComponent {
    */
   protected supprimerPeriode(index: number): void {
     this.formProjet.periodes = this.formProjet.periodes.filter((_, i) => i !== index);
+    this.indexAFocaliserPeriode.set(null);
   }
 
   /**

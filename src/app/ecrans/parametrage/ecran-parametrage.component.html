@@ -48,7 +48,7 @@
           <ul class="parametrage__liste-items">
             @for (periode of copiePeriodes(); track periode.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champPeriodeNom' + i" [label]="LIBELLES.parametrage.labelPeriodeNom" [(ngModel)]="periode.nom" />
+                <mc-input [id]="'champPeriodeNom' + i" [label]="LIBELLES.parametrage.labelPeriodeNom" [(ngModel)]="periode.nom" [mcAutoFocus]="i === indexAFocaliserPeriode()" />
                 <mc-input [id]="'champPeriodeDebut' + i" [label]="LIBELLES.parametrage.labelPeriodeDebut" type="date" [(ngModel)]="periode.debut" />
                 <mc-input [id]="'champPeriodeFin' + i" [label]="LIBELLES.parametrage.labelPeriodeFin" type="date" [(ngModel)]="periode.fin" />
                 <div class="parametrage__item-actions">
@@ -105,7 +105,7 @@
           <ul class="parametrage__liste-items">
             @for (groupe of copieGroupes(); track groupe.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champGroupeLibelle' + i" [label]="LIBELLES.parametrage.labelGroupeLibelle" [(ngModel)]="groupe.libelle" />
+                <mc-input [id]="'champGroupeLibelle' + i" [label]="LIBELLES.parametrage.labelGroupeLibelle" [(ngModel)]="groupe.libelle" [mcAutoFocus]="i === indexAFocaliserGroupe()" />
                 <div class="parametrage__item-actions">
                   <button [id]="'btnEnregistrerGroupe' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerGroupe(i)">{{ LIBELLES.commun.enregistrer }}</button>
                   <mc-bouton-destruction
@@ -132,7 +132,7 @@
           <ul class="parametrage__liste-items">
             @for (statut of copieBareme(); track statut.id; let i = $index) {
               <li class="parametrage__item parametrage__item--bareme">
-                <mc-input [id]="'champStatutId' + i" [label]="LIBELLES.parametrage.labelStatutId" [(ngModel)]="statut.id" />
+                <mc-input [id]="'champStatutId' + i" [label]="LIBELLES.parametrage.labelStatutId" [(ngModel)]="statut.id" [mcAutoFocus]="i === indexAFocaliserBareme()" />
                 <mc-input [id]="'champStatutGlyphe' + i" [label]="LIBELLES.parametrage.labelStatutGlyphe" [(ngModel)]="statut.glyphe" />
                 <mc-input [id]="'champStatutLibelle' + i" [label]="LIBELLES.parametrage.labelStatutLibelle" [(ngModel)]="statut.libelle" />
                 <mc-input [id]="'champStatutCouleur' + i" [label]="LIBELLES.parametrage.labelStatutCouleur" type="color" [(ngModel)]="statut.couleur" />
@@ -167,7 +167,7 @@
           <ul class="parametrage__liste-items">
             @for (statut of copieStatutsEleve(); track statut.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champStatutEleveId' + i" [label]="LIBELLES.parametrage.labelStatutEleveId" [(ngModel)]="statut.id" />
+                <mc-input [id]="'champStatutEleveId' + i" [label]="LIBELLES.parametrage.labelStatutEleveId" [(ngModel)]="statut.id" [mcAutoFocus]="i === indexAFocaliserStatutEleve()" />
                 <mc-input [id]="'champStatutEleveLibelle' + i" [label]="LIBELLES.parametrage.labelStatutEleveLibelle" [(ngModel)]="statut.libelle" />
                 <div class="parametrage__item-actions">
                   <button [id]="'btnEnregistrerStatutEleve' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerStatutEleve(i)">{{ LIBELLES.commun.enregistrer }}</button>
@@ -195,7 +195,7 @@
           <ul class="parametrage__liste-items">
             @for (type of copieTypesContact(); track type.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champTypeContactId' + i" [label]="LIBELLES.parametrage.labelTypeContactId" [(ngModel)]="type.id" />
+                <mc-input [id]="'champTypeContactId' + i" [label]="LIBELLES.parametrage.labelTypeContactId" [(ngModel)]="type.id" [mcAutoFocus]="i === indexAFocaliserTypeContact()" />
                 <mc-input [id]="'champTypeContactLibelle' + i" [label]="LIBELLES.parametrage.labelTypeContactLibelle" [(ngModel)]="type.libelle" />
                 <div class="parametrage__item-actions">
                   <button [id]="'btnEnregistrerTypeContact' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerTypeContact(i)">{{ LIBELLES.commun.enregistrer }}</button>
@@ -223,7 +223,7 @@
           <ul class="parametrage__liste-items">
             @for (raison of copieRaisonsAbsence(); track raison.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champRaisonLibelle' + i" [label]="LIBELLES.parametrage.labelRaisonLibelle" [(ngModel)]="raison.libelle" />
+                <mc-input [id]="'champRaisonLibelle' + i" [label]="LIBELLES.parametrage.labelRaisonLibelle" [(ngModel)]="raison.libelle" [mcAutoFocus]="i === indexAFocaliserRaisonAbsence()" />
                 <div class="parametrage__item-actions">
                   <button [id]="'btnEnregistrerRaison' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerRaisonAbsence(i)">{{ LIBELLES.commun.enregistrer }}</button>
                   <mc-bouton-destruction
@@ -250,7 +250,7 @@
           <ul class="parametrage__liste-items">
             @for (freq of copieFrequencesAbsence(); track freq.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champFrequenceLibelle' + i" [label]="LIBELLES.parametrage.labelFrequenceLibelle" [(ngModel)]="freq.libelle" />
+                <mc-input [id]="'champFrequenceLibelle' + i" [label]="LIBELLES.parametrage.labelFrequenceLibelle" [(ngModel)]="freq.libelle" [mcAutoFocus]="i === indexAFocaliserFrequenceAbsence()" />
                 <div class="parametrage__item-actions">
                   <button [id]="'btnEnregistrerFrequence' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerFrequenceAbsence(i)">{{ LIBELLES.commun.enregistrer }}</button>
                   <mc-bouton-destruction
@@ -277,7 +277,7 @@
           <ul class="parametrage__liste-items">
             @for (jourFerie of copieJoursFeries(); track jourFerie.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champJourFerieNom' + i" [label]="LIBELLES.parametrage.labelJourFerieNom" [(ngModel)]="jourFerie.nom" />
+                <mc-input [id]="'champJourFerieNom' + i" [label]="LIBELLES.parametrage.labelJourFerieNom" [(ngModel)]="jourFerie.nom" [mcAutoFocus]="i === indexAFocaliserJourFerie()" />
                 <mc-input [id]="'champJourFerieDate' + i" [label]="LIBELLES.parametrage.labelJourFerieDate" type="date" [(ngModel)]="jourFerie.date" />
                 <div class="parametrage__item-actions">
                   <button [id]="'btnEnregistrerJourFerie' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerJourFerie(i)">{{ LIBELLES.commun.enregistrer }}</button>

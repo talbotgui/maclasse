@@ -10,8 +10,9 @@ import {
   inject,
   input,
   output,
+  signal,
 } from '@angular/core';
-import type { InputSignal, OutputEmitterRef } from '@angular/core';
+import type { InputSignal, OutputEmitterRef, WritableSignal } from '@angular/core';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { FormsModule } from '@angular/forms';
 import { LIBELLES } from '../../../libelles';
@@ -100,6 +101,18 @@ export class FeFormulaireEleveComponent {
   /** Copie locale mutable de l'élève en cours de saisie. */
   protected formEleve: Eleve = this.creerEleveVide();
 
+  /** Index du contact venant d'être ajouté, à focaliser (`null` si aucun). */
+  protected readonly indexAFocaliserContact: WritableSignal<number | null> = signal(null);
+
+  /** Index de l'absence récurrente venant d'être ajoutée, à focaliser (`null` si aucun). */
+  protected readonly indexAFocaliserAbsRec: WritableSignal<number | null> = signal(null);
+
+  /** Index de l'absence ponctuelle venant d'être ajoutée, à focaliser (`null` si aucun). */
+  protected readonly indexAFocaliserAbsPonct: WritableSignal<number | null> = signal(null);
+
+  /** Index de l'entrée de cursus venant d'être ajoutée, à focaliser (`null` si aucun). */
+  protected readonly indexAFocaliserCursus: WritableSignal<number | null> = signal(null);
+
   /** Charge la copie locale à chaque changement de l'élève reçu en entrée. */
   public constructor() {
     effect(() => {
@@ -138,12 +151,13 @@ export class FeFormulaireEleveComponent {
     }
   }
 
-  /** Ajoute un contact vide à la fin de la liste. */
+  /** Ajoute un contact vide à la fin de la liste et demande le focus dessus. */
   protected ajouterContact(): void {
     this.formEleve.contacts = [
       ...this.formEleve.contacts,
       { type: '', nom: '', email: '', telephone: '', adressePostale: '' },
     ];
+    this.indexAFocaliserContact.set(this.formEleve.contacts.length - 1);
   }
 
   /**
@@ -152,9 +166,10 @@ export class FeFormulaireEleveComponent {
    */
   protected supprimerContact(index: number): void {
     this.formEleve.contacts = this.formEleve.contacts.filter((_, i) => i !== index);
+    this.indexAFocaliserContact.set(null);
   }
 
-  /** Ajoute une absence récurrente vide. */
+  /** Ajoute une absence récurrente vide et demande le focus dessus. */
   protected ajouterAbsenceRecurrente(): void {
     const nouvelleAbsence: AbsenceRecurrente = {
       id: crypto.randomUUID(),
@@ -165,6 +180,7 @@ export class FeFormulaireEleveComponent {
       paritesSemaine: 'lesDeux',
     };
     this.formEleve.absencesRecurrentes = [...this.formEleve.absencesRecurrentes, nouvelleAbsence];
+    this.indexAFocaliserAbsRec.set(this.formEleve.absencesRecurrentes.length - 1);
   }
 
   /**
@@ -175,9 +191,10 @@ export class FeFormulaireEleveComponent {
     this.formEleve.absencesRecurrentes = this.formEleve.absencesRecurrentes.filter(
       (_, i) => i !== index,
     );
+    this.indexAFocaliserAbsRec.set(null);
   }
 
-  /** Ajoute une absence ponctuelle vide. */
+  /** Ajoute une absence ponctuelle vide et demande le focus dessus. */
   protected ajouterAbsencePonctuelle(): void {
     const nouvelleAbsence: AbsencePonctuelle = {
       id: crypto.randomUUID(),
@@ -185,6 +202,7 @@ export class FeFormulaireEleveComponent {
       justification: '',
     };
     this.formEleve.absencesPonctuelles = [...this.formEleve.absencesPonctuelles, nouvelleAbsence];
+    this.indexAFocaliserAbsPonct.set(this.formEleve.absencesPonctuelles.length - 1);
   }
 
   /**
@@ -195,9 +213,10 @@ export class FeFormulaireEleveComponent {
     this.formEleve.absencesPonctuelles = this.formEleve.absencesPonctuelles.filter(
       (_, i) => i !== index,
     );
+    this.indexAFocaliserAbsPonct.set(null);
   }
 
-  /** Ajoute une entrée de cursus vide. */
+  /** Ajoute une entrée de cursus vide et demande le focus dessus. */
   protected ajouterCursus(): void {
     const nouvelleAnnee: CursusAnnee = {
       annee: new Date().getFullYear(),
@@ -206,6 +225,7 @@ export class FeFormulaireEleveComponent {
       accompagnement: '',
     };
     this.formEleve.cursus = [...this.formEleve.cursus, nouvelleAnnee];
+    this.indexAFocaliserCursus.set(this.formEleve.cursus.length - 1);
   }
 
   /**
@@ -214,6 +234,7 @@ export class FeFormulaireEleveComponent {
    */
   protected supprimerCursus(index: number): void {
     this.formEleve.cursus = this.formEleve.cursus.filter((_, i) => i !== index);
+    this.indexAFocaliserCursus.set(null);
   }
 
   /** Émet l'élève modifié au parent pour persistence. */

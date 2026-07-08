@@ -57,6 +57,9 @@ export class EcranElevesComponent implements AvecNavigationGardee {
   /** `true` si le formulaire est en mode édition ou création. */
   protected readonly enModeEdition = signal(false);
 
+  /** `true` si le focus doit se placer sur le bouton MODIFIER à la prochaine apparition de la fiche. */
+  protected readonly focusModifierDemande = signal(false);
+
   /** `true` si la popin d'avertissement est visible. */
   protected readonly popinAvertissementVisible = signal(false);
 
@@ -173,14 +176,17 @@ export class EcranElevesComponent implements AvecNavigationGardee {
       this.contexteService.eleveSelectionne.set(eleve.id);
     }
     this.enModeEdition.set(false);
+    this.focusModifierDemande.set(true);
   }
 
   /** Annule l'édition et repasse en mode lecture. */
   protected onAnnulerEdition(): void {
+    const revientVersFiche = !!this.eleveSelectionne();
     this.enModeEdition.set(false);
-    if (!this.eleveSelectionne()) {
+    if (!revientVersFiche) {
       this.contexteService.eleveSelectionne.set(null);
     }
+    this.focusModifierDemande.set(revientVersFiche);
   }
 
   /** Supprime l'élève sélectionné. */
@@ -188,6 +194,7 @@ export class EcranElevesComponent implements AvecNavigationGardee {
     const eleve = this.eleveSelectionne();
     if (!eleve) return;
     this.eleveService.supprimerEleve(eleve.id);
+    this.focusModifierDemande.set(false);
     this.contexteService.eleveSelectionne.set(null);
   }
 
@@ -225,6 +232,7 @@ export class EcranElevesComponent implements AvecNavigationGardee {
 
   /** Active la sélection d'un élève et repasse en mode lecture. */
   private activerEleve(eleve: Eleve): void {
+    this.focusModifierDemande.set(false);
     this.contexteService.eleveSelectionne.set(eleve.id);
     this.enModeEdition.set(false);
   }

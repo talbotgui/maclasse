@@ -44,6 +44,7 @@
     @if (projetSelectionne() && !enModeEdition()) {
       <fp-fiche-projet
         [projet]="projetSelectionne()!"
+        [focusDemande]="focusModifierDemande()"
         (modifier)="activerEdition()"
         (supprimer)="supprimerProjet()"
         (imprimer)="imprimer()"

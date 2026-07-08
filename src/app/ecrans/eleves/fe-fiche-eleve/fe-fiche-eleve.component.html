@@ -4,7 +4,7 @@
   <div class="fiche-eleve__bandeau">
     <h2 class="fiche-eleve__titre">{{ eleve().nom | uppercase }}&nbsp;{{ eleve().prenom }}</h2>
     <div class="fiche-eleve__bandeau-actions">
-      <button id="btnModifierEleve" class="mc-btn-primaire" (click)="onModifier()">{{ LIBELLES.commun.modifier }}</button>
+      <button id="btnModifierEleve" class="mc-btn-primaire" [mcAutoFocus]="focusDemande()" (click)="onModifier()">{{ LIBELLES.commun.modifier }}</button>
       <mc-bouton-destruction
         [idBase]="'btnSupprimerEleve'"
         [desactive]="false"

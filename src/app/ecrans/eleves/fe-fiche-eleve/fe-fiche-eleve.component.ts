@@ -6,6 +6,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { LIBELLES } from '../../../libelles';
+import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { McBoutonDestructionComponent } from '../../../composants/mc-bouton-destruction/mc-bouton-destruction.component';
 import { DateUtils } from '../../../utilitaires/date.utils';
 import type { Eleve } from '../../../modeles/eleve.modele';
@@ -18,7 +19,7 @@ import type { Groupe, StatutEleve, TypeContact } from '../../../modeles/referent
 @Component({
   selector: 'fe-fiche-eleve',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [UpperCasePipe, McBoutonDestructionComponent],
+  imports: [UpperCasePipe, McAutoFocusDirective, McBoutonDestructionComponent],
   templateUrl: './fe-fiche-eleve.component.html',
   styleUrl: './fe-fiche-eleve.component.scss',
 })
@@ -31,6 +32,9 @@ export class FeFicheEleveComponent {
 
   /** Élève à afficher. */
   public readonly eleve: InputSignal<Eleve> = input.required<Eleve>();
+
+  /** Demande le focus sur le bouton MODIFIER à l'apparition de la fiche. */
+  public readonly focusDemande: InputSignal<boolean> = input(false);
 
   /** Groupes du référentiel pour résolution des libellés. */
   public readonly groupes: InputSignal<Groupe[]> = input<Groupe[]>([]);

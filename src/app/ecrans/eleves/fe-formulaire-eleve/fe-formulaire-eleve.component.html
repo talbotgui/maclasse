@@ -49,7 +49,7 @@
     <ul class="form-eleve__liste-sous-items">
       @for (contact of formEleve.contacts; track $index; let i = $index) {
         <li class="form-eleve__sous-item">
-          <mc-select [id]="'champContactType' + i" [label]="LIBELLES.eleve.labelContactType" [options]="optionsTypeContact" [avecOptionVide]="true" [(ngModel)]="contact.type" />
+          <mc-select [id]="'champContactType' + i" [label]="LIBELLES.eleve.labelContactType" [options]="optionsTypeContact" [avecOptionVide]="true" [(ngModel)]="contact.type" [mcAutoFocus]="i === indexAFocaliserContact()" />
           <mc-input [id]="'champContactNom' + i" [label]="LIBELLES.eleve.labelContactNom" [(ngModel)]="contact.nom" />
           <mc-input [id]="'champContactEmail' + i" [label]="LIBELLES.eleve.labelContactEmail" type="email" [(ngModel)]="contact.email" />
           <mc-input [id]="'champContactTel' + i" [label]="LIBELLES.eleve.labelContactTelephone" type="tel" [(ngModel)]="contact.telephone" />
@@ -67,7 +67,7 @@
     <ul class="form-eleve__liste-sous-items">
       @for (abs of formEleve.absencesRecurrentes; track abs.id; let i = $index) {
         <li class="form-eleve__sous-item">
-          <mc-input [id]="'champAbsRecLibelle' + i" [label]="LIBELLES.eleve.labelAbsenceLibelle" [(ngModel)]="abs.libelle" />
+          <mc-input [id]="'champAbsRecLibelle' + i" [label]="LIBELLES.eleve.labelAbsenceLibelle" [(ngModel)]="abs.libelle" [mcAutoFocus]="i === indexAFocaliserAbsRec()" />
           <mc-select [id]="'champAbsRecJour' + i" [label]="LIBELLES.eleve.labelAbsenceJour" [options]="optionsJour" [(ngModel)]="abs.jour" />
           <mc-champ-heure [id]="'champAbsRecDebut' + i" [label]="LIBELLES.eleve.labelAbsenceHeureDebut" [(ngModel)]="abs.heureDebut" />
           <mc-champ-heure [id]="'champAbsRecFin' + i" [label]="LIBELLES.eleve.labelAbsenceHeureFin" [(ngModel)]="abs.heureFin" />
@@ -85,7 +85,7 @@
     <ul class="form-eleve__liste-sous-items">
       @for (abs of formEleve.absencesPonctuelles; track abs.id; let i = $index) {
         <li class="form-eleve__sous-item">
-          <mc-input [id]="'champAbsPonctDate' + i" [label]="LIBELLES.eleve.labelAbsenceDate" type="date" [(ngModel)]="abs.date" />
+          <mc-input [id]="'champAbsPonctDate' + i" [label]="LIBELLES.eleve.labelAbsenceDate" type="date" [(ngModel)]="abs.date" [mcAutoFocus]="i === indexAFocaliserAbsPonct()" />
           <mc-textarea [id]="'champAbsPonctJustif' + i" [label]="LIBELLES.eleve.labelAbsenceJustification" [lignes]="2" [(ngModel)]="abs.justification" />
           <mc-bouton-destruction [idBase]="'btnSupprimerAbsPonct' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerAbsencePonctuelle(i)" />
         </li>
@@ -100,7 +100,7 @@
     <ul class="form-eleve__liste-sous-items">
       @for (annee of formEleve.cursus; track $index; let i = $index) {
         <li class="form-eleve__sous-item">
-          <mc-input [id]="'champCursusAnnee' + i" [label]="LIBELLES.eleve.labelCursusAnnee" type="number" [(ngModel)]="annee.annee" />
+          <mc-input [id]="'champCursusAnnee' + i" [label]="LIBELLES.eleve.labelCursusAnnee" type="number" [(ngModel)]="annee.annee" [mcAutoFocus]="i === indexAFocaliserCursus()" />
           <mc-input [id]="'champCursusNiveau' + i" [label]="LIBELLES.eleve.labelCursusNiveau" [(ngModel)]="annee.niveau" />
           <mc-input [id]="'champCursusEtab' + i" [label]="LIBELLES.eleve.labelCursusEtablissement" [(ngModel)]="annee.etablissement" />
           <mc-textarea [id]="'champCursusAccomp' + i" [label]="LIBELLES.eleve.labelCursusAccompagnement" [lignes]="2" [(ngModel)]="annee.accompagnement" />

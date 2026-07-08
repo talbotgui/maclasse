@@ -65,6 +65,9 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
   /** `true` si le formulaire est en mode édition ou création. */
   protected readonly enModeEdition = signal(false);
 
+  /** `true` si le focus doit se placer sur le bouton MODIFIER à la prochaine apparition de la fiche. */
+  protected readonly focusModifierDemande = signal(false);
+
   /** `true` si la popin d'avertissement est visible. */
   protected readonly popinAvertissementVisible = signal(false);
 
@@ -158,11 +161,14 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
     }
     this.contexteService.projetSelectionne.set(projet.id);
     this.enModeEdition.set(false);
+    this.focusModifierDemande.set(true);
   }
 
   /** Annule l'édition et repasse en mode lecture. */
   protected onAnnulerEdition(): void {
+    const revientVersFiche = !!this.projetSelectionne();
     this.enModeEdition.set(false);
+    this.focusModifierDemande.set(revientVersFiche);
   }
 
   /** Supprime le projet sélectionné. */
@@ -170,6 +176,7 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
     const projet = this.projetSelectionne();
     if (!projet) return;
     this.projetService.supprimerProjet(projet.id);
+    this.focusModifierDemande.set(false);
     this.contexteService.projetSelectionne.set(null);
   }
 
@@ -202,6 +209,7 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
 
   /** Active un projet et repasse en mode lecture. */
   private activerProjet(projet: Projet): void {
+    this.focusModifierDemande.set(false);
     this.contexteService.projetSelectionne.set(projet.id);
     this.enModeEdition.set(false);
   }

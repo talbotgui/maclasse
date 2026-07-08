@@ -50,6 +50,7 @@
     @if (eleveSelectionne() && !enModeEdition()) {
       <fe-fiche-eleve
         [eleve]="eleveSelectionne()!"
+        [focusDemande]="focusModifierDemande()"
         [groupes]="groupes()"
         [statutsEleve]="statutsEleve()"
         [typesContact]="typesContact()"

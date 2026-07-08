@@ -61,7 +61,7 @@ export class EcranCompetencesComponent {
    * @returns Tableau { id, libelle }.
    */
   protected readonly panierAvecLibelles = computed(() =>
-    this.panier().map(id => ({
+    this.panier().map((id) => ({
       id,
       libelle: this.competenceService.resoudreLibelle(id),
     })),
@@ -85,7 +85,7 @@ export class EcranCompetencesComponent {
    * @param id Identifiant à retirer.
    */
   protected retirerDuPanier(id: string): void {
-    this.contexteService.panierCompetences.update(ids => ids.filter(i => i !== id));
+    this.contexteService.panierCompetences.update((ids) => ids.filter((i) => i !== id));
   }
 
   /** Ouvre la popin d'export vers un projet. */
@@ -114,7 +114,7 @@ export class EcranCompetencesComponent {
     const competences = this.panier();
 
     if (resultat.cibleType === 'projet') {
-      const projet = this.donneesService.donnees()?.projets.find(p => p.id === resultat.cibleId);
+      const projet = this.donneesService.donnees()?.projets.find((p) => p.id === resultat.cibleId);
       const periodeIndex = parseInt(resultat.secondaireId, 10);
       const periode = projet?.periodes[periodeIndex];
       if (projet && periode) {
@@ -127,8 +127,8 @@ export class EcranCompetencesComponent {
     } else {
       const journee = this.donneesService
         .donnees()
-        ?.cahierJournal.find(j => j.date === resultat.cibleId);
-      const seance = journee?.seances.find(s => s.id === resultat.secondaireId);
+        ?.cahierJournal.find((j) => j.date === resultat.cibleId);
+      const seance = journee?.seances.find((s) => s.id === resultat.secondaireId);
       if (seance) {
         const nouvelleSeance = {
           ...seance,

@@ -41,13 +41,18 @@ describe('PopinExportCompetencesComponent', () => {
     fixture.detectChanges();
   };
 
-  const dateCjSeance = DateUtils.ajouterJours(DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()), 12);
+  const dateCjSeance = DateUtils.ajouterJours(
+    DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()),
+    12,
+  );
 
   const chargerDonneesAvecSeance = () => {
     const seance = SeanceMother.pedagogique({ id: 's1' });
-    donneesService.charger(DonneesMother.base({
-      cahierJournal: [{ id: 'j1', date: dateCjSeance, seances: [seance] }],
-    }));
+    donneesService.charger(
+      DonneesMother.base({
+        cahierJournal: [{ id: 'j1', date: dateCjSeance, seances: [seance] }],
+      }),
+    );
     fixture.detectChanges();
   };
 
@@ -83,12 +88,15 @@ describe('PopinExportCompetencesComponent', () => {
     });
 
     it('optionsPrimaires = liste des projets', () => {
-      const options = (component as any).optionsPrimaires() as { valeur: string; libelle: string }[];
+      const options = (component as any).optionsPrimaires() as {
+        valeur: string;
+        libelle: string;
+      }[];
       expect(options).toHaveLength(1);
       expect(options[0].valeur).toBe('p1');
     });
 
-    it('sélection d\'un projet → optionsSecondaires = périodes', () => {
+    it("sélection d'un projet → optionsSecondaires = périodes", () => {
       component['surChangementPrimaire']('p1');
       fixture.detectChanges();
 
@@ -119,7 +127,7 @@ describe('PopinExportCompetencesComponent', () => {
       expect(options[0].valeur).toBe(dateCjSeance);
     });
 
-    it('sélection d\'une journée → optionsSecondaires = séances pédago', () => {
+    it("sélection d'une journée → optionsSecondaires = séances pédago", () => {
       component['surChangementPrimaire'](dateCjSeance);
       fixture.detectChanges();
 
@@ -165,7 +173,7 @@ describe('PopinExportCompetencesComponent', () => {
       expect(spy).toHaveBeenCalledWith({ cibleType: 'projet', cibleId: 'p1', secondaireId: '0' });
     });
 
-    it('si peutConfirmer=false → n\'émet pas', () => {
+    it("si peutConfirmer=false → n'émet pas", () => {
       const spy = vi.spyOn((component as any).confirme, 'emit');
 
       component['surConfirmation']();

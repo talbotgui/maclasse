@@ -13,21 +13,26 @@ describe('McElevesConcernesComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({});
     const donneesService = TestBed.inject(DonneesService);
-    donneesService.charger(DonneesMother.base({
-      referentiels: {
-        ...DonneesMother.base().referentiels,
-        groupes: [{ id: 'GA', libelle: 'Groupe A' }, { id: 'GB', libelle: 'Groupe B' }],
-      },
-      classe: {
-        niveau: 'CM2',
-        annee: 'CM2',
-        eleves: [
-          EleveMother.base('e1', 'MARTIN', 'Alice'),
-          EleveMother.base('e2', 'DUPONT', 'Bob'),
-          EleveMother.base('e3', 'ADAM', 'Claire'),
-        ],
-      },
-    }));
+    donneesService.charger(
+      DonneesMother.base({
+        referentiels: {
+          ...DonneesMother.base().referentiels,
+          groupes: [
+            { id: 'GA', libelle: 'Groupe A' },
+            { id: 'GB', libelle: 'Groupe B' },
+          ],
+        },
+        classe: {
+          niveau: 'CM2',
+          annee: 'CM2',
+          eleves: [
+            EleveMother.base('e1', 'MARTIN', 'Alice'),
+            EleveMother.base('e2', 'DUPONT', 'Bob'),
+            EleveMother.base('e3', 'ADAM', 'Claire'),
+          ],
+        },
+      }),
+    );
     fixture = TestBed.createComponent(McElevesConcernesComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('id', 'elevesConcernes');
@@ -46,7 +51,7 @@ describe('McElevesConcernesComponent', () => {
   describe('computed eleves', () => {
     it('renvoie les élèves triés par NOM puis prénom', () => {
       const eleves = (component as any).eleves() as { nom: string; prenom: string }[];
-      expect(eleves.map(e => e.nom)).toEqual(['ADAM', 'DUPONT', 'MARTIN']);
+      expect(eleves.map((e) => e.nom)).toEqual(['ADAM', 'DUPONT', 'MARTIN']);
     });
   });
 

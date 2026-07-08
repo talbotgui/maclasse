@@ -125,7 +125,7 @@ describe('DonneesService', () => {
 
   /** Annule la dernière commande, restaure l'état précédent et déplace la commande vers la pile REDO. */
   describe('annuler', () => {
-    it('restaure l\'état précédant la commande', () => {
+    it("restaure l'état précédant la commande", () => {
       service.charger(DonneesMother.base({ version: 'v1' }));
       service.executer(new CommandeTest());
       service.annuler();

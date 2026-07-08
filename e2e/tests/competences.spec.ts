@@ -8,67 +8,76 @@ import { SelecteursEntete } from '../selecteurs/selecteurs-entete';
 // - 3 projets : Journal (5 périodes), Potager (5 périodes), Spectacle (2 périodes)
 // - 4 journées CJ : 2025-09-08, 2025-09-09, 2025-09-11, 2025-09-12
 
-testAvecDonnees('E2E-40 — Naviguer dans l\'arbre : déplier et replier un nœud', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const comp = new SelecteursCompetences(appAvecDonnees);
+testAvecDonnees(
+  "E2E-40 — Naviguer dans l'arbre : déplier et replier un nœud",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const comp = new SelecteursCompetences(appAvecDonnees);
 
-  await entete.navCompetences.click();
-  await expect(appAvecDonnees).toHaveURL(/\/competences/);
+    await entete.navCompetences.click();
+    await expect(appAvecDonnees).toHaveURL(/\/competences/);
 
-  // EMC est le premier domaine — son enfant EMC-C2 est masqué au départ
-  await expect(comp.premierEnfantArbreEmc).not.toBeVisible();
+    // EMC est le premier domaine — son enfant EMC-C2 est masqué au départ
+    await expect(comp.premierEnfantArbreEmc).not.toBeVisible();
 
-  // Déplier EMC
-  await comp.btnTogglePremierNoeud.click();
-  await expect(comp.premierEnfantArbreEmc).toBeVisible();
+    // Déplier EMC
+    await comp.btnTogglePremierNoeud.click();
+    await expect(comp.premierEnfantArbreEmc).toBeVisible();
 
-  // Replier EMC
-  await comp.btnTogglePremierNoeud.click();
-  await expect(comp.premierEnfantArbreEmc).not.toBeVisible();
-});
+    // Replier EMC
+    await comp.btnTogglePremierNoeud.click();
+    await expect(comp.premierEnfantArbreEmc).not.toBeVisible();
+  },
+);
 
-testAvecDonnees('E2E-41 — Filtre textuel dans l\'arbre des compétences', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const comp = new SelecteursCompetences(appAvecDonnees);
+testAvecDonnees(
+  "E2E-41 — Filtre textuel dans l'arbre des compétences",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const comp = new SelecteursCompetences(appAvecDonnees);
 
-  await entete.navCompetences.click();
+    await entete.navCompetences.click();
 
-  // Saisir "respecter" → présent dans EMC (EMC-C2-1, EMC-CM1-1), absent dans MAT
-  await comp.rechercheArbreCompetences.fill('respecter');
-  await expect(comp.noeudSelEmc).toBeVisible();
-  await expect(comp.noeudSelMat).not.toBeVisible();
+    // Saisir "respecter" → présent dans EMC (EMC-C2-1, EMC-CM1-1), absent dans MAT
+    await comp.rechercheArbreCompetences.fill('respecter');
+    await expect(comp.noeudSelEmc).toBeVisible();
+    await expect(comp.noeudSelMat).not.toBeVisible();
 
-  // Effacer → tous les domaines réapparaissent (état replié restauré)
-  await comp.rechercheArbreCompetences.fill('');
-  await expect(comp.noeudSelMat).toBeVisible();
-  await expect(comp.noeudSelEmc).toBeVisible();
-  // Enfants de EMC sont repliés après effacement
-  await expect(comp.premierEnfantArbreEmc).not.toBeVisible();
-});
+    // Effacer → tous les domaines réapparaissent (état replié restauré)
+    await comp.rechercheArbreCompetences.fill('');
+    await expect(comp.noeudSelMat).toBeVisible();
+    await expect(comp.noeudSelEmc).toBeVisible();
+    // Enfants de EMC sont repliés après effacement
+    await expect(comp.premierEnfantArbreEmc).not.toBeVisible();
+  },
+);
 
-testAvecDonnees('E2E-42 — Chip de domaine : filtrer l\'arbre par domaine', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const comp = new SelecteursCompetences(appAvecDonnees);
+testAvecDonnees(
+  "E2E-42 — Chip de domaine : filtrer l'arbre par domaine",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const comp = new SelecteursCompetences(appAvecDonnees);
 
-  await entete.navCompetences.click();
+    await entete.navCompetences.click();
 
-  // Activer FR → seul FR visible
-  await comp.filtreDomaine_FR.click();
-  await expect(comp.noeudSelFr).toBeVisible();
-  await expect(comp.noeudSelMat).not.toBeVisible();
-  await expect(comp.noeudSelEmc).not.toBeVisible();
+    // Activer FR → seul FR visible
+    await comp.filtreDomaine_FR.click();
+    await expect(comp.noeudSelFr).toBeVisible();
+    await expect(comp.noeudSelMat).not.toBeVisible();
+    await expect(comp.noeudSelEmc).not.toBeVisible();
 
-  // Cumul FR + MAT → FR et MAT visibles, EMC toujours masqué
-  await comp.filtreDomaine_MAT.click();
-  await expect(comp.noeudSelFr).toBeVisible();
-  await expect(comp.noeudSelMat).toBeVisible();
-  await expect(comp.noeudSelEmc).not.toBeVisible();
+    // Cumul FR + MAT → FR et MAT visibles, EMC toujours masqué
+    await comp.filtreDomaine_MAT.click();
+    await expect(comp.noeudSelFr).toBeVisible();
+    await expect(comp.noeudSelMat).toBeVisible();
+    await expect(comp.noeudSelEmc).not.toBeVisible();
 
-  // Désactiver FR → seul MAT visible
-  await comp.filtreDomaine_FR.click();
-  await expect(comp.noeudSelFr).not.toBeVisible();
-  await expect(comp.noeudSelMat).toBeVisible();
-});
+    // Désactiver FR → seul MAT visible
+    await comp.filtreDomaine_FR.click();
+    await expect(comp.noeudSelFr).not.toBeVisible();
+    await expect(comp.noeudSelMat).toBeVisible();
+  },
+);
 
 testAvecDonnees('E2E-43 — Ajouter une compétence au panier', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
@@ -91,19 +100,22 @@ testAvecDonnees('E2E-43 — Ajouter une compétence au panier', async ({ appAvec
   await expect(comp.btnEnvoyerSeance).toBeEnabled();
 });
 
-testAvecDonnees('E2E-44 — Ne pas pouvoir ajouter deux fois la même compétence', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const comp = new SelecteursCompetences(appAvecDonnees);
+testAvecDonnees(
+  'E2E-44 — Ne pas pouvoir ajouter deux fois la même compétence',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const comp = new SelecteursCompetences(appAvecDonnees);
 
-  await entete.navCompetences.click();
+    await entete.navCompetences.click();
 
-  // Déplier EMC puis l'ajouter au panier
-  await comp.btnTogglePremierNoeud.click();
-  await comp.btnAjouterAuPanierPremierNoeud.click();
+    // Déplier EMC puis l'ajouter au panier
+    await comp.btnTogglePremierNoeud.click();
+    await comp.btnAjouterAuPanierPremierNoeud.click();
 
-  // Le bouton "+" d'EMC est désactivé (déjà dans le panier)
-  await expect(comp.btnAjouterAuPanierPremierNoeud).toBeDisabled();
-});
+    // Le bouton "+" d'EMC est désactivé (déjà dans le panier)
+    await expect(comp.btnAjouterAuPanierPremierNoeud).toBeDisabled();
+  },
+);
 
 testAvecDonnees('E2E-45 — Retirer une compétence du panier', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
@@ -147,39 +159,45 @@ testAvecDonnees('E2E-46 — Vider le panier', async ({ appAvecDonnees }) => {
   await expect(comp.btnEnvoyerSeance).toBeDisabled();
 });
 
-testAvecDonnees('E2E-47 — Boutons d\'export désactivés si panier vide', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const comp = new SelecteursCompetences(appAvecDonnees);
+testAvecDonnees(
+  "E2E-47 — Boutons d'export désactivés si panier vide",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const comp = new SelecteursCompetences(appAvecDonnees);
 
-  await entete.navCompetences.click();
+    await entete.navCompetences.click();
 
-  // Panier vide au démarrage → tous les boutons désactivés
-  await expect(comp.btnViderPanier).toBeDisabled();
-  await expect(comp.btnEnvoyerProjet).toBeDisabled();
-  await expect(comp.btnEnvoyerSeance).toBeDisabled();
-});
+    // Panier vide au démarrage → tous les boutons désactivés
+    await expect(comp.btnViderPanier).toBeDisabled();
+    await expect(comp.btnEnvoyerProjet).toBeDisabled();
+    await expect(comp.btnEnvoyerSeance).toBeDisabled();
+  },
+);
 
-testAvecDonnees('E2E-48 — Export du panier vers un projet (popin de sélection)', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const comp = new SelecteursCompetences(appAvecDonnees);
+testAvecDonnees(
+  'E2E-48 — Export du panier vers un projet (popin de sélection)',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const comp = new SelecteursCompetences(appAvecDonnees);
 
-  await entete.navCompetences.click();
+    await entete.navCompetences.click();
 
-  // Ajouter EMC au panier, puis ouvrir la popin d'export vers projet
-  await comp.btnAjouterAuPanierPremierNoeud.click();
-  await comp.btnEnvoyerProjet.click();
+    // Ajouter EMC au panier, puis ouvrir la popin d'export vers projet
+    await comp.btnAjouterAuPanierPremierNoeud.click();
+    await comp.btnEnvoyerProjet.click();
 
-  // Sélectionner "Journal de la classe" puis "Période 1" (index 0)
-  await entete.exportSelectPrimaire.selectOption('11111111-aaaa-bbbb-cccc-journal00001');
-  await entete.exportSelectSecondaire.selectOption('0');
+    // Sélectionner "Journal de la classe" puis "Période 1" (index 0)
+    await entete.exportSelectPrimaire.selectOption('11111111-aaaa-bbbb-cccc-journal00001');
+    await entete.exportSelectSecondaire.selectOption('0');
 
-  // Confirmer → popin fermée, panier vidé
-  await entete.btnExportConfirmer.click();
-  await expect(comp.btnViderPanier).toBeDisabled();
-  await expect(entete.btnAnnuler).toBeEnabled();
-});
+    // Confirmer → popin fermée, panier vidé
+    await entete.btnExportConfirmer.click();
+    await expect(comp.btnViderPanier).toBeDisabled();
+    await expect(entete.btnAnnuler).toBeEnabled();
+  },
+);
 
-testAvecDonnees('E2E-49 — Annuler l\'export vers un projet', async ({ appAvecDonnees }) => {
+testAvecDonnees("E2E-49 — Annuler l'export vers un projet", async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
   const comp = new SelecteursCompetences(appAvecDonnees);
 
@@ -195,25 +213,28 @@ testAvecDonnees('E2E-49 — Annuler l\'export vers un projet', async ({ appAvecD
   await expect(comp.btnRetirerPremierePanier).toBeVisible();
 });
 
-testAvecDonnees('E2E-50 — Export du panier vers une séance du cahier journal', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const comp = new SelecteursCompetences(appAvecDonnees);
+testAvecDonnees(
+  'E2E-50 — Export du panier vers une séance du cahier journal',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const comp = new SelecteursCompetences(appAvecDonnees);
 
-  await entete.navCompetences.click();
+    await entete.navCompetences.click();
 
-  // Ajouter EMC au panier, puis ouvrir la popin d'export vers séance
-  await comp.btnAjouterAuPanierPremierNoeud.click();
-  await comp.btnEnvoyerSeance.click();
+    // Ajouter EMC au panier, puis ouvrir la popin d'export vers séance
+    await comp.btnAjouterAuPanierPremierNoeud.click();
+    await comp.btnEnvoyerSeance.click();
 
-  // Sélectionner la première journée disponible puis sa première séance pédagogique
-  await entete.exportSelectPrimaire.selectOption({index:1});
-  await entete.exportSelectSecondaire.selectOption({index:1});
+    // Sélectionner la première journée disponible puis sa première séance pédagogique
+    await entete.exportSelectPrimaire.selectOption({ index: 1 });
+    await entete.exportSelectSecondaire.selectOption({ index: 1 });
 
-  // Confirmer → popin fermée, panier vidé
-  await entete.btnExportConfirmer.click();
-  await expect(comp.btnViderPanier).toBeDisabled();
-  await expect(entete.btnAnnuler).toBeEnabled();
-});
+    // Confirmer → popin fermée, panier vidé
+    await entete.btnExportConfirmer.click();
+    await expect(comp.btnViderPanier).toBeDisabled();
+    await expect(entete.btnAnnuler).toBeEnabled();
+  },
+);
 
 testAvecDonnees('E2E-51 — Panier persisté après navigation', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);

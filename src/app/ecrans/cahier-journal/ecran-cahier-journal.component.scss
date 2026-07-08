@@ -108,7 +108,9 @@
     border-radius: var(--rayon, 4px);
     overflow: hidden;
 
-    &--editee { border-color: var(--accent); }
+    &--editee {
+      border-color: var(--accent);
+    }
   }
 
   &__seance-entete {
@@ -183,13 +185,19 @@
 }
 
 @media print {
-  .cj__gauche { display: none; }
+  .cj__gauche {
+    display: none;
+  }
 
   .cj {
     grid-template-columns: 1fr;
     display: block;
   }
 
-  .cj__seance-controles { display: none; }
-  .cj__ajouter-seance { display: none; }
+  .cj__seance-controles {
+    display: none;
+  }
+  .cj__ajouter-seance {
+    display: none;
+  }
 }

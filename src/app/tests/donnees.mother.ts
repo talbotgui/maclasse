@@ -2,7 +2,6 @@ import { DonneesApplication } from '../modeles/donnees-application.modele';
 
 /** Fournit des instances de {@link DonneesApplication} prêtes à l'emploi pour les tests. */
 export class DonneesMother {
-
   /**
    * Retourne un objet {@link DonneesApplication} minimal valide avec des valeurs neutres.
    * Passer un `Partial` pour surcharger uniquement les champs pertinents au test.

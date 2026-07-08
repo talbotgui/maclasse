@@ -29,10 +29,10 @@ export class CahierJournalService {
   public initialiserJourneeVide(date: string): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    if (donnees.cahierJournal.some(j => j.date === date)) return;
+    if (donnees.cahierJournal.some((j) => j.date === date)) return;
     this.donneesService.executer(
       new CommandeCreation<JourneeJournal>(
-        d => d.cahierJournal,
+        (d) => d.cahierJournal,
         { id: crypto.randomUUID(), date, seances: [] },
         LIBELLES.commandes.initialisationJourneeVide,
       ),
@@ -49,7 +49,7 @@ export class CahierJournalService {
   public initialiserDepuisEdt(date: string): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    if (donnees.cahierJournal.some(j => j.date === date)) return;
+    if (donnees.cahierJournal.some((j) => j.date === date)) return;
 
     const jourSemaine = DateUtils.obtenirJourSemaine(date);
     if (jourSemaine === 'samedi' || jourSemaine === 'dimanche') return;
@@ -86,7 +86,7 @@ export class CahierJournalService {
     seances.sort((a, b) => a.heureDebut.localeCompare(b.heureDebut));
     this.donneesService.executer(
       new CommandeCreation<JourneeJournal>(
-        d => d.cahierJournal,
+        (d) => d.cahierJournal,
         { id: crypto.randomUUID(), date, seances },
         LIBELLES.commandes.initialisationDepuisEdt,
       ),
@@ -101,7 +101,9 @@ export class CahierJournalService {
    * @param seance Séance à ajouter.
    */
   public ajouterSeance(date: string, seance: Seance): void {
-    const ancienneJournee = this.donneesService.donnees()?.cahierJournal.find(j => j.date === date);
+    const ancienneJournee = this.donneesService
+      .donnees()
+      ?.cahierJournal.find((j) => j.date === date);
     if (!ancienneJournee) return;
     const nouvelleJournee: JourneeJournal = {
       ...ancienneJournee,
@@ -109,7 +111,7 @@ export class CahierJournalService {
     };
     this.donneesService.executer(
       new CommandeModification<JourneeJournal>(
-        d => d.cahierJournal,
+        (d) => d.cahierJournal,
         ancienneJournee,
         nouvelleJournee,
         LIBELLES.commandes.ajoutSeance,
@@ -124,15 +126,17 @@ export class CahierJournalService {
    * @param seance Nouvelle valeur de la séance (même `id`).
    */
   public modifierSeance(date: string, seance: Seance): void {
-    const ancienneJournee = this.donneesService.donnees()?.cahierJournal.find(j => j.date === date);
+    const ancienneJournee = this.donneesService
+      .donnees()
+      ?.cahierJournal.find((j) => j.date === date);
     if (!ancienneJournee) return;
     const nouvelleJournee: JourneeJournal = {
       ...ancienneJournee,
-      seances: ancienneJournee.seances.map(s => (s.id === seance.id ? seance : s)),
+      seances: ancienneJournee.seances.map((s) => (s.id === seance.id ? seance : s)),
     };
     this.donneesService.executer(
       new CommandeModification<JourneeJournal>(
-        d => d.cahierJournal,
+        (d) => d.cahierJournal,
         ancienneJournee,
         nouvelleJournee,
         LIBELLES.commandes.modificationSeance,
@@ -147,15 +151,17 @@ export class CahierJournalService {
    * @param seanceId UUID de la séance à supprimer.
    */
   public supprimerSeance(date: string, seanceId: string): void {
-    const ancienneJournee = this.donneesService.donnees()?.cahierJournal.find(j => j.date === date);
+    const ancienneJournee = this.donneesService
+      .donnees()
+      ?.cahierJournal.find((j) => j.date === date);
     if (!ancienneJournee) return;
     const nouvelleJournee: JourneeJournal = {
       ...ancienneJournee,
-      seances: ancienneJournee.seances.filter(s => s.id !== seanceId),
+      seances: ancienneJournee.seances.filter((s) => s.id !== seanceId),
     };
     this.donneesService.executer(
       new CommandeModification<JourneeJournal>(
-        d => d.cahierJournal,
+        (d) => d.cahierJournal,
         ancienneJournee,
         nouvelleJournee,
         LIBELLES.commandes.suppressionSeance,
@@ -172,20 +178,24 @@ export class CahierJournalService {
    * @param idSeanceB Identifiant de la seconde séance.
    */
   public echangerHeuresSeances(date: string, idSeanceA: string, idSeanceB: string): void {
-    const ancienneJournee = this.donneesService.donnees()?.cahierJournal.find(j => j.date === date);
+    const ancienneJournee = this.donneesService
+      .donnees()
+      ?.cahierJournal.find((j) => j.date === date);
     if (!ancienneJournee) return;
-    const seanceA = ancienneJournee.seances.find(s => s.id === idSeanceA);
-    const seanceB = ancienneJournee.seances.find(s => s.id === idSeanceB);
+    const seanceA = ancienneJournee.seances.find((s) => s.id === idSeanceA);
+    const seanceB = ancienneJournee.seances.find((s) => s.id === idSeanceB);
     if (!seanceA || !seanceB) return;
-    const seances = ancienneJournee.seances.map(s => {
-      if (s.id === idSeanceA) return { ...s, heureDebut: seanceB.heureDebut, heureFin: seanceB.heureFin };
-      if (s.id === idSeanceB) return { ...s, heureDebut: seanceA.heureDebut, heureFin: seanceA.heureFin };
+    const seances = ancienneJournee.seances.map((s) => {
+      if (s.id === idSeanceA)
+        return { ...s, heureDebut: seanceB.heureDebut, heureFin: seanceB.heureFin };
+      if (s.id === idSeanceB)
+        return { ...s, heureDebut: seanceA.heureDebut, heureFin: seanceA.heureFin };
       return s;
     });
     const nouvelleJournee: JourneeJournal = { ...ancienneJournee, seances };
     this.donneesService.executer(
       new CommandeModification<JourneeJournal>(
-        d => d.cahierJournal,
+        (d) => d.cahierJournal,
         ancienneJournee,
         nouvelleJournee,
         LIBELLES.commandes.reordonnancementSeances,
@@ -201,11 +211,11 @@ export class CahierJournalService {
   public supprimerJournee(date: string): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const index = donnees.cahierJournal.findIndex(j => j.date === date);
+    const index = donnees.cahierJournal.findIndex((j) => j.date === date);
     if (index === -1) return;
     this.donneesService.executer(
       new CommandeSuppression<JourneeJournal>(
-        d => d.cahierJournal,
+        (d) => d.cahierJournal,
         donnees.cahierJournal[index],
         index,
         LIBELLES.commandes.suppressionJournee,
@@ -224,17 +234,17 @@ export class CahierJournalService {
   public dupliquerSeance(seanceId: string, dateSource: string, dateCible: string): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const journeeSource = donnees.cahierJournal.find(j => j.date === dateSource);
+    const journeeSource = donnees.cahierJournal.find((j) => j.date === dateSource);
     if (!journeeSource) return;
-    const seanceSource = journeeSource.seances.find(s => s.id === seanceId);
+    const seanceSource = journeeSource.seances.find((s) => s.id === seanceId);
     if (!seanceSource) return;
     const nouvelleSeance: Seance = { ...structuredClone(seanceSource), id: crypto.randomUUID() };
 
-    const journeeCible = donnees.cahierJournal.find(j => j.date === dateCible);
+    const journeeCible = donnees.cahierJournal.find((j) => j.date === dateCible);
     if (!journeeCible) {
       this.donneesService.executer(
         new CommandeCreation<JourneeJournal>(
-          d => d.cahierJournal,
+          (d) => d.cahierJournal,
           { id: crypto.randomUUID(), date: dateCible, seances: [nouvelleSeance] },
           LIBELLES.commandes.duplicationSeance,
         ),
@@ -246,7 +256,7 @@ export class CahierJournalService {
       };
       this.donneesService.executer(
         new CommandeModification<JourneeJournal>(
-          d => d.cahierJournal,
+          (d) => d.cahierJournal,
           journeeCible,
           nouvelleJournee,
           LIBELLES.commandes.duplicationSeance,
@@ -266,18 +276,18 @@ export class CahierJournalService {
   public dupliquerJournee(dateSource: string, dateCible: string): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const journeeSource = donnees.cahierJournal.find(j => j.date === dateSource);
+    const journeeSource = donnees.cahierJournal.find((j) => j.date === dateSource);
     if (!journeeSource) return;
-    const seancesClonees = journeeSource.seances.map(s => ({
+    const seancesClonees = journeeSource.seances.map((s) => ({
       ...structuredClone(s),
       id: crypto.randomUUID(),
     }));
 
-    const journeeCible = donnees.cahierJournal.find(j => j.date === dateCible);
+    const journeeCible = donnees.cahierJournal.find((j) => j.date === dateCible);
     if (!journeeCible) {
       this.donneesService.executer(
         new CommandeCreation<JourneeJournal>(
-          d => d.cahierJournal,
+          (d) => d.cahierJournal,
           { id: crypto.randomUUID(), date: dateCible, seances: seancesClonees },
           LIBELLES.commandes.duplicationJournee,
         ),
@@ -286,7 +296,7 @@ export class CahierJournalService {
       const nouvelleJournee: JourneeJournal = { ...journeeCible, seances: seancesClonees };
       this.donneesService.executer(
         new CommandeModification<JourneeJournal>(
-          d => d.cahierJournal,
+          (d) => d.cahierJournal,
           journeeCible,
           nouvelleJournee,
           LIBELLES.commandes.duplicationJournee,
@@ -305,9 +315,9 @@ export class CahierJournalService {
   public calculerConflitsAbsences(date: string, seanceId: string): string[] {
     const donnees = this.donneesService.donnees();
     if (!donnees) return [];
-    const journee = donnees.cahierJournal.find(j => j.date === date);
+    const journee = donnees.cahierJournal.find((j) => j.date === date);
     if (!journee) return [];
-    const seance = journee.seances.find(s => s.id === seanceId);
+    const seance = journee.seances.find((s) => s.id === seanceId);
     if (!seance) return [];
 
     const jourSemaine = DateUtils.obtenirJourSemaine(date);
@@ -317,17 +327,19 @@ export class CahierJournalService {
     let elevesIds: string[];
 
     if (!seance.elevesConcernes || seance.elevesConcernes.type === 'classe') {
-      elevesIds = tousEleves.map(e => e.id);
+      elevesIds = tousEleves.map((e) => e.id);
     } else if (seance.elevesConcernes.type === 'groupes') {
       const groupes = seance.elevesConcernes.groupes;
-      elevesIds = tousEleves.filter(e => e.groupes.some(g => groupes.includes(g))).map(e => e.id);
+      elevesIds = tousEleves
+        .filter((e) => e.groupes.some((g) => groupes.includes(g)))
+        .map((e) => e.id);
     } else {
       elevesIds = seance.elevesConcernes.elevesIds;
     }
 
     const conflits: string[] = [];
     for (const eleveId of elevesIds) {
-      const eleve = tousEleves.find(e => e.id === eleveId);
+      const eleve = tousEleves.find((e) => e.id === eleveId);
       if (!eleve) continue;
       for (const abs of eleve.absencesRecurrentes) {
         if (

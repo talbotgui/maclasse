@@ -79,7 +79,7 @@ describe('EcranProjetsComponent', () => {
   });
 
   describe('confirmerAvertissement (sans garde)', () => {
-    it('exécute l\'action en attente et ferme la popin', () => {
+    it("exécute l'action en attente et ferme la popin", () => {
       (component as any).enModeEdition.set(true);
       (component as any).selectionnerProjet(p2);
 
@@ -92,7 +92,7 @@ describe('EcranProjetsComponent', () => {
   });
 
   describe('annulerAvertissement', () => {
-    it('ferme la popin sans exécuter l\'action', () => {
+    it("ferme la popin sans exécuter l'action", () => {
       (component as any).enModeEdition.set(true);
       (component as any).selectionnerProjet(p2);
 
@@ -112,7 +112,7 @@ describe('EcranProjetsComponent', () => {
       (component as any).onEnregistrer(nouveau);
 
       const projets = donneesService.donnees()?.projets ?? [];
-      expect(projets.some(p => p.id === 'p99')).toBe(true);
+      expect(projets.some((p) => p.id === 'p99')).toBe(true);
       expect(contexteService.projetSelectionne()).toBe('p99');
       expect((component as any).enModeEdition()).toBe(false);
     });
@@ -125,7 +125,7 @@ describe('EcranProjetsComponent', () => {
       (component as any).onEnregistrer(modifie);
 
       const projets = donneesService.donnees()?.projets ?? [];
-      expect(projets.find(p => p.id === 'p1')?.nom).toBe('Sciences-Modif');
+      expect(projets.find((p) => p.id === 'p1')?.nom).toBe('Sciences-Modif');
       expect((component as any).enModeEdition()).toBe(false);
     });
   });
@@ -148,7 +148,7 @@ describe('EcranProjetsComponent', () => {
       (component as any).supprimerProjet();
 
       const projets = donneesService.donnees()?.projets ?? [];
-      expect(projets.some(p => p.id === 'p1')).toBe(false);
+      expect(projets.some((p) => p.id === 'p1')).toBe(false);
       expect(contexteService.projetSelectionne()).toBeNull();
     });
 

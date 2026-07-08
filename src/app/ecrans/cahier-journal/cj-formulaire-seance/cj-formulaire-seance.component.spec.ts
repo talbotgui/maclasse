@@ -16,9 +16,7 @@ describe('CjFormulaireSeanceComponent', () => {
     TestBed.inject(DonneesService).charger(DonneesMother.base());
     fixture = TestBed.createComponent(CjFormulaireSeanceComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('domaines', [
-      { id: 'd1', libelle: 'Français', enfants: [] },
-    ]);
+    fixture.componentRef.setInput('domaines', [{ id: 'd1', libelle: 'Français', enfants: [] }]);
     fixture.detectChanges();
   });
 
@@ -68,8 +66,6 @@ describe('CjFormulaireSeanceComponent', () => {
 
       expect((component as any).formSeance.disciplinesIds).not.toContain('d1');
     });
-
-
   });
 
   describe('surSelectionCompetences', () => {

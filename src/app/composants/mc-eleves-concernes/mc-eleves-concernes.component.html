@@ -40,7 +40,11 @@
   </fieldset>
 
   @if (valeurInterne().type === 'groupes') {
-    <div class="mc-eleves-concernes__chips" role="group" [attr.aria-label]="LIBELLES.elevesConcernes.ariaGroupes">
+    <div
+      class="mc-eleves-concernes__chips"
+      role="group"
+      [attr.aria-label]="LIBELLES.elevesConcernes.ariaGroupes"
+    >
       @if (groupes().length === 0) {
         <p class="mc-liste-vide">{{ LIBELLES.commun.aucunResultat }}</p>
       }
@@ -52,13 +56,19 @@
           [class.mc-chip-actif]="valeurInterne().groupes.includes(groupe.id)"
           [attr.aria-pressed]="valeurInterne().groupes.includes(groupe.id)"
           (click)="basculerGroupe(groupe.id)"
-        >{{ groupe.libelle }}</button>
+        >
+          {{ groupe.libelle }}
+        </button>
       }
     </div>
   }
 
   @if (valeurInterne().type === 'eleves') {
-    <div class="mc-eleves-concernes__chips" role="group" [attr.aria-label]="LIBELLES.elevesConcernes.ariaEleves">
+    <div
+      class="mc-eleves-concernes__chips"
+      role="group"
+      [attr.aria-label]="LIBELLES.elevesConcernes.ariaEleves"
+    >
       @if (eleves().length === 0) {
         <p class="mc-liste-vide">{{ LIBELLES.commun.aucunResultat }}</p>
       }
@@ -70,7 +80,9 @@
           [class.mc-chip-actif]="valeurInterne().elevesIds.includes(eleve.id)"
           [attr.aria-pressed]="valeurInterne().elevesIds.includes(eleve.id)"
           (click)="basculerEleve(eleve.id)"
-        >{{ eleve.nom.toUpperCase() }} {{ eleve.prenom }}</button>
+        >
+          {{ eleve.nom.toUpperCase() }} {{ eleve.prenom }}
+        </button>
       }
     </div>
   }

@@ -33,7 +33,8 @@ export class McAutoFocusDirective {
         const el = this.elementRef.nativeElement;
         const cible = el.matches(McAutoFocusDirective.SELECTEUR_FOCUSABLE)
           ? el
-          : ((el.querySelector(McAutoFocusDirective.SELECTEUR_FOCUSABLE) as HTMLElement | null) ?? el);
+          : ((el.querySelector(McAutoFocusDirective.SELECTEUR_FOCUSABLE) as HTMLElement | null) ??
+            el);
         cible.focus();
       }
     });

@@ -10,23 +10,26 @@ import { SelecteursEntete } from '../selecteurs/selecteurs-entete';
 //   titre="Lecture – Compréhension de texte", type=pedagogique
 // - Jours ouvrés : lundi–vendredi (joursOuvres par défaut), heureDebutJournee=08:30
 
-testAvecDonnees('E2E-52 — Sélectionner un EDT existant dans la liste', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+testAvecDonnees(
+  'E2E-52 — Sélectionner un EDT existant dans la liste',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
 
-  await entete.navEmploiDuTemps.click();
-  await expect(appAvecDonnees).toHaveURL(/\/emploi-du-temps/);
+    await entete.navEmploiDuTemps.click();
+    await expect(appAvecDonnees).toHaveURL(/\/emploi-du-temps/);
 
-  // Sélectionner "Semaine paire"
-  await edt.btnEdtSemainePaire.click();
+    // Sélectionner "Semaine paire"
+    await edt.btnEdtSemainePaire.click();
 
-  // La grille s'affiche avec des créneaux
-  await expect(edt.premierCreneauGrille).toBeVisible();
+    // La grille s'affiche avec des créneaux
+    await expect(edt.premierCreneauGrille).toBeVisible();
 
-  // Le formulaire EDT est ouvert dans la colonne droite
-  await expect(edt.inputNomEdt).toBeVisible();
-  await expect(edt.inputNomEdt).toHaveValue('Semaine paire — 1ère partie');
-});
+    // Le formulaire EDT est ouvert dans la colonne droite
+    await expect(edt.inputNomEdt).toBeVisible();
+    await expect(edt.inputNomEdt).toHaveValue('Semaine paire — 1ère partie');
+  },
+);
 
 testAvecDonnees('E2E-53 — Créer un nouvel EDT', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
@@ -43,91 +46,103 @@ testAvecDonnees('E2E-53 — Créer un nouvel EDT', async ({ appAvecDonnees }) =>
   await expect(edt.grilleVide).toBeVisible();
 });
 
-testAvecDonnees('E2E-54 — Renseigner et enregistrer les propriétés d\'un EDT', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+testAvecDonnees(
+  "E2E-54 — Renseigner et enregistrer les propriétés d'un EDT",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
 
-  await entete.navEmploiDuTemps.click();
-  await edt.btnCreerEdt.click();
+    await entete.navEmploiDuTemps.click();
+    await edt.btnCreerEdt.click();
 
-  // Saisir le nom et choisir la fréquence
-  await edt.inputNomEdt.fill('EDT test');
-  await edt.selectFrequenceEdt.selectOption('paire');
-  await edt.btnEnregistrerEdt.click();
+    // Saisir le nom et choisir la fréquence
+    await edt.inputNomEdt.fill('EDT test');
+    await edt.selectFrequenceEdt.selectOption('paire');
+    await edt.btnEnregistrerEdt.click();
 
-  // L'EDT "EDT test" apparaît dans la liste de gauche
-  await expect(edt.listeEdts).toContainText('EDT test');
-  await expect(entete.btnAnnuler).toBeEnabled();
-});
+    // L'EDT "EDT test" apparaît dans la liste de gauche
+    await expect(edt.listeEdts).toContainText('EDT test');
+    await expect(entete.btnAnnuler).toBeEnabled();
+  },
+);
 
-testAvecDonnees('E2E-55 — Annuler les modifications des propriétés d\'un EDT', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+testAvecDonnees(
+  "E2E-55 — Annuler les modifications des propriétés d'un EDT",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
 
-  await entete.navEmploiDuTemps.click();
-  await edt.btnEdtSemainePaire.click();
-  
-  // Modifier le nom, annule
-  await edt.inputNomEdt.fill('Nom modifié temporaire');
-  await edt.btnAnnulerEdt.click();
+    await entete.navEmploiDuTemps.click();
+    await edt.btnEdtSemainePaire.click();
 
-  // Le champ n'existe plus dans le DOM
-  await expect(edt.inputNomEdt).toHaveCount(0);
+    // Modifier le nom, annule
+    await edt.inputNomEdt.fill('Nom modifié temporaire');
+    await edt.btnAnnulerEdt.click();
 
-  // Aucune mutation → ANNULER entête inactif
-  await expect(entete.btnAnnuler).toBeDisabled();
-});
+    // Le champ n'existe plus dans le DOM
+    await expect(edt.inputNomEdt).toHaveCount(0);
 
-testAvecDonnees('E2E-56 — Ajouter un créneau pédagogique via le bouton AJOUTER d\'une colonne', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+    // Aucune mutation → ANNULER entête inactif
+    await expect(entete.btnAnnuler).toBeDisabled();
+  },
+);
 
-  await entete.navEmploiDuTemps.click();
-  await edt.btnEdtSemaineComplete.click();
+testAvecDonnees(
+  "E2E-56 — Ajouter un créneau pédagogique via le bouton AJOUTER d'une colonne",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
 
-  // Cliquer le bouton AJOUTER en bas de la colonne lundi
-  await edt.btnNouveauCreneauLigne.click();
+    await entete.navEmploiDuTemps.click();
+    await edt.btnEdtSemaineComplete.click();
 
-  // Le formulaire créneau s'ouvre (type pédagogique par défaut → inputTitreCreneau visible)
-  await expect(edt.inputTitreCreneau).toBeVisible();
+    // Cliquer le bouton AJOUTER en bas de la colonne lundi
+    await edt.btnNouveauCreneauLigne.click();
 
-  // Saisir un titre reconnaissable
-  await edt.inputTitreCreneau.fill('Titre test E2E-56');
-  await edt.btnEnregistrerCreneau.click();
+    // Le formulaire créneau s'ouvre (type pédagogique par défaut → inputTitreCreneau visible)
+    await expect(edt.inputTitreCreneau).toBeVisible();
 
-  // Le créneau apparaît dans la grille
-  await expect(edt.conteneurGrille).toContainText('Titre test E2E-56');
-  await expect(entete.btnAnnuler).toBeEnabled();
-});
+    // Saisir un titre reconnaissable
+    await edt.inputTitreCreneau.fill('Titre test E2E-56');
+    await edt.btnEnregistrerCreneau.click();
 
-testAvecDonnees('E2E-57 — Ajouter un créneau via le bouton intercalaire "+" dans la grille', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+    // Le créneau apparaît dans la grille
+    await expect(edt.conteneurGrille).toContainText('Titre test E2E-56');
+    await expect(entete.btnAnnuler).toBeEnabled();
+  },
+);
 
-  await entete.navEmploiDuTemps.click();
+testAvecDonnees(
+  'E2E-57 — Ajouter un créneau via le bouton intercalaire "+" dans la grille',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
 
-  // Créer un EDT vide pour avoir des cellules libres dans la grille
-  await edt.btnCreerEdt.click();
-  await edt.inputNomEdt.fill('EDT test E2E-57');
-  await edt.btnEnregistrerEdt.click();
+    await entete.navEmploiDuTemps.click();
 
-  // Ajouter un premier créneau sur lundi (heures par défaut 08:00-09:00)
-  await edt.btnNouveauCreneauLigne.click();
-  await edt.inputTitreCreneau.fill('Premier créneau lundi');
-  await edt.btnEnregistrerCreneau.click();
+    // Créer un EDT vide pour avoir des cellules libres dans la grille
+    await edt.btnCreerEdt.click();
+    await edt.inputNomEdt.fill('EDT test E2E-57');
+    await edt.btnEnregistrerEdt.click();
 
-  // La grille a maintenant une ligne 08:00-09:00 avec lundi rempli et les autres jours vides
-  // btnAjouterCreneauCelluleVide = premier "+" dans une cellule vide (mardi 08:00)
-  await edt.btnAjouterCreneauCelluleVide.click();
+    // Ajouter un premier créneau sur lundi (heures par défaut 08:00-09:00)
+    await edt.btnNouveauCreneauLigne.click();
+    await edt.inputTitreCreneau.fill('Premier créneau lundi');
+    await edt.btnEnregistrerCreneau.click();
 
-  // Le formulaire créneau s'ouvre pour le deuxième jour
-  await expect(edt.inputTitreCreneau).toBeVisible();
-  await edt.inputTitreCreneau.fill('Test intercalaire mardi');
-  await edt.btnEnregistrerCreneau.click();
+    // La grille a maintenant une ligne 08:00-09:00 avec lundi rempli et les autres jours vides
+    // btnAjouterCreneauCelluleVide = premier "+" dans une cellule vide (mardi 08:00)
+    await edt.btnAjouterCreneauCelluleVide.click();
 
-  // Le créneau apparaît dans la grille
-  await expect(edt.conteneurGrille).toContainText('Test intercalaire mardi');
-});
+    // Le formulaire créneau s'ouvre pour le deuxième jour
+    await expect(edt.inputTitreCreneau).toBeVisible();
+    await edt.inputTitreCreneau.fill('Test intercalaire mardi');
+    await edt.btnEnregistrerCreneau.click();
+
+    // Le créneau apparaît dans la grille
+    await expect(edt.conteneurGrille).toContainText('Test intercalaire mardi');
+  },
+);
 
 testAvecDonnees('E2E-58 — Modifier un créneau existant', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
@@ -151,7 +166,7 @@ testAvecDonnees('E2E-58 — Modifier un créneau existant', async ({ appAvecDonn
   await expect(entete.btnAnnuler).toBeEnabled();
 });
 
-testAvecDonnees('E2E-59 — Annuler la modification d\'un créneau', async ({ appAvecDonnees }) => {
+testAvecDonnees("E2E-59 — Annuler la modification d'un créneau", async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
   const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
 
@@ -213,7 +228,7 @@ testAvecDonnees('E2E-61 — Supprimer un EDT (et tous ses créneaux)', async ({ 
   await expect(entete.btnAnnuler).toBeEnabled();
 });
 
-testAvecDonnees('E2E-62 — Imprimer la grille de l\'EDT', async ({ appAvecDonnees }) => {
+testAvecDonnees("E2E-62 — Imprimer la grille de l'EDT", async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
   const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
 

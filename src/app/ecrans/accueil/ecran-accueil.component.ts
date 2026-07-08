@@ -58,25 +58,25 @@ export class EcranAccueilComponent {
     const donnees = this.donneesService.donnees();
     if (!donnees) return [];
 
-    const journee = donnees.cahierJournal.find(j => j.date === this.dateIsoAujourdhui);
+    const journee = donnees.cahierJournal.find((j) => j.date === this.dateIsoAujourdhui);
     if (!journee) return [];
 
     const nbTotalEleves = donnees.classe.eleves.length;
 
     return journee.seances
-      .filter(s => s.type === 'pedagogique')
-      .map(s => {
+      .filter((s) => s.type === 'pedagogique')
+      .map((s) => {
         const disciplines = (s.disciplinesIds ?? [])
-          .map(id => this.competenceService.obtenirDomaineParId(id)?.libelle ?? '')
-          .filter(l => l.length > 0);
+          .map((id) => this.competenceService.obtenirDomaineParId(id)?.libelle ?? '')
+          .filter((l) => l.length > 0);
 
         let nbEleves = nbTotalEleves;
         if (s.elevesConcernes) {
           if (s.elevesConcernes.type === 'eleves') {
             nbEleves = s.elevesConcernes.elevesIds.length;
           } else if (s.elevesConcernes.type === 'groupes') {
-            nbEleves = donnees.classe.eleves.filter(e =>
-              e.groupes.some(g => s.elevesConcernes!.groupes.includes(g)),
+            nbEleves = donnees.classe.eleves.filter((e) =>
+              e.groupes.some((g) => s.elevesConcernes!.groupes.includes(g)),
             ).length;
           }
         }

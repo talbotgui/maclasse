@@ -4,7 +4,11 @@ import { EdtFormulaireComponent } from './edt-formulaire.component';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
 import { DonneesMother } from '../../../tests/donnees.mother';
 import { EdtMother, CreneauMother } from '../../../tests/emploi-du-temps.mother';
-import type { EmploiDuTemps, CreneauEdt, ElevesConcernes } from '../../../modeles/emploi-du-temps.modele';
+import type {
+  EmploiDuTemps,
+  CreneauEdt,
+  ElevesConcernes,
+} from '../../../modeles/emploi-du-temps.modele';
 
 describe('EdtFormulaireComponent', () => {
   let fixture: ComponentFixture<EdtFormulaireComponent>;
@@ -36,7 +40,7 @@ describe('EdtFormulaireComponent', () => {
       expect((component as any).formEdt).not.toBe(edt);
     });
 
-    it('changement d\'edt → formEdt rechargé', () => {
+    it("changement d'edt → formEdt rechargé", () => {
       const e1 = EdtMother.base({ nom: 'EDT 1' });
       const e2 = EdtMother.base({ nom: 'EDT 2' });
       fixture.componentRef.setInput('edt', e1);
@@ -143,7 +147,9 @@ describe('EdtFormulaireComponent', () => {
       fixture.componentRef.setInput('creneau', null);
       fixture.detectChanges();
 
-      expect(() => (component as any).surElevesConcernesChange({ type: 'classe', groupes: [], elevesIds: [] })).not.toThrow();
+      expect(() =>
+        (component as any).surElevesConcernesChange({ type: 'classe', groupes: [], elevesIds: [] }),
+      ).not.toThrow();
     });
   });
 
@@ -163,7 +169,7 @@ describe('EdtFormulaireComponent', () => {
       expect(emis).not.toBe((component as any).formEdt);
     });
 
-    it('n\'émet pas si formEdt=null', () => {
+    it("n'émet pas si formEdt=null", () => {
       fixture.componentRef.setInput('edt', null);
       fixture.detectChanges();
 
@@ -191,7 +197,7 @@ describe('EdtFormulaireComponent', () => {
       expect(emis).not.toBe((component as any).formCreneau);
     });
 
-    it('n\'émet pas si formCreneau=null', () => {
+    it("n'émet pas si formCreneau=null", () => {
       fixture.componentRef.setInput('creneau', null);
       fixture.detectChanges();
 

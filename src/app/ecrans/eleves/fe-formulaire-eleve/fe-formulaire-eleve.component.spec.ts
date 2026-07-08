@@ -38,7 +38,7 @@ describe('FeFormulaireEleveComponent', () => {
       expect((component as any).formEleve).not.toBe(eleve);
     });
 
-    it('changement de l\'input eleve → formEleve rechargé', () => {
+    it("changement de l'input eleve → formEleve rechargé", () => {
       const e1 = EleveMother.base('e1', 'MARTIN', 'Alice');
       const e2 = EleveMother.base('e2', 'DUPONT', 'Bob');
       fixture.componentRef.setInput('eleve', e1);
@@ -82,12 +82,14 @@ describe('FeFormulaireEleveComponent', () => {
       expect((component as any).formEleve.groupes).not.toContain('GA');
     });
 
-    it('n\'ajoute pas un groupe déjà présent', () => {
+    it("n'ajoute pas un groupe déjà présent", () => {
       (component as any).formEleve.groupes = ['GA'];
 
       (component as any).basculerGroupe('GA', true);
 
-      expect((component as any).formEleve.groupes.filter((g: string) => g === 'GA')).toHaveLength(1);
+      expect((component as any).formEleve.groupes.filter((g: string) => g === 'GA')).toHaveLength(
+        1,
+      );
     });
   });
 
@@ -117,7 +119,7 @@ describe('FeFormulaireEleveComponent', () => {
       expect(absences[0].id).toBeTruthy();
     });
 
-    it('supprimerAbsenceRecurrente(0) retire à l\'index 0', () => {
+    it("supprimerAbsenceRecurrente(0) retire à l'index 0", () => {
       (component as any).ajouterAbsenceRecurrente();
       (component as any).ajouterAbsenceRecurrente();
 
@@ -136,7 +138,7 @@ describe('FeFormulaireEleveComponent', () => {
       expect(absences[0].id).toBeTruthy();
     });
 
-    it('supprimerAbsencePonctuelle(0) retire à l\'index 0', () => {
+    it("supprimerAbsencePonctuelle(0) retire à l'index 0", () => {
       (component as any).ajouterAbsencePonctuelle();
       (component as any).ajouterAbsencePonctuelle();
 
@@ -147,7 +149,7 @@ describe('FeFormulaireEleveComponent', () => {
   });
 
   describe('ajouterCursus / supprimerCursus', () => {
-    it('ajouterCursus ajoute avec l\'année courante', () => {
+    it("ajouterCursus ajoute avec l'année courante", () => {
       (component as any).ajouterCursus();
 
       const cursus = (component as any).formEleve.cursus;
@@ -155,7 +157,7 @@ describe('FeFormulaireEleveComponent', () => {
       expect(cursus[0].annee).toBe(new Date().getFullYear());
     });
 
-    it('supprimerCursus(0) retire à l\'index 0', () => {
+    it("supprimerCursus(0) retire à l'index 0", () => {
       (component as any).ajouterCursus();
       (component as any).ajouterCursus();
 
@@ -183,7 +185,7 @@ describe('FeFormulaireEleveComponent', () => {
   });
 
   describe('annuler', () => {
-    it('onAnnuler émet l\'output annuler', () => {
+    it("onAnnuler émet l'output annuler", () => {
       const spy = vi.spyOn((component as any).annuler, 'emit');
 
       (component as any).onAnnuler();

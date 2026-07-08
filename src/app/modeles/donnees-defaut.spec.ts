@@ -8,7 +8,11 @@
  */
 
 import donneesDefaut from '../../../public/donnees-defaut.json';
-import type { ConfigApplication, DonneesApplication, Enseignant } from './donnees-application.modele';
+import type {
+  ConfigApplication,
+  DonneesApplication,
+  Enseignant,
+} from './donnees-application.modele';
 import type { JourSemaine } from './emploi-du-temps.modele';
 import type { Bulletin, Ppi } from './ppi-bulletin.modele';
 import type { Projet } from './projet.modele';
@@ -41,7 +45,6 @@ const JOURS_SEMAINE: JourSemaine[] = ['lundi', 'mardi', 'mercredi', 'jeudi', 've
 const donnees = donneesDefaut as unknown as DonneesApplication;
 
 describe('donnees-defaut.json — cohérence modèle/données', () => {
-
   /** Vérifie que tous les champs de premier niveau sont présents et que les collections sont des tableaux. */
   describe('Structure racine', () => {
     it('possède une version non vide', () => {
@@ -189,7 +192,9 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
     it('les statuts des élèves référencent des entrées valides', () => {
       const statutsValides = new Set(donnees.referentiels.statutsEleve.map((s) => s.id));
       for (const eleve of donnees.classe.eleves) {
-        expect(statutsValides.has(eleve.statut), `statut "${eleve.statut}" de ${eleve.nom}`).toBe(true);
+        expect(statutsValides.has(eleve.statut), `statut "${eleve.statut}" de ${eleve.nom}`).toBe(
+          true,
+        );
       }
     });
 
@@ -206,7 +211,10 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
       const typesValides = new Set(donnees.referentiels.typesContact.map((t) => t.id));
       for (const eleve of donnees.classe.eleves) {
         for (const contact of eleve.contacts) {
-          expect(typesValides.has(contact.type), `type contact "${contact.type}" de ${eleve.nom}`).toBe(true);
+          expect(
+            typesValides.has(contact.type),
+            `type contact "${contact.type}" de ${eleve.nom}`,
+          ).toBe(true);
         }
       }
     });
@@ -221,7 +229,9 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
       const elevesIds = new Set(donnees.classe.eleves.map((e) => e.id));
       for (const projet of donnees.projets) {
         for (const eleveId of projet.elevesIds) {
-          expect(elevesIds.has(eleveId), `eleveId "${eleveId}" du projet "${projet.nom}"`).toBe(true);
+          expect(elevesIds.has(eleveId), `eleveId "${eleveId}" du projet "${projet.nom}"`).toBe(
+            true,
+          );
         }
       }
     });
@@ -243,7 +253,9 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
     });
 
     it('au moins un élève a des dispositifsMedicaux renseignés', () => {
-      const avecDispositifs = donnees.classe.eleves.filter((e) => e.dispositifsMedicaux !== undefined);
+      const avecDispositifs = donnees.classe.eleves.filter(
+        (e) => e.dispositifsMedicaux !== undefined,
+      );
       expect(avecDispositifs.length).toBeGreaterThan(0);
     });
   });

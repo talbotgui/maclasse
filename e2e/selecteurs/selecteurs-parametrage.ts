@@ -22,7 +22,6 @@ import { SelecteursBase } from './selecteurs-base';
  * Les champs avec id="..." statique reçoivent l'id sur l'hôte ET l'interne → #idChamp input fonctionne.
  */
 export class SelecteursParametrage extends SelecteursBase {
-
   // --- Navigation par section (colonne gauche) ---
   /** Bouton de navigation vers la section "Enseignant & classe". */
   readonly btnSectionEnseignantClasse: Locator;

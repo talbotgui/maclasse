@@ -25,7 +25,9 @@ export class ProjetService {
    * @param projet Projet à créer (doit posséder un `id` unique).
    */
   public creerProjet(projet: Projet): void {
-    this.donneesService.executer(new CommandeCreation(d => d.projets, projet, LIBELLES.commandes.ajoutProjet));
+    this.donneesService.executer(
+      new CommandeCreation((d) => d.projets, projet, LIBELLES.commandes.ajoutProjet),
+    );
   }
 
   /**
@@ -36,9 +38,16 @@ export class ProjetService {
   public modifierProjet(projet: Projet): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const ancien = donnees.projets.find(p => p.id === projet.id);
+    const ancien = donnees.projets.find((p) => p.id === projet.id);
     if (!ancien) return;
-    this.donneesService.executer(new CommandeModification(d => d.projets, ancien, projet, LIBELLES.commandes.modificationProjet));
+    this.donneesService.executer(
+      new CommandeModification(
+        (d) => d.projets,
+        ancien,
+        projet,
+        LIBELLES.commandes.modificationProjet,
+      ),
+    );
   }
 
   /**
@@ -49,10 +58,15 @@ export class ProjetService {
   public supprimerProjet(id: string): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const index = donnees.projets.findIndex(p => p.id === id);
+    const index = donnees.projets.findIndex((p) => p.id === id);
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeSuppression(d => d.projets, donnees.projets[index], index, LIBELLES.commandes.suppressionProjet),
+      new CommandeSuppression(
+        (d) => d.projets,
+        donnees.projets[index],
+        index,
+        LIBELLES.commandes.suppressionProjet,
+      ),
     );
   }
 
@@ -61,7 +75,7 @@ export class ProjetService {
    * @param id UUID du projet.
    */
   public obtenirProjet(id: string): Projet | undefined {
-    return this.donneesService.donnees()?.projets.find(p => p.id === id);
+    return this.donneesService.donnees()?.projets.find((p) => p.id === id);
   }
 
   /**
@@ -75,7 +89,7 @@ export class ProjetService {
     if (!terme.trim()) return projets;
     const t = TexteUtils.normaliserPourRecherche(terme);
     return projets.filter(
-      p =>
+      (p) =>
         TexteUtils.normaliserPourRecherche(p.nom).includes(t) ||
         TexteUtils.normaliserPourRecherche(p.description).includes(t),
     );
@@ -91,10 +105,17 @@ export class ProjetService {
   public ajouterPeriode(projetId: string, periode: ProjetPeriode): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const ancien = donnees.projets.find(p => p.id === projetId);
+    const ancien = donnees.projets.find((p) => p.id === projetId);
     if (!ancien) return;
     const nouveau: Projet = { ...ancien, periodes: [...ancien.periodes, periode] };
-    this.donneesService.executer(new CommandeModification(d => d.projets, ancien, nouveau, LIBELLES.commandes.ajoutPeriodeProjet));
+    this.donneesService.executer(
+      new CommandeModification(
+        (d) => d.projets,
+        ancien,
+        nouveau,
+        LIBELLES.commandes.ajoutPeriodeProjet,
+      ),
+    );
   }
 
   /**
@@ -111,13 +132,20 @@ export class ProjetService {
   ): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const ancien = donnees.projets.find(p => p.id === projetId);
+    const ancien = donnees.projets.find((p) => p.id === projetId);
     if (!ancien) return;
-    const periodes = ancien.periodes.map(pp =>
+    const periodes = ancien.periodes.map((pp) =>
       pp.periodeNom === anciennePeriode.periodeNom ? nouvellePeriode : pp,
     );
     const nouveau: Projet = { ...ancien, periodes };
-    this.donneesService.executer(new CommandeModification(d => d.projets, ancien, nouveau, LIBELLES.commandes.modificationPeriodeProjet));
+    this.donneesService.executer(
+      new CommandeModification(
+        (d) => d.projets,
+        ancien,
+        nouveau,
+        LIBELLES.commandes.modificationPeriodeProjet,
+      ),
+    );
   }
 
   /**
@@ -129,12 +157,19 @@ export class ProjetService {
   public supprimerPeriode(projetId: string, periodeNom: string): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const ancien = donnees.projets.find(p => p.id === projetId);
+    const ancien = donnees.projets.find((p) => p.id === projetId);
     if (!ancien) return;
     const nouveau: Projet = {
       ...ancien,
-      periodes: ancien.periodes.filter(pp => pp.periodeNom !== periodeNom),
+      periodes: ancien.periodes.filter((pp) => pp.periodeNom !== periodeNom),
     };
-    this.donneesService.executer(new CommandeModification(d => d.projets, ancien, nouveau, LIBELLES.commandes.suppressionPeriodeProjet));
+    this.donneesService.executer(
+      new CommandeModification(
+        (d) => d.projets,
+        ancien,
+        nouveau,
+        LIBELLES.commandes.suppressionPeriodeProjet,
+      ),
+    );
   }
 }

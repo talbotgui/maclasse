@@ -13,17 +13,22 @@ describe('EcranCahierJournalComponent', () => {
   let component: EcranCahierJournalComponent;
   let donneesService: DonneesService;
 
-  const dateTest = DateUtils.ajouterJours(DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()), 7);
+  const dateTest = DateUtils.ajouterJours(
+    DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()),
+    7,
+  );
   const seance1 = SeanceMother.pedagogique({ id: 's1', heureDebut: '09:00', heureFin: '10:00' });
   const seance2 = SeanceMother.recreation({ id: 's2', heureDebut: '10:00', heureFin: '10:30' });
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
     donneesService = TestBed.inject(DonneesService);
-    donneesService.charger(DonneesMother.base({
-      classe: { ...DonneesMother.base().classe, eleves: [EleveMother.base('e1', 'M', 'A')] },
-      cahierJournal: [{ id: 'j1', date: dateTest, seances: [seance1, seance2] }],
-    }));
+    donneesService.charger(
+      DonneesMother.base({
+        classe: { ...DonneesMother.base().classe, eleves: [EleveMother.base('e1', 'M', 'A')] },
+        cahierJournal: [{ id: 'j1', date: dateTest, seances: [seance1, seance2] }],
+      }),
+    );
     fixture = TestBed.createComponent(EcranCahierJournalComponent);
     component = fixture.componentInstance;
     (component as any).dateSelectionnee.set(dateTest);
@@ -53,14 +58,14 @@ describe('EcranCahierJournalComponent', () => {
   });
 
   describe('naviguerJour', () => {
-    it('avance la date d\'un jour', () => {
+    it("avance la date d'un jour", () => {
       (component as any).naviguerJour(1);
 
       const attendu = DateUtils.ajouterJours(dateTest, 1);
       expect((component as any).dateSelectionnee()).toBe(attendu);
     });
 
-    it('recule la date d\'une semaine', () => {
+    it("recule la date d'une semaine", () => {
       (component as any).naviguerJour(-7);
 
       const attendu = DateUtils.ajouterJours(dateTest, -7);
@@ -118,8 +123,8 @@ describe('EcranCahierJournalComponent', () => {
 
       (component as any).onEnregistrerSeance(nouvelle);
 
-      const journee = donneesService.donnees()?.cahierJournal.find(j => j.date === dateTest);
-      expect(journee?.seances.some(s => s.id === 's99')).toBe(true);
+      const journee = donneesService.donnees()?.cahierJournal.find((j) => j.date === dateTest);
+      expect(journee?.seances.some((s) => s.id === 's99')).toBe(true);
     });
 
     it('modifie une séance existante', () => {
@@ -127,8 +132,8 @@ describe('EcranCahierJournalComponent', () => {
 
       (component as any).onEnregistrerSeance(modifiee);
 
-      const journee = donneesService.donnees()?.cahierJournal.find(j => j.date === dateTest);
-      expect(journee?.seances.find(s => s.id === 's1')?.heureDebut).toBe('08:00');
+      const journee = donneesService.donnees()?.cahierJournal.find((j) => j.date === dateTest);
+      expect(journee?.seances.find((s) => s.id === 's1')?.heureDebut).toBe('08:00');
     });
 
     it('ferme le formulaire après enregistrement', () => {
@@ -144,8 +149,8 @@ describe('EcranCahierJournalComponent', () => {
     it('retire la séance du store', () => {
       (component as any).supprimerSeance('s1');
 
-      const journee = donneesService.donnees()?.cahierJournal.find(j => j.date === dateTest);
-      expect(journee?.seances.some(s => s.id === 's1')).toBe(false);
+      const journee = donneesService.donnees()?.cahierJournal.find((j) => j.date === dateTest);
+      expect(journee?.seances.some((s) => s.id === 's1')).toBe(false);
     });
 
     it('ferme le formulaire si la séance éditée est supprimée', () => {
@@ -170,7 +175,7 @@ describe('EcranCahierJournalComponent', () => {
 
       (component as any).confirmerSuppressionJournee();
 
-      const journee = donneesService.donnees()?.cahierJournal.find(j => j.date === dateTest);
+      const journee = donneesService.donnees()?.cahierJournal.find((j) => j.date === dateTest);
       expect(journee).toBeUndefined();
       expect((component as any).popinSupprimerVisible()).toBe(false);
     });
@@ -181,7 +186,7 @@ describe('EcranCahierJournalComponent', () => {
       (component as any).annulerSuppression();
 
       expect((component as any).popinSupprimerVisible()).toBe(false);
-      const journee = donneesService.donnees()?.cahierJournal.find(j => j.date === dateTest);
+      const journee = donneesService.donnees()?.cahierJournal.find((j) => j.date === dateTest);
       expect(journee).toBeDefined();
     });
   });

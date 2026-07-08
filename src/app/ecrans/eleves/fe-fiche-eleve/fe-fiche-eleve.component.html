@@ -1,29 +1,41 @@
 <div class="fiche-eleve">
-
   <!-- Bandeau supérieur -->
   <div class="fiche-eleve__bandeau">
     <h2 class="fiche-eleve__titre">{{ eleve().nom | uppercase }}&nbsp;{{ eleve().prenom }}</h2>
     <div class="fiche-eleve__bandeau-actions">
-      <button id="btnModifierEleve" class="mc-btn-primaire" [mcAutoFocus]="focusDemande()" (click)="onModifier()">{{ LIBELLES.commun.modifier }}</button>
+      <button
+        id="btnModifierEleve"
+        class="mc-btn-primaire"
+        [mcAutoFocus]="focusDemande()"
+        (click)="onModifier()"
+      >
+        {{ LIBELLES.commun.modifier }}
+      </button>
       <mc-bouton-destruction
         [idBase]="'btnSupprimerEleve'"
         [desactive]="false"
         [tooltipDesactive]="''"
         (confirme)="onSupprimer()"
       />
-      <button id="btnImprimerEleve" class="mc-btn-fantome" (click)="onImprimer()">{{ LIBELLES.eleve.boutonImprimer }}</button>
+      <button id="btnImprimerEleve" class="mc-btn-fantome" (click)="onImprimer()">
+        {{ LIBELLES.eleve.boutonImprimer }}
+      </button>
     </div>
   </div>
 
   <!-- Section : Identité -->
   <section class="fiche-eleve__section" aria-labelledby="titreIdentite">
-    <h3 id="titreIdentite" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionIdentite }}</h3>
+    <h3 id="titreIdentite" class="fiche-eleve__titre-section">
+      {{ LIBELLES.eleve.sectionIdentite }}
+    </h3>
     <dl class="fiche-eleve__dl">
       <dt>{{ LIBELLES.eleve.labelSexeM[0] + '/' + LIBELLES.eleve.labelSexeF[0] }}</dt>
       <dd>{{ eleve().sexe === 'M' ? LIBELLES.eleve.labelSexeM : LIBELLES.eleve.labelSexeF }}</dd>
 
       <dt>{{ LIBELLES.eleve.labelDateNaissance }}</dt>
-      <dd>{{ eleve().dateNaissance ? DateUtils.formaterDateCourt(eleve().dateNaissance) : '—' }}</dd>
+      <dd>
+        {{ eleve().dateNaissance ? DateUtils.formaterDateCourt(eleve().dateNaissance) : '—' }}
+      </dd>
 
       <dt>{{ LIBELLES.eleve.labelDateArrivee }}</dt>
       <dd>{{ eleve().dateArrivee ? DateUtils.formaterDateCourt(eleve().dateArrivee) : '—' }}</dd>
@@ -32,7 +44,15 @@
       <dd>{{ eleve().niveau || '—' }}</dd>
 
       <dt>{{ LIBELLES.eleve.labelGroupes }}</dt>
-      <dd>{{ eleve().groupes.length ? eleve().groupes.map(g => obtenirLibelleGroupe(g)).join(', ') : '—' }}</dd>
+      <dd>
+        {{
+          eleve().groupes.length
+            ? eleve()
+                .groupes.map((g) => obtenirLibelleGroupe(g))
+                .join(', ')
+            : '—'
+        }}
+      </dd>
 
       <dt>{{ LIBELLES.eleve.labelStatut }}</dt>
       <dd>{{ obtenirLibelleStatut(eleve().statut) || '—' }}</dd>
@@ -55,10 +75,17 @@
   <!-- Section : Contacts -->
   @if (eleve().contacts.length > 0) {
     <section class="fiche-eleve__section" aria-labelledby="titreContacts">
-      <h3 id="titreContacts" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionContacts }}</h3>
+      <h3 id="titreContacts" class="fiche-eleve__titre-section">
+        {{ LIBELLES.eleve.sectionContacts }}
+      </h3>
       <ul class="fiche-eleve__liste-resumee-contacts">
         @for (contact of eleve().contacts; track $index) {
-          <li>{{ obtenirLibelleTypeContact(contact.type) }} — {{ contact.nom }}@if (contact.telephone) { — {{ contact.telephone }}}</li>
+          <li>
+            {{ obtenirLibelleTypeContact(contact.type) }} — {{ contact.nom }}
+            @if (contact.telephone) {
+              — {{ contact.telephone }}
+            }
+          </li>
         }
       </ul>
     </section>
@@ -67,7 +94,9 @@
   <!-- Section : Absences récurrentes -->
   @if (eleve().absencesRecurrentes.length > 0) {
     <section class="fiche-eleve__section" aria-labelledby="titreAbsencesRec">
-      <h3 id="titreAbsencesRec" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionAbsencesRecurrentes }}</h3>
+      <h3 id="titreAbsencesRec" class="fiche-eleve__titre-section">
+        {{ LIBELLES.eleve.sectionAbsencesRecurrentes }}
+      </h3>
       <ul class="fiche-eleve__liste-resumee-absences-rec">
         @for (abs of eleve().absencesRecurrentes; track abs.id) {
           <li>{{ abs.libelle }} — {{ abs.jour }} {{ abs.heureDebut }}–{{ abs.heureFin }}</li>
@@ -79,7 +108,9 @@
   <!-- Section : Absences ponctuelles -->
   @if (eleve().absencesPonctuelles.length > 0) {
     <section class="fiche-eleve__section" aria-labelledby="titreAbsencesPonct">
-      <h3 id="titreAbsencesPonct" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionAbsencesPonctuelles }}</h3>
+      <h3 id="titreAbsencesPonct" class="fiche-eleve__titre-section">
+        {{ LIBELLES.eleve.sectionAbsencesPonctuelles }}
+      </h3>
       <ul class="fiche-eleve__liste-resumee-absences-ponct">
         @for (abs of eleve().absencesPonctuelles; track abs.id) {
           <li>{{ DateUtils.formaterDateCourt(abs.date) }} — {{ abs.justification || '—' }}</li>
@@ -91,17 +122,26 @@
   <!-- Section : Cursus -->
   @if (eleve().cursus.length > 0) {
     <section class="fiche-eleve__section" aria-labelledby="titreCursus">
-      <h3 id="titreCursus" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionCursus }}</h3>
+      <h3 id="titreCursus" class="fiche-eleve__titre-section">
+        {{ LIBELLES.eleve.sectionCursus }}
+      </h3>
       <ul class="fiche-eleve__liste-resumee-cursus">
         @for (annee of eleve().cursus; track annee.annee) {
-          <li>{{ annee.annee }}–{{ annee.annee + 1 }} — {{ annee.niveau }} — {{ annee.etablissement }}</li>
+          <li>
+            {{ annee.annee }}–{{ annee.annee + 1 }} — {{ annee.niveau }} — {{ annee.etablissement }}
+          </li>
         }
       </ul>
     </section>
   }
 
   <!-- Section : Notes administratives -->
-  @if (eleve().notesDroitImage || eleve().notesAutorisationBaignade || eleve().notesPPA || eleve().notesESS) {
+  @if (
+    eleve().notesDroitImage ||
+    eleve().notesAutorisationBaignade ||
+    eleve().notesPPA ||
+    eleve().notesESS
+  ) {
     <section class="fiche-eleve__section" aria-labelledby="titreNotes">
       <h3 id="titreNotes" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionNotes }}</h3>
       <dl class="fiche-eleve__dl">
@@ -124,5 +164,4 @@
       </dl>
     </section>
   }
-
 </div>

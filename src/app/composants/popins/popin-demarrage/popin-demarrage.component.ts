@@ -1,6 +1,13 @@
 import {
-  ChangeDetectionStrategy, Component, ElementRef, afterNextRender,
-  computed, inject, output, signal, viewChild,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  afterNextRender,
+  computed,
+  inject,
+  output,
+  signal,
+  viewChild,
 } from '@angular/core';
 import type { OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../../composant-base';
@@ -51,7 +58,9 @@ export class PopinDemarrageComponent extends ComposantBase {
   private readonly fichierSelectionne = signal<File | null>(null);
 
   /** Nom du fichier sélectionné à afficher, `null` si aucun. */
-  protected readonly nomFichierSelectionne = computed(() => this.fichierSelectionne()?.name ?? null);
+  protected readonly nomFichierSelectionne = computed(
+    () => this.fichierSelectionne()?.name ?? null,
+  );
 
   /** Valeur courante du champ mot de passe. */
   protected readonly motDePasse = signal('');

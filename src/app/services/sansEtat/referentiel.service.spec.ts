@@ -2,7 +2,14 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ReferentielService } from './referentiel.service';
 import { DonneesService } from '../avecEtat/donnees.service';
-import { Groupe, Periode, JourFerie, StatutEleve, TypeContact, ConfigEmploiDuTemps } from '../../modeles/referentiels.modele';
+import {
+  Groupe,
+  Periode,
+  JourFerie,
+  StatutEleve,
+  TypeContact,
+  ConfigEmploiDuTemps,
+} from '../../modeles/referentiels.modele';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { EleveMother } from '../../tests/eleve.mother';
 import { EdtMother, CreneauMother } from '../../tests/emploi-du-temps.mother';
@@ -37,11 +44,15 @@ describe('ReferentielService', () => {
 
     it('retourne true si groupe utilisé dans un créneau EDT', () => {
       const d = DonneesMother.base();
-      d.emploisDuTemps.push(EdtMother.base({
-        creneaux: [CreneauMother.lundi9h10({
-          elevesConcernes: { type: 'groupes', groupes: ['C'], elevesIds: [] },
-        })],
-      }));
+      d.emploisDuTemps.push(
+        EdtMother.base({
+          creneaux: [
+            CreneauMother.lundi9h10({
+              elevesConcernes: { type: 'groupes', groupes: ['C'], elevesIds: [] },
+            }),
+          ],
+        }),
+      );
       donneesService.charger(d);
       expect(service.estGroupeUtilise('C')).toBe(true);
     });
@@ -51,10 +62,15 @@ describe('ReferentielService', () => {
       d.cahierJournal.push({
         id: 'j1',
         date: '2026-06-15',
-        seances: [{
-          id: 's1', heureDebut: '09:00', heureFin: '10:00', type: 'pedagogique',
-          elevesConcernes: { type: 'groupes', groupes: ['B'], elevesIds: [] },
-        }],
+        seances: [
+          {
+            id: 's1',
+            heureDebut: '09:00',
+            heureFin: '10:00',
+            type: 'pedagogique',
+            elevesConcernes: { type: 'groupes', groupes: ['B'], elevesIds: [] },
+          },
+        ],
       });
       donneesService.charger(d);
       expect(service.estGroupeUtilise('B')).toBe(true);
@@ -84,9 +100,11 @@ describe('ReferentielService', () => {
   describe('estTypeContactUtilise', () => {
     it('retourne true si type de contact utilisé', () => {
       const d = DonneesMother.base();
-      d.classe.eleves.push(EleveMother.base('e1', 'MARTIN', 'Paul', {
-        contacts: [{ type: 'P', nom: 'Papa', email: '', telephone: '', adressePostale: '' }],
-      }));
+      d.classe.eleves.push(
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          contacts: [{ type: 'P', nom: 'Papa', email: '', telephone: '', adressePostale: '' }],
+        }),
+      );
       donneesService.charger(d);
       expect(service.estTypeContactUtilise('P')).toBe(true);
     });
@@ -105,8 +123,19 @@ describe('ReferentielService', () => {
     it('retourne true si période utilisée dans un projet', () => {
       const d = DonneesMother.base();
       d.projets.push({
-        id: 'p1', nom: 'Projet', description: '', elevesIds: [],
-        periodes: [{ periodeNom: 'Période 1', debut: '2025-09-01', fin: '2025-10-18', description: '', competencesIds: [] }],
+        id: 'p1',
+        nom: 'Projet',
+        description: '',
+        elevesIds: [],
+        periodes: [
+          {
+            periodeNom: 'Période 1',
+            debut: '2025-09-01',
+            fin: '2025-10-18',
+            description: '',
+            competencesIds: [],
+          },
+        ],
       });
       donneesService.charger(d);
       expect(service.estPeriodeUtilisee('Période 1')).toBe(true);
@@ -201,13 +230,21 @@ describe('ReferentielService', () => {
 
     it('modifie une période', () => {
       service.ajouterPeriode(periode);
-      service.modifierPeriode(periode, { id: 'p1', nom: 'Période 1', debut: '2025-09-02', fin: '2025-10-18' });
+      service.modifierPeriode(periode, {
+        id: 'p1',
+        nom: 'Période 1',
+        debut: '2025-09-02',
+        fin: '2025-10-18',
+      });
       expect(donneesService.donnees()?.referentiels.periodes[0].debut).toBe('2025-09-02');
     });
 
     it('ne modifie pas si id inconnu', () => {
       service.ajouterPeriode(periode);
-      service.modifierPeriode({ id: 'inconnu', nom: 'Inconnue', debut: '', fin: '' }, { id: 'inconnu', nom: 'X', debut: '', fin: '' });
+      service.modifierPeriode(
+        { id: 'inconnu', nom: 'Inconnue', debut: '', fin: '' },
+        { id: 'inconnu', nom: 'X', debut: '', fin: '' },
+      );
       expect(donneesService.donnees()?.referentiels.periodes[0].nom).toBe('Période 1');
     });
 
@@ -217,7 +254,7 @@ describe('ReferentielService', () => {
       expect(donneesService.donnees()?.referentiels.periodes).toHaveLength(0);
     });
 
-    it('supporte l\'annulation UNDO', () => {
+    it("supporte l'annulation UNDO", () => {
       service.ajouterPeriode(periode);
       donneesService.annuler();
       expect(donneesService.donnees()?.referentiels.periodes).toHaveLength(0);
@@ -267,18 +304,22 @@ describe('ReferentielService', () => {
       };
 
       service.modifierConfigEmploiDuTemps(ancienne, nouvelle);
-      expect(donneesService.donnees()?.referentiels.configEmploiDuTemps.heureDebutJournee).toBe('08:00');
+      expect(donneesService.donnees()?.referentiels.configEmploiDuTemps.heureDebutJournee).toBe(
+        '08:00',
+      );
 
       donneesService.annuler();
-      expect(donneesService.donnees()?.referentiels.configEmploiDuTemps.heureDebutJournee).toBe('08:30');
+      expect(donneesService.donnees()?.referentiels.configEmploiDuTemps.heureDebutJournee).toBe(
+        '08:30',
+      );
     });
   });
 
   /** Vérifie l'ajout, la modification et la suppression de raisons et fréquences d'absence. */
-  describe('CRUD raisons et fréquences d\'absence', () => {
+  describe("CRUD raisons et fréquences d'absence", () => {
     beforeEach(() => donneesService.charger(DonneesMother.base()));
 
-    it('ajoute et supprime une raison d\'absence', () => {
+    it("ajoute et supprime une raison d'absence", () => {
       const raison = { id: 'M', libelle: 'Maladie' };
       service.ajouterRaisonAbsence(raison);
       expect(donneesService.donnees()?.referentiels.raisonsAbsence).toHaveLength(1);
@@ -286,14 +327,14 @@ describe('ReferentielService', () => {
       expect(donneesService.donnees()?.referentiels.raisonsAbsence).toHaveLength(0);
     });
 
-    it('modifie une raison d\'absence', () => {
+    it("modifie une raison d'absence", () => {
       const raison = { id: 'M', libelle: 'Maladie' };
       service.ajouterRaisonAbsence(raison);
       service.modifierRaisonAbsence(raison, { id: 'M', libelle: 'Médical' });
       expect(donneesService.donnees()?.referentiels.raisonsAbsence[0].libelle).toBe('Médical');
     });
 
-    it('ajoute et supprime une fréquence d\'absence', () => {
+    it("ajoute et supprime une fréquence d'absence", () => {
       const freq = { id: 'SP', libelle: 'Semaines paires' };
       service.ajouterFrequenceAbsence(freq);
       expect(donneesService.donnees()?.referentiels.frequencesAbsence).toHaveLength(1);
@@ -309,11 +350,17 @@ describe('ReferentielService', () => {
   });
 
   /** Vérifie l'ajout, la modification et la suppression de statuts d'acquisition. */
-  describe('CRUD statuts d\'acquisition', () => {
+  describe("CRUD statuts d'acquisition", () => {
     beforeEach(() => donneesService.charger(DonneesMother.base()));
 
-    it('ajoute, modifie et supprime un statut d\'acquisition', () => {
-      const statut = { id: 'A', glyphe: '✓', libelle: 'Acquis', couleur: 'green', fond: 'lightgreen' };
+    it("ajoute, modifie et supprime un statut d'acquisition", () => {
+      const statut = {
+        id: 'A',
+        glyphe: '✓',
+        libelle: 'Acquis',
+        couleur: 'green',
+        fond: 'lightgreen',
+      };
       service.ajouterStatutAcquisition(statut);
       expect(donneesService.donnees()?.referentiels.statutsAcquisition).toHaveLength(1);
       service.modifierStatutAcquisition(statut, { ...statut, libelle: 'Maîtrisé' });
@@ -323,8 +370,20 @@ describe('ReferentielService', () => {
     });
 
     it('ne supprime pas si id inconnu', () => {
-      service.ajouterStatutAcquisition({ id: 'A', glyphe: '✓', libelle: 'Acquis', couleur: 'green', fond: 'lightgreen' });
-      service.supprimerStatutAcquisition({ id: 'Z', glyphe: '?', libelle: 'Inconnu', couleur: '', fond: '' });
+      service.ajouterStatutAcquisition({
+        id: 'A',
+        glyphe: '✓',
+        libelle: 'Acquis',
+        couleur: 'green',
+        fond: 'lightgreen',
+      });
+      service.supprimerStatutAcquisition({
+        id: 'Z',
+        glyphe: '?',
+        libelle: 'Inconnu',
+        couleur: '',
+        fond: '',
+      });
       expect(donneesService.donnees()?.referentiels.statutsAcquisition).toHaveLength(1);
     });
   });
@@ -338,12 +397,20 @@ describe('ReferentielService', () => {
     it('retourne true si statut utilisé dans un PPI', () => {
       const d = DonneesMother.base();
       d.ppi.push({
-        id: 'ppi1', eleveId: 'e1',
-        competencesEntrees: [{
-          competenceId: 'c1', dateInitiale: '2025-09-01', constatInitial: '',
-          actionsInitiales: '', evaluation: 'A', dateMaj: '2025-10-01',
-          constatMaj: '', actionsMaj: '',
-        }],
+        id: 'ppi1',
+        eleveId: 'e1',
+        competencesEntrees: [
+          {
+            competenceId: 'c1',
+            dateInitiale: '2025-09-01',
+            constatInitial: '',
+            actionsInitiales: '',
+            evaluation: 'A',
+            dateMaj: '2025-10-01',
+            constatMaj: '',
+            actionsMaj: '',
+          },
+        ],
       });
       donneesService.charger(d);
       expect(service.estStatutAcquisitionUtilise('A')).toBe(true);
@@ -352,8 +419,17 @@ describe('ReferentielService', () => {
     it('retourne true si statut utilisé dans un bulletin', () => {
       const d = DonneesMother.base();
       d.bulletins.push({
-        id: 'b1', eleveId: 'e1', periode: 'P1',
-        competencesEvaluees: [{ competenceId: 'c1', evaluation: 'EC', appreciationPublique: '', appreciationPrivee: '' }],
+        id: 'b1',
+        eleveId: 'e1',
+        periode: 'P1',
+        competencesEvaluees: [
+          {
+            competenceId: 'c1',
+            evaluation: 'EC',
+            appreciationPublique: '',
+            appreciationPrivee: '',
+          },
+        ],
       });
       donneesService.charger(d);
       expect(service.estStatutAcquisitionUtilise('EC')).toBe(true);

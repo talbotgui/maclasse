@@ -10,9 +10,13 @@ import { EmploiDuTempsService } from '../../services/sansEtat/emploi-du-temps.se
 import { CompetenceService } from '../../services/sansEtat/competence.service';
 import { EdtFormulaireComponent } from './edt-formulaire/edt-formulaire.component';
 import { DateUtils } from '../../utilitaires/date.utils';
-import type { EmploiDuTemps, CreneauEdt, JourSemaine, FrequenceSemaine } from '../../modeles/emploi-du-temps.modele';
+import type {
+  EmploiDuTemps,
+  CreneauEdt,
+  JourSemaine,
+  FrequenceSemaine,
+} from '../../modeles/emploi-du-temps.modele';
 import type { Competence } from '../../modeles/referentiels.modele';
-
 
 /**
  * Écran emploi du temps.
@@ -29,7 +33,13 @@ import type { Competence } from '../../modeles/referentiels.modele';
 })
 export class EcranEmploiDuTempsComponent {
   /** Ordre canonique des jours ouvrés. */
-  private static readonly ORDRE_JOURS: JourSemaine[] = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'];
+  private static readonly ORDRE_JOURS: JourSemaine[] = [
+    'lundi',
+    'mardi',
+    'mercredi',
+    'jeudi',
+    'vendredi',
+  ];
 
   /**
    * Crée un EDT vide prêt pour la saisie.
@@ -54,8 +64,14 @@ export class EcranEmploiDuTempsComponent {
    * @param creneauxDuJour Créneaux existants pour ce jour dans l'EDT courant.
    * @returns Créneau initialisé.
    */
-  private static creerCreneauVide(jour: JourSemaine, creneauxDuJour: CreneauEdt[] = []): CreneauEdt {
-    const derniereHeureFin = creneauxDuJour.map(c => c.heureFin).sort().at(-1);
+  private static creerCreneauVide(
+    jour: JourSemaine,
+    creneauxDuJour: CreneauEdt[] = [],
+  ): CreneauEdt {
+    const derniereHeureFin = creneauxDuJour
+      .map((c) => c.heureFin)
+      .sort()
+      .at(-1);
     const heureDebut = derniereHeureFin ?? '08:00';
     return {
       id: crypto.randomUUID(),
@@ -96,8 +112,7 @@ export class EcranEmploiDuTempsComponent {
 
   /** Jours ouvrés configurés pour la grille hebdomadaire. */
   protected readonly joursOuvres = computed<JourSemaine[]>(() => {
-    const jours =
-      this.donneesService.donnees()?.referentiels.configEmploiDuTemps.joursOuvres ?? [];
+    const jours = this.donneesService.donnees()?.referentiels.configEmploiDuTemps.joursOuvres ?? [];
     return EcranEmploiDuTempsComponent.ORDRE_JOURS.filter((j: JourSemaine) => jours.includes(j));
   });
 
@@ -189,7 +204,7 @@ export class EcranEmploiDuTempsComponent {
    */
   protected ajouterCreneauPourJour(jour: JourSemaine): void {
     this.formEdt.set(null);
-    const creneauxDuJour = this.edtSelectionne()?.creneaux.filter(c => c.jour === jour) ?? [];
+    const creneauxDuJour = this.edtSelectionne()?.creneaux.filter((c) => c.jour === jour) ?? [];
     this.creneauEdite.set(EcranEmploiDuTempsComponent.creerCreneauVide(jour, creneauxDuJour));
   }
 
@@ -198,7 +213,7 @@ export class EcranEmploiDuTempsComponent {
    * @param edt EDT émis par le formulaire.
    */
   protected onEdtEnregistre(edt: EmploiDuTemps): void {
-    const existant = this.donneesService.donnees()?.emploisDuTemps.find(e => e.id === edt.id);
+    const existant = this.donneesService.donnees()?.emploisDuTemps.find((e) => e.id === edt.id);
     if (existant) {
       this.emploiDuTempsService.modifierEdt(edt);
     } else {
@@ -225,7 +240,7 @@ export class EcranEmploiDuTempsComponent {
   protected onCreneauEnregistre(creneau: CreneauEdt): void {
     const edt = this.edtSelectionne();
     if (!edt) return;
-    const existant = edt.creneaux.find(c => c.id === creneau.id);
+    const existant = edt.creneaux.find((c) => c.id === creneau.id);
     if (existant) {
       this.emploiDuTempsService.modifierCreneau(edt.id, creneau);
     } else {

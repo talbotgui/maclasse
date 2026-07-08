@@ -18,9 +18,11 @@ describe('FpFormulaireProjetComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({});
     donneesService = TestBed.inject(DonneesService);
-    donneesService.charger(DonneesMother.base({
-      classe: { ...DonneesMother.base().classe, eleves: [alice, bob] },
-    }));
+    donneesService.charger(
+      DonneesMother.base({
+        classe: { ...DonneesMother.base().classe, eleves: [alice, bob] },
+      }),
+    );
     fixture = TestBed.createComponent(FpFormulaireProjetComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -45,7 +47,7 @@ describe('FpFormulaireProjetComponent', () => {
       expect((component as any).formProjet).not.toBe(projet);
     });
 
-    it('changement de l\'input projet → formProjet rechargé', () => {
+    it("changement de l'input projet → formProjet rechargé", () => {
       const p1 = ProjetMother.base({ id: 'p1', nom: 'Sciences' });
       const p2 = ProjetMother.base({ id: 'p2', nom: 'Arts' });
       fixture.componentRef.setInput('projet', p1);
@@ -84,12 +86,14 @@ describe('FpFormulaireProjetComponent', () => {
       expect((component as any).formProjet.elevesIds).not.toContain('e1');
     });
 
-    it('n\'ajoute pas un élève déjà présent', () => {
+    it("n'ajoute pas un élève déjà présent", () => {
       (component as any).formProjet.elevesIds = ['e1'];
 
       (component as any).basculerEleve('e1', true);
 
-      expect((component as any).formProjet.elevesIds.filter((id: string) => id === 'e1')).toHaveLength(1);
+      expect(
+        (component as any).formProjet.elevesIds.filter((id: string) => id === 'e1'),
+      ).toHaveLength(1);
     });
   });
 
@@ -101,7 +105,7 @@ describe('FpFormulaireProjetComponent', () => {
       expect((component as any).formProjet.periodes[0].periodeNom).toBe('');
     });
 
-    it('supprimerPeriode(0) retire à l\'index 0', () => {
+    it("supprimerPeriode(0) retire à l'index 0", () => {
       (component as any).ajouterPeriode();
       (component as any).ajouterPeriode();
 
@@ -112,7 +116,7 @@ describe('FpFormulaireProjetComponent', () => {
   });
 
   describe('surSelectionCompetences', () => {
-    it('met à jour les competencesIds de la période à l\'index donné', () => {
+    it("met à jour les competencesIds de la période à l'index donné", () => {
       (component as any).ajouterPeriode();
       (component as any).ajouterPeriode();
 

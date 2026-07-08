@@ -60,7 +60,9 @@
     font-size: 0.875rem;
     color: var(--texte-principal);
 
-    &:hover { background-color: var(--fond-survol); }
+    &:hover {
+      background-color: var(--fond-survol);
+    }
 
     &--actif {
       border-left-color: var(--accent);
@@ -154,11 +156,21 @@
     border: 1px solid var(--bordure);
     vertical-align: top;
 
-    &--pedagogique { background-color: color-mix(in srgb, var(--accent) 12%, transparent); }
-    &--recreation { background-color: color-mix(in srgb, var(--succes, #27ae60) 12%, transparent); }
-    &--pause { background-color: color-mix(in srgb, var(--texte-secondaire) 8%, transparent); }
-    &--vide { background-color: transparent; }
-    &--ajout { background-color: var(--fond-surface); }
+    &--pedagogique {
+      background-color: color-mix(in srgb, var(--accent) 12%, transparent);
+    }
+    &--recreation {
+      background-color: color-mix(in srgb, var(--succes, #27ae60) 12%, transparent);
+    }
+    &--pause {
+      background-color: color-mix(in srgb, var(--texte-secondaire) 8%, transparent);
+    }
+    &--vide {
+      background-color: transparent;
+    }
+    &--ajout {
+      background-color: var(--fond-surface);
+    }
   }
 
   &__grille-ligne-ajout td {
@@ -178,7 +190,9 @@
     text-align: left;
     font-size: 0.75rem;
 
-    &:hover { background-color: color-mix(in srgb, var(--accent) 20%, transparent); }
+    &:hover {
+      background-color: color-mix(in srgb, var(--accent) 20%, transparent);
+    }
   }
 
   &__creneau-type {
@@ -207,7 +221,10 @@
     font-size: 1.25rem;
     opacity: 0.4;
 
-    &:hover { opacity: 1; background-color: var(--fond-survol); }
+    &:hover {
+      opacity: 1;
+      background-color: var(--fond-survol);
+    }
   }
 
   &__btn-nouveau-creneau {
@@ -221,7 +238,9 @@
     color: var(--texte-secondaire);
     text-align: center;
 
-    &:hover { color: var(--accent); }
+    &:hover {
+      color: var(--accent);
+    }
   }
 
   &__droite {
@@ -259,12 +278,16 @@
 
 @media print {
   .edt__gauche,
-  .edt__droite { display: none; }
+  .edt__droite {
+    display: none;
+  }
 
   .edt {
     grid-template-columns: 1fr;
     display: block;
   }
 
-  .edt__grille-conteneur { overflow: visible; }
+  .edt__grille-conteneur {
+    overflow: visible;
+  }
 }

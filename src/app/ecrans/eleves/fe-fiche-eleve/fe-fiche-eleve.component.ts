@@ -60,7 +60,7 @@ export class FeFicheEleveComponent {
    * @returns Libellé ou l'identifiant brut si non trouvé.
    */
   protected obtenirLibelleStatut(id: string): string {
-    return this.statutsEleve().find(s => s.id === id)?.libelle ?? id;
+    return this.statutsEleve().find((s) => s.id === id)?.libelle ?? id;
   }
 
   /**
@@ -69,7 +69,7 @@ export class FeFicheEleveComponent {
    * @returns Libellé ou l'identifiant brut si non trouvé.
    */
   protected obtenirLibelleTypeContact(id: string): string {
-    return this.typesContact().find(t => t.id === id)?.libelle ?? id;
+    return this.typesContact().find((t) => t.id === id)?.libelle ?? id;
   }
 
   /**
@@ -78,15 +78,21 @@ export class FeFicheEleveComponent {
    * @returns Libellé ou l'identifiant brut si non trouvé.
    */
   protected obtenirLibelleGroupe(id: string): string {
-    return this.groupes().find(g => g.id === id)?.libelle ?? id;
+    return this.groupes().find((g) => g.id === id)?.libelle ?? id;
   }
 
   /** Délègue au parent l'action de modification. */
-  protected onModifier(): void { this.modifier.emit(); }
+  protected onModifier(): void {
+    this.modifier.emit();
+  }
 
   /** Délègue au parent l'action de suppression. */
-  protected onSupprimer(): void { this.supprimer.emit(); }
+  protected onSupprimer(): void {
+    this.supprimer.emit();
+  }
 
   /** Délègue au parent l'action d'impression. */
-  protected onImprimer(): void { this.imprimer.emit(); }
+  protected onImprimer(): void {
+    this.imprimer.emit();
+  }
 }

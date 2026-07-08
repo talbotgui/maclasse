@@ -49,10 +49,10 @@ export class CompetenceService {
 
     const actifsSet = new Set(actifs);
     return toutes
-      .filter(d => actifsSet.has(d.id) || d.enfants?.some(ss => actifsSet.has(ss.id)))
-      .map(d => {
+      .filter((d) => actifsSet.has(d.id) || d.enfants?.some((ss) => actifsSet.has(ss.id)))
+      .map((d) => {
         if (actifsSet.has(d.id)) return d;
-        return { ...d, enfants: d.enfants?.filter(ss => actifsSet.has(ss.id)) };
+        return { ...d, enfants: d.enfants?.filter((ss) => actifsSet.has(ss.id)) };
       });
   }
 
@@ -62,7 +62,7 @@ export class CompetenceService {
    * @returns Le domaine, ou `undefined` s'il n'existe pas.
    */
   public obtenirDomaineParId(id: string): Competence | undefined {
-    return this.obtenirDomaines().find(d => d.id === id);
+    return this.obtenirDomaines().find((d) => d.id === id);
   }
 
   /**
@@ -96,7 +96,7 @@ export class CompetenceService {
    */
   public resoudreLibelle(id: string): string {
     return this.obtenirChemin(id)
-      .map(n => n.libelle)
+      .map((n) => n.libelle)
       .join(' › ');
   }
 

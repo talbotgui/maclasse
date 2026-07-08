@@ -3,7 +3,6 @@ import { SelecteursBase } from './selecteurs-base';
 
 /** Sélecteurs de l'écran Cahier Journal. */
 export class SelecteursCahierJournal extends SelecteursBase {
-
   // --- Mini-calendrier ---
   /** Bouton "Mois précédent" dans le mini-calendrier. */
   readonly btnMoisPrecedent: Locator;

@@ -179,7 +179,7 @@ export class DateUtils {
    */
   public static ajouterHeures(hhmm: string, heures: number): string {
     const [h, m] = hhmm.split(':').map(Number);
-    const totalMinutes = ((h * 60 + m + heures * 60) % (24 * 60) + 24 * 60) % (24 * 60);
+    const totalMinutes = (((h * 60 + m + heures * 60) % (24 * 60)) + 24 * 60) % (24 * 60);
     return [
       String(Math.floor(totalMinutes / 60)).padStart(2, '0'),
       String(totalMinutes % 60).padStart(2, '0'),

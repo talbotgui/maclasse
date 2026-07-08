@@ -29,7 +29,9 @@
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--bordure);
 
-    &:last-child { border-bottom: none; }
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
   &__titre-section {
@@ -53,8 +55,15 @@
     gap: 0.375rem 1rem;
     margin: 0;
 
-    dt { color: var(--texte-secondaire); font-size: 0.875rem; font-weight: 500; }
-    dd { margin: 0; color: var(--texte-principal); }
+    dt {
+      color: var(--texte-secondaire);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    dd {
+      margin: 0;
+      color: var(--texte-principal);
+    }
   }
 
   &__periodes {

@@ -76,12 +76,12 @@ describe('ProjetService', () => {
 
   /** Retourne le projet si l'id existe, undefined sinon. */
   describe('obtenirProjet', () => {
-    it('retourne le projet si l\'id existe', () => {
+    it("retourne le projet si l'id existe", () => {
       service.creerProjet(ProjetMother.base());
       expect(service.obtenirProjet('p1')?.nom).toBe('Compostage');
     });
 
-    it('retourne undefined si l\'id n\'existe pas', () => {
+    it("retourne undefined si l'id n'existe pas", () => {
       expect(service.obtenirProjet('inconnu')).toBeUndefined();
     });
   });
@@ -90,7 +90,9 @@ describe('ProjetService', () => {
   describe('rechercherProjets', () => {
     beforeEach(() => {
       service.creerProjet(ProjetMother.base());
-      service.creerProjet(ProjetMother.base({ id: 'p2', nom: 'Élevage', description: 'Élever des escargots' }));
+      service.creerProjet(
+        ProjetMother.base({ id: 'p2', nom: 'Élevage', description: 'Élever des escargots' }),
+      );
     });
 
     it('retourne tous si terme vide', () => {
@@ -155,14 +157,20 @@ describe('ProjetService', () => {
     it('modifie une période existante', () => {
       service.creerProjet(ProjetMother.base());
       service.ajouterPeriode('p1', PeriodeMother.base());
-      service.modifierPeriode('p1', PeriodeMother.base(), { ...PeriodeMother.base(), debut: '2025-09-02' });
+      service.modifierPeriode('p1', PeriodeMother.base(), {
+        ...PeriodeMother.base(),
+        debut: '2025-09-02',
+      });
       expect(donneesService.donnees()?.projets[0].periodes[0].debut).toBe('2025-09-02');
     });
 
     it('sans effet si projet inexistant', () => {
       service.creerProjet(ProjetMother.base());
       service.ajouterPeriode('p1', PeriodeMother.base());
-      service.modifierPeriode('inconnu', PeriodeMother.base(), { ...PeriodeMother.base(), debut: '2025-09-02' });
+      service.modifierPeriode('inconnu', PeriodeMother.base(), {
+        ...PeriodeMother.base(),
+        debut: '2025-09-02',
+      });
       expect(donneesService.donnees()?.projets[0].periodes[0].debut).toBe('2025-09-01');
     });
 
@@ -170,7 +178,9 @@ describe('ProjetService', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({});
       const s = TestBed.inject(ProjetService);
-      expect(() => s.modifierPeriode('p1', PeriodeMother.base(), PeriodeMother.base())).not.toThrow();
+      expect(() =>
+        s.modifierPeriode('p1', PeriodeMother.base(), PeriodeMother.base()),
+      ).not.toThrow();
     });
   });
 

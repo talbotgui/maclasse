@@ -21,10 +21,25 @@ describe('EcranCompetencesComponent', () => {
     TestBed.configureTestingModule({});
     donneesService = TestBed.inject(DonneesService);
     contexteService = TestBed.inject(ContexteService);
-    donneesService.charger(DonneesMother.base({
-      projets: [ProjetMother.base({ id: 'p1', periodes: [{ periodeNom: 'P1', debut: '', fin: '', description: '', competencesIds: [] }] })],
-      cahierJournal: [{ id: 'j1', date: dateCJ, seances: [SeanceMother.pedagogique({ id: 's1', competencesIds: [] })] }],
-    }));
+    donneesService.charger(
+      DonneesMother.base({
+        projets: [
+          ProjetMother.base({
+            id: 'p1',
+            periodes: [
+              { periodeNom: 'P1', debut: '', fin: '', description: '', competencesIds: [] },
+            ],
+          }),
+        ],
+        cahierJournal: [
+          {
+            id: 'j1',
+            date: dateCJ,
+            seances: [SeanceMother.pedagogique({ id: 's1', competencesIds: [] })],
+          },
+        ],
+      }),
+    );
     fixture = TestBed.createComponent(EcranCompetencesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -73,7 +88,7 @@ describe('EcranCompetencesComponent', () => {
       expect(contexteService.panierCompetences()).toEqual(['c2']);
     });
 
-    it('ne modifie pas le panier si l\'id est absent', () => {
+    it("ne modifie pas le panier si l'id est absent", () => {
       contexteService.panierCompetences.set(['c2']);
 
       (component as any).retirerDuPanier('c1');
@@ -110,11 +125,15 @@ describe('EcranCompetencesComponent', () => {
     it('ajoute les compétences à la période et vide le panier', () => {
       contexteService.panierCompetences.set(['c1', 'c2']);
 
-      const resultat: ResultatExportCompetences = { cibleType: 'projet', cibleId: 'p1', secondaireId: '0' };
+      const resultat: ResultatExportCompetences = {
+        cibleType: 'projet',
+        cibleId: 'p1',
+        secondaireId: '0',
+      };
 
       (component as any).confirmerExport(resultat);
 
-      const projet = donneesService.donnees()?.projets.find(p => p.id === 'p1');
+      const projet = donneesService.donnees()?.projets.find((p) => p.id === 'p1');
       expect(projet?.periodes[0].competencesIds).toContain('c1');
       expect(projet?.periodes[0].competencesIds).toContain('c2');
       expect(contexteService.panierCompetences()).toEqual([]);
@@ -126,12 +145,16 @@ describe('EcranCompetencesComponent', () => {
     it('ajoute les compétences à la séance et vide le panier', () => {
       contexteService.panierCompetences.set(['c3']);
 
-      const resultat: ResultatExportCompetences = { cibleType: 'seance', cibleId: dateCJ, secondaireId: 's1' };
+      const resultat: ResultatExportCompetences = {
+        cibleType: 'seance',
+        cibleId: dateCJ,
+        secondaireId: 's1',
+      };
 
       (component as any).confirmerExport(resultat);
 
-      const journee = donneesService.donnees()?.cahierJournal.find(j => j.date === dateCJ);
-      expect(journee?.seances.find(s => s.id === 's1')?.competencesIds).toContain('c3');
+      const journee = donneesService.donnees()?.cahierJournal.find((j) => j.date === dateCJ);
+      expect(journee?.seances.find((s) => s.id === 's1')?.competencesIds).toContain('c3');
       expect(contexteService.panierCompetences()).toEqual([]);
     });
   });

@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  input,
+  output,
+  signal,
+  untracked,
+} from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../composant-base';
 import type { JourFerie } from '../../modeles/referentiels.modele';
@@ -84,7 +93,7 @@ export class McMiniCalendrierComponent extends ComposantBase {
   protected readonly grille = computed<CaseCalendrier[]>(() => {
     const mois = this.moisAffiche();
     const entrees = new Set(this.journeesAvecEntrees());
-    const feries = new Set(this.joursFeries().map(f => f.date));
+    const feries = new Set(this.joursFeries().map((f) => f.date));
     const joursOuvresSet = new Set<string>(this.joursOuvres());
     const selectionne = this.jourSelectionne();
     const aujourdhui = McMiniCalendrierComponent.versDateIso(new Date());
@@ -98,7 +107,13 @@ export class McMiniCalendrierComponent extends ComposantBase {
     const cases: CaseCalendrier[] = [];
 
     for (let i = 0; i < offset; i++) {
-      cases.push({ date: null, grise: false, avecEntree: false, estSelectionnee: false, estAujourdhui: false });
+      cases.push({
+        date: null,
+        grise: false,
+        avecEntree: false,
+        estSelectionnee: false,
+        estAujourdhui: false,
+      });
     }
 
     for (let j = 1; j <= nJours; j++) {

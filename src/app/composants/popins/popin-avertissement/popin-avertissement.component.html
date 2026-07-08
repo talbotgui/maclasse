@@ -7,7 +7,9 @@
 >
   <div class="mc-popover-carte">
     <div class="mc-popover-entete">
-      <span id="titreAvertissement" class="mc-popover-titre">{{ LIBELLES.popins.avertissement.titre }}</span>
+      <span id="titreAvertissement" class="mc-popover-titre">{{
+        LIBELLES.popins.avertissement.titre
+      }}</span>
     </div>
 
     <div class="mc-popin__corps">
@@ -21,13 +23,17 @@
         class="mc-btn-fantome"
         [mcAutoFocus]="visible()"
         (click)="surAnnulation()"
-      >{{ LIBELLES.popins.avertissement.annuler }}</button>
+      >
+        {{ LIBELLES.popins.avertissement.annuler }}
+      </button>
       <button
         id="btnAvertissementConfirmer"
         type="button"
         class="mc-btn-danger"
         (click)="surConfirmation()"
-      >{{ LIBELLES.popins.avertissement.confirmer }}</button>
+      >
+        {{ LIBELLES.popins.avertissement.confirmer }}
+      </button>
     </div>
   </div>
 </dialog>

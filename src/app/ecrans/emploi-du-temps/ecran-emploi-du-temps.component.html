@@ -1,5 +1,4 @@
 <div class="edt">
-
   <!-- ── Colonne gauche : liste des EDT ── -->
   <div class="edt__gauche">
     <div class="edt__gauche-entete">
@@ -30,7 +29,8 @@
                   role="img"
                   [attr.aria-label]="LIBELLES.edt.avertissementChevauchement"
                   title="{{ LIBELLES.edt.avertissementChevauchement }}"
-                >⚠</span>
+                  >⚠</span
+                >
               }
             </button>
           </li>
@@ -55,7 +55,9 @@
         <table class="edt__grille" [attr.aria-label]="LIBELLES.edt.ariaGrilleHebdomadaire">
           <thead>
             <tr>
-              <th class="edt__grille-th edt__grille-th--heure" scope="col">{{ LIBELLES.edt.colonneHeure }}</th>
+              <th class="edt__grille-th edt__grille-th--heure" scope="col">
+                {{ LIBELLES.edt.colonneHeure }}
+              </th>
               @for (jour of joursOuvres(); track jour) {
                 <th class="edt__grille-th" scope="col">{{ LIBELLES.edt.joursLibelles[jour] }}</th>
               }
@@ -65,9 +67,7 @@
           <tbody>
             @for (ligne of lignesGrille(); track ligne.heureDebut + ligne.heureFin) {
               <tr>
-                <td class="edt__grille-heure">
-                  {{ ligne.heureDebut }}–{{ ligne.heureFin }}
-                </td>
+                <td class="edt__grille-heure">{{ ligne.heureDebut }}–{{ ligne.heureFin }}</td>
                 @for (jour of joursOuvres(); track jour) {
                   @let creneau = obtenirCreneauDeGrille(jour, ligne);
                   <td
@@ -92,9 +92,13 @@
                       <button
                         [id]="'btnAjouterCreneau' + jour + ligne.heureDebut"
                         class="edt__btn-ajouter-creneau"
-                        [attr.aria-label]="LIBELLES.edt.boutonAjouter + ' ' + LIBELLES.edt.joursLibelles[jour]"
+                        [attr.aria-label]="
+                          LIBELLES.edt.boutonAjouter + ' ' + LIBELLES.edt.joursLibelles[jour]
+                        "
                         (click)="ajouterCreneauPourJour(jour)"
-                      >+</button>
+                      >
+                        +
+                      </button>
                     }
                   </td>
                 }
@@ -108,9 +112,13 @@
                   <button
                     [id]="'btnNouveauCreneauJour' + jour"
                     class="edt__btn-nouveau-creneau"
-                    [attr.aria-label]="LIBELLES.edt.boutonAjouter + ' ' + LIBELLES.edt.joursLibelles[jour]"
+                    [attr.aria-label]="
+                      LIBELLES.edt.boutonAjouter + ' ' + LIBELLES.edt.joursLibelles[jour]
+                    "
                     (click)="ajouterCreneauPourJour(jour)"
-                  >{{ LIBELLES.edt.boutonAjouter }}</button>
+                  >
+                    {{ LIBELLES.edt.boutonAjouter }}
+                  </button>
                 </td>
               }
             </tr>
@@ -138,5 +146,4 @@
       <p class="edt__droite-vide">{{ LIBELLES.edt.aucunEdtSelectionne }}</p>
     }
   </div>
-
 </div>

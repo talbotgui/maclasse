@@ -39,13 +39,11 @@ export class ReferentielService {
     const d = this.donneesService.donnees();
     if (!d) return false;
     return (
-      d.classe.eleves.some(e => e.groupes.includes(id)) ||
-      d.emploisDuTemps.some(edt =>
-        edt.creneaux.some(c => c.elevesConcernes?.groupes.includes(id)),
+      d.classe.eleves.some((e) => e.groupes.includes(id)) ||
+      d.emploisDuTemps.some((edt) =>
+        edt.creneaux.some((c) => c.elevesConcernes?.groupes.includes(id)),
       ) ||
-      d.cahierJournal.some(j =>
-        j.seances.some(s => s.elevesConcernes?.groupes.includes(id)),
-      )
+      d.cahierJournal.some((j) => j.seances.some((s) => s.elevesConcernes?.groupes.includes(id)))
     );
   }
 
@@ -57,8 +55,8 @@ export class ReferentielService {
     const d = this.donneesService.donnees();
     if (!d) return false;
     return (
-      d.ppi.some(p => p.competencesEntrees.some(c => c.evaluation === id)) ||
-      d.bulletins.some(b => b.competencesEvaluees.some(c => c.evaluation === id))
+      d.ppi.some((p) => p.competencesEntrees.some((c) => c.evaluation === id)) ||
+      d.bulletins.some((b) => b.competencesEvaluees.some((c) => c.evaluation === id))
     );
   }
 
@@ -67,7 +65,7 @@ export class ReferentielService {
    * @param id Identifiant du statut.
    */
   public estStatutEleveUtilise(id: string): boolean {
-    return this.donneesService.donnees()?.classe.eleves.some(e => e.statut === id) ?? false;
+    return this.donneesService.donnees()?.classe.eleves.some((e) => e.statut === id) ?? false;
   }
 
   /**
@@ -76,9 +74,9 @@ export class ReferentielService {
    */
   public estTypeContactUtilise(id: string): boolean {
     return (
-      this.donneesService.donnees()?.classe.eleves.some(e =>
-        e.contacts.some(c => c.type === id),
-      ) ?? false
+      this.donneesService
+        .donnees()
+        ?.classe.eleves.some((e) => e.contacts.some((c) => c.type === id)) ?? false
     );
   }
 
@@ -91,8 +89,8 @@ export class ReferentielService {
     const d = this.donneesService.donnees();
     if (!d) return false;
     return (
-      d.projets.some(p => p.periodes.some(pp => pp.periodeNom === nom)) ||
-      d.bulletins.some(b => b.periode === nom)
+      d.projets.some((p) => p.periodes.some((pp) => pp.periodeNom === nom)) ||
+      d.bulletins.some((b) => b.periode === nom)
     );
   }
 
@@ -102,7 +100,7 @@ export class ReferentielService {
    */
   public ajouterGroupe(groupe: Groupe): void {
     this.donneesService.executer(
-      new CommandeCreation(d => d.referentiels.groupes, groupe, LIBELLES.commandes.ajoutGroupe),
+      new CommandeCreation((d) => d.referentiels.groupes, groupe, LIBELLES.commandes.ajoutGroupe),
     );
   }
 
@@ -113,7 +111,12 @@ export class ReferentielService {
    */
   public modifierGroupe(ancien: Groupe, nouveau: Groupe): void {
     this.donneesService.executer(
-      new CommandeModification(d => d.referentiels.groupes, ancien, nouveau, LIBELLES.commandes.modificationGroupe),
+      new CommandeModification(
+        (d) => d.referentiels.groupes,
+        ancien,
+        nouveau,
+        LIBELLES.commandes.modificationGroupe,
+      ),
     );
   }
 
@@ -123,11 +126,16 @@ export class ReferentielService {
    */
   public supprimerGroupe(groupe: Groupe): void {
     const index =
-      this.donneesService.donnees()?.referentiels.groupes.findIndex(g => g.id === groupe.id) ??
+      this.donneesService.donnees()?.referentiels.groupes.findIndex((g) => g.id === groupe.id) ??
       -1;
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeSuppression(d => d.referentiels.groupes, groupe, index, LIBELLES.commandes.suppressionGroupe),
+      new CommandeSuppression(
+        (d) => d.referentiels.groupes,
+        groupe,
+        index,
+        LIBELLES.commandes.suppressionGroupe,
+      ),
     );
   }
 
@@ -137,7 +145,11 @@ export class ReferentielService {
    */
   public ajouterStatutAcquisition(statut: StatutAcquisition): void {
     this.donneesService.executer(
-      new CommandeCreation(d => d.referentiels.statutsAcquisition, statut, LIBELLES.commandes.ajoutStatutAcquisition),
+      new CommandeCreation(
+        (d) => d.referentiels.statutsAcquisition,
+        statut,
+        LIBELLES.commandes.ajoutStatutAcquisition,
+      ),
     );
   }
 
@@ -148,7 +160,12 @@ export class ReferentielService {
    */
   public modifierStatutAcquisition(ancien: StatutAcquisition, nouveau: StatutAcquisition): void {
     this.donneesService.executer(
-      new CommandeModification(d => d.referentiels.statutsAcquisition, ancien, nouveau, LIBELLES.commandes.modificationStatutAcquisition),
+      new CommandeModification(
+        (d) => d.referentiels.statutsAcquisition,
+        ancien,
+        nouveau,
+        LIBELLES.commandes.modificationStatutAcquisition,
+      ),
     );
   }
 
@@ -160,10 +177,15 @@ export class ReferentielService {
     const index =
       this.donneesService
         .donnees()
-        ?.referentiels.statutsAcquisition.findIndex(s => s.id === statut.id) ?? -1;
+        ?.referentiels.statutsAcquisition.findIndex((s) => s.id === statut.id) ?? -1;
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeSuppression(d => d.referentiels.statutsAcquisition, statut, index, LIBELLES.commandes.suppressionStatutAcquisition),
+      new CommandeSuppression(
+        (d) => d.referentiels.statutsAcquisition,
+        statut,
+        index,
+        LIBELLES.commandes.suppressionStatutAcquisition,
+      ),
     );
   }
 
@@ -173,7 +195,11 @@ export class ReferentielService {
    */
   public ajouterStatutEleve(statut: StatutEleve): void {
     this.donneesService.executer(
-      new CommandeCreation(d => d.referentiels.statutsEleve, statut, LIBELLES.commandes.ajoutStatutEleve),
+      new CommandeCreation(
+        (d) => d.referentiels.statutsEleve,
+        statut,
+        LIBELLES.commandes.ajoutStatutEleve,
+      ),
     );
   }
 
@@ -184,7 +210,12 @@ export class ReferentielService {
    */
   public modifierStatutEleve(ancien: StatutEleve, nouveau: StatutEleve): void {
     this.donneesService.executer(
-      new CommandeModification(d => d.referentiels.statutsEleve, ancien, nouveau, LIBELLES.commandes.modificationStatutEleve),
+      new CommandeModification(
+        (d) => d.referentiels.statutsEleve,
+        ancien,
+        nouveau,
+        LIBELLES.commandes.modificationStatutEleve,
+      ),
     );
   }
 
@@ -196,10 +227,15 @@ export class ReferentielService {
     const index =
       this.donneesService
         .donnees()
-        ?.referentiels.statutsEleve.findIndex(s => s.id === statut.id) ?? -1;
+        ?.referentiels.statutsEleve.findIndex((s) => s.id === statut.id) ?? -1;
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeSuppression(d => d.referentiels.statutsEleve, statut, index, LIBELLES.commandes.suppressionStatutEleve),
+      new CommandeSuppression(
+        (d) => d.referentiels.statutsEleve,
+        statut,
+        index,
+        LIBELLES.commandes.suppressionStatutEleve,
+      ),
     );
   }
 
@@ -209,7 +245,11 @@ export class ReferentielService {
    */
   public ajouterTypeContact(type: TypeContact): void {
     this.donneesService.executer(
-      new CommandeCreation(d => d.referentiels.typesContact, type, LIBELLES.commandes.ajoutTypeContact),
+      new CommandeCreation(
+        (d) => d.referentiels.typesContact,
+        type,
+        LIBELLES.commandes.ajoutTypeContact,
+      ),
     );
   }
 
@@ -220,7 +260,12 @@ export class ReferentielService {
    */
   public modifierTypeContact(ancien: TypeContact, nouveau: TypeContact): void {
     this.donneesService.executer(
-      new CommandeModification(d => d.referentiels.typesContact, ancien, nouveau, LIBELLES.commandes.modificationTypeContact),
+      new CommandeModification(
+        (d) => d.referentiels.typesContact,
+        ancien,
+        nouveau,
+        LIBELLES.commandes.modificationTypeContact,
+      ),
     );
   }
 
@@ -230,12 +275,16 @@ export class ReferentielService {
    */
   public supprimerTypeContact(type: TypeContact): void {
     const index =
-      this.donneesService
-        .donnees()
-        ?.referentiels.typesContact.findIndex(t => t.id === type.id) ?? -1;
+      this.donneesService.donnees()?.referentiels.typesContact.findIndex((t) => t.id === type.id) ??
+      -1;
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeSuppression(d => d.referentiels.typesContact, type, index, LIBELLES.commandes.suppressionTypeContact),
+      new CommandeSuppression(
+        (d) => d.referentiels.typesContact,
+        type,
+        index,
+        LIBELLES.commandes.suppressionTypeContact,
+      ),
     );
   }
 
@@ -245,7 +294,11 @@ export class ReferentielService {
    */
   public ajouterRaisonAbsence(raison: RaisonAbsence): void {
     this.donneesService.executer(
-      new CommandeCreation(d => d.referentiels.raisonsAbsence, raison, LIBELLES.commandes.ajoutRaisonAbsence),
+      new CommandeCreation(
+        (d) => d.referentiels.raisonsAbsence,
+        raison,
+        LIBELLES.commandes.ajoutRaisonAbsence,
+      ),
     );
   }
 
@@ -256,7 +309,12 @@ export class ReferentielService {
    */
   public modifierRaisonAbsence(ancienne: RaisonAbsence, nouvelle: RaisonAbsence): void {
     this.donneesService.executer(
-      new CommandeModification(d => d.referentiels.raisonsAbsence, ancienne, nouvelle, LIBELLES.commandes.modificationRaisonAbsence),
+      new CommandeModification(
+        (d) => d.referentiels.raisonsAbsence,
+        ancienne,
+        nouvelle,
+        LIBELLES.commandes.modificationRaisonAbsence,
+      ),
     );
   }
 
@@ -268,10 +326,15 @@ export class ReferentielService {
     const index =
       this.donneesService
         .donnees()
-        ?.referentiels.raisonsAbsence.findIndex(r => r.id === raison.id) ?? -1;
+        ?.referentiels.raisonsAbsence.findIndex((r) => r.id === raison.id) ?? -1;
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeSuppression(d => d.referentiels.raisonsAbsence, raison, index, LIBELLES.commandes.suppressionRaisonAbsence),
+      new CommandeSuppression(
+        (d) => d.referentiels.raisonsAbsence,
+        raison,
+        index,
+        LIBELLES.commandes.suppressionRaisonAbsence,
+      ),
     );
   }
 
@@ -281,7 +344,11 @@ export class ReferentielService {
    */
   public ajouterFrequenceAbsence(frequence: FrequenceAbsence): void {
     this.donneesService.executer(
-      new CommandeCreation(d => d.referentiels.frequencesAbsence, frequence, LIBELLES.commandes.ajoutFrequenceAbsence),
+      new CommandeCreation(
+        (d) => d.referentiels.frequencesAbsence,
+        frequence,
+        LIBELLES.commandes.ajoutFrequenceAbsence,
+      ),
     );
   }
 
@@ -292,7 +359,12 @@ export class ReferentielService {
    */
   public modifierFrequenceAbsence(ancienne: FrequenceAbsence, nouvelle: FrequenceAbsence): void {
     this.donneesService.executer(
-      new CommandeModification(d => d.referentiels.frequencesAbsence, ancienne, nouvelle, LIBELLES.commandes.modificationFrequenceAbsence),
+      new CommandeModification(
+        (d) => d.referentiels.frequencesAbsence,
+        ancienne,
+        nouvelle,
+        LIBELLES.commandes.modificationFrequenceAbsence,
+      ),
     );
   }
 
@@ -304,10 +376,15 @@ export class ReferentielService {
     const index =
       this.donneesService
         .donnees()
-        ?.referentiels.frequencesAbsence.findIndex(f => f.id === frequence.id) ?? -1;
+        ?.referentiels.frequencesAbsence.findIndex((f) => f.id === frequence.id) ?? -1;
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeSuppression(d => d.referentiels.frequencesAbsence, frequence, index, LIBELLES.commandes.suppressionFrequenceAbsence),
+      new CommandeSuppression(
+        (d) => d.referentiels.frequencesAbsence,
+        frequence,
+        index,
+        LIBELLES.commandes.suppressionFrequenceAbsence,
+      ),
     );
   }
 
@@ -317,7 +394,11 @@ export class ReferentielService {
    */
   public ajouterPeriode(periode: Periode): void {
     this.donneesService.executer(
-      new CommandeCreation(d => d.referentiels.periodes, periode, LIBELLES.commandes.ajoutPeriode),
+      new CommandeCreation(
+        (d) => d.referentiels.periodes,
+        periode,
+        LIBELLES.commandes.ajoutPeriode,
+      ),
     );
   }
 
@@ -328,11 +409,16 @@ export class ReferentielService {
    */
   public modifierPeriode(ancienne: Periode, nouvelle: Periode): void {
     const index =
-      this.donneesService.donnees()?.referentiels.periodes.findIndex(p => p.id === ancienne.id) ??
+      this.donneesService.donnees()?.referentiels.periodes.findIndex((p) => p.id === ancienne.id) ??
       -1;
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeModification(d => d.referentiels.periodes, ancienne, nouvelle, LIBELLES.commandes.modificationPeriode),
+      new CommandeModification(
+        (d) => d.referentiels.periodes,
+        ancienne,
+        nouvelle,
+        LIBELLES.commandes.modificationPeriode,
+      ),
     );
   }
 
@@ -342,11 +428,16 @@ export class ReferentielService {
    */
   public supprimerPeriode(periode: Periode): void {
     const index =
-      this.donneesService.donnees()?.referentiels.periodes.findIndex(p => p.id === periode.id) ??
+      this.donneesService.donnees()?.referentiels.periodes.findIndex((p) => p.id === periode.id) ??
       -1;
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeSuppression(d => d.referentiels.periodes, periode, index, LIBELLES.commandes.suppressionPeriode),
+      new CommandeSuppression(
+        (d) => d.referentiels.periodes,
+        periode,
+        index,
+        LIBELLES.commandes.suppressionPeriode,
+      ),
     );
   }
 
@@ -356,7 +447,11 @@ export class ReferentielService {
    */
   public ajouterJourFerie(jourFerie: JourFerie): void {
     this.donneesService.executer(
-      new CommandeCreation(d => d.referentiels.joursFeries, jourFerie, LIBELLES.commandes.ajoutJourFerie),
+      new CommandeCreation(
+        (d) => d.referentiels.joursFeries,
+        jourFerie,
+        LIBELLES.commandes.ajoutJourFerie,
+      ),
     );
   }
 
@@ -367,11 +462,17 @@ export class ReferentielService {
    */
   public modifierJourFerie(ancien: JourFerie, nouveau: JourFerie): void {
     const index =
-      this.donneesService.donnees()?.referentiels.joursFeries.findIndex(j => j.id === ancien.id) ??
-      -1;
+      this.donneesService
+        .donnees()
+        ?.referentiels.joursFeries.findIndex((j) => j.id === ancien.id) ?? -1;
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeModification(d => d.referentiels.joursFeries, ancien, nouveau, LIBELLES.commandes.modificationJourFerie),
+      new CommandeModification(
+        (d) => d.referentiels.joursFeries,
+        ancien,
+        nouveau,
+        LIBELLES.commandes.modificationJourFerie,
+      ),
     );
   }
 
@@ -381,11 +482,17 @@ export class ReferentielService {
    */
   public supprimerJourFerie(jourFerie: JourFerie): void {
     const index =
-      this.donneesService.donnees()?.referentiels.joursFeries.findIndex(j => j.id === jourFerie.id) ??
-      -1;
+      this.donneesService
+        .donnees()
+        ?.referentiels.joursFeries.findIndex((j) => j.id === jourFerie.id) ?? -1;
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeSuppression(d => d.referentiels.joursFeries, jourFerie, index, LIBELLES.commandes.suppressionJourFerie),
+      new CommandeSuppression(
+        (d) => d.referentiels.joursFeries,
+        jourFerie,
+        index,
+        LIBELLES.commandes.suppressionJourFerie,
+      ),
     );
   }
 

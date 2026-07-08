@@ -1,13 +1,44 @@
 <div class="cj">
-
   <!-- ── Colonne gauche : navigation et actions ── -->
   <div class="cj__gauche">
     <div class="cj__nav-date">
-      <button id="btnMoins7Jours" class="mc-btn-icone" [title]="LIBELLES.cahierJournal.tooltipMoins7Jours" [attr.aria-label]="LIBELLES.cahierJournal.ariaMoins7Jours" (click)="naviguerJour(-7)">«</button>
-      <button id="btnMoins1Jour" class="mc-btn-icone" [title]="LIBELLES.cahierJournal.tooltipMoins1Jour" [attr.aria-label]="LIBELLES.cahierJournal.ariaJourPrecedent" (click)="naviguerJour(-1)">‹</button>
+      <button
+        id="btnMoins7Jours"
+        class="mc-btn-icone"
+        [title]="LIBELLES.cahierJournal.tooltipMoins7Jours"
+        [attr.aria-label]="LIBELLES.cahierJournal.ariaMoins7Jours"
+        (click)="naviguerJour(-7)"
+      >
+        «
+      </button>
+      <button
+        id="btnMoins1Jour"
+        class="mc-btn-icone"
+        [title]="LIBELLES.cahierJournal.tooltipMoins1Jour"
+        [attr.aria-label]="LIBELLES.cahierJournal.ariaJourPrecedent"
+        (click)="naviguerJour(-1)"
+      >
+        ‹
+      </button>
       <span class="cj__date-courante">{{ dateFormatee() }}</span>
-      <button id="btnPlus1Jour" class="mc-btn-icone" [title]="LIBELLES.cahierJournal.tooltipPlus1Jour" [attr.aria-label]="LIBELLES.cahierJournal.ariaJourSuivant" (click)="naviguerJour(1)">›</button>
-      <button id="btnPlus7Jours" class="mc-btn-icone" [title]="LIBELLES.cahierJournal.tooltipPlus7Jours" [attr.aria-label]="LIBELLES.cahierJournal.ariaPlus7Jours" (click)="naviguerJour(7)">»</button>
+      <button
+        id="btnPlus1Jour"
+        class="mc-btn-icone"
+        [title]="LIBELLES.cahierJournal.tooltipPlus1Jour"
+        [attr.aria-label]="LIBELLES.cahierJournal.ariaJourSuivant"
+        (click)="naviguerJour(1)"
+      >
+        ›
+      </button>
+      <button
+        id="btnPlus7Jours"
+        class="mc-btn-icone"
+        [title]="LIBELLES.cahierJournal.tooltipPlus7Jours"
+        [attr.aria-label]="LIBELLES.cahierJournal.ariaPlus7Jours"
+        (click)="naviguerJour(7)"
+      >
+        »
+      </button>
     </div>
 
     <mc-mini-calendrier
@@ -19,10 +50,18 @@
     />
 
     <div class="cj__actions-journee">
-      <button id="btnInitialiserVide" class="mc-btn-secondaire mc-btn-sm" (click)="initialiserVide()">
+      <button
+        id="btnInitialiserVide"
+        class="mc-btn-secondaire mc-btn-sm"
+        (click)="initialiserVide()"
+      >
         {{ LIBELLES.cahierJournal.boutonInitialiserVide }}
       </button>
-      <button id="btnInitialiserEdt" class="mc-btn-secondaire mc-btn-sm" (click)="initialiserDepuisEdt()">
+      <button
+        id="btnInitialiserEdt"
+        class="mc-btn-secondaire mc-btn-sm"
+        (click)="initialiserDepuisEdt()"
+      >
         {{ LIBELLES.cahierJournal.boutonInitialiserEdt }}
       </button>
 
@@ -31,24 +70,30 @@
           id="btnDupliquerJournee"
           class="mc-btn-secondaire"
           (click)="demanderDuplication(null)"
-        >{{ LIBELLES.cahierJournal.boutonDupliquerJournee }}</button>
+        >
+          {{ LIBELLES.cahierJournal.boutonDupliquerJournee }}
+        </button>
 
-        <button
-          id="btnImprimerCj"
-          class="mc-btn-fantome"
-          (click)="imprimer()"
-        >{{ LIBELLES.cahierJournal.boutonImprimer }}</button>
+        <button id="btnImprimerCj" class="mc-btn-fantome" (click)="imprimer()">
+          {{ LIBELLES.cahierJournal.boutonImprimer }}
+        </button>
 
         <button
           id="btnSupprimerJournee"
           class="mc-btn-destruction"
           (click)="demanderSuppressionJournee()"
-        >{{ LIBELLES.cahierJournal.boutonSupprimerJournee }}</button>
+        >
+          {{ LIBELLES.cahierJournal.boutonSupprimerJournee }}
+        </button>
       }
 
       <!-- Formulaire inline de duplication -->
       @if (popinDuplicationVisible()) {
-        <div class="cj__duplication" role="form" [attr.aria-label]="LIBELLES.cahierJournal.ariaDuplication">
+        <div
+          class="cj__duplication"
+          role="form"
+          [attr.aria-label]="LIBELLES.cahierJournal.ariaDuplication"
+        >
           <label for="inputDateDuplication" class="cj__duplication-label">
             {{ LIBELLES.cahierJournal.labelJourCible }}
           </label>
@@ -65,12 +110,16 @@
               class="mc-btn-primaire mc-btn-sm"
               [disabled]="!dateDuplication()"
               (click)="confirmerDuplication()"
-            >{{ LIBELLES.cahierJournal.boutonConfirmerDuplication }}</button>
+            >
+              {{ LIBELLES.cahierJournal.boutonConfirmerDuplication }}
+            </button>
             <button
               id="btnAnnulerDuplication"
               class="mc-btn-fantome mc-btn-sm"
               (click)="annulerDuplication()"
-            >{{ LIBELLES.commun.annuler }}</button>
+            >
+              {{ LIBELLES.commun.annuler }}
+            </button>
           </div>
         </div>
       }
@@ -79,16 +128,18 @@
 
   <!-- ── Colonne droite : séances ── -->
   <div class="cj__droite">
-
     @if (!journeeSelectionnee()) {
       <div class="cj__droite-vide">
         <p>{{ LIBELLES.cahierJournal.aucuneSeance }}</p>
-        <button id="btnInitialiserVidePrincipal" class="mc-btn-secondaire" (click)="initialiserVide()">
+        <button
+          id="btnInitialiserVidePrincipal"
+          class="mc-btn-secondaire"
+          (click)="initialiserVide()"
+        >
           {{ LIBELLES.cahierJournal.boutonInitialiserVide }}
         </button>
       </div>
     } @else {
-
       <div class="cj__seances-liste">
         @if (seances().length === 0) {
           <p class="cj__seances-vide">{{ LIBELLES.cahierJournal.aucuneSeance }}</p>
@@ -109,32 +160,42 @@
                   [disabled]="i === 0"
                   [attr.aria-label]="LIBELLES.cahierJournal.ariaMonterSeance"
                   (click)="deplacerSeance(i, -1)"
-                >↑</button>
+                >
+                  ↑
+                </button>
                 <button
                   [id]="'btnDescendreSeance' + seance.id"
                   class="mc-btn-icone mc-btn-xs"
                   [disabled]="i === seances().length - 1"
                   [attr.aria-label]="LIBELLES.cahierJournal.ariaDescendreSeance"
                   (click)="deplacerSeance(i, 1)"
-                >↓</button>
+                >
+                  ↓
+                </button>
                 <button
                   [id]="'btnModifierSeance' + seance.id"
                   class="mc-btn-icone mc-btn-xs"
                   [attr.aria-label]="LIBELLES.cahierJournal.ariaModifierSeance"
                   (click)="editerSeance(seance)"
-                >✎</button>
+                >
+                  ✎
+                </button>
                 <button
                   [id]="'btnDupliquerSeance' + seance.id"
                   class="mc-btn-icone mc-btn-xs"
                   [attr.aria-label]="LIBELLES.cahierJournal.boutonDupliquerSeance"
                   (click)="demanderDuplication(seance.id)"
-                >⎘</button>
+                >
+                  ⎘
+                </button>
                 <button
                   [id]="'btnSupprimerSeance' + seance.id"
                   class="mc-btn-icone mc-btn-xs mc-btn-danger"
                   [attr.aria-label]="LIBELLES.cahierJournal.ariaSupprimerSeance"
                   (click)="supprimerSeance(seance.id)"
-                >✕</button>
+                >
+                  ✕
+                </button>
               </div>
             </div>
 
@@ -173,12 +234,12 @@
           class="mc-btn-secondaire"
           [disabled]="enCreationSeance()"
           (click)="creerSeance()"
-        >+ {{ LIBELLES.cahierJournal.boutonAjouterSeance }}</button>
+        >
+          + {{ LIBELLES.cahierJournal.boutonAjouterSeance }}
+        </button>
       </div>
-
     }
   </div>
-
 </div>
 
 <!-- ── Popins ── -->

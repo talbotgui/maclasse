@@ -1,10 +1,16 @@
 <div class="mc-layout-liste-detail">
-
   <!-- Colonne gauche -->
   <aside class="mc-colonne-gauche projets__gauche">
     <div class="projets__gauche-entete">
-      <button id="btnCreerProjet" class="mc-btn-primaire" (click)="creerProjet()">{{ LIBELLES.projet.boutonCreer }}</button>
-      <mc-champ-recherche id="rechercheProjet" [placeholder]="LIBELLES.commun.rechercher" [delaiMs]="0" (rechercheChange)="termeRecherche.set($event)" />
+      <button id="btnCreerProjet" class="mc-btn-primaire" (click)="creerProjet()">
+        {{ LIBELLES.projet.boutonCreer }}
+      </button>
+      <mc-champ-recherche
+        id="rechercheProjet"
+        [placeholder]="LIBELLES.commun.rechercher"
+        [delaiMs]="0"
+        (rechercheChange)="termeRecherche.set($event)"
+      />
       @if (domaines().length > 0) {
         <div class="projets__chips-domaines">
           @for (domaine of domaines(); track domaine.id) {
@@ -30,7 +36,9 @@
             class="projets__btn-projet"
             [class.projets__btn-projet--actif]="projetSelectionne()?.id === projet.id"
             (click)="selectionnerProjet(projet)"
-          >{{ projet.nom }}</button>
+          >
+            {{ projet.nom }}
+          </button>
         </li>
       }
     </ul>
@@ -59,7 +67,6 @@
       />
     }
   </div>
-
 </div>
 
 <popin-avertissement

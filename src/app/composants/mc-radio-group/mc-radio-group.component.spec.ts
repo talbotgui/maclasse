@@ -13,7 +13,9 @@ describe('McRadioGroupComponent', () => {
   let component: McRadioGroupComponent;
 
   const radios = () =>
-    fixture.debugElement.queryAll(By.css('input[type="radio"]')).map(d => d.nativeElement as HTMLInputElement);
+    fixture.debugElement
+      .queryAll(By.css('input[type="radio"]'))
+      .map((d) => d.nativeElement as HTMLInputElement);
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -26,19 +28,19 @@ describe('McRadioGroupComponent', () => {
   });
 
   describe('writeValue', () => {
-    it('\'M\' → radio Masculin coché dans le DOM', () => {
+    it("'M' → radio Masculin coché dans le DOM", () => {
       component.writeValue('M');
       fixture.detectChanges();
 
-      const checkedRadio = radios().find(r => r.checked);
+      const checkedRadio = radios().find((r) => r.checked);
       expect(checkedRadio?.value).toBe('M');
     });
 
-    it('\'F\' → radio Féminin coché', () => {
+    it("'F' → radio Féminin coché", () => {
       component.writeValue('F');
       fixture.detectChanges();
 
-      const checkedRadio = radios().find(r => r.checked);
+      const checkedRadio = radios().find((r) => r.checked);
       expect(checkedRadio?.value).toBe('F');
     });
 
@@ -46,7 +48,7 @@ describe('McRadioGroupComponent', () => {
       component.writeValue(null);
       fixture.detectChanges();
 
-      expect(radios().every(r => !r.checked)).toBe(true);
+      expect(radios().every((r) => !r.checked)).toBe(true);
     });
   });
 
@@ -64,7 +66,7 @@ describe('McRadioGroupComponent', () => {
   });
 
   describe('registerOnTouched', () => {
-    it('callback appelé au blur d\'un radio', () => {
+    it("callback appelé au blur d'un radio", () => {
       const cb = vi.fn();
       component.registerOnTouched(cb);
 
@@ -79,7 +81,8 @@ describe('McRadioGroupComponent', () => {
       component.setDisabledState(true);
       fixture.detectChanges();
 
-      const fieldset = fixture.debugElement.query(By.css('fieldset')).nativeElement as HTMLFieldSetElement;
+      const fieldset = fixture.debugElement.query(By.css('fieldset'))
+        .nativeElement as HTMLFieldSetElement;
       expect(fieldset.disabled).toBe(true);
     });
 
@@ -88,13 +91,14 @@ describe('McRadioGroupComponent', () => {
       component.setDisabledState(false);
       fixture.detectChanges();
 
-      const fieldset = fixture.debugElement.query(By.css('fieldset')).nativeElement as HTMLFieldSetElement;
+      const fieldset = fixture.debugElement.query(By.css('fieldset'))
+        .nativeElement as HTMLFieldSetElement;
       expect(fieldset.disabled).toBe(false);
     });
   });
 
   describe('rendu', () => {
-    it('autant de radios que d\'options', () => {
+    it("autant de radios que d'options", () => {
       expect(radios()).toHaveLength(2);
     });
 
@@ -104,15 +108,15 @@ describe('McRadioGroupComponent', () => {
     });
 
     it('tous les radios partagent le même attribut name', () => {
-      const noms = radios().map(r => r.name);
+      const noms = radios().map((r) => r.name);
       expect(new Set(noms).size).toBe(1);
     });
 
-    it('required=true ajoute l\'attribut required sur les radios', () => {
+    it("required=true ajoute l'attribut required sur les radios", () => {
       fixture.componentRef.setInput('required', true);
       fixture.detectChanges();
 
-      expect(radios().some(r => r.required)).toBe(true);
+      expect(radios().some((r) => r.required)).toBe(true);
     });
   });
 });

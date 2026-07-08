@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input, output, signal, viewChildren } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  viewChildren,
+} from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../composant-base';
 import { McChampRechercheComponent } from '../mc-champ-recherche/mc-champ-recherche.component';
@@ -43,7 +53,8 @@ export class McArbreCompetencesComponent extends ComposantBase {
   private readonly noeudsDepliés = signal<Set<string>>(new Set());
 
   /** Références aux boutons de libellé de l'arbre, dans l'ordre d'affichage, pour la navigation clavier. */
-  private readonly boutonsSelection = viewChildren<ElementRef<HTMLButtonElement>>('boutonSelection');
+  private readonly boutonsSelection =
+    viewChildren<ElementRef<HTMLButtonElement>>('boutonSelection');
 
   /** État déplié sauvegardé avant l'activation d'une recherche, `null` si inactif. */
   private readonly noeudsDepliésAvantRecherche = signal<Set<string> | null>(null);
@@ -55,7 +66,7 @@ export class McArbreCompetencesComponent extends ComposantBase {
   private readonly idsCorrespondants = computed<Set<string>>(() => {
     const terme = this.termeRecherche().trim();
     if (!terme) return new Set<string>();
-    return new Set(this.competenceService.rechercherCompetences(terme).map(c => c.id));
+    return new Set(this.competenceService.rechercherCompetences(terme).map((c) => c.id));
   });
 
   /**
@@ -107,15 +118,16 @@ export class McArbreCompetencesComponent extends ComposantBase {
       });
 
       if (estDeplie && noeud.enfants) {
-        noeud.enfants.forEach(enfant => ajouter(enfant, niveau + 1));
+        noeud.enfants.forEach((enfant) => ajouter(enfant, niveau + 1));
       }
     };
 
-    const domainesFiltres = domainesActifs.size > 0
-      ? this.domaines().filter(d => domainesActifs.has(d.id))
-      : this.domaines();
+    const domainesFiltres =
+      domainesActifs.size > 0
+        ? this.domaines().filter((d) => domainesActifs.has(d.id))
+        : this.domaines();
 
-    domainesFiltres.forEach(d => ajouter(d, 0));
+    domainesFiltres.forEach((d) => ajouter(d, 0));
     return resultat;
   });
 
@@ -145,7 +157,7 @@ export class McArbreCompetencesComponent extends ComposantBase {
    * @param id Identifiant du nœud.
    */
   protected basculerNoeud(id: string): void {
-    this.noeudsDepliés.update(set => {
+    this.noeudsDepliés.update((set) => {
       const nouvel = new Set(set);
       if (nouvel.has(id)) {
         nouvel.delete(id);
@@ -229,7 +241,7 @@ export class McArbreCompetencesComponent extends ComposantBase {
    * @param id Identifiant du domaine.
    */
   protected basculerDomaine(id: string): void {
-    this.domainesActifs.update(set => {
+    this.domainesActifs.update((set) => {
       const nouvel = new Set(set);
       if (nouvel.has(id)) {
         nouvel.delete(id);

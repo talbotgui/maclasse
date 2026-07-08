@@ -30,21 +30,21 @@ describe('FeFicheEleveComponent', () => {
   });
 
   describe('obtenirLibelleStatut', () => {
-    it('retourne le libellé correspondant à l\'id', () => {
+    it("retourne le libellé correspondant à l'id", () => {
       expect((component as any).obtenirLibelleStatut('DC')).toBe('Dans la classe');
     });
 
-    it('retourne l\'id brut si statut non trouvé', () => {
+    it("retourne l'id brut si statut non trouvé", () => {
       expect((component as any).obtenirLibelleStatut('inconnu')).toBe('inconnu');
     });
   });
 
   describe('obtenirLibelleTypeContact', () => {
-    it('retourne le libellé correspondant à l\'id', () => {
+    it("retourne le libellé correspondant à l'id", () => {
       expect((component as any).obtenirLibelleTypeContact('P')).toBe('Père');
     });
 
-    it('retourne l\'id brut si type non trouvé', () => {
+    it("retourne l'id brut si type non trouvé", () => {
       expect((component as any).obtenirLibelleTypeContact('X')).toBe('X');
     });
   });
@@ -54,7 +54,7 @@ describe('FeFicheEleveComponent', () => {
       expect((component as any).obtenirLibelleGroupe('GA')).toBe('Groupe A');
     });
 
-    it('retourne l\'id brut si groupe non trouvé', () => {
+    it("retourne l'id brut si groupe non trouvé", () => {
       expect((component as any).obtenirLibelleGroupe('GZ')).toBe('GZ');
     });
   });

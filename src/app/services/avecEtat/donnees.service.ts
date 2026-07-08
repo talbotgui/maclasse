@@ -28,8 +28,7 @@ export class DonneesService {
   private readonly modifieeDepuisSauvegarde: WritableSignal<boolean> = signal(false);
 
   /** Données courantes de l'application, ou `null` si non chargées. */
-  public readonly donnees: Signal<DonneesApplication | null> =
-    this.donneesModifiables.asReadonly();
+  public readonly donnees: Signal<DonneesApplication | null> = this.donneesModifiables.asReadonly();
 
   /** `true` si la pile UNDO contient au moins une commande. */
   public readonly peutAnnuler: Signal<boolean> = computed(() => this.pileUndo().length > 0);
@@ -50,8 +49,7 @@ export class DonneesService {
   });
 
   /** `true` si des données ont été modifiées depuis la dernière sauvegarde. */
-  public readonly aDonneesModifiees: Signal<boolean> =
-    this.modifieeDepuisSauvegarde.asReadonly();
+  public readonly aDonneesModifiees: Signal<boolean> = this.modifieeDepuisSauvegarde.asReadonly();
 
   /**
    * Charge un jeu de données et réinitialise les piles UNDO/REDO.
@@ -89,7 +87,7 @@ export class DonneesService {
       7,
     );
     const delta = DateUtils.differenceEnJours(lundiOrigine, lundiCible);
-    donnees.cahierJournal.forEach(j => {
+    donnees.cahierJournal.forEach((j) => {
       j.date = DateUtils.ajouterJours(j.date, delta);
     });
   }
@@ -105,7 +103,7 @@ export class DonneesService {
       return;
     }
     this.donneesModifiables.set(commande.executer(courant));
-    this.pileUndo.update(pile => [...pile, commande]);
+    this.pileUndo.update((pile) => [...pile, commande]);
     this.pileRedo.set([]);
     this.modifieeDepuisSauvegarde.set(true);
   }
@@ -122,8 +120,8 @@ export class DonneesService {
     }
     const commande = pileUndoCourante[pileUndoCourante.length - 1];
     this.donneesModifiables.set(commande.annuler(courant));
-    this.pileUndo.update(p => p.slice(0, -1));
-    this.pileRedo.update(p => [...p, commande]);
+    this.pileUndo.update((p) => p.slice(0, -1));
+    this.pileRedo.update((p) => [...p, commande]);
     this.modifieeDepuisSauvegarde.set(true);
   }
 
@@ -139,8 +137,8 @@ export class DonneesService {
     }
     const commande = pileRedoCourante[pileRedoCourante.length - 1];
     this.donneesModifiables.set(commande.executer(courant));
-    this.pileRedo.update(p => p.slice(0, -1));
-    this.pileUndo.update(p => [...p, commande]);
+    this.pileRedo.update((p) => p.slice(0, -1));
+    this.pileUndo.update((p) => [...p, commande]);
     this.modifieeDepuisSauvegarde.set(true);
   }
 

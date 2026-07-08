@@ -1,5 +1,4 @@
 <div class="competences">
-
   <!-- Zone centrale : sélecteur d'arbre (avec filtres intégrés) -->
   <div class="competences__arbre">
     <mc-arbre-competences
@@ -25,7 +24,9 @@
               class="mc-btn-icone mc-btn-xs"
               [attr.aria-label]="LIBELLES.competences.ariaRetirer + item.libelle"
               (click)="retirerDuPanier(item.id)"
-            >✕</button>
+            >
+              ✕
+            </button>
           </li>
         }
       </ul>
@@ -37,22 +38,27 @@
         class="mc-btn-fantome"
         [disabled]="!panierNonVide()"
         (click)="viderPanier()"
-      >{{ LIBELLES.competences.boutonVider }}</button>
+      >
+        {{ LIBELLES.competences.boutonVider }}
+      </button>
       <button
         id="btnEnvoyerProjet"
         class="mc-btn-primaire"
         [disabled]="!panierNonVide()"
         (click)="exporterVersProjet()"
-      >{{ LIBELLES.competences.boutonEnvoyerProjet }}</button>
+      >
+        {{ LIBELLES.competences.boutonEnvoyerProjet }}
+      </button>
       <button
         id="btnEnvoyerSeance"
         class="mc-btn-primaire"
         [disabled]="!panierNonVide()"
         (click)="exporterVersSeance()"
-      >{{ LIBELLES.competences.boutonEnvoyerSeance }}</button>
+      >
+        {{ LIBELLES.competences.boutonEnvoyerSeance }}
+      </button>
     </div>
   </div>
-
 </div>
 
 <!-- Popin d'export -->

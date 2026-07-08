@@ -11,7 +11,6 @@ import { SelecteursBase } from './selecteurs-base';
  *   - et000003-0000-4000-8000-000000000001 → "Semaine complète — 2ème partie"
  */
 export class SelecteursEmploiDuTemps extends SelecteursBase {
-
   // --- Colonne gauche : liste des EDT ---
   /** Bouton CRÉER un nouvel EDT. */
   readonly btnCreerEdt: Locator;
@@ -88,9 +87,15 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
 
     this.btnCreerEdt = page.locator('#btnCreerEdt');
     this.listeEdts = page.locator('.edt__liste');
-    this.btnEdtSemainePaire = page.locator('#btnSelectionnerEdtet000001-0000-4000-8000-000000000001');
-    this.btnEdtSemaineImpaire = page.locator('#btnSelectionnerEdtet000002-0000-4000-8000-000000000001');
-    this.btnEdtSemaineComplete = page.locator('#btnSelectionnerEdtet000003-0000-4000-8000-000000000001');
+    this.btnEdtSemainePaire = page.locator(
+      '#btnSelectionnerEdtet000001-0000-4000-8000-000000000001',
+    );
+    this.btnEdtSemaineImpaire = page.locator(
+      '#btnSelectionnerEdtet000002-0000-4000-8000-000000000001',
+    );
+    this.btnEdtSemaineComplete = page.locator(
+      '#btnSelectionnerEdtet000003-0000-4000-8000-000000000001',
+    );
 
     this.grilleEntete = page.locator('.edt__grille thead');
     this.conteneurGrille = page.locator('.edt__grille');
@@ -98,7 +103,9 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
     this.droiteVide = page.locator('.edt__droite-vide');
     this.btnImprimerEdt = page.locator('#btnImprimerEdt');
     this.premierCreneauGrille = page.locator('[id^="btnCreneau"]').first();
-    this.premierCreneauSemainePaire = page.locator('#btnCreneaucr000001-0000-4000-8000-000000000001');
+    this.premierCreneauSemainePaire = page.locator(
+      '#btnCreneaucr000001-0000-4000-8000-000000000001',
+    );
     this.btnAjouterCreneauCelluleVide = page.locator('[id^="btnAjouterCreneau"]').first();
     this.btnNouveauCreneauLigne = page.locator('[id^="btnNouveauCreneauJour"]').first();
 

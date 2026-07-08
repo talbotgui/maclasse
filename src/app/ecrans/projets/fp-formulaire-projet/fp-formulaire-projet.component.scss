@@ -9,7 +9,9 @@
     padding-bottom: 1rem;
     border-bottom: 2px solid var(--bordure);
 
-    mc-input { flex: 1; }
+    mc-input {
+      flex: 1;
+    }
   }
 
   &__bandeau-actions {
@@ -22,7 +24,9 @@
     padding-bottom: 1.25rem;
     border-bottom: 1px solid var(--bordure);
 
-    &:last-child { border-bottom: none; }
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
   &__titre-section {
@@ -40,7 +44,11 @@
     padding: 0.75rem 1rem;
     margin: 0.75rem 0 0;
 
-    legend { padding: 0 0.25rem; font-size: 0.875rem; color: var(--texte-secondaire); }
+    legend {
+      padding: 0 0.25rem;
+      font-size: 0.875rem;
+      color: var(--texte-secondaire);
+    }
   }
 
   &__chips {
@@ -75,7 +83,9 @@
     align-items: flex-end;
     gap: 0.625rem;
 
-    mc-input { flex: 1 1 12rem; }
+    mc-input {
+      flex: 1 1 12rem;
+    }
   }
 
   &__competences {

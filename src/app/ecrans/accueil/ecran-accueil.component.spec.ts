@@ -32,9 +32,11 @@ describe('EcranAccueilComponent', () => {
     });
 
     it('retourne [] si pas de journée à la date du jour', () => {
-      donneesService.charger(DonneesMother.base({
-        cahierJournal: [{ id: 'j0', date: '2000-01-01', seances: [SeanceMother.pedagogique()] }],
-      }));
+      donneesService.charger(
+        DonneesMother.base({
+          cahierJournal: [{ id: 'j0', date: '2000-01-01', seances: [SeanceMother.pedagogique()] }],
+        }),
+      );
       fixture.detectChanges();
 
       expect((component as any).seancesResumees()).toEqual([]);
@@ -54,14 +56,19 @@ describe('EcranAccueilComponent', () => {
     it('calcule nbEleves = total de la classe si type=classe', () => {
       const alice = EleveMother.base('e1', 'M', 'A');
       const bob = EleveMother.base('e2', 'D', 'B');
-      donneesService.charger(DonneesMother.base({
-        classe: { ...DonneesMother.base().classe, eleves: [alice, bob] },
-        cahierJournal: [],
-      }));
+      donneesService.charger(
+        DonneesMother.base({
+          classe: { ...DonneesMother.base().classe, eleves: [alice, bob] },
+          cahierJournal: [],
+        }),
+      );
       cahierJournalService.initialiserJourneeVide(dateAujourdhui);
-      cahierJournalService.ajouterSeance(dateAujourdhui, SeanceMother.pedagogique({
-        elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
-      }));
+      cahierJournalService.ajouterSeance(
+        dateAujourdhui,
+        SeanceMother.pedagogique({
+          elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
+        }),
+      );
       fixture.detectChanges();
 
       const seances = (component as any).seancesResumees();
@@ -71,14 +78,19 @@ describe('EcranAccueilComponent', () => {
     it('calcule nbEleves selon les élèves explicites si type=eleves', () => {
       const alice = EleveMother.base('e1', 'M', 'A');
       const bob = EleveMother.base('e2', 'D', 'B');
-      donneesService.charger(DonneesMother.base({
-        classe: { ...DonneesMother.base().classe, eleves: [alice, bob] },
-        cahierJournal: [],
-      }));
+      donneesService.charger(
+        DonneesMother.base({
+          classe: { ...DonneesMother.base().classe, eleves: [alice, bob] },
+          cahierJournal: [],
+        }),
+      );
       cahierJournalService.initialiserJourneeVide(dateAujourdhui);
-      cahierJournalService.ajouterSeance(dateAujourdhui, SeanceMother.pedagogique({
-        elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e1'] },
-      }));
+      cahierJournalService.ajouterSeance(
+        dateAujourdhui,
+        SeanceMother.pedagogique({
+          elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e1'] },
+        }),
+      );
       fixture.detectChanges();
 
       const seances = (component as any).seancesResumees();
@@ -88,14 +100,19 @@ describe('EcranAccueilComponent', () => {
     it('calcule nbEleves selon les groupes si type=groupes', () => {
       const alice = EleveMother.base('e1', 'M', 'A', { groupes: ['GA'] });
       const bob = EleveMother.base('e2', 'D', 'B', { groupes: ['GB'] });
-      donneesService.charger(DonneesMother.base({
-        classe: { ...DonneesMother.base().classe, eleves: [alice, bob] },
-        cahierJournal: [],
-      }));
+      donneesService.charger(
+        DonneesMother.base({
+          classe: { ...DonneesMother.base().classe, eleves: [alice, bob] },
+          cahierJournal: [],
+        }),
+      );
       cahierJournalService.initialiserJourneeVide(dateAujourdhui);
-      cahierJournalService.ajouterSeance(dateAujourdhui, SeanceMother.pedagogique({
-        elevesConcernes: { type: 'groupes', groupes: ['GA'], elevesIds: [] },
-      }));
+      cahierJournalService.ajouterSeance(
+        dateAujourdhui,
+        SeanceMother.pedagogique({
+          elevesConcernes: { type: 'groupes', groupes: ['GA'], elevesIds: [] },
+        }),
+      );
       fixture.detectChanges();
 
       const seances = (component as any).seancesResumees();
@@ -105,7 +122,10 @@ describe('EcranAccueilComponent', () => {
     it('mappe heureDebut et heureFin correctement', () => {
       donneesService.charger(DonneesMother.base({ cahierJournal: [] }));
       cahierJournalService.initialiserJourneeVide(dateAujourdhui);
-      cahierJournalService.ajouterSeance(dateAujourdhui, SeanceMother.pedagogique({ heureDebut: '09:00', heureFin: '10:30' }));
+      cahierJournalService.ajouterSeance(
+        dateAujourdhui,
+        SeanceMother.pedagogique({ heureDebut: '09:00', heureFin: '10:30' }),
+      );
       fixture.detectChanges();
 
       const seances = (component as any).seancesResumees();

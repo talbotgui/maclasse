@@ -8,7 +8,11 @@ export const MOT_DE_PASSE_TEST = 'testmdp';
 /** Chemin du ZIP de test généré. */
 export const CHEMIN_ZIP_TEST = resolve('./e2e/donnees/maclasse-test.zip');
 
-async function deriverCle(motDePasse: string, salt: Uint8Array<ArrayBuffer>, usages: KeyUsage[]): Promise<CryptoKey> {
+async function deriverCle(
+  motDePasse: string,
+  salt: Uint8Array<ArrayBuffer>,
+  usages: KeyUsage[],
+): Promise<CryptoKey> {
   const materiau = await crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(motDePasse),

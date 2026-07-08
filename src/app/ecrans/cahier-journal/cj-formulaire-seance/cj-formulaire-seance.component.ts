@@ -111,9 +111,7 @@ export class CjFormulaireSeanceComponent {
    */
   protected basculerDiscipline(id: string, actif: boolean): void {
     const ids = this.formSeance.disciplinesIds ?? [];
-    this.formSeance.disciplinesIds = actif
-      ? [...ids, id]
-      : ids.filter(d => d !== id);
+    this.formSeance.disciplinesIds = actif ? [...ids, id] : ids.filter((d) => d !== id);
   }
 
   /**

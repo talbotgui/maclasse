@@ -19,7 +19,7 @@ describe('McAutoFocusDirective', () => {
   });
 
   describe('comportement du focus', () => {
-    it('applique le focus sur l\'élément quand mcAutoFocus est true dès la création', () => {
+    it("applique le focus sur l'élément quand mcAutoFocus est true dès la création", () => {
       const fixture = TestBed.createComponent(ComposantTestDirective);
       fixture.componentInstance.actif.set(true);
       fixture.detectChanges();
@@ -28,7 +28,7 @@ describe('McAutoFocusDirective', () => {
       expect(document.activeElement).toBe(bouton);
     });
 
-    it('n\'applique pas le focus quand mcAutoFocus est false', () => {
+    it("n'applique pas le focus quand mcAutoFocus est false", () => {
       const fixture = TestBed.createComponent(ComposantTestDirective);
       fixture.componentInstance.actif.set(false);
       fixture.detectChanges();

@@ -19,7 +19,9 @@ describe('McArbreCompetencesComponent', () => {
 
   /** Retourne tous les boutons de libellé (sélection) dans l'ordre d'affichage. */
   const boutonsLibelle = () =>
-    fixture.debugElement.queryAll(By.css('.mc-arbre-competences__libelle')).map(d => d.nativeElement as HTMLButtonElement);
+    fixture.debugElement
+      .queryAll(By.css('.mc-arbre-competences__libelle'))
+      .map((d) => d.nativeElement as HTMLButtonElement);
 
   /** Clique sur le bouton toggle du nœud `id` pour le déplier/replier. */
   const cliquerToggle = (id: string) => {
@@ -129,7 +131,7 @@ describe('McArbreCompetencesComponent', () => {
       cliquerToggle('FR');
       cliquerToggle('FR-LECT');
       const boutons = boutonsLibelle();
-      const indexFeuille = boutons.findIndex(b => b.id === 'noeudSel_FR-LECT-1');
+      const indexFeuille = boutons.findIndex((b) => b.id === 'noeudSel_FR-LECT-1');
       boutons[indexFeuille].focus();
 
       appuyerTouche(indexFeuille, 'ArrowRight');
@@ -154,7 +156,7 @@ describe('McArbreCompetencesComponent', () => {
     it('ArrowLeft depuis un enfant remonte vers le parent', () => {
       cliquerToggle('FR');
       const boutons = boutonsLibelle();
-      const indexEnfant = boutons.findIndex(b => b.id === 'noeudSel_FR-LECT');
+      const indexEnfant = boutons.findIndex((b) => b.id === 'noeudSel_FR-LECT');
       boutons[indexEnfant].focus();
 
       appuyerTouche(indexEnfant, 'ArrowLeft');

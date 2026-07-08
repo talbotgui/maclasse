@@ -1,4 +1,7 @@
-:host { display: block; height: 100%; }
+:host {
+  display: block;
+  height: 100%;
+}
 
 .projets {
   &__gauche {
@@ -47,10 +50,22 @@
     font-size: 0.875rem;
     color: var(--texte-principal);
 
-    &:hover { background-color: var(--fond-survol); }
-    &--actif { border-left-color: var(--accent); background-color: var(--fond-actif); font-weight: 600; }
+    &:hover {
+      background-color: var(--fond-survol);
+    }
+    &--actif {
+      border-left-color: var(--accent);
+      background-color: var(--fond-actif);
+      font-weight: 600;
+    }
   }
 
-  &__droite { overflow-y: auto; }
-  &__vide { padding: 2rem; color: var(--texte-secondaire); font-style: italic; }
+  &__droite {
+    overflow-y: auto;
+  }
+  &__vide {
+    padding: 2rem;
+    color: var(--texte-secondaire);
+    font-style: italic;
+  }
 }

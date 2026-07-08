@@ -10,9 +10,13 @@ describe('McBoutonDestructionComponent', () => {
   const btnSupprimer = () =>
     fixture.debugElement.query(By.css('#Base'))?.nativeElement as HTMLButtonElement | undefined;
   const btnConfirmer = () =>
-    fixture.debugElement.query(By.css('#Base_confirmer'))?.nativeElement as HTMLButtonElement | undefined;
+    fixture.debugElement.query(By.css('#Base_confirmer'))?.nativeElement as
+      | HTMLButtonElement
+      | undefined;
   const btnAnnuler = () =>
-    fixture.debugElement.query(By.css('#Base_annuler'))?.nativeElement as HTMLButtonElement | undefined;
+    fixture.debugElement.query(By.css('#Base_annuler'))?.nativeElement as
+      | HTMLButtonElement
+      | undefined;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -27,7 +31,7 @@ describe('McBoutonDestructionComponent', () => {
       expect(btnSupprimer()).toBeTruthy();
     });
 
-    it('n\'affiche pas CONFIRMER ni ANNULER', () => {
+    it("n'affiche pas CONFIRMER ni ANNULER", () => {
       expect(btnConfirmer()).toBeFalsy();
       expect(btnAnnuler()).toBeFalsy();
     });
@@ -68,7 +72,7 @@ describe('McBoutonDestructionComponent', () => {
       expect(btnSupprimer()).toBeTruthy();
     });
 
-    it('ANNULER n\'émet pas confirme', () => {
+    it("ANNULER n'émet pas confirme", () => {
       const spy = vi.spyOn((component as any).confirme, 'emit');
 
       btnSupprimer()!.click();
@@ -80,7 +84,7 @@ describe('McBoutonDestructionComponent', () => {
   });
 
   describe('confirmation', () => {
-    it('clic CONFIRMER émet l\'output confirme', () => {
+    it("clic CONFIRMER émet l'output confirme", () => {
       const spy = vi.spyOn((component as any).confirme, 'emit');
 
       btnSupprimer()!.click();

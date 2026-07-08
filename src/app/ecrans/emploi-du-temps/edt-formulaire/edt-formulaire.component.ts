@@ -23,7 +23,11 @@ import { McChampHeureComponent } from '../../../composants/mc-champ-heure/mc-cha
 import { McChipFiltreComponent } from '../../../composants/mc-chip-filtre/mc-chip-filtre.component';
 import { McElevesConcernesComponent } from '../../../composants/mc-eleves-concernes/mc-eleves-concernes.component';
 import { McBoutonDestructionComponent } from '../../../composants/mc-bouton-destruction/mc-bouton-destruction.component';
-import type { EmploiDuTemps, CreneauEdt, ElevesConcernes } from '../../../modeles/emploi-du-temps.modele';
+import type {
+  EmploiDuTemps,
+  CreneauEdt,
+  ElevesConcernes,
+} from '../../../modeles/emploi-du-temps.modele';
 import type { Competence } from '../../../modeles/referentiels.modele';
 
 /**
@@ -134,9 +138,7 @@ export class EdtFormulaireComponent {
   protected basculerDiscipline(id: string, actif: boolean): void {
     if (!this.formCreneau) return;
     const ids = this.formCreneau.disciplinesIds ?? [];
-    this.formCreneau.disciplinesIds = actif
-      ? [...ids, id]
-      : ids.filter(d => d !== id);
+    this.formCreneau.disciplinesIds = actif ? [...ids, id] : ids.filter((d) => d !== id);
   }
 
   /** Met à jour l'objet elevesConcernes du créneau. */

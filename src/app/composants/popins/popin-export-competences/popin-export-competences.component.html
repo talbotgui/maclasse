@@ -7,7 +7,9 @@
 >
   <div class="mc-popover-carte">
     <div class="mc-popover-entete">
-      <span id="titreExport" class="mc-popover-titre">{{ LIBELLES.popins.exportCompetences.titre }}</span>
+      <span id="titreExport" class="mc-popover-titre">{{
+        LIBELLES.popins.exportCompetences.titre
+      }}</span>
     </div>
 
     <div class="mc-popin__corps">
@@ -56,19 +58,18 @@
     </div>
 
     <div class="mc-popover-pied">
-      <button
-        id="btnExportAnnuler"
-        type="button"
-        class="mc-btn-fantome"
-        (click)="surAnnulation()"
-      >{{ LIBELLES.popins.exportCompetences.annuler }}</button>
+      <button id="btnExportAnnuler" type="button" class="mc-btn-fantome" (click)="surAnnulation()">
+        {{ LIBELLES.popins.exportCompetences.annuler }}
+      </button>
       <button
         id="btnExportConfirmer"
         type="button"
         class="mc-btn-primaire"
         [disabled]="!peutConfirmer()"
         (click)="surConfirmation()"
-      >{{ LIBELLES.popins.exportCompetences.confirmer }}</button>
+      >
+        {{ LIBELLES.popins.exportCompetences.confirmer }}
+      </button>
     </div>
   </div>
 </dialog>

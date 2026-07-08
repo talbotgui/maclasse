@@ -1,5 +1,4 @@
 <div class="parametrage">
-
   <!-- Colonne gauche : navigation par section -->
   <nav class="parametrage__nav" [attr.aria-label]="LIBELLES.parametrage.ariaSectionsParametrage">
     <ul class="parametrage__liste-sections">
@@ -10,7 +9,9 @@
             class="parametrage__btn-section"
             [class.parametrage__btn-section--actif]="sectionActive() === section.id"
             (click)="activerSection(section.id)"
-          >{{ section.libelle }}</button>
+          >
+            {{ section.libelle }}
+          </button>
         </li>
       }
     </ul>
@@ -18,22 +19,50 @@
 
   <!-- Zone droite : contenu de la section -->
   <div class="parametrage__contenu">
-
     @switch (sectionActive()) {
-
       <!-- Section : Enseignant & Classe -->
       @case ('enseignantClasse') {
         <section class="parametrage__section" aria-labelledby="titreEnseignantClasse">
-          <h2 id="titreEnseignantClasse" class="parametrage__titre-section">{{ LIBELLES.parametrage.sections.enseignantClasse }}</h2>
+          <h2 id="titreEnseignantClasse" class="parametrage__titre-section">
+            {{ LIBELLES.parametrage.sections.enseignantClasse }}
+          </h2>
           <div class="parametrage__actions-section">
-            <button id="btnEnregistrerEnseignantClasse" class="mc-btn-primaire" (click)="enregistrerEnseignantClasse()">{{ LIBELLES.commun.enregistrer }}</button>
-            <button id="btnAnnulerEnseignantClasse" class="mc-btn-fantome" (click)="annulerEnseignantClasse()">{{ LIBELLES.commun.annuler }}</button>
+            <button
+              id="btnEnregistrerEnseignantClasse"
+              class="mc-btn-primaire"
+              (click)="enregistrerEnseignantClasse()"
+            >
+              {{ LIBELLES.commun.enregistrer }}
+            </button>
+            <button
+              id="btnAnnulerEnseignantClasse"
+              class="mc-btn-fantome"
+              (click)="annulerEnseignantClasse()"
+            >
+              {{ LIBELLES.commun.annuler }}
+            </button>
           </div>
           <div class="parametrage__formulaire">
-            <mc-input id="champPrenomEnseignant" [label]="LIBELLES.parametrage.labelPrenom" [(ngModel)]="formEnseignantClasse.prenom" />
-            <mc-input id="champNomEnseignant" [label]="LIBELLES.parametrage.labelNom" [(ngModel)]="formEnseignantClasse.nom" />
-            <mc-input id="champAnneeEnseignant" [label]="LIBELLES.parametrage.labelAnnee" [(ngModel)]="formEnseignantClasse.annee" />
-            <mc-input id="champNiveauClasse" [label]="LIBELLES.parametrage.labelNiveauClasse" [(ngModel)]="formEnseignantClasse.niveauClasse" />
+            <mc-input
+              id="champPrenomEnseignant"
+              [label]="LIBELLES.parametrage.labelPrenom"
+              [(ngModel)]="formEnseignantClasse.prenom"
+            />
+            <mc-input
+              id="champNomEnseignant"
+              [label]="LIBELLES.parametrage.labelNom"
+              [(ngModel)]="formEnseignantClasse.nom"
+            />
+            <mc-input
+              id="champAnneeEnseignant"
+              [label]="LIBELLES.parametrage.labelAnnee"
+              [(ngModel)]="formEnseignantClasse.annee"
+            />
+            <mc-input
+              id="champNiveauClasse"
+              [label]="LIBELLES.parametrage.labelNiveauClasse"
+              [(ngModel)]="formEnseignantClasse.niveauClasse"
+            />
           </div>
         </section>
       }
@@ -41,18 +70,43 @@
       <!-- Section : Périodes scolaires -->
       @case ('periodes') {
         <section class="parametrage__section" aria-labelledby="titrePeriodes">
-          <h2 id="titrePeriodes" class="parametrage__titre-section">{{ LIBELLES.parametrage.sections.periodes }}</h2>
+          <h2 id="titrePeriodes" class="parametrage__titre-section">
+            {{ LIBELLES.parametrage.sections.periodes }}
+          </h2>
           <div class="parametrage__actions-section">
-            <button id="btnAjouterPeriode" class="mc-btn-primaire" (click)="ajouterPeriode()">{{ LIBELLES.commun.ajouter }}</button>
+            <button id="btnAjouterPeriode" class="mc-btn-primaire" (click)="ajouterPeriode()">
+              {{ LIBELLES.commun.ajouter }}
+            </button>
           </div>
           <ul class="parametrage__liste-items">
             @for (periode of copiePeriodes(); track periode.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champPeriodeNom' + i" [label]="LIBELLES.parametrage.labelPeriodeNom" [(ngModel)]="periode.nom" [mcAutoFocus]="i === indexAFocaliserPeriode()" />
-                <mc-input [id]="'champPeriodeDebut' + i" [label]="LIBELLES.parametrage.labelPeriodeDebut" type="date" [(ngModel)]="periode.debut" />
-                <mc-input [id]="'champPeriodeFin' + i" [label]="LIBELLES.parametrage.labelPeriodeFin" type="date" [(ngModel)]="periode.fin" />
+                <mc-input
+                  [id]="'champPeriodeNom' + i"
+                  [label]="LIBELLES.parametrage.labelPeriodeNom"
+                  [(ngModel)]="periode.nom"
+                  [mcAutoFocus]="i === indexAFocaliserPeriode()"
+                />
+                <mc-input
+                  [id]="'champPeriodeDebut' + i"
+                  [label]="LIBELLES.parametrage.labelPeriodeDebut"
+                  type="date"
+                  [(ngModel)]="periode.debut"
+                />
+                <mc-input
+                  [id]="'champPeriodeFin' + i"
+                  [label]="LIBELLES.parametrage.labelPeriodeFin"
+                  type="date"
+                  [(ngModel)]="periode.fin"
+                />
                 <div class="parametrage__item-actions">
-                  <button [id]="'btnEnregistrerPeriode' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerPeriode(i)">{{ LIBELLES.commun.enregistrer }}</button>
+                  <button
+                    [id]="'btnEnregistrerPeriode' + i"
+                    class="mc-btn-primaire mc-btn-sm"
+                    (click)="enregistrerPeriode(i)"
+                  >
+                    {{ LIBELLES.commun.enregistrer }}
+                  </button>
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerPeriode' + i"
@@ -70,10 +124,24 @@
       <!-- Section : Semaine & Horaires -->
       @case ('semaineHoraires') {
         <section class="parametrage__section" aria-labelledby="titreSemaineHoraires">
-          <h2 id="titreSemaineHoraires" class="parametrage__titre-section">{{ LIBELLES.parametrage.sections.semaineHoraires }}</h2>
+          <h2 id="titreSemaineHoraires" class="parametrage__titre-section">
+            {{ LIBELLES.parametrage.sections.semaineHoraires }}
+          </h2>
           <div class="parametrage__actions-section">
-            <button id="btnEnregistrerSemaineHoraires" class="mc-btn-primaire" (click)="enregistrerSemaineHoraires()">{{ LIBELLES.commun.enregistrer }}</button>
-            <button id="btnAnnulerSemaineHoraires" class="mc-btn-fantome" (click)="annulerSemaineHoraires()">{{ LIBELLES.commun.annuler }}</button>
+            <button
+              id="btnEnregistrerSemaineHoraires"
+              class="mc-btn-primaire"
+              (click)="enregistrerSemaineHoraires()"
+            >
+              {{ LIBELLES.commun.enregistrer }}
+            </button>
+            <button
+              id="btnAnnulerSemaineHoraires"
+              class="mc-btn-fantome"
+              (click)="annulerSemaineHoraires()"
+            >
+              {{ LIBELLES.commun.annuler }}
+            </button>
           </div>
           <div class="parametrage__formulaire">
             <fieldset class="parametrage__groupe-jours">
@@ -89,8 +157,16 @@
                 }
               </div>
             </fieldset>
-            <mc-champ-heure id="champHeureDebutJournee" [label]="LIBELLES.parametrage.labelHeureDebutJournee" [(ngModel)]="formSemaineHoraires.heureDebutJournee" />
-            <mc-champ-heure id="champHeureFinJournee" [label]="LIBELLES.parametrage.labelHeureFinJournee" [(ngModel)]="formSemaineHoraires.heureFinJournee" />
+            <mc-champ-heure
+              id="champHeureDebutJournee"
+              [label]="LIBELLES.parametrage.labelHeureDebutJournee"
+              [(ngModel)]="formSemaineHoraires.heureDebutJournee"
+            />
+            <mc-champ-heure
+              id="champHeureFinJournee"
+              [label]="LIBELLES.parametrage.labelHeureFinJournee"
+              [(ngModel)]="formSemaineHoraires.heureFinJournee"
+            />
           </div>
         </section>
       }
@@ -98,16 +174,31 @@
       <!-- Section : Groupes -->
       @case ('groupes') {
         <section class="parametrage__section" aria-labelledby="titreGroupes">
-          <h2 id="titreGroupes" class="parametrage__titre-section">{{ LIBELLES.parametrage.sections.groupes }}</h2>
+          <h2 id="titreGroupes" class="parametrage__titre-section">
+            {{ LIBELLES.parametrage.sections.groupes }}
+          </h2>
           <div class="parametrage__actions-section">
-            <button id="btnAjouterGroupe" class="mc-btn-primaire" (click)="ajouterGroupe()">{{ LIBELLES.commun.ajouter }}</button>
+            <button id="btnAjouterGroupe" class="mc-btn-primaire" (click)="ajouterGroupe()">
+              {{ LIBELLES.commun.ajouter }}
+            </button>
           </div>
           <ul class="parametrage__liste-items">
             @for (groupe of copieGroupes(); track groupe.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champGroupeLibelle' + i" [label]="LIBELLES.parametrage.labelGroupeLibelle" [(ngModel)]="groupe.libelle" [mcAutoFocus]="i === indexAFocaliserGroupe()" />
+                <mc-input
+                  [id]="'champGroupeLibelle' + i"
+                  [label]="LIBELLES.parametrage.labelGroupeLibelle"
+                  [(ngModel)]="groupe.libelle"
+                  [mcAutoFocus]="i === indexAFocaliserGroupe()"
+                />
                 <div class="parametrage__item-actions">
-                  <button [id]="'btnEnregistrerGroupe' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerGroupe(i)">{{ LIBELLES.commun.enregistrer }}</button>
+                  <button
+                    [id]="'btnEnregistrerGroupe' + i"
+                    class="mc-btn-primaire mc-btn-sm"
+                    (click)="enregistrerGroupe(i)"
+                  >
+                    {{ LIBELLES.commun.enregistrer }}
+                  </button>
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerGroupe' + i"
@@ -125,24 +216,63 @@
       <!-- Section : Barème d'évaluation -->
       @case ('bareme') {
         <section class="parametrage__section" aria-labelledby="titreBareme">
-          <h2 id="titreBareme" class="parametrage__titre-section">{{ LIBELLES.parametrage.sections.bareme }}</h2>
+          <h2 id="titreBareme" class="parametrage__titre-section">
+            {{ LIBELLES.parametrage.sections.bareme }}
+          </h2>
           <div class="parametrage__actions-section">
-            <button id="btnAjouterStatut" class="mc-btn-primaire" (click)="ajouterStatutAcquisition()">{{ LIBELLES.commun.ajouter }}</button>
+            <button
+              id="btnAjouterStatut"
+              class="mc-btn-primaire"
+              (click)="ajouterStatutAcquisition()"
+            >
+              {{ LIBELLES.commun.ajouter }}
+            </button>
           </div>
           <ul class="parametrage__liste-items">
             @for (statut of copieBareme(); track statut.id; let i = $index) {
               <li class="parametrage__item parametrage__item--bareme">
-                <mc-input [id]="'champStatutId' + i" [label]="LIBELLES.parametrage.labelStatutId" [(ngModel)]="statut.id" [mcAutoFocus]="i === indexAFocaliserBareme()" />
-                <mc-input [id]="'champStatutGlyphe' + i" [label]="LIBELLES.parametrage.labelStatutGlyphe" [(ngModel)]="statut.glyphe" />
-                <mc-input [id]="'champStatutLibelle' + i" [label]="LIBELLES.parametrage.labelStatutLibelle" [(ngModel)]="statut.libelle" />
-                <mc-input [id]="'champStatutCouleur' + i" [label]="LIBELLES.parametrage.labelStatutCouleur" type="color" [(ngModel)]="statut.couleur" />
-                <mc-input [id]="'champStatutFond' + i" [label]="LIBELLES.parametrage.labelStatutFond" type="color" [(ngModel)]="statut.fond" />
+                <mc-input
+                  [id]="'champStatutId' + i"
+                  [label]="LIBELLES.parametrage.labelStatutId"
+                  [(ngModel)]="statut.id"
+                  [mcAutoFocus]="i === indexAFocaliserBareme()"
+                />
+                <mc-input
+                  [id]="'champStatutGlyphe' + i"
+                  [label]="LIBELLES.parametrage.labelStatutGlyphe"
+                  [(ngModel)]="statut.glyphe"
+                />
+                <mc-input
+                  [id]="'champStatutLibelle' + i"
+                  [label]="LIBELLES.parametrage.labelStatutLibelle"
+                  [(ngModel)]="statut.libelle"
+                />
+                <mc-input
+                  [id]="'champStatutCouleur' + i"
+                  [label]="LIBELLES.parametrage.labelStatutCouleur"
+                  type="color"
+                  [(ngModel)]="statut.couleur"
+                />
+                <mc-input
+                  [id]="'champStatutFond' + i"
+                  [label]="LIBELLES.parametrage.labelStatutFond"
+                  type="color"
+                  [(ngModel)]="statut.fond"
+                />
                 <div class="parametrage__apercu">
-                  <span class="parametrage__label-apercu">{{ LIBELLES.parametrage.labelStatutApercu }}</span>
+                  <span class="parametrage__label-apercu">{{
+                    LIBELLES.parametrage.labelStatutApercu
+                  }}</span>
                   <mc-badge-statut [statut]="statut" />
                 </div>
                 <div class="parametrage__item-actions">
-                  <button [id]="'btnEnregistrerStatut' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerStatutAcquisition(i)">{{ LIBELLES.commun.enregistrer }}</button>
+                  <button
+                    [id]="'btnEnregistrerStatut' + i"
+                    class="mc-btn-primaire mc-btn-sm"
+                    (click)="enregistrerStatutAcquisition(i)"
+                  >
+                    {{ LIBELLES.commun.enregistrer }}
+                  </button>
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerStatut' + i"
@@ -160,17 +290,40 @@
       <!-- Section : Statuts élève -->
       @case ('statutsEleve') {
         <section class="parametrage__section" aria-labelledby="titreStatutsEleve">
-          <h2 id="titreStatutsEleve" class="parametrage__titre-section">{{ LIBELLES.parametrage.sections.statutsEleve }}</h2>
+          <h2 id="titreStatutsEleve" class="parametrage__titre-section">
+            {{ LIBELLES.parametrage.sections.statutsEleve }}
+          </h2>
           <div class="parametrage__actions-section">
-            <button id="btnAjouterStatutEleve" class="mc-btn-primaire" (click)="ajouterStatutEleve()">{{ LIBELLES.commun.ajouter }}</button>
+            <button
+              id="btnAjouterStatutEleve"
+              class="mc-btn-primaire"
+              (click)="ajouterStatutEleve()"
+            >
+              {{ LIBELLES.commun.ajouter }}
+            </button>
           </div>
           <ul class="parametrage__liste-items">
             @for (statut of copieStatutsEleve(); track statut.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champStatutEleveId' + i" [label]="LIBELLES.parametrage.labelStatutEleveId" [(ngModel)]="statut.id" [mcAutoFocus]="i === indexAFocaliserStatutEleve()" />
-                <mc-input [id]="'champStatutEleveLibelle' + i" [label]="LIBELLES.parametrage.labelStatutEleveLibelle" [(ngModel)]="statut.libelle" />
+                <mc-input
+                  [id]="'champStatutEleveId' + i"
+                  [label]="LIBELLES.parametrage.labelStatutEleveId"
+                  [(ngModel)]="statut.id"
+                  [mcAutoFocus]="i === indexAFocaliserStatutEleve()"
+                />
+                <mc-input
+                  [id]="'champStatutEleveLibelle' + i"
+                  [label]="LIBELLES.parametrage.labelStatutEleveLibelle"
+                  [(ngModel)]="statut.libelle"
+                />
                 <div class="parametrage__item-actions">
-                  <button [id]="'btnEnregistrerStatutEleve' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerStatutEleve(i)">{{ LIBELLES.commun.enregistrer }}</button>
+                  <button
+                    [id]="'btnEnregistrerStatutEleve' + i"
+                    class="mc-btn-primaire mc-btn-sm"
+                    (click)="enregistrerStatutEleve(i)"
+                  >
+                    {{ LIBELLES.commun.enregistrer }}
+                  </button>
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerStatutEleve' + i"
@@ -188,17 +341,40 @@
       <!-- Section : Types de contact -->
       @case ('typesContact') {
         <section class="parametrage__section" aria-labelledby="titreTypesContact">
-          <h2 id="titreTypesContact" class="parametrage__titre-section">{{ LIBELLES.parametrage.sections.typesContact }}</h2>
+          <h2 id="titreTypesContact" class="parametrage__titre-section">
+            {{ LIBELLES.parametrage.sections.typesContact }}
+          </h2>
           <div class="parametrage__actions-section">
-            <button id="btnAjouterTypeContact" class="mc-btn-primaire" (click)="ajouterTypeContact()">{{ LIBELLES.commun.ajouter }}</button>
+            <button
+              id="btnAjouterTypeContact"
+              class="mc-btn-primaire"
+              (click)="ajouterTypeContact()"
+            >
+              {{ LIBELLES.commun.ajouter }}
+            </button>
           </div>
           <ul class="parametrage__liste-items">
             @for (type of copieTypesContact(); track type.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champTypeContactId' + i" [label]="LIBELLES.parametrage.labelTypeContactId" [(ngModel)]="type.id" [mcAutoFocus]="i === indexAFocaliserTypeContact()" />
-                <mc-input [id]="'champTypeContactLibelle' + i" [label]="LIBELLES.parametrage.labelTypeContactLibelle" [(ngModel)]="type.libelle" />
+                <mc-input
+                  [id]="'champTypeContactId' + i"
+                  [label]="LIBELLES.parametrage.labelTypeContactId"
+                  [(ngModel)]="type.id"
+                  [mcAutoFocus]="i === indexAFocaliserTypeContact()"
+                />
+                <mc-input
+                  [id]="'champTypeContactLibelle' + i"
+                  [label]="LIBELLES.parametrage.labelTypeContactLibelle"
+                  [(ngModel)]="type.libelle"
+                />
                 <div class="parametrage__item-actions">
-                  <button [id]="'btnEnregistrerTypeContact' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerTypeContact(i)">{{ LIBELLES.commun.enregistrer }}</button>
+                  <button
+                    [id]="'btnEnregistrerTypeContact' + i"
+                    class="mc-btn-primaire mc-btn-sm"
+                    (click)="enregistrerTypeContact(i)"
+                  >
+                    {{ LIBELLES.commun.enregistrer }}
+                  </button>
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerTypeContact' + i"
@@ -216,16 +392,31 @@
       <!-- Section : Raisons d'absence -->
       @case ('raisonsAbsence') {
         <section class="parametrage__section" aria-labelledby="titreRaisonsAbsence">
-          <h2 id="titreRaisonsAbsence" class="parametrage__titre-section">{{ LIBELLES.parametrage.sections.raisonsAbsence }}</h2>
+          <h2 id="titreRaisonsAbsence" class="parametrage__titre-section">
+            {{ LIBELLES.parametrage.sections.raisonsAbsence }}
+          </h2>
           <div class="parametrage__actions-section">
-            <button id="btnAjouterRaison" class="mc-btn-primaire" (click)="ajouterRaisonAbsence()">{{ LIBELLES.commun.ajouter }}</button>
+            <button id="btnAjouterRaison" class="mc-btn-primaire" (click)="ajouterRaisonAbsence()">
+              {{ LIBELLES.commun.ajouter }}
+            </button>
           </div>
           <ul class="parametrage__liste-items">
             @for (raison of copieRaisonsAbsence(); track raison.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champRaisonLibelle' + i" [label]="LIBELLES.parametrage.labelRaisonLibelle" [(ngModel)]="raison.libelle" [mcAutoFocus]="i === indexAFocaliserRaisonAbsence()" />
+                <mc-input
+                  [id]="'champRaisonLibelle' + i"
+                  [label]="LIBELLES.parametrage.labelRaisonLibelle"
+                  [(ngModel)]="raison.libelle"
+                  [mcAutoFocus]="i === indexAFocaliserRaisonAbsence()"
+                />
                 <div class="parametrage__item-actions">
-                  <button [id]="'btnEnregistrerRaison' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerRaisonAbsence(i)">{{ LIBELLES.commun.enregistrer }}</button>
+                  <button
+                    [id]="'btnEnregistrerRaison' + i"
+                    class="mc-btn-primaire mc-btn-sm"
+                    (click)="enregistrerRaisonAbsence(i)"
+                  >
+                    {{ LIBELLES.commun.enregistrer }}
+                  </button>
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerRaison' + i"
@@ -243,16 +434,35 @@
       <!-- Section : Fréquences d'absence -->
       @case ('frequencesAbsence') {
         <section class="parametrage__section" aria-labelledby="titreFrequencesAbsence">
-          <h2 id="titreFrequencesAbsence" class="parametrage__titre-section">{{ LIBELLES.parametrage.sections.frequencesAbsence }}</h2>
+          <h2 id="titreFrequencesAbsence" class="parametrage__titre-section">
+            {{ LIBELLES.parametrage.sections.frequencesAbsence }}
+          </h2>
           <div class="parametrage__actions-section">
-            <button id="btnAjouterFrequence" class="mc-btn-primaire" (click)="ajouterFrequenceAbsence()">{{ LIBELLES.commun.ajouter }}</button>
+            <button
+              id="btnAjouterFrequence"
+              class="mc-btn-primaire"
+              (click)="ajouterFrequenceAbsence()"
+            >
+              {{ LIBELLES.commun.ajouter }}
+            </button>
           </div>
           <ul class="parametrage__liste-items">
             @for (freq of copieFrequencesAbsence(); track freq.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champFrequenceLibelle' + i" [label]="LIBELLES.parametrage.labelFrequenceLibelle" [(ngModel)]="freq.libelle" [mcAutoFocus]="i === indexAFocaliserFrequenceAbsence()" />
+                <mc-input
+                  [id]="'champFrequenceLibelle' + i"
+                  [label]="LIBELLES.parametrage.labelFrequenceLibelle"
+                  [(ngModel)]="freq.libelle"
+                  [mcAutoFocus]="i === indexAFocaliserFrequenceAbsence()"
+                />
                 <div class="parametrage__item-actions">
-                  <button [id]="'btnEnregistrerFrequence' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerFrequenceAbsence(i)">{{ LIBELLES.commun.enregistrer }}</button>
+                  <button
+                    [id]="'btnEnregistrerFrequence' + i"
+                    class="mc-btn-primaire mc-btn-sm"
+                    (click)="enregistrerFrequenceAbsence(i)"
+                  >
+                    {{ LIBELLES.commun.enregistrer }}
+                  </button>
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerFrequence' + i"
@@ -270,17 +480,37 @@
       <!-- Section : Jours fériés -->
       @case ('joursFeries') {
         <section class="parametrage__section" aria-labelledby="titreJoursFeries">
-          <h2 id="titreJoursFeries" class="parametrage__titre-section">{{ LIBELLES.parametrage.sections.joursFeries }}</h2>
+          <h2 id="titreJoursFeries" class="parametrage__titre-section">
+            {{ LIBELLES.parametrage.sections.joursFeries }}
+          </h2>
           <div class="parametrage__actions-section">
-            <button id="btnAjouterJourFerie" class="mc-btn-primaire" (click)="ajouterJourFerie()">{{ LIBELLES.commun.ajouter }}</button>
+            <button id="btnAjouterJourFerie" class="mc-btn-primaire" (click)="ajouterJourFerie()">
+              {{ LIBELLES.commun.ajouter }}
+            </button>
           </div>
           <ul class="parametrage__liste-items">
             @for (jourFerie of copieJoursFeries(); track jourFerie.id; let i = $index) {
               <li class="parametrage__item">
-                <mc-input [id]="'champJourFerieNom' + i" [label]="LIBELLES.parametrage.labelJourFerieNom" [(ngModel)]="jourFerie.nom" [mcAutoFocus]="i === indexAFocaliserJourFerie()" />
-                <mc-input [id]="'champJourFerieDate' + i" [label]="LIBELLES.parametrage.labelJourFerieDate" type="date" [(ngModel)]="jourFerie.date" />
+                <mc-input
+                  [id]="'champJourFerieNom' + i"
+                  [label]="LIBELLES.parametrage.labelJourFerieNom"
+                  [(ngModel)]="jourFerie.nom"
+                  [mcAutoFocus]="i === indexAFocaliserJourFerie()"
+                />
+                <mc-input
+                  [id]="'champJourFerieDate' + i"
+                  [label]="LIBELLES.parametrage.labelJourFerieDate"
+                  type="date"
+                  [(ngModel)]="jourFerie.date"
+                />
                 <div class="parametrage__item-actions">
-                  <button [id]="'btnEnregistrerJourFerie' + i" class="mc-btn-primaire mc-btn-sm" (click)="enregistrerJourFerie(i)">{{ LIBELLES.commun.enregistrer }}</button>
+                  <button
+                    [id]="'btnEnregistrerJourFerie' + i"
+                    class="mc-btn-primaire mc-btn-sm"
+                    (click)="enregistrerJourFerie(i)"
+                  >
+                    {{ LIBELLES.commun.enregistrer }}
+                  </button>
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerJourFerie' + i"
@@ -298,10 +528,24 @@
       <!-- Section : Préférences -->
       @case ('preferences') {
         <section class="parametrage__section" aria-labelledby="titrePreferences">
-          <h2 id="titrePreferences" class="parametrage__titre-section">{{ LIBELLES.parametrage.sections.preferences }}</h2>
+          <h2 id="titrePreferences" class="parametrage__titre-section">
+            {{ LIBELLES.parametrage.sections.preferences }}
+          </h2>
           <div class="parametrage__actions-section">
-            <button id="btnEnregistrerPreferences" class="mc-btn-primaire" (click)="enregistrerPreferences()">{{ LIBELLES.commun.enregistrer }}</button>
-            <button id="btnAnnulerPreferences" class="mc-btn-fantome" (click)="annulerPreferences()">{{ LIBELLES.commun.annuler }}</button>
+            <button
+              id="btnEnregistrerPreferences"
+              class="mc-btn-primaire"
+              (click)="enregistrerPreferences()"
+            >
+              {{ LIBELLES.commun.enregistrer }}
+            </button>
+            <button
+              id="btnAnnulerPreferences"
+              class="mc-btn-fantome"
+              (click)="annulerPreferences()"
+            >
+              {{ LIBELLES.commun.annuler }}
+            </button>
           </div>
           <div class="parametrage__formulaire">
             <mc-input
@@ -317,13 +561,30 @@
       <!-- Section : Domaines de compétences -->
       @case ('domainesCompetences') {
         <section class="parametrage__section" aria-labelledby="titreDomainesCompetences">
-          <h2 id="titreDomainesCompetences" class="parametrage__titre-section">{{ LIBELLES.parametrage.sections.domainesCompetences }}</h2>
+          <h2 id="titreDomainesCompetences" class="parametrage__titre-section">
+            {{ LIBELLES.parametrage.sections.domainesCompetences }}
+          </h2>
           <div class="parametrage__actions-section">
-            <button id="btnEnregistrerDomaines" class="mc-btn-primaire" (click)="enregistrerDomainesCompetences()">{{ LIBELLES.commun.enregistrer }}</button>
-            <button id="btnAnnulerDomaines" class="mc-btn-fantome" (click)="annulerDomainesCompetences()">{{ LIBELLES.commun.annuler }}</button>
+            <button
+              id="btnEnregistrerDomaines"
+              class="mc-btn-primaire"
+              (click)="enregistrerDomainesCompetences()"
+            >
+              {{ LIBELLES.commun.enregistrer }}
+            </button>
+            <button
+              id="btnAnnulerDomaines"
+              class="mc-btn-fantome"
+              (click)="annulerDomainesCompetences()"
+            >
+              {{ LIBELLES.commun.annuler }}
+            </button>
           </div>
           <p class="parametrage__domaines-info">{{ LIBELLES.parametrage.labelDomainesInfo }}</p>
-          <ul class="parametrage__liste-domaines" [attr.aria-label]="LIBELLES.parametrage.sections.domainesCompetences">
+          <ul
+            class="parametrage__liste-domaines"
+            [attr.aria-label]="LIBELLES.parametrage.sections.domainesCompetences"
+          >
             @for (domaine of tousDomaines(); track domaine.id; let iD = $index) {
               <li class="parametrage__domaine">
                 <label class="parametrage__domaine-label" [for]="'checkDomaine' + iD">
@@ -332,7 +593,9 @@
                     type="checkbox"
                     class="parametrage__checkbox"
                     [checked]="estDomaineActif(domaine.id)"
-                    [attr.aria-label]="LIBELLES.parametrage.ariaCheckboxDomaine + ' ' + domaine.libelle"
+                    [attr.aria-label]="
+                      LIBELLES.parametrage.ariaCheckboxDomaine + ' ' + domaine.libelle
+                    "
                     (change)="basculerDomaine(domaine, $any($event.target).checked)"
                   />
                   <span class="parametrage__domaine-libelle">{{ domaine.libelle }}</span>
@@ -341,13 +604,18 @@
                   <ul class="parametrage__liste-sousdomaines">
                     @for (ss of domaine.enfants!; track ss.id; let iSS = $index) {
                       <li>
-                        <label class="parametrage__sousdomaine-label" [for]="'checkSousDomaine' + iD + '_' + iSS">
+                        <label
+                          class="parametrage__sousdomaine-label"
+                          [for]="'checkSousDomaine' + iD + '_' + iSS"
+                        >
                           <input
                             [id]="'checkSousDomaine' + iD + '_' + iSS"
                             type="checkbox"
                             class="parametrage__checkbox"
                             [checked]="estSousDomaineActif(domaine.id, ss.id)"
-                            [attr.aria-label]="LIBELLES.parametrage.ariaCheckboxSousDomaine + ' ' + ss.libelle"
+                            [attr.aria-label]="
+                              LIBELLES.parametrage.ariaCheckboxSousDomaine + ' ' + ss.libelle
+                            "
                             (change)="basculerSousDomaine(domaine, ss, $any($event.target).checked)"
                           />
                           <span>{{ ss.libelle }}</span>
@@ -361,8 +629,6 @@
           </ul>
         </section>
       }
-
     }
-
   </div>
 </div>

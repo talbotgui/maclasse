@@ -28,10 +28,13 @@ describe('PopinDemarrageComponent', () => {
   describe('creer()', () => {
     it('fetch réussi → émet demarrageTermine avec les données', async () => {
       const donnees: DonneesApplication = DonneesMother.base();
-      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(donnees),
-      }));
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve(donnees),
+        }),
+      );
       const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
 
       await component['creer']();
@@ -40,10 +43,13 @@ describe('PopinDemarrageComponent', () => {
     });
 
     it('fetch réussi → enChargement repasse à false', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(DonneesMother.base()),
-      }));
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve(DonneesMother.base()),
+        }),
+      );
 
       await component['creer']();
 
@@ -68,7 +74,10 @@ describe('PopinDemarrageComponent', () => {
     });
 
     it('appel pendant enChargement → ignoré', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(DonneesMother.base()) }));
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(DonneesMother.base()) }),
+      );
       const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
       (component as any).enChargement.set(true);
 
@@ -148,10 +157,13 @@ describe('PopinDemarrageComponent', () => {
   describe('accederReferentiel()', () => {
     it('fetch réussi → émet referentielDemande avec les données', async () => {
       const donnees: DonneesApplication = DonneesMother.base();
-      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(donnees),
-      }));
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve(donnees),
+        }),
+      );
       const spy = vi.spyOn((component as any).referentielDemande, 'emit');
 
       await component['accederReferentiel']();
@@ -160,10 +172,13 @@ describe('PopinDemarrageComponent', () => {
     });
 
     it('fetch réussi → enChargement repasse à false', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(DonneesMother.base()),
-      }));
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve(DonneesMother.base()),
+        }),
+      );
 
       await component['accederReferentiel']();
 
@@ -188,7 +203,10 @@ describe('PopinDemarrageComponent', () => {
     });
 
     it('appel pendant enChargement → ignoré', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(DonneesMother.base()) }));
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(DonneesMother.base()) }),
+      );
       const spy = vi.spyOn((component as any).referentielDemande, 'emit');
       (component as any).enChargement.set(true);
 

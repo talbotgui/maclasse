@@ -71,7 +71,7 @@ describe('PopinWarningsAbsencesComponent', () => {
   });
 
   describe('fermer', () => {
-    it('émet l\'output annule', () => {
+    it("émet l'output annule", () => {
       const spy = vi.spyOn((component as any).annule, 'emit');
 
       component['fermer']();
@@ -90,7 +90,7 @@ describe('PopinWarningsAbsencesComponent', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-    it('émet l\'output annule', () => {
+    it("émet l'output annule", () => {
       const spy = vi.spyOn((component as any).annule, 'emit');
 
       component['surCancel'](new Event('cancel'));

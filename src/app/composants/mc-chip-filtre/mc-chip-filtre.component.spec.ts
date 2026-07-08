@@ -7,7 +7,8 @@ describe('McChipFiltreComponent', () => {
   let fixture: ComponentFixture<McChipFiltreComponent>;
   let component: McChipFiltreComponent;
 
-  const bouton = () => fixture.debugElement.query(By.css('button')).nativeElement as HTMLButtonElement;
+  const bouton = () =>
+    fixture.debugElement.query(By.css('button')).nativeElement as HTMLButtonElement;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});

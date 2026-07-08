@@ -19,5 +19,6 @@ export interface AvecNavigationGardee {
  * Garde fonctionnelle `CanDeactivateFn` : délègue la décision au composant via `confirmerNavigation()`.
  * Retourne `true` immédiatement si le composant n'a pas de modifications en attente.
  */
-export const modificationsNonEnregistreesGarde: CanDeactivateFn<AvecNavigationGardee> =
-  (composant) => composant.confirmerNavigation();
+export const modificationsNonEnregistreesGarde: CanDeactivateFn<AvecNavigationGardee> = (
+  composant,
+) => composant.confirmerNavigation();

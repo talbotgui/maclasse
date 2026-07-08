@@ -9,33 +9,33 @@ export const routes: Routes = [
   {
     path: 'demarrage',
     loadComponent: () =>
-      import('./ecrans/demarrage/ecran-demarrage.component').then(m => m.EcranDemarrageComponent),
+      import('./ecrans/demarrage/ecran-demarrage.component').then((m) => m.EcranDemarrageComponent),
   },
   {
     path: 'accueil',
     loadComponent: () =>
-      import('./ecrans/accueil/ecran-accueil.component').then(m => m.EcranAccueilComponent),
+      import('./ecrans/accueil/ecran-accueil.component').then((m) => m.EcranAccueilComponent),
     canActivate: [donneesChargeesGarde, referentielSeulGarde],
   },
   {
     path: 'parametrage',
     loadComponent: () =>
       import('./ecrans/parametrage/ecran-parametrage.component').then(
-        m => m.EcranParametrageComponent,
+        (m) => m.EcranParametrageComponent,
       ),
     canActivate: [donneesChargeesGarde, referentielSeulGarde],
   },
   {
     path: 'eleves',
     loadComponent: () =>
-      import('./ecrans/eleves/ecran-eleves.component').then(m => m.EcranElevesComponent),
+      import('./ecrans/eleves/ecran-eleves.component').then((m) => m.EcranElevesComponent),
     canActivate: [donneesChargeesGarde, referentielSeulGarde],
     canDeactivate: [modificationsNonEnregistreesGarde],
   },
   {
     path: 'projets',
     loadComponent: () =>
-      import('./ecrans/projets/ecran-projets.component').then(m => m.EcranProjetsComponent),
+      import('./ecrans/projets/ecran-projets.component').then((m) => m.EcranProjetsComponent),
     canActivate: [donneesChargeesGarde, referentielSeulGarde],
     canDeactivate: [modificationsNonEnregistreesGarde],
   },
@@ -43,7 +43,7 @@ export const routes: Routes = [
     path: 'competences',
     loadComponent: () =>
       import('./ecrans/competences/ecran-competences.component').then(
-        m => m.EcranCompetencesComponent,
+        (m) => m.EcranCompetencesComponent,
       ),
     canActivate: [donneesChargeesGarde],
   },
@@ -51,7 +51,7 @@ export const routes: Routes = [
     path: 'emploi-du-temps',
     loadComponent: () =>
       import('./ecrans/emploi-du-temps/ecran-emploi-du-temps.component').then(
-        m => m.EcranEmploiDuTempsComponent,
+        (m) => m.EcranEmploiDuTempsComponent,
       ),
     canActivate: [donneesChargeesGarde, referentielSeulGarde],
   },
@@ -59,7 +59,7 @@ export const routes: Routes = [
     path: 'cahier-journal',
     loadComponent: () =>
       import('./ecrans/cahier-journal/ecran-cahier-journal.component').then(
-        m => m.EcranCahierJournalComponent,
+        (m) => m.EcranCahierJournalComponent,
       ),
     canActivate: [donneesChargeesGarde, referentielSeulGarde],
   },

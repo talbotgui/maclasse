@@ -1,9 +1,10 @@
 <div class="mc-layout-liste-detail">
-
   <!-- Colonne gauche : navigation -->
   <aside class="mc-colonne-gauche eleves__gauche">
     <div class="eleves__gauche-entete">
-      <button id="btnCreerEleve" class="mc-btn-primaire" (click)="creerEleve()">{{ LIBELLES.eleve.boutonCreer }}</button>
+      <button id="btnCreerEleve" class="mc-btn-primaire" (click)="creerEleve()">
+        {{ LIBELLES.eleve.boutonCreer }}
+      </button>
       <mc-champ-recherche
         id="rechercheEleves"
         [placeholder]="LIBELLES.commun.rechercher"
@@ -35,7 +36,9 @@
             class="eleves__btn-eleve"
             [class.eleves__btn-eleve--actif]="eleveSelectionne()?.id === eleve.id"
             (click)="selectionnerEleve(eleve)"
-          >{{ eleve.nom | uppercase }}&nbsp;{{ eleve.prenom }}</button>
+          >
+            {{ eleve.nom | uppercase }}&nbsp;{{ eleve.prenom }}
+          </button>
         </li>
       }
     </ul>
@@ -72,7 +75,6 @@
       />
     }
   </div>
-
 </div>
 
 <!-- Popin d'avertissement modifications non enregistrées -->

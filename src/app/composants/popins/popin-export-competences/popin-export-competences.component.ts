@@ -1,12 +1,23 @@
 import {
-  ChangeDetectionStrategy, Component, ElementRef, computed,
-  effect, inject, input, output, signal, viewChild,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+  viewChild,
 } from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../../composant-base';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
-import type { OptionFormulaire, ResultatExportCompetences } from '../../../modeles/composants.modele';
+import type {
+  OptionFormulaire,
+  ResultatExportCompetences,
+} from '../../../modeles/composants.modele';
 
 export type { ResultatExportCompetences };
 
@@ -60,11 +71,11 @@ export class PopinExportCompetencesComponent extends ComposantBase {
     const donnees = this.donneesService.donnees();
     if (!donnees) return [];
     if (this.mode() === 'projet') {
-      return donnees.projets.map(p => ({ valeur: p.id, libelle: p.nom }));
+      return donnees.projets.map((p) => ({ valeur: p.id, libelle: p.nom }));
     }
     return donnees.cahierJournal
-      .filter(j => j.seances.some(s => s.type === 'pedagogique'))
-      .map(j => ({ valeur: j.date, libelle: j.date }));
+      .filter((j) => j.seances.some((s) => s.type === 'pedagogique'))
+      .map((j) => ({ valeur: j.date, libelle: j.date }));
   });
 
   /** Options du second `<select>` dépendant de la sélection primaire. */
@@ -72,19 +83,23 @@ export class PopinExportCompetencesComponent extends ComposantBase {
     const donnees = this.donneesService.donnees();
     if (!donnees || !this.selectionPrimaire()) return [];
     if (this.mode() === 'projet') {
-      const projet = donnees.projets.find(p => p.id === this.selectionPrimaire());
-      return projet?.periodes.map((p, i) => ({
-        valeur: String(i),
-        libelle: p.periodeNom,
-      })) ?? [];
+      const projet = donnees.projets.find((p) => p.id === this.selectionPrimaire());
+      return (
+        projet?.periodes.map((p, i) => ({
+          valeur: String(i),
+          libelle: p.periodeNom,
+        })) ?? []
+      );
     }
-    const journee = donnees.cahierJournal.find(j => j.date === this.selectionPrimaire());
-    return journee?.seances
-      .filter(s => s.type === 'pedagogique')
-      .map(s => ({
-        valeur: s.id,
-        libelle: s.titre ? s.titre : `${s.heureDebut} – ${s.heureFin}`,
-      })) ?? [];
+    const journee = donnees.cahierJournal.find((j) => j.date === this.selectionPrimaire());
+    return (
+      journee?.seances
+        .filter((s) => s.type === 'pedagogique')
+        .map((s) => ({
+          valeur: s.id,
+          libelle: s.titre ? s.titre : `${s.heureDebut} – ${s.heureFin}`,
+        })) ?? []
+    );
   });
 
   /** Ouvre ou ferme la dialog native en réaction au signal `visible`. */

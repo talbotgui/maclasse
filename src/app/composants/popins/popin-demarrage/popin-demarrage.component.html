@@ -18,7 +18,6 @@
       }
 
       <div class="mc-popin--demarrage__cartes">
-
         <!-- Carte Première utilisation -->
         <section class="mc-popin--demarrage__carte-choix">
           <h2 class="mc-popin--demarrage__carte-titre">{{ LIBELLES.demarrage.titreNouveau }}</h2>
@@ -44,7 +43,9 @@
           <h2 class="mc-popin--demarrage__carte-titre">{{ LIBELLES.demarrage.titreCharger }}</h2>
 
           <div class="mc-champ">
-            <span id="labelFichierZip" class="mc-champ-legende">{{ LIBELLES.demarrage.labelFichier }}</span>
+            <span id="labelFichierZip" class="mc-champ-legende">{{
+              LIBELLES.demarrage.labelFichier
+            }}</span>
             <div class="mc-champ-fichier">
               <input
                 id="fichierZip"
@@ -93,7 +94,9 @@
 
         <!-- Carte Référentiel de compétences -->
         <section class="mc-popin--demarrage__carte-choix">
-          <h2 class="mc-popin--demarrage__carte-titre">{{ LIBELLES.demarrage.titreReferentiel }}</h2>
+          <h2 class="mc-popin--demarrage__carte-titre">
+            {{ LIBELLES.demarrage.titreReferentiel }}
+          </h2>
           <p class="mc-popin--demarrage__carte-texte">{{ LIBELLES.demarrage.texteReferentiel }}</p>
           <button
             id="btnAccederReferentiel"
@@ -109,7 +112,6 @@
             }
           </button>
         </section>
-
       </div>
     </div>
   </div>

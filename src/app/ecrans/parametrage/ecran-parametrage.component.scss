@@ -33,7 +33,9 @@
     cursor: pointer;
     font-size: 0.875rem;
     color: var(--texte-principal);
-    transition: background-color 0.15s, border-color 0.15s;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s;
 
     &:hover {
       background-color: var(--fond-survol);

@@ -27,7 +27,7 @@ describe('McBadgeStatutComponent', () => {
 
       const el = fixture.nativeElement as HTMLElement;
       const spanAvecCouleur = Array.from(el.querySelectorAll<HTMLElement>('*')).find(
-        e => e.style.color || e.style.backgroundColor,
+        (e) => e.style.color || e.style.backgroundColor,
       );
       expect(spanAvecCouleur).toBeTruthy();
     });
@@ -49,18 +49,18 @@ describe('McBadgeStatutComponent', () => {
       expect(fixture.nativeElement.textContent).toContain('—');
     });
 
-    it('n\'applique pas de couleur inline quand statut est null', () => {
+    it("n'applique pas de couleur inline quand statut est null", () => {
       fixture.componentRef.setInput('statut', null);
       fixture.detectChanges();
 
       const el = fixture.nativeElement as HTMLElement;
       const spanAvecCouleur = Array.from(el.querySelectorAll<HTMLElement>('*')).find(
-        e => e.style.color !== '' && e.style.color !== undefined,
+        (e) => e.style.color !== '' && e.style.color !== undefined,
       );
       expect(spanAvecCouleur).toBeFalsy();
     });
 
-    it('affiche un tiret quand aucun statut n\'est fourni (valeur par défaut)', () => {
+    it("affiche un tiret quand aucun statut n'est fourni (valeur par défaut)", () => {
       fixture.detectChanges();
 
       expect(fixture.nativeElement.textContent).toContain('—');

@@ -6,7 +6,11 @@
   />
 
   @if (domaines().length > 0) {
-    <div class="mc-arbre-competences__domaines" role="group" [attr.aria-label]="LIBELLES.selecteurCompetences.ariaFiltreDomaine">
+    <div
+      class="mc-arbre-competences__domaines"
+      role="group"
+      [attr.aria-label]="LIBELLES.selecteurCompetences.ariaFiltreDomaine"
+    >
       @for (domaine of domaines(); track domaine.id) {
         <mc-chip-filtre
           [id]="'filtreDomaine_' + domaine.id"
@@ -35,9 +39,15 @@
             [id]="'noeudToggle_' + noeud.competence.id"
             type="button"
             class="mc-arbre-competences__toggle"
-            [attr.aria-label]="(noeud.estDeplie ? LIBELLES.competences.ariaReplierNoeud : LIBELLES.competences.ariaDeplierNoeud) + noeud.competence.libelle"
+            [attr.aria-label]="
+              (noeud.estDeplie
+                ? LIBELLES.competences.ariaReplierNoeud
+                : LIBELLES.competences.ariaDeplierNoeud) + noeud.competence.libelle
+            "
             (click)="basculerNoeud(noeud.competence.id)"
-          >{{ noeud.estDeplie ? '▼' : '▶' }}</button>
+          >
+            {{ noeud.estDeplie ? '▼' : '▶' }}
+          </button>
         } @else {
           <span class="mc-arbre-competences__indent"></span>
         }
@@ -48,7 +58,9 @@
           class="mc-arbre-competences__libelle"
           [class.mc-arbre-competences__libelle--dans-panier]="noeud.estSelectionne"
           (keydown)="naviguerClavier($event, $index)"
-        >{{ noeud.competence.libelle }}</button>
+        >
+          {{ noeud.competence.libelle }}
+        </button>
         <button
           [id]="'btnAjouterPanier_' + noeud.competence.id"
           type="button"
@@ -56,7 +68,9 @@
           [attr.aria-label]="LIBELLES.competences.ariaAjouterAuPanier + noeud.competence.libelle"
           [disabled]="noeud.estSelectionne"
           (click)="ajouterAuPanier(noeud.competence.id)"
-        >+</button>
+        >
+          +
+        </button>
       </div>
     }
   </div>

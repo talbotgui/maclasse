@@ -236,9 +236,7 @@ export class EcranParametrageComponent {
           this.indexAFocaliserRaisonAbsence.set(null);
           break;
         case 'frequencesAbsence':
-          this.copieFrequencesAbsence.set(
-            structuredClone(d.referentiels.frequencesAbsence),
-          );
+          this.copieFrequencesAbsence.set(structuredClone(d.referentiels.frequencesAbsence));
           this.indexAFocaliserFrequenceAbsence.set(null);
           break;
         case 'joursFeries':
@@ -255,9 +253,9 @@ export class EcranParametrageComponent {
           if (!actifs || actifs.length === 0) {
             // Rien de configuré → tout cocher
             const tousIds = new Set<string>();
-            d.referentiels.competences.forEach(n1 => {
+            d.referentiels.competences.forEach((n1) => {
               tousIds.add(n1.id);
-              n1.enfants?.forEach(n2 => tousIds.add(n2.id));
+              n1.enfants?.forEach((n2) => tousIds.add(n2.id));
             });
             this.copieDomainesActifs.set(tousIds);
           } else {
@@ -350,13 +348,13 @@ export class EcranParametrageComponent {
   protected basculerJourOuvre(jour: JourSemaine, actif: boolean): void {
     if (actif) {
       const joursOrdonnes = this.JOURS_SEMAINE.filter(
-        j => j === jour || this.formSemaineHoraires.joursOuvres.includes(j),
+        (j) => j === jour || this.formSemaineHoraires.joursOuvres.includes(j),
       );
       this.formSemaineHoraires = { ...this.formSemaineHoraires, joursOuvres: joursOrdonnes };
     } else {
       this.formSemaineHoraires = {
         ...this.formSemaineHoraires,
-        joursOuvres: this.formSemaineHoraires.joursOuvres.filter(j => j !== jour),
+        joursOuvres: this.formSemaineHoraires.joursOuvres.filter((j) => j !== jour),
       };
     }
   }
@@ -389,7 +387,7 @@ export class EcranParametrageComponent {
 
   /** Ajoute une période vide en bas de la liste et demande le focus dessus. */
   protected ajouterPeriode(): void {
-    this.copiePeriodes.update(liste => [
+    this.copiePeriodes.update((liste) => [
       ...liste,
       { id: crypto.randomUUID(), nom: '', debut: '', fin: '' },
     ]);
@@ -404,7 +402,7 @@ export class EcranParametrageComponent {
     const d = this.donneesService.donnees();
     if (!d) return;
     const periode = this.copiePeriodes()[index];
-    const existante = d.referentiels.periodes.find(p => p.id === periode.id);
+    const existante = d.referentiels.periodes.find((p) => p.id === periode.id);
     if (existante) {
       this.referentielService.modifierPeriode(existante, periode);
     } else {
@@ -418,7 +416,7 @@ export class EcranParametrageComponent {
    */
   protected supprimerPeriode(periode: Periode): void {
     this.referentielService.supprimerPeriode(periode);
-    this.copiePeriodes.update(liste => liste.filter(p => p.id !== periode.id));
+    this.copiePeriodes.update((liste) => liste.filter((p) => p.id !== periode.id));
     this.indexAFocaliserPeriode.set(null);
   }
 
@@ -429,10 +427,7 @@ export class EcranParametrageComponent {
 
   /** Ajoute un groupe vide et demande le focus dessus. */
   protected ajouterGroupe(): void {
-    this.copieGroupes.update(liste => [
-      ...liste,
-      { id: crypto.randomUUID(), libelle: '' },
-    ]);
+    this.copieGroupes.update((liste) => [...liste, { id: crypto.randomUUID(), libelle: '' }]);
     this.indexAFocaliserGroupe.set(this.copieGroupes().length - 1);
   }
 
@@ -444,7 +439,7 @@ export class EcranParametrageComponent {
     const d = this.donneesService.donnees();
     if (!d) return;
     const groupe = this.copieGroupes()[index];
-    const existant = d.referentiels.groupes.find(g => g.id === groupe.id);
+    const existant = d.referentiels.groupes.find((g) => g.id === groupe.id);
     if (existant) {
       this.referentielService.modifierGroupe(existant, groupe);
     } else {
@@ -458,7 +453,7 @@ export class EcranParametrageComponent {
    */
   protected supprimerGroupe(groupe: Groupe): void {
     this.referentielService.supprimerGroupe(groupe);
-    this.copieGroupes.update(liste => liste.filter(g => g.id !== groupe.id));
+    this.copieGroupes.update((liste) => liste.filter((g) => g.id !== groupe.id));
     this.indexAFocaliserGroupe.set(null);
   }
 
@@ -469,7 +464,7 @@ export class EcranParametrageComponent {
 
   /** Ajoute un statut d'acquisition vide et demande le focus dessus. */
   protected ajouterStatutAcquisition(): void {
-    this.copieBareme.update(liste => [
+    this.copieBareme.update((liste) => [
       ...liste,
       { id: '', glyphe: '', libelle: '', couleur: '#000000', fond: '#ffffff' },
     ]);
@@ -484,7 +479,7 @@ export class EcranParametrageComponent {
     const d = this.donneesService.donnees();
     if (!d) return;
     const statut = this.copieBareme()[index];
-    const existant = d.referentiels.statutsAcquisition.find(s => s.id === statut.id);
+    const existant = d.referentiels.statutsAcquisition.find((s) => s.id === statut.id);
     if (existant) {
       this.referentielService.modifierStatutAcquisition(existant, statut);
     } else {
@@ -498,7 +493,7 @@ export class EcranParametrageComponent {
    */
   protected supprimerStatutAcquisition(statut: StatutAcquisition): void {
     this.referentielService.supprimerStatutAcquisition(statut);
-    this.copieBareme.update(liste => liste.filter(s => s.id !== statut.id));
+    this.copieBareme.update((liste) => liste.filter((s) => s.id !== statut.id));
     this.indexAFocaliserBareme.set(null);
   }
 
@@ -509,10 +504,7 @@ export class EcranParametrageComponent {
 
   /** Ajoute un statut élève vide et demande le focus dessus. */
   protected ajouterStatutEleve(): void {
-    this.copieStatutsEleve.update(liste => [
-      ...liste,
-      { id: '', libelle: '' },
-    ]);
+    this.copieStatutsEleve.update((liste) => [...liste, { id: '', libelle: '' }]);
     this.indexAFocaliserStatutEleve.set(this.copieStatutsEleve().length - 1);
   }
 
@@ -524,7 +516,7 @@ export class EcranParametrageComponent {
     const d = this.donneesService.donnees();
     if (!d) return;
     const statut = this.copieStatutsEleve()[index];
-    const existant = d.referentiels.statutsEleve.find(s => s.id === statut.id);
+    const existant = d.referentiels.statutsEleve.find((s) => s.id === statut.id);
     if (existant) {
       this.referentielService.modifierStatutEleve(existant, statut);
     } else {
@@ -538,7 +530,7 @@ export class EcranParametrageComponent {
    */
   protected supprimerStatutEleve(statut: StatutEleve): void {
     this.referentielService.supprimerStatutEleve(statut);
-    this.copieStatutsEleve.update(liste => liste.filter(s => s.id !== statut.id));
+    this.copieStatutsEleve.update((liste) => liste.filter((s) => s.id !== statut.id));
     this.indexAFocaliserStatutEleve.set(null);
   }
 
@@ -549,10 +541,7 @@ export class EcranParametrageComponent {
 
   /** Ajoute un type de contact vide et demande le focus dessus. */
   protected ajouterTypeContact(): void {
-    this.copieTypesContact.update(liste => [
-      ...liste,
-      { id: '', libelle: '' },
-    ]);
+    this.copieTypesContact.update((liste) => [...liste, { id: '', libelle: '' }]);
     this.indexAFocaliserTypeContact.set(this.copieTypesContact().length - 1);
   }
 
@@ -564,7 +553,7 @@ export class EcranParametrageComponent {
     const d = this.donneesService.donnees();
     if (!d) return;
     const type = this.copieTypesContact()[index];
-    const existant = d.referentiels.typesContact.find(t => t.id === type.id);
+    const existant = d.referentiels.typesContact.find((t) => t.id === type.id);
     if (existant) {
       this.referentielService.modifierTypeContact(existant, type);
     } else {
@@ -578,7 +567,7 @@ export class EcranParametrageComponent {
    */
   protected supprimerTypeContact(type: TypeContact): void {
     this.referentielService.supprimerTypeContact(type);
-    this.copieTypesContact.update(liste => liste.filter(t => t.id !== type.id));
+    this.copieTypesContact.update((liste) => liste.filter((t) => t.id !== type.id));
     this.indexAFocaliserTypeContact.set(null);
   }
 
@@ -589,7 +578,7 @@ export class EcranParametrageComponent {
 
   /** Ajoute une raison d'absence vide et demande le focus dessus. */
   protected ajouterRaisonAbsence(): void {
-    this.copieRaisonsAbsence.update(liste => [
+    this.copieRaisonsAbsence.update((liste) => [
       ...liste,
       { id: crypto.randomUUID(), libelle: '' },
     ]);
@@ -604,7 +593,7 @@ export class EcranParametrageComponent {
     const d = this.donneesService.donnees();
     if (!d) return;
     const raison = this.copieRaisonsAbsence()[index];
-    const existante = d.referentiels.raisonsAbsence.find(r => r.id === raison.id);
+    const existante = d.referentiels.raisonsAbsence.find((r) => r.id === raison.id);
     if (existante) {
       this.referentielService.modifierRaisonAbsence(existante, raison);
     } else {
@@ -618,13 +607,13 @@ export class EcranParametrageComponent {
    */
   protected supprimerRaisonAbsence(raison: RaisonAbsence): void {
     this.referentielService.supprimerRaisonAbsence(raison);
-    this.copieRaisonsAbsence.update(liste => liste.filter(r => r.id !== raison.id));
+    this.copieRaisonsAbsence.update((liste) => liste.filter((r) => r.id !== raison.id));
     this.indexAFocaliserRaisonAbsence.set(null);
   }
 
   /** Ajoute une fréquence d'absence vide et demande le focus dessus. */
   protected ajouterFrequenceAbsence(): void {
-    this.copieFrequencesAbsence.update(liste => [
+    this.copieFrequencesAbsence.update((liste) => [
       ...liste,
       { id: crypto.randomUUID(), libelle: '' },
     ]);
@@ -639,7 +628,7 @@ export class EcranParametrageComponent {
     const d = this.donneesService.donnees();
     if (!d) return;
     const frequence = this.copieFrequencesAbsence()[index];
-    const existante = d.referentiels.frequencesAbsence.find(f => f.id === frequence.id);
+    const existante = d.referentiels.frequencesAbsence.find((f) => f.id === frequence.id);
     if (existante) {
       this.referentielService.modifierFrequenceAbsence(existante, frequence);
     } else {
@@ -653,13 +642,13 @@ export class EcranParametrageComponent {
    */
   protected supprimerFrequenceAbsence(frequence: FrequenceAbsence): void {
     this.referentielService.supprimerFrequenceAbsence(frequence);
-    this.copieFrequencesAbsence.update(liste => liste.filter(f => f.id !== frequence.id));
+    this.copieFrequencesAbsence.update((liste) => liste.filter((f) => f.id !== frequence.id));
     this.indexAFocaliserFrequenceAbsence.set(null);
   }
 
   /** Ajoute un jour férié vide et demande le focus dessus. */
   protected ajouterJourFerie(): void {
-    this.copieJoursFeries.update(liste => [
+    this.copieJoursFeries.update((liste) => [
       ...liste,
       { id: crypto.randomUUID(), nom: '', date: '' },
     ]);
@@ -674,7 +663,7 @@ export class EcranParametrageComponent {
     const d = this.donneesService.donnees();
     if (!d) return;
     const jourFerie = this.copieJoursFeries()[index];
-    const existant = d.referentiels.joursFeries.find(j => j.id === jourFerie.id);
+    const existant = d.referentiels.joursFeries.find((j) => j.id === jourFerie.id);
     if (existant) {
       this.referentielService.modifierJourFerie(existant, jourFerie);
     } else {
@@ -688,7 +677,7 @@ export class EcranParametrageComponent {
    */
   protected supprimerJourFerie(jourFerie: JourFerie): void {
     this.referentielService.supprimerJourFerie(jourFerie);
-    this.copieJoursFeries.update(liste => liste.filter(j => j.id !== jourFerie.id));
+    this.copieJoursFeries.update((liste) => liste.filter((j) => j.id !== jourFerie.id));
     this.indexAFocaliserJourFerie.set(null);
   }
 
@@ -720,10 +709,10 @@ export class EcranParametrageComponent {
     const nouveauSet = new Set(this.copieDomainesActifs());
     if (actif) {
       nouveauSet.add(domaine.id);
-      domaine.enfants?.forEach(ss => nouveauSet.add(ss.id));
+      domaine.enfants?.forEach((ss) => nouveauSet.add(ss.id));
     } else {
       nouveauSet.delete(domaine.id);
-      domaine.enfants?.forEach(ss => nouveauSet.delete(ss.id));
+      domaine.enfants?.forEach((ss) => nouveauSet.delete(ss.id));
     }
     this.copieDomainesActifs.set(nouveauSet);
   }
@@ -736,7 +725,11 @@ export class EcranParametrageComponent {
    * @param sousDomaine Nœud N2 à basculer.
    * @param actif `true` pour activer, `false` pour désactiver.
    */
-  protected basculerSousDomaine(domaine: Competence, sousDomaine: Competence, actif: boolean): void {
+  protected basculerSousDomaine(
+    domaine: Competence,
+    sousDomaine: Competence,
+    actif: boolean,
+  ): void {
     const nouveauSet = new Set(this.copieDomainesActifs());
     if (actif) {
       nouveauSet.add(sousDomaine.id);
@@ -744,7 +737,7 @@ export class EcranParametrageComponent {
       if (nouveauSet.has(domaine.id)) {
         // Décomposer le domaine parent : activer tous les autres sous-domaines sauf celui-ci
         nouveauSet.delete(domaine.id);
-        domaine.enfants?.forEach(ss => {
+        domaine.enfants?.forEach((ss) => {
           if (ss.id !== sousDomaine.id) nouveauSet.add(ss.id);
         });
       } else {
@@ -762,15 +755,17 @@ export class EcranParametrageComponent {
 
     // Si tous les nœuds N1 et N2 sont actifs, on stocke [] (= tout afficher)
     const tousIds: string[] = [];
-    d.referentiels.competences.forEach(n1 => {
+    d.referentiels.competences.forEach((n1) => {
       tousIds.push(n1.id);
-      n1.enfants?.forEach(n2 => tousIds.push(n2.id));
+      n1.enfants?.forEach((n2) => tousIds.push(n2.id));
     });
-    const toutActif = tousIds.every(id => actifs.has(id));
+    const toutActif = tousIds.every((id) => actifs.has(id));
 
     this.donneesService.executer(
       new CommandeRemplacement<string[]>(
-        (data, v) => { data.configuration.domainesActifs = v; },
+        (data, v) => {
+          data.configuration.domainesActifs = v;
+        },
         d.configuration.domainesActifs ?? [],
         toutActif ? [] : [...actifs],
         LIBELLES.commandes.modificationDomainesActifs,
@@ -785,9 +780,9 @@ export class EcranParametrageComponent {
     const actifs = d.configuration.domainesActifs;
     if (!actifs || actifs.length === 0) {
       const tousIds = new Set<string>();
-      d.referentiels.competences.forEach(n1 => {
+      d.referentiels.competences.forEach((n1) => {
         tousIds.add(n1.id);
-        n1.enfants?.forEach(n2 => tousIds.add(n2.id));
+        n1.enfants?.forEach((n2) => tousIds.add(n2.id));
       });
       this.copieDomainesActifs.set(tousIds);
     } else {

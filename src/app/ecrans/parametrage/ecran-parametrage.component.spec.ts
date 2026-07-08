@@ -16,7 +16,11 @@ describe('EcranParametrageComponent', () => {
       ...DonneesMother.base().referentiels,
       periodes: [{ id: 'p1', nom: 'Période 1', debut: '2025-09-01', fin: '2025-10-31' }],
       groupes: [{ id: 'GA', libelle: 'Groupe A' }],
-      configEmploiDuTemps: { joursOuvres: ['lundi', 'mardi', 'mercredi'], heureDebutJournee: '08:00', heureFinJournee: '16:30' },
+      configEmploiDuTemps: {
+        joursOuvres: ['lundi', 'mardi', 'mercredi'],
+        heureDebutJournee: '08:00',
+        heureFinJournee: '16:30',
+      },
     },
     configuration: { delaiSauvegardeAutoMinutes: 5 },
   });
@@ -98,7 +102,7 @@ describe('EcranParametrageComponent', () => {
       expect(d?.referentiels.configEmploiDuTemps.joursOuvres).toEqual(['lundi', 'mardi']);
     });
 
-    it('basculerJourOuvre ajoute un jour dans l\'ordre canonique', () => {
+    it("basculerJourOuvre ajoute un jour dans l'ordre canonique", () => {
       (component as any).formSemaineHoraires.joursOuvres = ['lundi'];
 
       (component as any).basculerJourOuvre('mercredi', true);
@@ -210,14 +214,23 @@ describe('EcranParametrageComponent', () => {
   });
 
   describe('section domainesCompetences', () => {
-    const domaineN1 = { id: 'd1', libelle: 'Français', enfants: [{ id: 'd1-1', libelle: 'Lecture', enfants: [] }, { id: 'd1-2', libelle: 'Écriture', enfants: [] }] };
+    const domaineN1 = {
+      id: 'd1',
+      libelle: 'Français',
+      enfants: [
+        { id: 'd1-1', libelle: 'Lecture', enfants: [] },
+        { id: 'd1-2', libelle: 'Écriture', enfants: [] },
+      ],
+    };
 
     beforeEach(() => {
-      donneesService.charger(DonneesMother.base({
-        ...donnees,
-        referentiels: { ...donnees.referentiels, competences: [domaineN1] },
-        configuration: { delaiSauvegardeAutoMinutes: 5 },
-      }));
+      donneesService.charger(
+        DonneesMother.base({
+          ...donnees,
+          referentiels: { ...donnees.referentiels, competences: [domaineN1] },
+          configuration: { delaiSauvegardeAutoMinutes: 5 },
+        }),
+      );
       fixture.detectChanges();
       (component as any).activerSection('domainesCompetences');
       fixture.detectChanges();

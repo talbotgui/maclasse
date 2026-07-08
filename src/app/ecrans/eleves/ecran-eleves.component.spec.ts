@@ -21,13 +21,18 @@ describe('EcranElevesComponent', () => {
     TestBed.configureTestingModule({});
     donneesService = TestBed.inject(DonneesService);
     contexteService = TestBed.inject(ContexteService);
-    donneesService.charger(DonneesMother.base({
-      classe: { ...DonneesMother.base().classe, eleves: [alice, bob, claire] },
-      referentiels: {
-        ...DonneesMother.base().referentiels,
-        groupes: [{ id: 'GA', libelle: 'Groupe A' }, { id: 'GB', libelle: 'Groupe B' }],
-      },
-    }));
+    donneesService.charger(
+      DonneesMother.base({
+        classe: { ...DonneesMother.base().classe, eleves: [alice, bob, claire] },
+        referentiels: {
+          ...DonneesMother.base().referentiels,
+          groupes: [
+            { id: 'GA', libelle: 'Groupe A' },
+            { id: 'GB', libelle: 'Groupe B' },
+          ],
+        },
+      }),
+    );
     fixture = TestBed.createComponent(EcranElevesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -96,7 +101,7 @@ describe('EcranElevesComponent', () => {
   });
 
   describe('confirmerAvertissement (sans garde)', () => {
-    it('exécute l\'action en attente et ferme la popin', () => {
+    it("exécute l'action en attente et ferme la popin", () => {
       (component as any).enModeEdition.set(true);
       (component as any).selectionnerEleve(bob);
 
@@ -109,7 +114,7 @@ describe('EcranElevesComponent', () => {
   });
 
   describe('annulerAvertissement', () => {
-    it('ferme la popin sans exécuter l\'action en attente', () => {
+    it("ferme la popin sans exécuter l'action en attente", () => {
       (component as any).enModeEdition.set(true);
       (component as any).selectionnerEleve(bob);
 
@@ -137,7 +142,7 @@ describe('EcranElevesComponent', () => {
       (component as any).onEnregistrer(nouvelEleve);
 
       const eleves = donneesService.donnees()?.classe.eleves ?? [];
-      expect(eleves.some(e => e.id === 'e99')).toBe(true);
+      expect(eleves.some((e) => e.id === 'e99')).toBe(true);
       expect((component as any).enModeEdition()).toBe(false);
       expect(contexteService.eleveSelectionne()).toBe('e99');
     });
@@ -150,7 +155,7 @@ describe('EcranElevesComponent', () => {
       (component as any).onEnregistrer(modifie);
 
       const eleves = donneesService.donnees()?.classe.eleves ?? [];
-      expect(eleves.find(e => e.id === 'e1')?.prenom).toBe('Alice-Modif');
+      expect(eleves.find((e) => e.id === 'e1')?.prenom).toBe('Alice-Modif');
       expect((component as any).enModeEdition()).toBe(false);
     });
   });
@@ -175,14 +180,14 @@ describe('EcranElevesComponent', () => {
   });
 
   describe('supprimerEleve', () => {
-    it('supprime l\'élève sélectionné et remet la sélection à null', () => {
+    it("supprime l'élève sélectionné et remet la sélection à null", () => {
       contexteService.eleveSelectionne.set('e1');
       fixture.detectChanges();
 
       (component as any).supprimerEleve();
 
       const eleves = donneesService.donnees()?.classe.eleves ?? [];
-      expect(eleves.some(e => e.id === 'e1')).toBe(false);
+      expect(eleves.some((e) => e.id === 'e1')).toBe(false);
       expect(contexteService.eleveSelectionne()).toBeNull();
     });
 

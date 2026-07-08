@@ -20,7 +20,7 @@ describe('DateUtils', () => {
       expect(DateUtils.ajouterJours('2026-06-30', 1)).toBe('2026-07-01');
     });
 
-    it('gère le passage à l\'année suivante', () => {
+    it("gère le passage à l'année suivante", () => {
       expect(DateUtils.ajouterJours('2026-12-31', 1)).toBe('2027-01-01');
     });
 
@@ -62,7 +62,7 @@ describe('DateUtils', () => {
 
   /** Produit un libellé en toutes lettres en français avec le jour, le numéro, le mois et l'année. */
   describe('formaterDateLong', () => {
-    it('contient le nom du jour, du mois et l\'année', () => {
+    it("contient le nom du jour, du mois et l'année", () => {
       const resultat = DateUtils.formaterDateLong('2026-06-15');
       expect(resultat).toMatch(/lundi/i);
       expect(resultat).toMatch(/juin/i);
@@ -173,7 +173,7 @@ describe('DateUtils', () => {
       expect(DateUtils.differenceEnJours('2026-06-15', '2026-06-22')).toBe(7);
     });
 
-    it('retourne -7 dans l\'ordre inverse', () => {
+    it("retourne -7 dans l'ordre inverse", () => {
       expect(DateUtils.differenceEnJours('2026-06-22', '2026-06-15')).toBe(-7);
     });
 
@@ -224,7 +224,7 @@ describe('DateUtils', () => {
 
   /** Produit une heure HH:MM avec zéro initial pour les heures et minutes à un chiffre. */
   describe('formaterHeure', () => {
-    it('formate en HH:MM avec zéro initial pour l\'heure', () => {
+    it("formate en HH:MM avec zéro initial pour l'heure", () => {
       expect(DateUtils.formaterHeure(new Date(2026, 5, 9, 8, 5))).toBe('08:05');
     });
 

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../composant-base';
 

@@ -15,9 +15,11 @@ describe('FpFicheProjetComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    TestBed.inject(DonneesService).charger(DonneesMother.base({
-      classe: { ...DonneesMother.base().classe, eleves: [alice, bob] },
-    }));
+    TestBed.inject(DonneesService).charger(
+      DonneesMother.base({
+        classe: { ...DonneesMother.base().classe, eleves: [alice, bob] },
+      }),
+    );
     fixture = TestBed.createComponent(FpFicheProjetComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('projet', ProjetMother.base({ elevesIds: ['e1', 'e2'] }));
@@ -31,7 +33,7 @@ describe('FpFicheProjetComponent', () => {
       expect(noms).toContain('DUPONT Bob');
     });
 
-    it('retourne l\'id brut si élève non trouvé', () => {
+    it("retourne l'id brut si élève non trouvé", () => {
       fixture.componentRef.setInput('projet', ProjetMother.base({ elevesIds: ['inconnu'] }));
       fixture.detectChanges();
 

@@ -67,9 +67,7 @@ export class FpFormulaireProjetComponent {
   public readonly annuler: OutputEmitterRef<void> = output<void>();
 
   /** Liste des élèves de la classe pour les chips de sélection. */
-  protected readonly eleves = computed(
-    () => this.donneesService.donnees()?.classe.eleves ?? [],
-  );
+  protected readonly eleves = computed(() => this.donneesService.donnees()?.classe.eleves ?? []);
 
   /** Copie locale mutable du projet en cours de saisie. */
   protected formProjet: Projet = this.creerProjetVide();
@@ -95,7 +93,7 @@ export class FpFormulaireProjetComponent {
     if (actif && !this.formProjet.elevesIds.includes(id)) {
       this.formProjet.elevesIds = [...this.formProjet.elevesIds, id];
     } else if (!actif) {
-      this.formProjet.elevesIds = this.formProjet.elevesIds.filter(e => e !== id);
+      this.formProjet.elevesIds = this.formProjet.elevesIds.filter((e) => e !== id);
     }
   }
 

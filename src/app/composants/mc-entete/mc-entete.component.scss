@@ -51,7 +51,9 @@
     white-space: nowrap;
     opacity: 0.75;
     border-radius: 4px;
-    transition: opacity 0.12s ease, background-color 0.12s ease;
+    transition:
+      opacity 0.12s ease,
+      background-color 0.12s ease;
 
     &:hover {
       opacity: 1;

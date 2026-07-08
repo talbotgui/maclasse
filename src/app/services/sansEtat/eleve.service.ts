@@ -27,7 +27,9 @@ export class EleveService {
    * @param eleve Élève à ajouter (doit posséder un `id` unique).
    */
   public creerEleve(eleve: Eleve): void {
-    this.donneesService.executer(new CommandeCreation(d => d.classe.eleves, eleve, LIBELLES.commandes.ajoutEleve));
+    this.donneesService.executer(
+      new CommandeCreation((d) => d.classe.eleves, eleve, LIBELLES.commandes.ajoutEleve),
+    );
   }
 
   /**
@@ -38,10 +40,15 @@ export class EleveService {
   public modifierEleve(eleve: Eleve): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const ancien = donnees.classe.eleves.find(e => e.id === eleve.id);
+    const ancien = donnees.classe.eleves.find((e) => e.id === eleve.id);
     if (!ancien) return;
     this.donneesService.executer(
-      new CommandeModification(d => d.classe.eleves, ancien, eleve, LIBELLES.commandes.modificationEleve),
+      new CommandeModification(
+        (d) => d.classe.eleves,
+        ancien,
+        eleve,
+        LIBELLES.commandes.modificationEleve,
+      ),
     );
   }
 
@@ -53,10 +60,15 @@ export class EleveService {
   public supprimerEleve(id: string): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const index = donnees.classe.eleves.findIndex(e => e.id === id);
+    const index = donnees.classe.eleves.findIndex((e) => e.id === id);
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeSuppression(d => d.classe.eleves, donnees.classe.eleves[index], index, LIBELLES.commandes.suppressionEleve),
+      new CommandeSuppression(
+        (d) => d.classe.eleves,
+        donnees.classe.eleves[index],
+        index,
+        LIBELLES.commandes.suppressionEleve,
+      ),
     );
   }
 
@@ -65,7 +77,7 @@ export class EleveService {
    * @param id UUID de l'élève.
    */
   public obtenirEleve(id: string): Eleve | undefined {
-    return this.donneesService.donnees()?.classe.eleves.find(e => e.id === id);
+    return this.donneesService.donnees()?.classe.eleves.find((e) => e.id === id);
   }
 
   /**
@@ -82,7 +94,7 @@ export class EleveService {
     if (!terme.trim()) return tries;
     const t = TexteUtils.normaliserPourRecherche(terme);
     return tries.filter(
-      e =>
+      (e) =>
         TexteUtils.normaliserPourRecherche(e.nom).includes(t) ||
         TexteUtils.normaliserPourRecherche(e.prenom).includes(t) ||
         TexteUtils.normaliserPourRecherche(`${e.nom} ${e.prenom}`).includes(t) ||
@@ -108,14 +120,14 @@ export class EleveService {
   ): string[] {
     const donnees = this.donneesService.donnees();
     if (!donnees) return [];
-    const eleve = donnees.classe.eleves.find(e => e.id === eleveId);
+    const eleve = donnees.classe.eleves.find((e) => e.id === eleveId);
     if (!eleve) return [];
     return eleve.absencesRecurrentes
       .filter(
-        a =>
+        (a) =>
           a.jour === jour &&
           DateUtils.chevauchementHoraire(a.heureDebut, a.heureFin, heureDebut, heureFin),
       )
-      .map(a => a.libelle);
+      .map((a) => a.libelle);
   }
 }

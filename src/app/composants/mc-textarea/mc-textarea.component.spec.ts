@@ -7,8 +7,10 @@ describe('McTextareaComponent', () => {
   let fixture: ComponentFixture<McTextareaComponent>;
   let component: McTextareaComponent;
 
-  const textareaEl = () => fixture.debugElement.query(By.css('textarea')).nativeElement as HTMLTextAreaElement;
-  const labelEl = () => fixture.debugElement.query(By.css('label')).nativeElement as HTMLLabelElement;
+  const textareaEl = () =>
+    fixture.debugElement.query(By.css('textarea')).nativeElement as HTMLTextAreaElement;
+  const labelEl = () =>
+    fixture.debugElement.query(By.css('label')).nativeElement as HTMLLabelElement;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -86,7 +88,7 @@ describe('McTextareaComponent', () => {
       expect(labelEl().textContent).toContain('Remarques');
     });
 
-    it('label for correspond à l\'id', () => {
+    it("label for correspond à l'id", () => {
       expect(labelEl().getAttribute('for')).toBe('remarques');
       expect(textareaEl().id).toBe('remarques');
     });
@@ -105,7 +107,7 @@ describe('McTextareaComponent', () => {
       expect(textareaEl().placeholder).toBe('Saisir des remarques');
     });
 
-    it('required=true ajoute l\'attribut required', () => {
+    it("required=true ajoute l'attribut required", () => {
       fixture.componentRef.setInput('required', true);
       fixture.detectChanges();
 

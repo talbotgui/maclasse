@@ -4,13 +4,7 @@
  * Colonne droite : liste des séances et formulaire de saisie.
  */
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { CahierJournalService } from '../../services/sansEtat/cahier-journal.service';
@@ -84,9 +78,9 @@ export class EcranCahierJournalComponent {
   /** Journée sélectionnée depuis le store. */
   protected readonly journeeSelectionnee = computed<JourneeJournal | null>(
     () =>
-      this.donneesService.donnees()?.cahierJournal.find(
-        j => j.date === this.dateSelectionnee(),
-      ) ?? null,
+      this.donneesService
+        .donnees()
+        ?.cahierJournal.find((j) => j.date === this.dateSelectionnee()) ?? null,
   );
 
   /** Séances ordonnées par heure de début pour la journée sélectionnée. */
@@ -98,13 +92,12 @@ export class EcranCahierJournalComponent {
 
   /** Dates possédant des entrées dans le cahier journal (pour le calendrier). */
   protected readonly journeesAvecEntrees = computed<string[]>(
-    () => this.donneesService.donnees()?.cahierJournal.map(j => j.date) ?? [],
+    () => this.donneesService.donnees()?.cahierJournal.map((j) => j.date) ?? [],
   );
 
   /** Jours ouvrés configurés. */
   protected readonly joursOuvres = computed<JourSemaine[]>(
-    () =>
-      this.donneesService.donnees()?.referentiels.configEmploiDuTemps.joursOuvres ?? [],
+    () => this.donneesService.donnees()?.referentiels.configEmploiDuTemps.joursOuvres ?? [],
   );
 
   /** Jours fériés configurés. */
@@ -127,7 +120,7 @@ export class EcranCahierJournalComponent {
    * @param delta Nombre de jours à décaler (±1, ±7).
    */
   protected naviguerJour(delta: number): void {
-    this.dateSelectionnee.update(d => DateUtils.ajouterJours(d, delta));
+    this.dateSelectionnee.update((d) => DateUtils.ajouterJours(d, delta));
     this.fermerFormulaire();
   }
 
@@ -218,7 +211,7 @@ export class EcranCahierJournalComponent {
   protected onEnregistrerSeance(seance: Seance): void {
     const date = this.dateSelectionnee();
     const journee = this.journeeSelectionnee();
-    const existante = journee?.seances.find(s => s.id === seance.id);
+    const existante = journee?.seances.find((s) => s.id === seance.id);
     if (existante) {
       this.cahierJournalService.modifierSeance(date, seance);
     } else {

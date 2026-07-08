@@ -57,12 +57,14 @@ export class FpFicheProjetComponent {
    */
   protected get nomEleves(): string {
     const eleves = this.donneesService.donnees()?.classe.eleves ?? [];
-    return this.projet()
-      .elevesIds.map(id => {
-        const e = eleves.find(el => el.id === id);
-        return e ? `${e.nom.toUpperCase()} ${e.prenom}` : id;
-      })
-      .join(', ') || '—';
+    return (
+      this.projet()
+        .elevesIds.map((id) => {
+          const e = eleves.find((el) => el.id === id);
+          return e ? `${e.nom.toUpperCase()} ${e.prenom}` : id;
+        })
+        .join(', ') || '—'
+    );
   }
 
   /**
@@ -71,15 +73,21 @@ export class FpFicheProjetComponent {
    * @returns Tableau de libellés résolus.
    */
   protected obtenirLibellesCompetences(ids: string[]): string[] {
-    return ids.map(id => this.competenceService.resoudreLibelle(id)).filter(l => l.length > 0);
+    return ids.map((id) => this.competenceService.resoudreLibelle(id)).filter((l) => l.length > 0);
   }
 
   /** Délègue au parent l'action de modification. */
-  protected onModifier(): void { this.modifier.emit(); }
+  protected onModifier(): void {
+    this.modifier.emit();
+  }
 
   /** Délègue au parent l'action de suppression. */
-  protected onSupprimer(): void { this.supprimer.emit(); }
+  protected onSupprimer(): void {
+    this.supprimer.emit();
+  }
 
   /** Délègue au parent l'action d'impression. */
-  protected onImprimer(): void { this.imprimer.emit(); }
+  protected onImprimer(): void {
+    this.imprimer.emit();
+  }
 }

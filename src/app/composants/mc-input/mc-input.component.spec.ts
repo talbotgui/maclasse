@@ -7,8 +7,10 @@ describe('McInputComponent', () => {
   let fixture: ComponentFixture<McInputComponent>;
   let component: McInputComponent;
 
-  const inputEl = () => fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
-  const labelEl = () => fixture.debugElement.query(By.css('label')).nativeElement as HTMLLabelElement;
+  const inputEl = () =>
+    fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
+  const labelEl = () =>
+    fixture.debugElement.query(By.css('label')).nativeElement as HTMLLabelElement;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -40,7 +42,7 @@ describe('McInputComponent', () => {
   });
 
   describe('registerOnChange', () => {
-    it('callback appelé quand l\'utilisateur saisit', () => {
+    it("callback appelé quand l'utilisateur saisit", () => {
       const cb = vi.fn();
       component.registerOnChange(cb);
       fixture.detectChanges();
@@ -87,7 +89,7 @@ describe('McInputComponent', () => {
       expect(labelEl().textContent).toContain('Prénom');
     });
 
-    it('label for correspond à l\'id de l\'input', () => {
+    it("label for correspond à l'id de l'input", () => {
       expect(labelEl().getAttribute('for')).toBe('champTest-input');
       expect(inputEl().id).toBe('champTest-input');
     });
@@ -110,7 +112,7 @@ describe('McInputComponent', () => {
       expect(inputEl().placeholder).toBe('Saisir un prénom');
     });
 
-    it('required=true ajoute l\'attribut required', () => {
+    it("required=true ajoute l'attribut required", () => {
       fixture.componentRef.setInput('required', true);
       fixture.detectChanges();
 

@@ -52,8 +52,9 @@ describe('McSelecteurCompetencesComponent', () => {
 
   /** Retourne les options visibles dans la liste de suggestions. */
   const suggestions = () =>
-    fixture.debugElement.queryAll(By.css('.mc-selecteur-competences__option'))
-      .map(d => d.nativeElement as HTMLLIElement);
+    fixture.debugElement
+      .queryAll(By.css('.mc-selecteur-competences__option'))
+      .map((d) => d.nativeElement as HTMLLIElement);
 
   /** Retourne les CHIPs des compétences sélectionnées. */
   const chipsSelection = () =>
@@ -78,7 +79,9 @@ describe('McSelecteurCompetencesComponent', () => {
 
   describe('chips de filtre par domaine', () => {
     it('affiche un chip par domaine de niveau 1', () => {
-      const chips = fixture.debugElement.queryAll(By.css('.mc-selecteur-competences__domaines mc-chip-filtre'));
+      const chips = fixture.debugElement.queryAll(
+        By.css('.mc-selecteur-competences__domaines mc-chip-filtre'),
+      );
 
       expect(chips.length).toBe(2);
     });
@@ -91,7 +94,7 @@ describe('McSelecteurCompetencesComponent', () => {
       saisir('a');
 
       expect(suggestions().length).toBeLessThan(avantFiltre);
-      expect(suggestions().every(o => o.textContent?.includes('Mathématiques'))).toBe(true);
+      expect(suggestions().every((o) => o.textContent?.includes('Mathématiques'))).toBe(true);
     });
 
     it('désactiver un filtre de domaine restaure toutes les suggestions', () => {
@@ -123,7 +126,9 @@ describe('McSelecteurCompetencesComponent', () => {
     it('saisie sans correspondance : affiche "aucun résultat"', () => {
       saisir('zzzzz');
 
-      const message = fixture.debugElement.query(By.css('.mc-selecteur-competences__aucun-resultat'));
+      const message = fixture.debugElement.query(
+        By.css('.mc-selecteur-competences__aucun-resultat'),
+      );
       expect(message).not.toBeNull();
       expect(suggestions()).toHaveLength(0);
     });
@@ -132,7 +137,9 @@ describe('McSelecteurCompetencesComponent', () => {
       saisir('texte');
 
       expect(suggestions()).toHaveLength(1);
-      expect(suggestions()[0].textContent?.trim()).toBe('Français › Lecture › Comprendre un texte lu');
+      expect(suggestions()[0].textContent?.trim()).toBe(
+        'Français › Lecture › Comprendre un texte lu',
+      );
     });
   });
 
@@ -160,10 +167,14 @@ describe('McSelecteurCompetencesComponent', () => {
 
       appuyerTouche('ArrowUp');
 
-      expect(suggestions().every(o => !o.classList.contains('mc-selecteur-competences__option--active'))).toBe(true);
+      expect(
+        suggestions().every(
+          (o) => !o.classList.contains('mc-selecteur-competences__option--active'),
+        ),
+      ).toBe(true);
     });
 
-    it('Enter sélectionne l\'option focalisée et vide le champ', () => {
+    it("Enter sélectionne l'option focalisée et vide le champ", () => {
       saisir('lecture');
       appuyerTouche('ArrowDown');
 
@@ -184,7 +195,7 @@ describe('McSelecteurCompetencesComponent', () => {
   });
 
   describe('sélection de compétences', () => {
-    it('cliquer sur une suggestion émet selectionChange avec l\'ID et vide le champ', () => {
+    it("cliquer sur une suggestion émet selectionChange avec l'ID et vide le champ", () => {
       saisir('lecture');
 
       suggestions()[0].click();
@@ -203,7 +214,7 @@ describe('McSelecteurCompetencesComponent', () => {
       suggestions()[0].click();
       fixture.detectChanges();
 
-      expect(hote.selectionnes.filter(id => id === 'FR-LECT')).toHaveLength(1);
+      expect(hote.selectionnes.filter((id) => id === 'FR-LECT')).toHaveLength(1);
     });
 
     it('mode mono : sélectionner remplace la sélection existante', () => {
@@ -248,7 +259,7 @@ describe('McSelecteurCompetencesComponent', () => {
       expect(hote.selectionnes).toContain('FR-LECT-2');
     });
 
-    it('n\'affiche pas la zone chips si la sélection est vide', () => {
+    it("n'affiche pas la zone chips si la sélection est vide", () => {
       expect(chipsSelection()).toHaveLength(0);
     });
   });

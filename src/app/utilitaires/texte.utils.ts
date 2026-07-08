@@ -14,9 +14,6 @@ export class TexteUtils {
    * @returns Texte en minuscules sans diacritiques.
    */
   public static normaliserPourRecherche(texte: string): string {
-    return texte
-      .normalize('NFD')
-      .replace(/[̀-ͯ]/g, '')
-      .toLowerCase();
+    return texte.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   }
 }

@@ -19,5 +19,7 @@ export class McBadgeStatutComponent extends ComposantBase {
    * Statut d'acquisition à afficher.
    * Quand `null`, le badge affiche un tiret neutre sans couleur.
    */
-  public readonly statut: InputSignal<StatutAcquisition | null> = input<StatutAcquisition | null>(null);
+  public readonly statut: InputSignal<StatutAcquisition | null> = input<StatutAcquisition | null>(
+    null,
+  );
 }

@@ -23,7 +23,13 @@ import { McRadioGroupComponent } from '../../../composants/mc-radio-group/mc-rad
 import { McChampHeureComponent } from '../../../composants/mc-champ-heure/mc-champ-heure.component';
 import { McChipFiltreComponent } from '../../../composants/mc-chip-filtre/mc-chip-filtre.component';
 import { McBoutonDestructionComponent } from '../../../composants/mc-bouton-destruction/mc-bouton-destruction.component';
-import type { Eleve, AbsenceRecurrente, AbsencePonctuelle, Contact, CursusAnnee } from '../../../modeles/eleve.modele';
+import type {
+  Eleve,
+  AbsenceRecurrente,
+  AbsencePonctuelle,
+  Contact,
+  CursusAnnee,
+} from '../../../modeles/eleve.modele';
 import type { Groupe, StatutEleve, TypeContact } from '../../../modeles/referentiels.modele';
 
 /**
@@ -127,7 +133,7 @@ export class FeFormulaireEleveComponent {
    * @returns Options { valeur, libelle }.
    */
   protected get optionsStatut(): { valeur: string; libelle: string }[] {
-    return this.statutsEleve().map(s => ({ valeur: s.id, libelle: s.libelle }));
+    return this.statutsEleve().map((s) => ({ valeur: s.id, libelle: s.libelle }));
   }
 
   /**
@@ -135,7 +141,7 @@ export class FeFormulaireEleveComponent {
    * @returns Options { valeur, libelle }.
    */
   protected get optionsTypeContact(): { valeur: string; libelle: string }[] {
-    return this.typesContact().map(t => ({ valeur: t.id, libelle: t.libelle }));
+    return this.typesContact().map((t) => ({ valeur: t.id, libelle: t.libelle }));
   }
 
   /**
@@ -147,7 +153,7 @@ export class FeFormulaireEleveComponent {
     if (actif && !this.formEleve.groupes.includes(id)) {
       this.formEleve.groupes = [...this.formEleve.groupes, id];
     } else if (!actif) {
-      this.formEleve.groupes = this.formEleve.groupes.filter(g => g !== id);
+      this.formEleve.groupes = this.formEleve.groupes.filter((g) => g !== id);
     }
   }
 

@@ -76,23 +76,17 @@ export class EcranElevesComponent implements AvecNavigationGardee {
   protected readonly eleveSelectionne = computed<Eleve | null>(() => {
     const id = this.contexteService.eleveSelectionne();
     if (!id) return null;
-    return this.donnees()?.classe.eleves.find(e => e.id === id) ?? null;
+    return this.donnees()?.classe.eleves.find((e) => e.id === id) ?? null;
   });
 
   /** Liste des groupes du référentiel. */
-  protected readonly groupes = computed(
-    () => this.donnees()?.referentiels.groupes ?? [],
-  );
+  protected readonly groupes = computed(() => this.donnees()?.referentiels.groupes ?? []);
 
   /** Liste des statuts élève du référentiel. */
-  protected readonly statutsEleve = computed(
-    () => this.donnees()?.referentiels.statutsEleve ?? [],
-  );
+  protected readonly statutsEleve = computed(() => this.donnees()?.referentiels.statutsEleve ?? []);
 
   /** Liste des types de contact du référentiel. */
-  protected readonly typesContact = computed(
-    () => this.donnees()?.referentiels.typesContact ?? [],
-  );
+  protected readonly typesContact = computed(() => this.donnees()?.referentiels.typesContact ?? []);
 
   /** Élèves filtrés (recherche textuelle + chips de groupe) triés NOM Prénom. */
   protected readonly elevesAffiches = computed<Eleve[]>(() => {
@@ -100,9 +94,7 @@ export class EcranElevesComponent implements AvecNavigationGardee {
     const filtresGroupes = this.groupesFiltres();
     let eleves = this.eleveService.rechercherEleves(terme);
     if (filtresGroupes.length > 0) {
-      eleves = eleves.filter(e =>
-        e.groupes.some(g => filtresGroupes.includes(g)),
-      );
+      eleves = eleves.filter((e) => e.groupes.some((g) => filtresGroupes.includes(g)));
     }
     return eleves;
   });
@@ -205,9 +197,9 @@ export class EcranElevesComponent implements AvecNavigationGardee {
    */
   protected basculerFiltreGroupe(id: string, actif: boolean): void {
     if (actif) {
-      this.groupesFiltres.update(ids => [...ids, id]);
+      this.groupesFiltres.update((ids) => [...ids, id]);
     } else {
-      this.groupesFiltres.update(ids => ids.filter(i => i !== id));
+      this.groupesFiltres.update((ids) => ids.filter((i) => i !== id));
     }
   }
 
@@ -224,7 +216,7 @@ export class EcranElevesComponent implements AvecNavigationGardee {
    */
   public confirmerNavigation(): Promise<boolean> {
     if (!this.enModeEdition()) return Promise.resolve(true);
-    return new Promise<boolean>(resolve => {
+    return new Promise<boolean>((resolve) => {
       this.resolveGarde = resolve;
       this.popinAvertissementVisible.set(true);
     });

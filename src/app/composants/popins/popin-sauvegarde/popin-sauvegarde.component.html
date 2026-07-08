@@ -7,7 +7,9 @@
 >
   <div class="mc-popover-carte">
     <div class="mc-popover-entete">
-      <span id="titreSauvegarde" class="mc-popover-titre">{{ LIBELLES.popins.sauvegarde.titre }}</span>
+      <span id="titreSauvegarde" class="mc-popover-titre">{{
+        LIBELLES.popins.sauvegarde.titre
+      }}</span>
     </div>
 
     <div class="mc-popin__corps">
@@ -30,14 +32,18 @@
         type="button"
         class="mc-btn-fantome"
         (click)="surAnnulation()"
-      >{{ LIBELLES.popins.sauvegarde.annuler }}</button>
+      >
+        {{ LIBELLES.popins.sauvegarde.annuler }}
+      </button>
       <button
         id="btnSauvegardeConfirmer"
         type="button"
         class="mc-btn-primaire"
         [disabled]="!motDePasse().trim()"
         (click)="surConfirmation()"
-      >{{ LIBELLES.popins.sauvegarde.confirmer }}</button>
+      >
+        {{ LIBELLES.popins.sauvegarde.confirmer }}
+      </button>
     </div>
   </div>
 </dialog>

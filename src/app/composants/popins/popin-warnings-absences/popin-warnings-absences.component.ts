@@ -1,6 +1,11 @@
 import {
-  ChangeDetectionStrategy, Component, ElementRef, effect,
-  input, output, viewChild,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  effect,
+  input,
+  output,
+  viewChild,
 } from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../../composant-base';

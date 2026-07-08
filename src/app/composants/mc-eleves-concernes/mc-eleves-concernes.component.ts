@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, forwardRef, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  forwardRef,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import type { InputSignal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ComposantBase } from '../../composant-base';
@@ -13,7 +21,7 @@ import type { ElevesConcernes } from '../../modeles/emploi-du-temps.modele';
 @Component({
   selector: 'mc-eleves-concernes',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // NG_VALUE_ACCESSOR permet à Angular Forms de reconnaître ce composant comme un ControlValueAccessor. 
+  // NG_VALUE_ACCESSOR permet à Angular Forms de reconnaître ce composant comme un ControlValueAccessor.
   // Ainsi, il peut être utilisé dans un FormControl et recevoir/émettre des valeurs.
   providers: [
     {
@@ -27,7 +35,11 @@ import type { ElevesConcernes } from '../../modeles/emploi-du-temps.modele';
 })
 export class McElevesConcernesComponent extends ComposantBase implements ControlValueAccessor {
   /** Valeur vide par défaut (toute la classe, aucun groupe ni élève sélectionné). */
-  private static readonly VALEUR_DEFAUT: ElevesConcernes = { type: 'classe', groupes: [], elevesIds: [] };
+  private static readonly VALEUR_DEFAUT: ElevesConcernes = {
+    type: 'classe',
+    groupes: [],
+    elevesIds: [],
+  };
 
   /** Préfixe des identifiants HTML internes du composant pour éviter les collisions. */
   public readonly id: InputSignal<string> = input.required<string>();
@@ -36,7 +48,9 @@ export class McElevesConcernesComponent extends ComposantBase implements Control
   private readonly donneesService = inject(DonneesService);
 
   /** Valeur interne courante du composant. */
-  protected readonly valeurInterne = signal<ElevesConcernes>({ ...McElevesConcernesComponent.VALEUR_DEFAUT });
+  protected readonly valeurInterne = signal<ElevesConcernes>({
+    ...McElevesConcernesComponent.VALEUR_DEFAUT,
+  });
 
   /** Liste des groupes configurés dans les référentiels. */
   protected readonly groupes = computed(
@@ -45,8 +59,8 @@ export class McElevesConcernesComponent extends ComposantBase implements Control
 
   /** Liste des élèves de la classe, triés NOM Prénom. */
   protected readonly eleves = computed(() =>
-    [...(this.donneesService.donnees()?.classe.eleves ?? [])].sort((a, b) =>
-      a.nom.localeCompare(b.nom) || a.prenom.localeCompare(b.prenom),
+    [...(this.donneesService.donnees()?.classe.eleves ?? [])].sort(
+      (a, b) => a.nom.localeCompare(b.nom) || a.prenom.localeCompare(b.prenom),
     ),
   );
 
@@ -106,7 +120,7 @@ export class McElevesConcernesComponent extends ComposantBase implements Control
   protected basculerGroupe(groupeId: string): void {
     const courante = this.valeurInterne();
     const groupes = courante.groupes.includes(groupeId)
-      ? courante.groupes.filter(id => id !== groupeId)
+      ? courante.groupes.filter((id) => id !== groupeId)
       : [...courante.groupes, groupeId];
     const nouvelleValeur: ElevesConcernes = { ...courante, groupes };
     this.valeurInterne.set(nouvelleValeur);
@@ -121,7 +135,7 @@ export class McElevesConcernesComponent extends ComposantBase implements Control
   protected basculerEleve(eleveId: string): void {
     const courante = this.valeurInterne();
     const elevesIds = courante.elevesIds.includes(eleveId)
-      ? courante.elevesIds.filter(id => id !== eleveId)
+      ? courante.elevesIds.filter((id) => id !== eleveId)
       : [...courante.elevesIds, eleveId];
     const nouvelleValeur: ElevesConcernes = { ...courante, elevesIds };
     this.valeurInterne.set(nouvelleValeur);

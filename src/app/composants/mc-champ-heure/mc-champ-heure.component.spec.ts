@@ -7,8 +7,10 @@ describe('McChampHeureComponent', () => {
   let fixture: ComponentFixture<McChampHeureComponent>;
   let component: McChampHeureComponent;
 
-  const inputEl = () => fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
-  const labelEl = () => fixture.debugElement.query(By.css('label')).nativeElement as HTMLLabelElement;
+  const inputEl = () =>
+    fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
+  const labelEl = () =>
+    fixture.debugElement.query(By.css('label')).nativeElement as HTMLLabelElement;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -40,7 +42,7 @@ describe('McChampHeureComponent', () => {
   });
 
   describe('registerOnChange', () => {
-    it('callback appelé quand l\'utilisateur saisit', () => {
+    it("callback appelé quand l'utilisateur saisit", () => {
       const cb = vi.fn();
       component.registerOnChange(cb);
       fixture.detectChanges();
@@ -90,7 +92,7 @@ describe('McChampHeureComponent', () => {
       expect(inputEl().type).toBe('time');
     });
 
-    it('required=true ajoute l\'attribut required', () => {
+    it("required=true ajoute l'attribut required", () => {
       fixture.componentRef.setInput('required', true);
       fixture.detectChanges();
 

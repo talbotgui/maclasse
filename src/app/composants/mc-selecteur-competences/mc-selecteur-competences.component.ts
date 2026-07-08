@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../composant-base';
 import { McChipFiltreComponent } from '../mc-chip-filtre/mc-chip-filtre.component';
@@ -67,13 +75,13 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
 
     const filtres = this.domainesFiltres();
     if (filtres.size > 0) {
-      resultats = resultats.filter(c => {
+      resultats = resultats.filter((c) => {
         const chemin = this.competenceService.obtenirChemin(c.id);
         return chemin.length > 0 && filtres.has(chemin[0].id);
       });
     }
 
-    return resultats.map(c => ({
+    return resultats.map((c) => ({
       id: c.id,
       libelle: this.competenceService.resoudreLibelle(c.id),
     }));
@@ -91,14 +99,14 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
    * pour affichage dans les CHIPs, et le chemin complet pour l'aria-label du bouton ×.
    */
   protected readonly competencesAffichees = computed(() =>
-    this.competencesSelectionnees().map(id => {
+    this.competencesSelectionnees().map((id) => {
       const chemin = this.competenceService.resoudreLibelle(id);
       return {
         id,
         libelleCourt: chemin.split(' › ').at(-1) ?? chemin,
         cheminComplet: chemin,
       };
-    })
+    }),
   );
 
   /**
@@ -181,7 +189,7 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
    * @param id Identifiant de la compétence à supprimer.
    */
   protected supprimerCompetence(id: string): void {
-    this.selectionChange.emit(this.competencesSelectionnees().filter(i => i !== id));
+    this.selectionChange.emit(this.competencesSelectionnees().filter((i) => i !== id));
   }
 
   /**
@@ -189,7 +197,7 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
    * @param id Identifiant du domaine.
    */
   protected basculerDomaine(id: string): void {
-    this.domainesFiltres.update(set => {
+    this.domainesFiltres.update((set) => {
       const nouvel = new Set(set);
       if (nouvel.has(id)) nouvel.delete(id);
       else nouvel.add(id);

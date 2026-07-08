@@ -15,13 +15,22 @@ export class SelecteursEntete extends SelecteursBase {
   constructor(page: Page) {
     super(page);
     this.typeDuPremierResultat = this.listeResultatsRecherche
-      .locator('[role="option"]').first().locator('.mc-entete__resultat-type');
+      .locator('[role="option"]')
+      .first()
+      .locator('.mc-entete__resultat-type');
     this.titreDuPremierResultat = this.listeResultatsRecherche
-      .locator('[role="option"]').first().locator('.mc-entete__resultat-titre');
+      .locator('[role="option"]')
+      .first()
+      .locator('.mc-entete__resultat-titre');
     this.resultatPotager = this.listeResultatsRecherche
-      .locator('[role="option"]').filter({ hasText: 'Potager' }).first();
+      .locator('[role="option"]')
+      .filter({ hasText: 'Potager' })
+      .first();
     this.typeDuResultatPotager = this.listeResultatsRecherche
-      .locator('[role="option"]').filter({ hasText: 'Potager' }).first().locator('.mc-entete__resultat-type');
+      .locator('[role="option"]')
+      .filter({ hasText: 'Potager' })
+      .first()
+      .locator('.mc-entete__resultat-type');
   }
 
   /** Recherche un terme et attend l'apparition de la liste de résultats. */

@@ -6,7 +6,6 @@ import type { JourSemaine } from '../modeles/emploi-du-temps.modele';
  * Fournit des jours ouvrés et des jours fériés prêts à l'emploi.
  */
 export class CalendrierMother {
-
   /** Retourne les cinq jours ouvrés standards (lundi à vendredi). */
   static joursOuvresComplets(): JourSemaine[] {
     return ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'];

@@ -20,10 +20,7 @@ describe('RechercheGlobaleService', () => {
       EleveMother.base('e2', 'DUPONT', 'Marie'),
       EleveMother.base('e3', 'ÉLIE', 'Élodie'),
     ];
-    d.projets = [
-      ProjetMother.base(),
-      ProjetMother.base({ id: 'p2', nom: 'Élevage d\'escargots' }),
-    ];
+    d.projets = [ProjetMother.base(), ProjetMother.base({ id: 'p2', nom: "Élevage d'escargots" })];
     donneesService.charger(d);
   });
 
@@ -33,7 +30,7 @@ describe('RechercheGlobaleService', () => {
       expect(service.rechercher('')).toEqual([]);
     });
 
-    it('retourne tableau vide si terme composé d\'espaces', () => {
+    it("retourne tableau vide si terme composé d'espaces", () => {
       expect(service.rechercher('  ')).toEqual([]);
     });
   });
@@ -66,7 +63,7 @@ describe('RechercheGlobaleService', () => {
 
     it('trouve un élève par partie du nom', () => {
       const resultats = service.rechercher('mar');
-      expect(resultats.filter(r => r.type === 'eleve')).toHaveLength(2);
+      expect(resultats.filter((r) => r.type === 'eleve')).toHaveLength(2);
     });
 
     it('est insensible à la casse', () => {

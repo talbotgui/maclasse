@@ -2,7 +2,6 @@
  * Modèles partagés pour les composants de formulaire génériques et les composants riches.
  */
 
-
 /**
  * Option d'un sélecteur ou d'un groupe de boutons radio.
  * Utilisée par `mc-select`, `mc-radio-group` et les popins de sélection.
@@ -30,7 +29,6 @@ export interface CaseCalendrier {
   /** `true` si cette date correspond à aujourd'hui. */
   estAujourdhui: boolean;
 }
-
 
 import type { Competence } from './referentiels.modele';
 

@@ -111,7 +111,7 @@ describe('EcranEmploiDuTempsComponent', () => {
   });
 
   describe('lignesGrille', () => {
-    it('retourne les plages horaires uniques de l\'EDT sélectionné', () => {
+    it("retourne les plages horaires uniques de l'EDT sélectionné", () => {
       (component as any).edtSelectionne.set(edtBase);
       fixture.detectChanges();
 
@@ -120,7 +120,7 @@ describe('EcranEmploiDuTempsComponent', () => {
       expect(lignes[0].heureDebut).toBe('09:00');
     });
 
-    it('retourne [] si pas d\'EDT sélectionné', () => {
+    it("retourne [] si pas d'EDT sélectionné", () => {
       (component as any).edtSelectionne.set(null);
       fixture.detectChanges();
 
@@ -135,24 +135,30 @@ describe('EcranEmploiDuTempsComponent', () => {
     });
 
     it('retourne le créneau correspondant', () => {
-      const result = (component as any).obtenirCreneauDeGrille('lundi', { heureDebut: '09:00', heureFin: '10:00' });
+      const result = (component as any).obtenirCreneauDeGrille('lundi', {
+        heureDebut: '09:00',
+        heureFin: '10:00',
+      });
       expect(result?.id).toBe('c1');
     });
 
     it('retourne undefined pour une cellule vide', () => {
-      const result = (component as any).obtenirCreneauDeGrille('mardi', { heureDebut: '09:00', heureFin: '10:00' });
+      const result = (component as any).obtenirCreneauDeGrille('mardi', {
+        heureDebut: '09:00',
+        heureFin: '10:00',
+      });
       expect(result).toBeUndefined();
     });
   });
 
   describe('onEdtEnregistre', () => {
-    it('crée un EDT s\'il n\'existe pas encore', () => {
+    it("crée un EDT s'il n'existe pas encore", () => {
       const nouvelEdt = EdtMother.base({ id: 'edt99', nom: 'Nouveau' });
 
       (component as any).onEdtEnregistre(nouvelEdt);
 
       const edts = donneesService.donnees()?.emploisDuTemps ?? [];
-      expect(edts.some(e => e.id === 'edt99')).toBe(true);
+      expect(edts.some((e) => e.id === 'edt99')).toBe(true);
     });
 
     it('modifie un EDT existant', () => {
@@ -163,58 +169,62 @@ describe('EcranEmploiDuTempsComponent', () => {
       (component as any).onEdtEnregistre(modifie);
 
       const edts = donneesService.donnees()?.emploisDuTemps ?? [];
-      expect(edts.find(e => e.id === 'edt1')?.nom).toBe('Modifié');
+      expect(edts.find((e) => e.id === 'edt1')?.nom).toBe('Modifié');
     });
   });
 
   describe('onEdtSupprime', () => {
-    it('supprime l\'EDT sélectionné et réinitialise l\'interface', () => {
+    it("supprime l'EDT sélectionné et réinitialise l'interface", () => {
       (component as any).edtSelectionne.set(edtBase);
       fixture.detectChanges();
 
       (component as any).onEdtSupprime();
 
       const edts = donneesService.donnees()?.emploisDuTemps ?? [];
-      expect(edts.some(e => e.id === 'edt1')).toBe(false);
+      expect(edts.some((e) => e.id === 'edt1')).toBe(false);
       expect((component as any).edtSelectionne()).toBeNull();
       expect((component as any).formEdt()).toBeNull();
     });
   });
 
   describe('onCreneauEnregistre', () => {
-    it('ne fait rien si pas d\'EDT sélectionné', () => {
+    it("ne fait rien si pas d'EDT sélectionné", () => {
       (component as any).edtSelectionne.set(null);
 
       expect(() => (component as any).onCreneauEnregistre(creneauLundi)).not.toThrow();
     });
 
-    it('ajoute un créneau nouveau dans l\'EDT sélectionné', () => {
+    it("ajoute un créneau nouveau dans l'EDT sélectionné", () => {
       (component as any).edtSelectionne.set(edtBase);
       fixture.detectChanges();
-      const nouveauCreneau = CreneauMother.lundi9h10({ id: 'c99', heureDebut: '11:00', heureFin: '12:00' });
+      const nouveauCreneau = CreneauMother.lundi9h10({
+        id: 'c99',
+        heureDebut: '11:00',
+        heureFin: '12:00',
+      });
 
       (component as any).onCreneauEnregistre(nouveauCreneau);
 
-      const edtApres = donneesService.donnees()?.emploisDuTemps.find(e => e.id === 'edt1');
-      expect(edtApres?.creneaux.some(c => c.id === 'c99')).toBe(true);
+      const edtApres = donneesService.donnees()?.emploisDuTemps.find((e) => e.id === 'edt1');
+      expect(edtApres?.creneaux.some((c) => c.id === 'c99')).toBe(true);
     });
   });
 
   describe('onCreneauSupprime', () => {
-    it('ne fait rien si pas d\'EDT sélectionné', () => {
+    it("ne fait rien si pas d'EDT sélectionné", () => {
       (component as any).edtSelectionne.set(null);
 
       expect(() => (component as any).onCreneauSupprime('c1')).not.toThrow();
     });
 
-    it('supprime le créneau de l\'EDT sélectionné', () => {
+    it("supprime le créneau de l'EDT sélectionné", () => {
       (component as any).edtSelectionne.set(edtBase);
       fixture.detectChanges();
 
       (component as any).onCreneauSupprime('c1');
 
-      const edtApres = donneesService.donnees()?.emploisDuTemps.find(e => e.id === 'edt1');
-      expect(edtApres?.creneaux.some(c => c.id === 'c1')).toBe(false);
+      const edtApres = donneesService.donnees()?.emploisDuTemps.find((e) => e.id === 'edt1');
+      expect(edtApres?.creneaux.some((c) => c.id === 'c1')).toBe(false);
     });
   });
 

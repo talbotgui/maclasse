@@ -18,14 +18,14 @@ describe('EleveService', () => {
 
   /** L'élève est ajouté à la liste et la création est réversible via UNDO. */
   describe('creerEleve', () => {
-    it('ajoute l\'élève à la classe', () => {
+    it("ajoute l'élève à la classe", () => {
       const eleve = EleveMother.base('e1', 'MARTIN', 'Paul');
       service.creerEleve(eleve);
       expect(donneesService.donnees()?.classe.eleves).toHaveLength(1);
       expect(donneesService.donnees()?.classe.eleves[0].id).toBe('e1');
     });
 
-    it('supporte l\'annulation UNDO', () => {
+    it("supporte l'annulation UNDO", () => {
       service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul'));
       donneesService.annuler();
       expect(donneesService.donnees()?.classe.eleves).toHaveLength(0);
@@ -86,13 +86,13 @@ describe('EleveService', () => {
 
   /** Retourne l'élève si l'id existe, undefined sinon. */
   describe('obtenirEleve', () => {
-    it('retourne l\'élève si l\'id existe', () => {
+    it("retourne l'élève si l'id existe", () => {
       const eleve = EleveMother.base('e1', 'MARTIN', 'Paul');
       service.creerEleve(eleve);
       expect(service.obtenirEleve('e1')?.nom).toBe('MARTIN');
     });
 
-    it('retourne undefined si l\'id n\'existe pas', () => {
+    it("retourne undefined si l'id n'existe pas", () => {
       expect(service.obtenirEleve('inconnu')).toBeUndefined();
     });
   });
@@ -164,42 +164,84 @@ describe('EleveService', () => {
     });
 
     it('détecte un conflit sur le bon jour et le bon créneau', () => {
-      service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul', {
-        absencesRecurrentes: [{
-          id: 'a1', libelle: 'Orthophonie',
-          jour: 'lundi', heureDebut: '09:00', heureFin: '10:00', paritesSemaine: 'lesDeux',
-        }],
-      }));
-      expect(service.calculerConflitsAbsences('e1', '09:30', '10:30', 'lundi')).toEqual(['Orthophonie']);
+      service.creerEleve(
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [
+            {
+              id: 'a1',
+              libelle: 'Orthophonie',
+              jour: 'lundi',
+              heureDebut: '09:00',
+              heureFin: '10:00',
+              paritesSemaine: 'lesDeux',
+            },
+          ],
+        }),
+      );
+      expect(service.calculerConflitsAbsences('e1', '09:30', '10:30', 'lundi')).toEqual([
+        'Orthophonie',
+      ]);
     });
 
-    it('n\'inclut pas les absences sur un autre jour', () => {
-      service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul', {
-        absencesRecurrentes: [{
-          id: 'a1', libelle: 'Orthophonie',
-          jour: 'mardi', heureDebut: '09:00', heureFin: '10:00', paritesSemaine: 'lesDeux',
-        }],
-      }));
+    it("n'inclut pas les absences sur un autre jour", () => {
+      service.creerEleve(
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [
+            {
+              id: 'a1',
+              libelle: 'Orthophonie',
+              jour: 'mardi',
+              heureDebut: '09:00',
+              heureFin: '10:00',
+              paritesSemaine: 'lesDeux',
+            },
+          ],
+        }),
+      );
       expect(service.calculerConflitsAbsences('e1', '09:00', '10:00', 'lundi')).toEqual([]);
     });
 
-    it('n\'inclut pas les absences non chevauchantes', () => {
-      service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul', {
-        absencesRecurrentes: [{
-          id: 'a1', libelle: 'Orthophonie',
-          jour: 'lundi', heureDebut: '10:00', heureFin: '11:00', paritesSemaine: 'lesDeux',
-        }],
-      }));
+    it("n'inclut pas les absences non chevauchantes", () => {
+      service.creerEleve(
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [
+            {
+              id: 'a1',
+              libelle: 'Orthophonie',
+              jour: 'lundi',
+              heureDebut: '10:00',
+              heureFin: '11:00',
+              paritesSemaine: 'lesDeux',
+            },
+          ],
+        }),
+      );
       expect(service.calculerConflitsAbsences('e1', '08:00', '10:00', 'lundi')).toEqual([]);
     });
 
     it('retourne plusieurs conflits', () => {
-      service.creerEleve(EleveMother.base('e1', 'MARTIN', 'Paul', {
-        absencesRecurrentes: [
-          { id: 'a1', libelle: 'Ortho', jour: 'lundi', heureDebut: '09:00', heureFin: '09:30', paritesSemaine: 'lesDeux' },
-          { id: 'a2', libelle: 'RASED', jour: 'lundi', heureDebut: '09:15', heureFin: '10:00', paritesSemaine: 'lesDeux' },
-        ],
-      }));
+      service.creerEleve(
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [
+            {
+              id: 'a1',
+              libelle: 'Ortho',
+              jour: 'lundi',
+              heureDebut: '09:00',
+              heureFin: '09:30',
+              paritesSemaine: 'lesDeux',
+            },
+            {
+              id: 'a2',
+              libelle: 'RASED',
+              jour: 'lundi',
+              heureDebut: '09:15',
+              heureFin: '10:00',
+              paritesSemaine: 'lesDeux',
+            },
+          ],
+        }),
+      );
       const conflits = service.calculerConflitsAbsences('e1', '09:00', '10:00', 'lundi');
       expect(conflits).toHaveLength(2);
     });

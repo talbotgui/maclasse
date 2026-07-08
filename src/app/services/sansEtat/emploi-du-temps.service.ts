@@ -26,7 +26,9 @@ export class EmploiDuTempsService {
    * @param edt Emploi du temps à créer (doit posséder un `id` unique).
    */
   public creerEdt(edt: EmploiDuTemps): void {
-    this.donneesService.executer(new CommandeCreation(d => d.emploisDuTemps, edt, LIBELLES.commandes.ajoutEdt));
+    this.donneesService.executer(
+      new CommandeCreation((d) => d.emploisDuTemps, edt, LIBELLES.commandes.ajoutEdt),
+    );
   }
 
   /**
@@ -37,9 +39,16 @@ export class EmploiDuTempsService {
   public modifierEdt(edt: EmploiDuTemps): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const ancien = donnees.emploisDuTemps.find(e => e.id === edt.id);
+    const ancien = donnees.emploisDuTemps.find((e) => e.id === edt.id);
     if (!ancien) return;
-    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, edt, LIBELLES.commandes.modificationEdt));
+    this.donneesService.executer(
+      new CommandeModification(
+        (d) => d.emploisDuTemps,
+        ancien,
+        edt,
+        LIBELLES.commandes.modificationEdt,
+      ),
+    );
   }
 
   /**
@@ -50,10 +59,15 @@ export class EmploiDuTempsService {
   public supprimerEdt(id: string): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const index = donnees.emploisDuTemps.findIndex(e => e.id === id);
+    const index = donnees.emploisDuTemps.findIndex((e) => e.id === id);
     if (index === -1) return;
     this.donneesService.executer(
-      new CommandeSuppression(d => d.emploisDuTemps, donnees.emploisDuTemps[index], index, LIBELLES.commandes.suppressionEdt),
+      new CommandeSuppression(
+        (d) => d.emploisDuTemps,
+        donnees.emploisDuTemps[index],
+        index,
+        LIBELLES.commandes.suppressionEdt,
+      ),
     );
   }
 
@@ -62,7 +76,7 @@ export class EmploiDuTempsService {
    * @param id UUID de l'EDT.
    */
   public obtenirEdt(id: string): EmploiDuTemps | undefined {
-    return this.donneesService.donnees()?.emploisDuTemps.find(e => e.id === id);
+    return this.donneesService.donnees()?.emploisDuTemps.find((e) => e.id === id);
   }
 
   /**
@@ -75,10 +89,17 @@ export class EmploiDuTempsService {
   public ajouterCreneau(edtId: string, creneau: CreneauEdt): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const ancien = donnees.emploisDuTemps.find(e => e.id === edtId);
+    const ancien = donnees.emploisDuTemps.find((e) => e.id === edtId);
     if (!ancien) return;
     const nouveau: EmploiDuTemps = { ...ancien, creneaux: [...ancien.creneaux, creneau] };
-    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau, LIBELLES.commandes.ajoutCreneau));
+    this.donneesService.executer(
+      new CommandeModification(
+        (d) => d.emploisDuTemps,
+        ancien,
+        nouveau,
+        LIBELLES.commandes.ajoutCreneau,
+      ),
+    );
   }
 
   /**
@@ -90,11 +111,18 @@ export class EmploiDuTempsService {
   public modifierCreneau(edtId: string, creneau: CreneauEdt): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const ancien = donnees.emploisDuTemps.find(e => e.id === edtId);
+    const ancien = donnees.emploisDuTemps.find((e) => e.id === edtId);
     if (!ancien) return;
-    const creneaux = ancien.creneaux.map(c => (c.id === creneau.id ? creneau : c));
+    const creneaux = ancien.creneaux.map((c) => (c.id === creneau.id ? creneau : c));
     const nouveau: EmploiDuTemps = { ...ancien, creneaux };
-    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau, LIBELLES.commandes.modificationCreneau));
+    this.donneesService.executer(
+      new CommandeModification(
+        (d) => d.emploisDuTemps,
+        ancien,
+        nouveau,
+        LIBELLES.commandes.modificationCreneau,
+      ),
+    );
   }
 
   /**
@@ -106,13 +134,20 @@ export class EmploiDuTempsService {
   public supprimerCreneau(edtId: string, creneauId: string): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
-    const ancien = donnees.emploisDuTemps.find(e => e.id === edtId);
+    const ancien = donnees.emploisDuTemps.find((e) => e.id === edtId);
     if (!ancien) return;
     const nouveau: EmploiDuTemps = {
       ...ancien,
-      creneaux: ancien.creneaux.filter(c => c.id !== creneauId),
+      creneaux: ancien.creneaux.filter((c) => c.id !== creneauId),
     };
-    this.donneesService.executer(new CommandeModification(d => d.emploisDuTemps, ancien, nouveau, LIBELLES.commandes.suppressionCreneau));
+    this.donneesService.executer(
+      new CommandeModification(
+        (d) => d.emploisDuTemps,
+        ancien,
+        nouveau,
+        LIBELLES.commandes.suppressionCreneau,
+      ),
+    );
   }
 
   /**
@@ -126,7 +161,7 @@ export class EmploiDuTempsService {
    */
   public validerChevauchement(edt: EmploiDuTemps): boolean {
     const autresEdts =
-      this.donneesService.donnees()?.emploisDuTemps.filter(e => e.id !== edt.id) ?? [];
+      this.donneesService.donnees()?.emploisDuTemps.filter((e) => e.id !== edt.id) ?? [];
     for (const autre of autresEdts) {
       if (!this.verifierCompatibiliteFrequences(edt.frequence, autre.frequence)) continue;
       const debut1 = edt.dateDebut ?? '0000-01-01';
@@ -161,7 +196,7 @@ export class EmploiDuTempsService {
 
     let creneau: CreneauEdt | undefined;
     for (const edt of donnees.emploisDuTemps) {
-      creneau = edt.creneaux.find(c => c.id === creneauId);
+      creneau = edt.creneaux.find((c) => c.id === creneauId);
       if (creneau) break;
     }
     if (!creneau) return [];
@@ -171,19 +206,19 @@ export class EmploiDuTempsService {
     let elevesIds: string[];
 
     if (!creneauTrouve.elevesConcernes || creneauTrouve.elevesConcernes.type === 'classe') {
-      elevesIds = tousEleves.map(e => e.id);
+      elevesIds = tousEleves.map((e) => e.id);
     } else if (creneauTrouve.elevesConcernes.type === 'groupes') {
       const groupes = creneauTrouve.elevesConcernes.groupes;
       elevesIds = tousEleves
-        .filter(e => e.groupes.some(g => groupes.includes(g)))
-        .map(e => e.id);
+        .filter((e) => e.groupes.some((g) => groupes.includes(g)))
+        .map((e) => e.id);
     } else {
       elevesIds = creneauTrouve.elevesConcernes.elevesIds;
     }
 
     const conflits: string[] = [];
     for (const eleveId of elevesIds) {
-      const eleve = tousEleves.find(e => e.id === eleveId);
+      const eleve = tousEleves.find((e) => e.id === eleveId);
       if (!eleve) continue;
       for (const abs of eleve.absencesRecurrentes) {
         if (

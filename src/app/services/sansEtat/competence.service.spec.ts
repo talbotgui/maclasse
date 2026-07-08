@@ -52,28 +52,28 @@ describe('CompetenceService', () => {
       expect(service.rechercherCompetences('')).toEqual([]);
     });
 
-    it('retourne tableau vide si terme composé d\'espaces', () => {
+    it("retourne tableau vide si terme composé d'espaces", () => {
       expect(service.rechercherCompetences('  ')).toEqual([]);
     });
 
     it('trouve un nœud par libellé exact', () => {
       const resultats = service.rechercherCompetences('Français');
-      expect(resultats.some(c => c.id === 'FR')).toBe(true);
+      expect(resultats.some((c) => c.id === 'FR')).toBe(true);
     });
 
     it('trouve des nœuds en profondeur', () => {
       const resultats = service.rechercherCompetences('texte');
-      expect(resultats.some(c => c.id === 'FR-LECT-1')).toBe(true);
+      expect(resultats.some((c) => c.id === 'FR-LECT-1')).toBe(true);
     });
 
     it('est insensible à la casse', () => {
       const resultats = service.rechercherCompetences('lecture');
-      expect(resultats.some(c => c.id === 'FR-LECT')).toBe(true);
+      expect(resultats.some((c) => c.id === 'FR-LECT')).toBe(true);
     });
 
     it('est insensible aux accents', () => {
       const resultats = service.rechercherCompetences('mathematiques');
-      expect(resultats.some(c => c.id === 'MATH')).toBe(true);
+      expect(resultats.some((c) => c.id === 'MATH')).toBe(true);
     });
 
     it('retourne plusieurs nœuds correspondants', () => {
@@ -92,7 +92,7 @@ describe('CompetenceService', () => {
       expect(chemin[2].id).toBe('FR-LECT-1');
     });
 
-    it('retourne le chemin d\'un nœud racine', () => {
+    it("retourne le chemin d'un nœud racine", () => {
       const chemin = service.obtenirChemin('MATH');
       expect(chemin).toHaveLength(1);
       expect(chemin[0].id).toBe('MATH');

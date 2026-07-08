@@ -54,9 +54,7 @@ export class ChiffrementService {
     );
 
     const payload = new Uint8Array(
-      ChiffrementService.LONGUEUR_SALT +
-        ChiffrementService.LONGUEUR_IV +
-        ciphertext.byteLength,
+      ChiffrementService.LONGUEUR_SALT + ChiffrementService.LONGUEUR_IV + ciphertext.byteLength,
     );
     payload.set(salt, 0);
     payload.set(iv, ChiffrementService.LONGUEUR_SALT);

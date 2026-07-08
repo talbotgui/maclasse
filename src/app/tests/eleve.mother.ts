@@ -2,7 +2,6 @@ import { Eleve } from '../modeles/eleve.modele';
 
 /** Fournit des instances de {@link Eleve} prêtes à l'emploi pour les tests. */
 export class EleveMother {
-
   /**
    * Retourne un {@link Eleve} minimal valide avec des valeurs neutres.
    * Passer un `Partial` pour surcharger uniquement les champs pertinents au test.

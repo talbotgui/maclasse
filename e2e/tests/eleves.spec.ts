@@ -39,24 +39,27 @@ testAvecDonnees('E2E-19 — Modifier un élève existant', async ({ appAvecDonne
   await expect(entete.btnAnnuler).toBeEnabled();
 });
 
-testAvecDonnees('E2E-20 — Annuler une modification en cours (bouton ANNULER du formulaire)', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const eleves = new SelecteursEleves(appAvecDonnees);
+testAvecDonnees(
+  'E2E-20 — Annuler une modification en cours (bouton ANNULER du formulaire)',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await entete.navEleves.click();
-  await eleves.selectionnerMartinot();
-  await eleves.btnModifier.click();
+    await entete.navEleves.click();
+    await eleves.selectionnerMartinot();
+    await eleves.btnModifier.click();
 
-  await eleves.champPrenom.fill('PrenomModifie');
-  await eleves.btnAnnulerFormulaire.click();
+    await eleves.champPrenom.fill('PrenomModifie');
+    await eleves.btnAnnulerFormulaire.click();
 
-  // La fiche affiche le prénom d'origine
-  await expect(eleves.titreFiche).toContainText('Boule');
-  await expect(eleves.titreFiche).not.toContainText('PrenomModifie');
+    // La fiche affiche le prénom d'origine
+    await expect(eleves.titreFiche).toContainText('Boule');
+    await expect(eleves.titreFiche).not.toContainText('PrenomModifie');
 
-  // Aucune mutation → ANNULER entête non affecté par ce formulaire
-  await expect(entete.btnAnnuler).toBeDisabled();
-});
+    // Aucune mutation → ANNULER entête non affecté par ce formulaire
+    await expect(entete.btnAnnuler).toBeDisabled();
+  },
+);
 
 testAvecDonnees('E2E-21 — Supprimer un élève', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
@@ -78,74 +81,83 @@ testAvecDonnees('E2E-21 — Supprimer un élève', async ({ appAvecDonnees }) =>
   await expect(entete.btnAnnuler).toBeEnabled();
 });
 
-testAvecDonnees('E2E-22 — Popin d\'avertissement au clic sur un autre élève sans enregistrer', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const eleves = new SelecteursEleves(appAvecDonnees);
+testAvecDonnees(
+  "E2E-22 — Popin d'avertissement au clic sur un autre élève sans enregistrer",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await entete.navEleves.click();
-  await eleves.selectionnerMartinot();
-  await eleves.btnModifier.click();
-  await eleves.champPrenom.fill('PrenomNonSauvegarde');
+    await entete.navEleves.click();
+    await eleves.selectionnerMartinot();
+    await eleves.btnModifier.click();
+    await eleves.champPrenom.fill('PrenomNonSauvegarde');
 
-  // Cliquer sur un autre élève
-  await eleves.selectionnerGratin();
+    // Cliquer sur un autre élève
+    await eleves.selectionnerGratin();
 
-  // La popin d'avertissement doit s'ouvrir
-  await expect(eleves.btnAvertissementAnnuler).toBeVisible();
-  await expect(eleves.btnAvertissementConfirmer).toBeVisible();
+    // La popin d'avertissement doit s'ouvrir
+    await expect(eleves.btnAvertissementAnnuler).toBeVisible();
+    await expect(eleves.btnAvertissementConfirmer).toBeVisible();
 
-  // Scénario A : ANNULER → reste sur MARTINOT
-  await eleves.btnAvertissementAnnuler.click();
-  await expect(eleves.champPrenom).toHaveValue('PrenomNonSauvegarde');
+    // Scénario A : ANNULER → reste sur MARTINOT
+    await eleves.btnAvertissementAnnuler.click();
+    await expect(eleves.champPrenom).toHaveValue('PrenomNonSauvegarde');
 
-  // Scénario B : cliquer à nouveau sur GRATIN et CONFIRMER
-  await eleves.selectionnerGratin();
-  await eleves.btnAvertissementConfirmer.click();
-  await expect(eleves.titreFiche).toContainText('GRATIN');
-});
+    // Scénario B : cliquer à nouveau sur GRATIN et CONFIRMER
+    await eleves.selectionnerGratin();
+    await eleves.btnAvertissementConfirmer.click();
+    await expect(eleves.titreFiche).toContainText('GRATIN');
+  },
+);
 
-testAvecDonnees('E2E-23 — Popin d\'avertissement au clic sur CRÉER sans enregistrer', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const eleves = new SelecteursEleves(appAvecDonnees);
+testAvecDonnees(
+  "E2E-23 — Popin d'avertissement au clic sur CRÉER sans enregistrer",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await entete.navEleves.click();
-  await eleves.selectionnerMartinot();
-  await eleves.btnModifier.click();
-  await eleves.champPrenom.fill('Brouillon');
+    await entete.navEleves.click();
+    await eleves.selectionnerMartinot();
+    await eleves.btnModifier.click();
+    await eleves.champPrenom.fill('Brouillon');
 
-  await eleves.btnCreerEleve.click();
+    await eleves.btnCreerEleve.click();
 
-  await expect(eleves.btnAvertissementConfirmer).toBeVisible();
-  await eleves.btnAvertissementConfirmer.click();
+    await expect(eleves.btnAvertissementConfirmer).toBeVisible();
+    await eleves.btnAvertissementConfirmer.click();
 
-  await eleves.btnCreerEleve.click();
+    await eleves.btnCreerEleve.click();
 
-  // Formulaire vide pour un nouvel élève
-  await expect(eleves.champPrenom).toHaveValue('');
-  await expect(eleves.champNom).toHaveValue('');
-});
+    // Formulaire vide pour un nouvel élève
+    await expect(eleves.champPrenom).toHaveValue('');
+    await expect(eleves.champNom).toHaveValue('');
+  },
+);
 
-testAvecDonnees('E2E-24 — Popin d\'avertissement au changement d\'écran sans enregistrer', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const eleves = new SelecteursEleves(appAvecDonnees);
+testAvecDonnees(
+  "E2E-24 — Popin d'avertissement au changement d'écran sans enregistrer",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await entete.navEleves.click();
-  await eleves.selectionnerMartinot();
-  await eleves.btnModifier.click();
-  await eleves.champPrenom.fill('Brouillon');
+    await entete.navEleves.click();
+    await eleves.selectionnerMartinot();
+    await eleves.btnModifier.click();
+    await eleves.champPrenom.fill('Brouillon');
 
-  await entete.navProjets.click();
-  await expect(eleves.btnAvertissementConfirmer).toBeVisible();
+    await entete.navProjets.click();
+    await expect(eleves.btnAvertissementConfirmer).toBeVisible();
 
-  // ANNULER → reste sur les élèves
-  await eleves.btnAvertissementAnnuler.click();
-  await expect(appAvecDonnees).toHaveURL(/\/eleves/);
+    // ANNULER → reste sur les élèves
+    await eleves.btnAvertissementAnnuler.click();
+    await expect(appAvecDonnees).toHaveURL(/\/eleves/);
 
-  // Retenter et CONFIRMER → navigue vers les projets
-  await entete.navProjets.click();
-  await eleves.btnAvertissementConfirmer.click();
-  await expect(appAvecDonnees).toHaveURL(/\/projets/);
-});
+    // Retenter et CONFIRMER → navigue vers les projets
+    await entete.navProjets.click();
+    await eleves.btnAvertissementConfirmer.click();
+    await expect(appAvecDonnees).toHaveURL(/\/projets/);
+  },
+);
 
 testAvecDonnees('E2E-25 — Filtre textuel sur la liste des élèves', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
@@ -209,40 +221,46 @@ testAvecDonnees('E2E-27 — Ajouter un contact dans la fiche élève', async ({ 
   await expect(eleves.listeResumeeContacts).toContainText('René Ducobu');
 });
 
-testAvecDonnees('E2E-28 — Ajouter une absence récurrente dans la fiche élève', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const eleves = new SelecteursEleves(appAvecDonnees);
+testAvecDonnees(
+  'E2E-28 — Ajouter une absence récurrente dans la fiche élève',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await entete.navEleves.click();
-  await eleves.selectionnerDucobu();
-  await eleves.btnModifier.click();
+    await entete.navEleves.click();
+    await eleves.selectionnerDucobu();
+    await eleves.btnModifier.click();
 
-  await eleves.btnAjouterAbsenceRecurrente.click();
+    await eleves.btnAjouterAbsenceRecurrente.click();
 
-  await eleves.champNouvelleAbsenceRecurrenteLibelle.fill('Orthophonie');
+    await eleves.champNouvelleAbsenceRecurrenteLibelle.fill('Orthophonie');
 
-  await eleves.btnEnregistrer.click();
+    await eleves.btnEnregistrer.click();
 
-  await expect(eleves.listeResumeeAbsencesRec).toContainText('Orthophonie');
-});
+    await expect(eleves.listeResumeeAbsencesRec).toContainText('Orthophonie');
+  },
+);
 
-testAvecDonnees('E2E-29 — Ajouter une absence ponctuelle dans la fiche élève', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const eleves = new SelecteursEleves(appAvecDonnees);
+testAvecDonnees(
+  'E2E-29 — Ajouter une absence ponctuelle dans la fiche élève',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
 
-  await entete.navEleves.click();
-  await eleves.selectionnerDucobu();
-  await eleves.btnModifier.click();
+    await entete.navEleves.click();
+    await eleves.selectionnerDucobu();
+    await eleves.btnModifier.click();
 
-  await eleves.btnAjouterAbsencePonctuelle.click();
+    await eleves.btnAjouterAbsencePonctuelle.click();
 
-  await eleves.champNouvelleAbsencePonctuelleDate.fill('2026-06-09');
-  await eleves.champNouvelleAbsencePonctuelleJustification.fill('Maladie');
+    await eleves.champNouvelleAbsencePonctuelleDate.fill('2026-06-09');
+    await eleves.champNouvelleAbsencePonctuelleJustification.fill('Maladie');
 
-  await eleves.btnEnregistrer.click();
+    await eleves.btnEnregistrer.click();
 
-  await expect(eleves.listeResumeeAbsencesPonct).toContainText('Maladie');
-});
+    await expect(eleves.listeResumeeAbsencesPonct).toContainText('Maladie');
+  },
+);
 
 testAvecDonnees('E2E-31 — Ajouter un cursus dans la fiche élève', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
@@ -265,7 +283,7 @@ testAvecDonnees('E2E-31 — Ajouter un cursus dans la fiche élève', async ({ a
   await expect(entete.btnAnnuler).toBeEnabled();
 });
 
-testAvecDonnees('E2E-30 — Imprimer la fiche d\'un élève', async ({ appAvecDonnees }) => {
+testAvecDonnees("E2E-30 — Imprimer la fiche d'un élève", async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
   const eleves = new SelecteursEleves(appAvecDonnees);
 

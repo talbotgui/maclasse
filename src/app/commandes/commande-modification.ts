@@ -33,7 +33,7 @@ export class CommandeModification<T extends { id: string }> implements Commande 
   public executer(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
     const tableau = this.accesseur(clone);
-    const index = tableau.findIndex(e => e.id === this.ancienneValeur.id);
+    const index = tableau.findIndex((e) => e.id === this.ancienneValeur.id);
     if (index !== -1) {
       tableau[index] = structuredClone(this.nouvelleValeur);
     }
@@ -48,7 +48,7 @@ export class CommandeModification<T extends { id: string }> implements Commande 
   public annuler(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
     const tableau = this.accesseur(clone);
-    const index = tableau.findIndex(e => e.id === this.ancienneValeur.id);
+    const index = tableau.findIndex((e) => e.id === this.ancienneValeur.id);
     if (index !== -1) {
       tableau[index] = structuredClone(this.ancienneValeur);
     }

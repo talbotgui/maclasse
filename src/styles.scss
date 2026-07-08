@@ -4,7 +4,9 @@
   font-weight: 400;
   font-display: swap;
   src: url('/maclasse/fonts/roboto-latin-ext-400-normal.woff2') format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  unicode-range:
+    U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
 }
 
 @font-face {
@@ -13,7 +15,9 @@
   font-weight: 400;
   font-display: swap;
   src: url('/maclasse/fonts/roboto-latin-400-normal.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
@@ -22,7 +26,9 @@
   font-weight: 500;
   font-display: swap;
   src: url('/maclasse/fonts/roboto-latin-ext-500-normal.woff2') format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  unicode-range:
+    U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
 }
 
 @font-face {
@@ -31,7 +37,9 @@
   font-weight: 500;
   font-display: swap;
   src: url('/maclasse/fonts/roboto-latin-500-normal.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
@@ -40,7 +48,9 @@
   font-weight: 700;
   font-display: swap;
   src: url('/maclasse/fonts/roboto-latin-ext-700-normal.woff2') format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  unicode-range:
+    U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
 }
 
 @font-face {
@@ -49,7 +59,9 @@
   font-weight: 700;
   font-display: swap;
   src: url('/maclasse/fonts/roboto-latin-700-normal.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 *,
@@ -74,88 +86,88 @@ body {
 }
 
 :root {
-  --couleur-primaire:        #2563EB;
-  --couleur-primaire-sombre: #1D4ED8;
-  --fond-global:             #F8FAFC;
-  --fond-entete:             #1E3A8A;
-  --fond-colonne:            #EFF6FF;
-  --fond-section:            #FFFFFF;
-  --texte-principal:         #0F172A;
-  --texte-secondaire:        #475569;
-  --texte-sur-primaire:      #FFFFFF;
-  --bordure:                 #CBD5E1;
-  --couleur-focus:           #F59E0B;
-  --chip-actif:              #BFDBFE;
-  --avertissement:           #F59E0B;
-  --erreur:                  #DC2626;
+  --couleur-primaire: #2563eb;
+  --couleur-primaire-sombre: #1d4ed8;
+  --fond-global: #f8fafc;
+  --fond-entete: #1e3a8a;
+  --fond-colonne: #eff6ff;
+  --fond-section: #ffffff;
+  --texte-principal: #0f172a;
+  --texte-secondaire: #475569;
+  --texte-sur-primaire: #ffffff;
+  --bordure: #cbd5e1;
+  --couleur-focus: #f59e0b;
+  --chip-actif: #bfdbfe;
+  --avertissement: #f59e0b;
+  --erreur: #dc2626;
 }
 
 :root[data-theme='foret'] {
-  --couleur-primaire:        #16A34A;
-  --couleur-primaire-sombre: #15803D;
-  --fond-global:             #F0FDF4;
-  --fond-entete:             #14532D;
-  --fond-colonne:            #DCFCE7;
-  --fond-section:            #FFFFFF;
-  --texte-principal:         #14532D;
-  --texte-secondaire:        #4D7C0F;
-  --texte-sur-primaire:      #FFFFFF;
-  --bordure:                 #BBF7D0;
-  --couleur-focus:           #F59E0B;
-  --chip-actif:              #86EFAC;
-  --avertissement:           #D97706;
-  --erreur:                  #DC2626;
+  --couleur-primaire: #16a34a;
+  --couleur-primaire-sombre: #15803d;
+  --fond-global: #f0fdf4;
+  --fond-entete: #14532d;
+  --fond-colonne: #dcfce7;
+  --fond-section: #ffffff;
+  --texte-principal: #14532d;
+  --texte-secondaire: #4d7c0f;
+  --texte-sur-primaire: #ffffff;
+  --bordure: #bbf7d0;
+  --couleur-focus: #f59e0b;
+  --chip-actif: #86efac;
+  --avertissement: #d97706;
+  --erreur: #dc2626;
 }
 
 :root[data-theme='crepuscule'] {
-  --couleur-primaire:        #7C3AED;
-  --couleur-primaire-sombre: #6D28D9;
-  --fond-global:             #FAF5FF;
-  --fond-entete:             #3B0764;
-  --fond-colonne:            #F3E8FF;
-  --fond-section:            #FFFFFF;
-  --texte-principal:         #1E1B4B;
-  --texte-secondaire:        #6D28D9;
-  --texte-sur-primaire:      #FFFFFF;
-  --bordure:                 #DDD6FE;
-  --couleur-focus:           #F59E0B;
-  --chip-actif:              #C4B5FD;
-  --avertissement:           #D97706;
-  --erreur:                  #DC2626;
+  --couleur-primaire: #7c3aed;
+  --couleur-primaire-sombre: #6d28d9;
+  --fond-global: #faf5ff;
+  --fond-entete: #3b0764;
+  --fond-colonne: #f3e8ff;
+  --fond-section: #ffffff;
+  --texte-principal: #1e1b4b;
+  --texte-secondaire: #6d28d9;
+  --texte-sur-primaire: #ffffff;
+  --bordure: #ddd6fe;
+  --couleur-focus: #f59e0b;
+  --chip-actif: #c4b5fd;
+  --avertissement: #d97706;
+  --erreur: #dc2626;
 }
 
 :root[data-theme='terre'] {
-  --couleur-primaire:        #B45309;
-  --couleur-primaire-sombre: #92400E;
-  --fond-global:             #FFFBEB;
-  --fond-entete:             #451A03;
-  --fond-colonne:            #FEF3C7;
-  --fond-section:            #FFFBF0;
-  --texte-principal:         #292524;
-  --texte-secondaire:        #78716C;
-  --texte-sur-primaire:      #FFFBEB;
-  --bordure:                 #FDE68A;
-  --couleur-focus:           #7C3AED;
-  --chip-actif:              #FCD34D;
-  --avertissement:           #D97706;
-  --erreur:                  #DC2626;
+  --couleur-primaire: #b45309;
+  --couleur-primaire-sombre: #92400e;
+  --fond-global: #fffbeb;
+  --fond-entete: #451a03;
+  --fond-colonne: #fef3c7;
+  --fond-section: #fffbf0;
+  --texte-principal: #292524;
+  --texte-secondaire: #78716c;
+  --texte-sur-primaire: #fffbeb;
+  --bordure: #fde68a;
+  --couleur-focus: #7c3aed;
+  --chip-actif: #fcd34d;
+  --avertissement: #d97706;
+  --erreur: #dc2626;
 }
 
 :root[data-theme='contraste'] {
-  --couleur-primaire:        #000000;
+  --couleur-primaire: #000000;
   --couleur-primaire-sombre: #111111;
-  --fond-global:             #FFFFFF;
-  --fond-entete:             #000000;
-  --fond-colonne:            #F5F5F5;
-  --fond-section:            #FFFFFF;
-  --texte-principal:         #000000;
-  --texte-secondaire:        #333333;
-  --texte-sur-primaire:      #FFFFFF;
-  --bordure:                 #000000;
-  --couleur-focus:           #FF0000;
-  --chip-actif:              #000000;
-  --avertissement:           #CC7700;
-  --erreur:                  #CC0000;
+  --fond-global: #ffffff;
+  --fond-entete: #000000;
+  --fond-colonne: #f5f5f5;
+  --fond-section: #ffffff;
+  --texte-principal: #000000;
+  --texte-secondaire: #333333;
+  --texte-sur-primaire: #ffffff;
+  --bordure: #000000;
+  --couleur-focus: #ff0000;
+  --chip-actif: #000000;
+  --avertissement: #cc7700;
+  --erreur: #cc0000;
 }
 
 button {
@@ -165,7 +177,9 @@ button {
   border: 2px solid transparent;
   border-radius: 4px;
   padding: 0.5rem 1rem;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 
   &:focus-visible {
     outline: 3px solid var(--couleur-focus);
@@ -644,7 +658,7 @@ button {
 
 @media print {
   .mc-colonne-gauche {
-    display: none!important;
+    display: none !important;
   }
 
   .mc-btn-primaire,
@@ -657,7 +671,7 @@ button {
   }
 
   section {
-    margin-bottom:0px!important;
-    padding-bottom:0px!important;
+    margin-bottom: 0px !important;
+    padding-bottom: 0px !important;
   }
 }

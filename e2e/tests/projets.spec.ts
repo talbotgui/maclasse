@@ -24,25 +24,28 @@ testAvecDonnees('E2E-31 — Créer un nouveau projet', async ({ appAvecDonnees }
   await expect(entete.btnAnnuler).toBeEnabled();
 });
 
-testAvecDonnees('E2E-32 — Modifier les informations générales d\'un projet', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const projets = new SelecteursProjets(appAvecDonnees);
+testAvecDonnees(
+  "E2E-32 — Modifier les informations générales d'un projet",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const projets = new SelecteursProjets(appAvecDonnees);
 
-  await entete.navProjets.click();
-  await projets.btnProjetJournal.click();
-  await projets.btnModifierProjet.click();
+    await entete.navProjets.click();
+    await projets.btnProjetJournal.click();
+    await projets.btnModifierProjet.click();
 
-  await projets.champFormDescProjet.fill('Une nouvelle description de test');
-  // Basculer le premier chip élève
-  await projets.premierChipEleveProjet.click();
-  await projets.btnEnregistrerProjet.click();
+    await projets.champFormDescProjet.fill('Une nouvelle description de test');
+    // Basculer le premier chip élève
+    await projets.premierChipEleveProjet.click();
+    await projets.btnEnregistrerProjet.click();
 
-  // La description mise à jour est affichée en lecture seule
-  await expect(projets.descriptionFiche).toContainText('Une nouvelle description de test');
-  await expect(entete.btnAnnuler).toBeEnabled();
-});
+    // La description mise à jour est affichée en lecture seule
+    await expect(projets.descriptionFiche).toContainText('Une nouvelle description de test');
+    await expect(entete.btnAnnuler).toBeEnabled();
+  },
+);
 
-testAvecDonnees('E2E-33 — Annuler la modification d\'un projet', async ({ appAvecDonnees }) => {
+testAvecDonnees("E2E-33 — Annuler la modification d'un projet", async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
   const projets = new SelecteursProjets(appAvecDonnees);
 
@@ -78,7 +81,7 @@ testAvecDonnees('E2E-34 — Ajouter une période à un projet', async ({ appAvec
   await expect(entete.btnAnnuler).toBeEnabled();
 });
 
-testAvecDonnees('E2E-35 — Supprimer une période d\'un projet', async ({ appAvecDonnees }) => {
+testAvecDonnees("E2E-35 — Supprimer une période d'un projet", async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
   const projets = new SelecteursProjets(appAvecDonnees);
 
@@ -117,30 +120,33 @@ testAvecDonnees('E2E-36 — Filtre textuel sur la liste des projets', async ({ a
   await expect(projets.btnProjetSpectacle).toBeVisible();
 });
 
-testAvecDonnees('E2E-37 — Filtre par chip de domaine de compétences sur les projets', async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const projets = new SelecteursProjets(appAvecDonnees);
+testAvecDonnees(
+  'E2E-37 — Filtre par chip de domaine de compétences sur les projets',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const projets = new SelecteursProjets(appAvecDonnees);
 
-  await entete.navProjets.click();
+    await entete.navProjets.click();
 
-  // Filtre FR → seul "Journal de la classe" (domaine FR)
-  await projets.chipDomaineFR.click();
-  await expect(projets.btnProjetJournal).toBeVisible();
-  await expect(projets.btnProjetPotager).not.toBeVisible();
-  await expect(projets.btnProjetSpectacle).not.toBeVisible();
+    // Filtre FR → seul "Journal de la classe" (domaine FR)
+    await projets.chipDomaineFR.click();
+    await expect(projets.btnProjetJournal).toBeVisible();
+    await expect(projets.btnProjetPotager).not.toBeVisible();
+    await expect(projets.btnProjetSpectacle).not.toBeVisible();
 
-  // Cumul FR + MAT → Journal (FR) et Potager (MAT), Spectacle toujours masqué
-  await projets.chipDomaineMAT.click();
-  await expect(projets.btnProjetJournal).toBeVisible();
-  await expect(projets.btnProjetPotager).toBeVisible();
-  await expect(projets.btnProjetSpectacle).not.toBeVisible();
+    // Cumul FR + MAT → Journal (FR) et Potager (MAT), Spectacle toujours masqué
+    await projets.chipDomaineMAT.click();
+    await expect(projets.btnProjetJournal).toBeVisible();
+    await expect(projets.btnProjetPotager).toBeVisible();
+    await expect(projets.btnProjetSpectacle).not.toBeVisible();
 
-  // Déselectionner FR → seul Potager (MAT) visible
-  await projets.chipDomaineFR.click();
-  await expect(projets.btnProjetJournal).not.toBeVisible();
-  await expect(projets.btnProjetPotager).toBeVisible();
-  await expect(projets.btnProjetSpectacle).not.toBeVisible();
-});
+    // Déselectionner FR → seul Potager (MAT) visible
+    await projets.chipDomaineFR.click();
+    await expect(projets.btnProjetJournal).not.toBeVisible();
+    await expect(projets.btnProjetPotager).toBeVisible();
+    await expect(projets.btnProjetSpectacle).not.toBeVisible();
+  },
+);
 
 testAvecDonnees('E2E-38 — Supprimer un projet', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
@@ -163,7 +169,7 @@ testAvecDonnees('E2E-38 — Supprimer un projet', async ({ appAvecDonnees }) => 
   await expect(entete.btnAnnuler).toBeEnabled();
 });
 
-testAvecDonnees('E2E-39 — Imprimer la fiche d\'un projet', async ({ appAvecDonnees }) => {
+testAvecDonnees("E2E-39 — Imprimer la fiche d'un projet", async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
   const projets = new SelecteursProjets(appAvecDonnees);
 

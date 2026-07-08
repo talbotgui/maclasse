@@ -1,5 +1,4 @@
 @if (!creneau()) {
-
   <!-- ── Formulaire propriétés EDT ── -->
   @if (formEdt) {
     <form class="edt-formulaire" id="formProprietesEdt" (ngSubmit)="onEnregistrerEdt()">
@@ -42,28 +41,25 @@
         <button id="btnEnregistrerEdt" type="submit" class="mc-btn-primaire">
           {{ LIBELLES.commun.enregistrer }}
         </button>
-        <button
-          id="btnAnnulerEdt"
-          type="button"
-          class="mc-btn-fantome"
-          (click)="edtAnnule.emit()"
-        >{{ LIBELLES.commun.annuler }}</button>
+        <button id="btnAnnulerEdt" type="button" class="mc-btn-fantome" (click)="edtAnnule.emit()">
+          {{ LIBELLES.commun.annuler }}
+        </button>
         <mc-bouton-destruction
           [idBase]="'btnSupprimerEdt'"
           [petit]="true"
           (confirme)="edtSupprime.emit()"
-        >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction>
+          >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction
+        >
       </div>
     </form>
   }
-
 } @else {
-
   <!-- ── Formulaire créneau ── -->
   @if (formCreneau) {
     <form class="edt-formulaire" id="formCreneau" (ngSubmit)="onEnregistrerCreneau()">
       <h2 class="edt-formulaire__titre">
-        {{ estEditionCreneau() ? LIBELLES.commun.modifier : LIBELLES.commun.creer }} {{ LIBELLES.edt.suffixeCreneau }} – {{ jourLibelle() }}
+        {{ estEditionCreneau() ? LIBELLES.commun.modifier : LIBELLES.commun.creer }}
+        {{ LIBELLES.edt.suffixeCreneau }} – {{ jourLibelle() }}
       </h2>
 
       <mc-champ-heure
@@ -135,16 +131,18 @@
           type="button"
           class="mc-btn-fantome"
           (click)="edtAnnule.emit()"
-        >{{ LIBELLES.commun.annuler }}</button>
+        >
+          {{ LIBELLES.commun.annuler }}
+        </button>
         @if (estEditionCreneau()) {
           <mc-bouton-destruction
             [idBase]="'btnSupprimerCreneau'"
             [petit]="true"
             (confirme)="creneauSupprime.emit(formCreneau.id)"
-          >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction>
+            >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction
+          >
         }
       </div>
     </form>
   }
-
 }

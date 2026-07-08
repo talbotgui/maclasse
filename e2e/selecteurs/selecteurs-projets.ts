@@ -11,7 +11,6 @@ import { SelecteursBase } from './selecteurs-base';
  *   - "Spectacle de fin d'année" (id : 33333333-aaaa-bbbb-cccc-spectacle0003) — domaines : EMC, EPS
  */
 export class SelecteursProjets extends SelecteursBase {
-
   // --- Colonne gauche : liste ---
   /** Bouton CRÉER un nouveau projet. */
   readonly btnCreerProjet: Locator;
@@ -124,7 +123,9 @@ export class SelecteursProjets extends SelecteursBase {
     this.champPeriodeFinProjet0 = page.locator('#champPeriodeFinProjet0-input');
     this.champPeriodeDescProjet0 = page.locator('#champPeriodeDescProjet0-input');
     this.btnSupprimerPeriodeProjet0 = page.locator('#btnSupprimerPeriodeProjet0');
-    this.btnSupprimerPeriodeProjet0Confirmer = page.locator('#btnSupprimerPeriodeProjet0_confirmer');
+    this.btnSupprimerPeriodeProjet0Confirmer = page.locator(
+      '#btnSupprimerPeriodeProjet0_confirmer',
+    );
 
     this.champPeriodeNomProjet2 = page.locator('#champPeriodeNomProjet2-input');
   }

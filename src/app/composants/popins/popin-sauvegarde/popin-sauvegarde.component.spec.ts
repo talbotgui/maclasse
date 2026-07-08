@@ -43,7 +43,7 @@ describe('PopinSauvegardeComponent', () => {
       expect(HTMLDialogElement.prototype.close).toHaveBeenCalled();
     });
 
-    it('ouverture réinitialise motDePasse à \'\'', () => {
+    it("ouverture réinitialise motDePasse à ''", () => {
       (component as any).motDePasse.set('ancien');
 
       fixture.componentRef.setInput('visible', true);
@@ -54,7 +54,7 @@ describe('PopinSauvegardeComponent', () => {
   });
 
   describe('surConfirmation', () => {
-    it('sans mot de passe → n\'émet pas confirme', () => {
+    it("sans mot de passe → n'émet pas confirme", () => {
       const spy = vi.spyOn((component as any).confirme, 'emit');
       (component as any).motDePasse.set('');
 
@@ -74,7 +74,7 @@ describe('PopinSauvegardeComponent', () => {
   });
 
   describe('surAnnulation', () => {
-    it('émet l\'output annule', () => {
+    it("émet l'output annule", () => {
       const spy = vi.spyOn((component as any).annule, 'emit');
 
       component['surAnnulation']();
@@ -93,7 +93,7 @@ describe('PopinSauvegardeComponent', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-    it('émet l\'output annule', () => {
+    it("émet l'output annule", () => {
       const spy = vi.spyOn((component as any).annule, 'emit');
 
       component['surCancel'](new Event('cancel'));

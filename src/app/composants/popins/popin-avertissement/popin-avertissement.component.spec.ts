@@ -54,7 +54,7 @@ describe('PopinAvertissementComponent', () => {
   });
 
   describe('surConfirmation', () => {
-    it('émet l\'output confirme', () => {
+    it("émet l'output confirme", () => {
       const spy = vi.spyOn((component as any).confirme, 'emit');
 
       component['surConfirmation']();
@@ -64,7 +64,7 @@ describe('PopinAvertissementComponent', () => {
   });
 
   describe('surAnnulation', () => {
-    it('émet l\'output annule', () => {
+    it("émet l'output annule", () => {
       const spy = vi.spyOn((component as any).annule, 'emit');
 
       component['surAnnulation']();
@@ -83,7 +83,7 @@ describe('PopinAvertissementComponent', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-    it('émet l\'output annule', () => {
+    it("émet l'output annule", () => {
       const spy = vi.spyOn((component as any).annule, 'emit');
 
       component['surCancel'](new Event('cancel'));

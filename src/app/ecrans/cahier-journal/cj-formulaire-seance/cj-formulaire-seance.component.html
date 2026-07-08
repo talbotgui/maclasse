@@ -1,8 +1,8 @@
 <form class="cj-formulaire-seance" id="formSeance" (ngSubmit)="onEnregistrer()">
-
   <div class="cj-formulaire-seance__entete">
     <h3 class="cj-formulaire-seance__titre">
-      {{ seance() ? LIBELLES.commun.modifier : LIBELLES.commun.creer }} {{ LIBELLES.cahierJournal.suffixeSeance }}
+      {{ seance() ? LIBELLES.commun.modifier : LIBELLES.commun.creer }}
+      {{ LIBELLES.cahierJournal.suffixeSeance }}
     </h3>
   </div>
 
@@ -34,8 +34,11 @@
     />
 
     @if (formSeance.type === 'pedagogique') {
-
-      <div class="cj-formulaire-seance__groupe" role="group" aria-labelledby="labelDisciplinesSeance">
+      <div
+        class="cj-formulaire-seance__groupe"
+        role="group"
+        aria-labelledby="labelDisciplinesSeance"
+      >
         <p id="labelDisciplinesSeance" class="cj-formulaire-seance__label-groupe">
           {{ LIBELLES.cahierJournal.labelDisciplines }}
         </p>
@@ -91,7 +94,9 @@
       />
 
       <div class="cj-formulaire-seance__groupe">
-        <p class="cj-formulaire-seance__label-groupe">{{ LIBELLES.cahierJournal.labelCompetences }}</p>
+        <p class="cj-formulaire-seance__label-groupe">
+          {{ LIBELLES.cahierJournal.labelCompetences }}
+        </p>
         <mc-selecteur-competences
           [competencesSelectionnees]="formSeance.competencesIds ?? []"
           [multiSelection]="true"
@@ -108,7 +113,6 @@
           name="elevesConcernes"
         />
       </div>
-
     }
   </div>
 
@@ -116,12 +120,8 @@
     <button id="btnEnregistrerSeance" type="submit" class="mc-btn-primaire">
       {{ LIBELLES.commun.enregistrer }}
     </button>
-    <button
-      id="btnAnnulerSeance"
-      type="button"
-      class="mc-btn-fantome"
-      (click)="annuler.emit()"
-    >{{ LIBELLES.commun.annuler }}</button>
+    <button id="btnAnnulerSeance" type="button" class="mc-btn-fantome" (click)="annuler.emit()">
+      {{ LIBELLES.commun.annuler }}
+    </button>
   </div>
-
 </form>

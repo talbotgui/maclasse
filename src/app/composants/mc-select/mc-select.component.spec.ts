@@ -12,8 +12,12 @@ describe('McSelectComponent', () => {
   let fixture: ComponentFixture<McSelectComponent>;
   let component: McSelectComponent;
 
-  const selectEl = () => fixture.debugElement.query(By.css('select')).nativeElement as HTMLSelectElement;
-  const optionEls = () => fixture.debugElement.queryAll(By.css('option')).map(d => d.nativeElement as HTMLOptionElement);
+  const selectEl = () =>
+    fixture.debugElement.query(By.css('select')).nativeElement as HTMLSelectElement;
+  const optionEls = () =>
+    fixture.debugElement
+      .queryAll(By.css('option'))
+      .map((d) => d.nativeElement as HTMLOptionElement);
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -42,7 +46,7 @@ describe('McSelectComponent', () => {
   });
 
   describe('registerOnChange', () => {
-    it('callback appelé lors d\'un changement', () => {
+    it("callback appelé lors d'un changement", () => {
       const cb = vi.fn();
       component.registerOnChange(cb);
       fixture.detectChanges();
@@ -84,7 +88,7 @@ describe('McSelectComponent', () => {
   });
 
   describe('option vide', () => {
-    it('avecOptionVide=false → pas d\'option vide', () => {
+    it("avecOptionVide=false → pas d'option vide", () => {
       fixture.componentRef.setInput('avecOptionVide', false);
       fixture.detectChanges();
 
@@ -102,7 +106,7 @@ describe('McSelectComponent', () => {
   });
 
   describe('rendu', () => {
-    it('autant d\'options que de valeurs (sans option vide)', () => {
+    it("autant d'options que de valeurs (sans option vide)", () => {
       expect(optionEls()).toHaveLength(2);
     });
 

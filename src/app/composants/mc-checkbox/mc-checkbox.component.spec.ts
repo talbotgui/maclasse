@@ -7,15 +7,17 @@ describe('McCheckboxComponent', () => {
   let fixture: ComponentFixture<McCheckboxComponent>;
   let component: McCheckboxComponent;
 
-  const checkboxEl = () => fixture.debugElement.query(By.css('input[type="checkbox"]')).nativeElement as HTMLInputElement;
-  const labelEl = () => fixture.debugElement.query(By.css('label')).nativeElement as HTMLLabelElement;
+  const checkboxEl = () =>
+    fixture.debugElement.query(By.css('input[type="checkbox"]')).nativeElement as HTMLInputElement;
+  const labelEl = () =>
+    fixture.debugElement.query(By.css('label')).nativeElement as HTMLLabelElement;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
     fixture = TestBed.createComponent(McCheckboxComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('id', 'accepte');
-    fixture.componentRef.setInput('label', 'J\'accepte');
+    fixture.componentRef.setInput('label', "J'accepte");
     fixture.detectChanges();
   });
 
@@ -110,12 +112,12 @@ describe('McCheckboxComponent', () => {
       expect(labelEl().textContent).toContain("J'accepte");
     });
 
-    it('label for correspond à l\'id', () => {
+    it("label for correspond à l'id", () => {
       expect(labelEl().getAttribute('for')).toBe('accepte');
       expect(checkboxEl().id).toBe('accepte');
     });
 
-    it('required=true ajoute l\'attribut required', () => {
+    it("required=true ajoute l'attribut required", () => {
       fixture.componentRef.setInput('required', true);
       fixture.detectChanges();
 

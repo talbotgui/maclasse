@@ -8,7 +8,8 @@ describe('McChampRechercheComponent', () => {
   let component: McChampRechercheComponent;
 
   const input = () => fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
-  const btnReinitialiser = () => fixture.debugElement.query(By.css('button'))?.nativeElement as HTMLButtonElement | null;
+  const btnReinitialiser = () =>
+    fixture.debugElement.query(By.css('button'))?.nativeElement as HTMLButtonElement | null;
 
   const saisir = (valeur: string) => {
     input().value = valeur;
@@ -64,7 +65,7 @@ describe('McChampRechercheComponent', () => {
       fixture.detectChanges();
     });
 
-    it('saisie → n\'émet pas avant le délai', () => {
+    it("saisie → n'émet pas avant le délai", () => {
       const spy = vi.spyOn((component as any).rechercheChange, 'emit');
 
       saisir('sc');
@@ -101,7 +102,7 @@ describe('McChampRechercheComponent', () => {
       fixture.detectChanges();
     });
 
-    it('reinitialiser → émet \'\' immédiatement et annule le timer', () => {
+    it("reinitialiser → émet '' immédiatement et annule le timer", () => {
       const spy = vi.spyOn((component as any).rechercheChange, 'emit');
 
       saisir('sc');
@@ -120,7 +121,7 @@ describe('McChampRechercheComponent', () => {
       fixture.detectChanges();
     });
 
-    it('détruire le composant avec timer actif → pas d\'émission tardive', () => {
+    it("détruire le composant avec timer actif → pas d'émission tardive", () => {
       const spy = vi.spyOn((component as any).rechercheChange, 'emit');
 
       saisir('sc');

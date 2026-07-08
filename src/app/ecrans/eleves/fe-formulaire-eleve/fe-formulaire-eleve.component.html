@@ -1,26 +1,61 @@
 <div class="form-eleve">
-
   <!-- Bandeau supérieur -->
   <div class="form-eleve__bandeau">
     <div class="form-eleve__bandeau-noms">
-      <mc-input id="champFormPrenom" [label]="LIBELLES.eleve.labelPrenom" [(ngModel)]="formEleve.prenom" [mcAutoFocus]="focusDemande()" />
+      <mc-input
+        id="champFormPrenom"
+        [label]="LIBELLES.eleve.labelPrenom"
+        [(ngModel)]="formEleve.prenom"
+        [mcAutoFocus]="focusDemande()"
+      />
       <mc-input id="champFormNom" [label]="LIBELLES.eleve.labelNom" [(ngModel)]="formEleve.nom" />
     </div>
     <div class="form-eleve__bandeau-actions">
-      <button id="btnEnregistrerEleve" class="mc-btn-primaire" (click)="onEnregistrer()">{{ LIBELLES.commun.enregistrer }}</button>
-      <button id="btnAnnulerEleve" class="mc-btn-fantome" (click)="onAnnuler()">{{ LIBELLES.commun.annuler }}</button>
+      <button id="btnEnregistrerEleve" class="mc-btn-primaire" (click)="onEnregistrer()">
+        {{ LIBELLES.commun.enregistrer }}
+      </button>
+      <button id="btnAnnulerEleve" class="mc-btn-fantome" (click)="onAnnuler()">
+        {{ LIBELLES.commun.annuler }}
+      </button>
     </div>
   </div>
 
   <!-- Section : Identité -->
   <section class="form-eleve__section" aria-labelledby="titreFormIdentite">
-    <h3 id="titreFormIdentite" class="form-eleve__titre-section">{{ LIBELLES.eleve.sectionIdentite }}</h3>
+    <h3 id="titreFormIdentite" class="form-eleve__titre-section">
+      {{ LIBELLES.eleve.sectionIdentite }}
+    </h3>
     <div class="form-eleve__grille">
-      <mc-radio-group id="champFormSexe" [label]="LIBELLES.eleve.labelSexe" [options]="optionsSexe" [(ngModel)]="formEleve.sexe" />
-      <mc-input id="champFormDateNaissance" [label]="LIBELLES.eleve.labelDateNaissance" type="date" [(ngModel)]="formEleve.dateNaissance" />
-      <mc-input id="champFormDateArrivee" [label]="LIBELLES.eleve.labelDateArrivee" type="date" [(ngModel)]="formEleve.dateArrivee" />
-      <mc-input id="champFormNiveau" [label]="LIBELLES.eleve.labelNiveau" [(ngModel)]="formEleve.niveau" />
-      <mc-select id="champFormStatut" [label]="LIBELLES.eleve.labelStatut" [options]="optionsStatut" [avecOptionVide]="true" [(ngModel)]="formEleve.statut" />
+      <mc-radio-group
+        id="champFormSexe"
+        [label]="LIBELLES.eleve.labelSexe"
+        [options]="optionsSexe"
+        [(ngModel)]="formEleve.sexe"
+      />
+      <mc-input
+        id="champFormDateNaissance"
+        [label]="LIBELLES.eleve.labelDateNaissance"
+        type="date"
+        [(ngModel)]="formEleve.dateNaissance"
+      />
+      <mc-input
+        id="champFormDateArrivee"
+        [label]="LIBELLES.eleve.labelDateArrivee"
+        type="date"
+        [(ngModel)]="formEleve.dateArrivee"
+      />
+      <mc-input
+        id="champFormNiveau"
+        [label]="LIBELLES.eleve.labelNiveau"
+        [(ngModel)]="formEleve.niveau"
+      />
+      <mc-select
+        id="champFormStatut"
+        [label]="LIBELLES.eleve.labelStatut"
+        [options]="optionsStatut"
+        [avecOptionVide]="true"
+        [(ngModel)]="formEleve.statut"
+      />
     </div>
     <fieldset class="form-eleve__groupes">
       <legend>{{ LIBELLES.eleve.labelGroupes }}</legend>
@@ -36,25 +71,73 @@
       </div>
     </fieldset>
     <div class="form-eleve__grille">
-      <mc-textarea id="champFormBilans" [label]="LIBELLES.eleve.labelBilans" [(ngModel)]="formEleve.bilans" />
-      <mc-textarea id="champFormAccueil" [label]="LIBELLES.eleve.labelAccueil" [(ngModel)]="formEleve.accueil" />
-      <mc-textarea id="champFormInclusion" [label]="LIBELLES.eleve.labelInclusion" [(ngModel)]="formEleve.inclusion" />
+      <mc-textarea
+        id="champFormBilans"
+        [label]="LIBELLES.eleve.labelBilans"
+        [(ngModel)]="formEleve.bilans"
+      />
+      <mc-textarea
+        id="champFormAccueil"
+        [label]="LIBELLES.eleve.labelAccueil"
+        [(ngModel)]="formEleve.accueil"
+      />
+      <mc-textarea
+        id="champFormInclusion"
+        [label]="LIBELLES.eleve.labelInclusion"
+        [(ngModel)]="formEleve.inclusion"
+      />
     </div>
   </section>
 
   <!-- Section : Contacts -->
   <section class="form-eleve__section" aria-labelledby="titreFormContacts">
-    <h3 id="titreFormContacts" class="form-eleve__titre-section">{{ LIBELLES.eleve.sectionContacts }}</h3>
-    <button id="btnAjouterContact" class="mc-btn-primaire mc-btn-sm" (click)="ajouterContact()">{{ LIBELLES.eleve.boutonAjouterContact }}</button>
+    <h3 id="titreFormContacts" class="form-eleve__titre-section">
+      {{ LIBELLES.eleve.sectionContacts }}
+    </h3>
+    <button id="btnAjouterContact" class="mc-btn-primaire mc-btn-sm" (click)="ajouterContact()">
+      {{ LIBELLES.eleve.boutonAjouterContact }}
+    </button>
     <ul class="form-eleve__liste-sous-items">
       @for (contact of formEleve.contacts; track $index; let i = $index) {
         <li class="form-eleve__sous-item">
-          <mc-select [id]="'champContactType' + i" [label]="LIBELLES.eleve.labelContactType" [options]="optionsTypeContact" [avecOptionVide]="true" [(ngModel)]="contact.type" [mcAutoFocus]="i === indexAFocaliserContact()" />
-          <mc-input [id]="'champContactNom' + i" [label]="LIBELLES.eleve.labelContactNom" [(ngModel)]="contact.nom" />
-          <mc-input [id]="'champContactEmail' + i" [label]="LIBELLES.eleve.labelContactEmail" type="email" [(ngModel)]="contact.email" />
-          <mc-input [id]="'champContactTel' + i" [label]="LIBELLES.eleve.labelContactTelephone" type="tel" [(ngModel)]="contact.telephone" />
-          <mc-textarea [id]="'champContactAdresse' + i" [label]="LIBELLES.eleve.labelContactAdresse" [lignes]="2" [(ngModel)]="contact.adressePostale" />
-          <mc-bouton-destruction [idBase]="'btnSupprimerContact' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerContact(i)" />
+          <mc-select
+            [id]="'champContactType' + i"
+            [label]="LIBELLES.eleve.labelContactType"
+            [options]="optionsTypeContact"
+            [avecOptionVide]="true"
+            [(ngModel)]="contact.type"
+            [mcAutoFocus]="i === indexAFocaliserContact()"
+          />
+          <mc-input
+            [id]="'champContactNom' + i"
+            [label]="LIBELLES.eleve.labelContactNom"
+            [(ngModel)]="contact.nom"
+          />
+          <mc-input
+            [id]="'champContactEmail' + i"
+            [label]="LIBELLES.eleve.labelContactEmail"
+            type="email"
+            [(ngModel)]="contact.email"
+          />
+          <mc-input
+            [id]="'champContactTel' + i"
+            [label]="LIBELLES.eleve.labelContactTelephone"
+            type="tel"
+            [(ngModel)]="contact.telephone"
+          />
+          <mc-textarea
+            [id]="'champContactAdresse' + i"
+            [label]="LIBELLES.eleve.labelContactAdresse"
+            [lignes]="2"
+            [(ngModel)]="contact.adressePostale"
+          />
+          <mc-bouton-destruction
+            [idBase]="'btnSupprimerContact' + i"
+            [desactive]="false"
+            [tooltipDesactive]="''"
+            [petit]="true"
+            (confirme)="supprimerContact(i)"
+          />
         </li>
       }
     </ul>
@@ -62,17 +145,54 @@
 
   <!-- Section : Absences récurrentes -->
   <section class="form-eleve__section" aria-labelledby="titreFormAbsRec">
-    <h3 id="titreFormAbsRec" class="form-eleve__titre-section">{{ LIBELLES.eleve.sectionAbsencesRecurrentes }}</h3>
-    <button id="btnAjouterAbsRec" class="mc-btn-primaire mc-btn-sm" (click)="ajouterAbsenceRecurrente()">{{ LIBELLES.eleve.boutonAjouterAbsenceRec }}</button>
+    <h3 id="titreFormAbsRec" class="form-eleve__titre-section">
+      {{ LIBELLES.eleve.sectionAbsencesRecurrentes }}
+    </h3>
+    <button
+      id="btnAjouterAbsRec"
+      class="mc-btn-primaire mc-btn-sm"
+      (click)="ajouterAbsenceRecurrente()"
+    >
+      {{ LIBELLES.eleve.boutonAjouterAbsenceRec }}
+    </button>
     <ul class="form-eleve__liste-sous-items">
       @for (abs of formEleve.absencesRecurrentes; track abs.id; let i = $index) {
         <li class="form-eleve__sous-item">
-          <mc-input [id]="'champAbsRecLibelle' + i" [label]="LIBELLES.eleve.labelAbsenceLibelle" [(ngModel)]="abs.libelle" [mcAutoFocus]="i === indexAFocaliserAbsRec()" />
-          <mc-select [id]="'champAbsRecJour' + i" [label]="LIBELLES.eleve.labelAbsenceJour" [options]="optionsJour" [(ngModel)]="abs.jour" />
-          <mc-champ-heure [id]="'champAbsRecDebut' + i" [label]="LIBELLES.eleve.labelAbsenceHeureDebut" [(ngModel)]="abs.heureDebut" />
-          <mc-champ-heure [id]="'champAbsRecFin' + i" [label]="LIBELLES.eleve.labelAbsenceHeureFin" [(ngModel)]="abs.heureFin" />
-          <mc-select [id]="'champAbsRecParite' + i" [label]="LIBELLES.eleve.labelAbsenceParite" [options]="optionsFrequence" [(ngModel)]="abs.paritesSemaine" />
-          <mc-bouton-destruction [idBase]="'btnSupprimerAbsRec' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerAbsenceRecurrente(i)" />
+          <mc-input
+            [id]="'champAbsRecLibelle' + i"
+            [label]="LIBELLES.eleve.labelAbsenceLibelle"
+            [(ngModel)]="abs.libelle"
+            [mcAutoFocus]="i === indexAFocaliserAbsRec()"
+          />
+          <mc-select
+            [id]="'champAbsRecJour' + i"
+            [label]="LIBELLES.eleve.labelAbsenceJour"
+            [options]="optionsJour"
+            [(ngModel)]="abs.jour"
+          />
+          <mc-champ-heure
+            [id]="'champAbsRecDebut' + i"
+            [label]="LIBELLES.eleve.labelAbsenceHeureDebut"
+            [(ngModel)]="abs.heureDebut"
+          />
+          <mc-champ-heure
+            [id]="'champAbsRecFin' + i"
+            [label]="LIBELLES.eleve.labelAbsenceHeureFin"
+            [(ngModel)]="abs.heureFin"
+          />
+          <mc-select
+            [id]="'champAbsRecParite' + i"
+            [label]="LIBELLES.eleve.labelAbsenceParite"
+            [options]="optionsFrequence"
+            [(ngModel)]="abs.paritesSemaine"
+          />
+          <mc-bouton-destruction
+            [idBase]="'btnSupprimerAbsRec' + i"
+            [desactive]="false"
+            [tooltipDesactive]="''"
+            [petit]="true"
+            (confirme)="supprimerAbsenceRecurrente(i)"
+          />
         </li>
       }
     </ul>
@@ -80,14 +200,39 @@
 
   <!-- Section : Absences ponctuelles -->
   <section class="form-eleve__section" aria-labelledby="titreFormAbsPonct">
-    <h3 id="titreFormAbsPonct" class="form-eleve__titre-section">{{ LIBELLES.eleve.sectionAbsencesPonctuelles }}</h3>
-    <button id="btnAjouterAbsPonct" class="mc-btn-primaire mc-btn-sm" (click)="ajouterAbsencePonctuelle()">{{ LIBELLES.eleve.boutonAjouterAbsencePonct }}</button>
+    <h3 id="titreFormAbsPonct" class="form-eleve__titre-section">
+      {{ LIBELLES.eleve.sectionAbsencesPonctuelles }}
+    </h3>
+    <button
+      id="btnAjouterAbsPonct"
+      class="mc-btn-primaire mc-btn-sm"
+      (click)="ajouterAbsencePonctuelle()"
+    >
+      {{ LIBELLES.eleve.boutonAjouterAbsencePonct }}
+    </button>
     <ul class="form-eleve__liste-sous-items">
       @for (abs of formEleve.absencesPonctuelles; track abs.id; let i = $index) {
         <li class="form-eleve__sous-item">
-          <mc-input [id]="'champAbsPonctDate' + i" [label]="LIBELLES.eleve.labelAbsenceDate" type="date" [(ngModel)]="abs.date" [mcAutoFocus]="i === indexAFocaliserAbsPonct()" />
-          <mc-textarea [id]="'champAbsPonctJustif' + i" [label]="LIBELLES.eleve.labelAbsenceJustification" [lignes]="2" [(ngModel)]="abs.justification" />
-          <mc-bouton-destruction [idBase]="'btnSupprimerAbsPonct' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerAbsencePonctuelle(i)" />
+          <mc-input
+            [id]="'champAbsPonctDate' + i"
+            [label]="LIBELLES.eleve.labelAbsenceDate"
+            type="date"
+            [(ngModel)]="abs.date"
+            [mcAutoFocus]="i === indexAFocaliserAbsPonct()"
+          />
+          <mc-textarea
+            [id]="'champAbsPonctJustif' + i"
+            [label]="LIBELLES.eleve.labelAbsenceJustification"
+            [lignes]="2"
+            [(ngModel)]="abs.justification"
+          />
+          <mc-bouton-destruction
+            [idBase]="'btnSupprimerAbsPonct' + i"
+            [desactive]="false"
+            [tooltipDesactive]="''"
+            [petit]="true"
+            (confirme)="supprimerAbsencePonctuelle(i)"
+          />
         </li>
       }
     </ul>
@@ -95,16 +240,45 @@
 
   <!-- Section : Cursus -->
   <section class="form-eleve__section" aria-labelledby="titreFormCursus">
-    <h3 id="titreFormCursus" class="form-eleve__titre-section">{{ LIBELLES.eleve.sectionCursus }}</h3>
-    <button id="btnAjouterCursus" class="mc-btn-primaire mc-btn-sm" (click)="ajouterCursus()">{{ LIBELLES.eleve.boutonAjouterCursus }}</button>
+    <h3 id="titreFormCursus" class="form-eleve__titre-section">
+      {{ LIBELLES.eleve.sectionCursus }}
+    </h3>
+    <button id="btnAjouterCursus" class="mc-btn-primaire mc-btn-sm" (click)="ajouterCursus()">
+      {{ LIBELLES.eleve.boutonAjouterCursus }}
+    </button>
     <ul class="form-eleve__liste-sous-items">
       @for (annee of formEleve.cursus; track $index; let i = $index) {
         <li class="form-eleve__sous-item">
-          <mc-input [id]="'champCursusAnnee' + i" [label]="LIBELLES.eleve.labelCursusAnnee" type="number" [(ngModel)]="annee.annee" [mcAutoFocus]="i === indexAFocaliserCursus()" />
-          <mc-input [id]="'champCursusNiveau' + i" [label]="LIBELLES.eleve.labelCursusNiveau" [(ngModel)]="annee.niveau" />
-          <mc-input [id]="'champCursusEtab' + i" [label]="LIBELLES.eleve.labelCursusEtablissement" [(ngModel)]="annee.etablissement" />
-          <mc-textarea [id]="'champCursusAccomp' + i" [label]="LIBELLES.eleve.labelCursusAccompagnement" [lignes]="2" [(ngModel)]="annee.accompagnement" />
-          <mc-bouton-destruction [idBase]="'btnSupprimerCursus' + i" [desactive]="false" [tooltipDesactive]="''" [petit]="true" (confirme)="supprimerCursus(i)" />
+          <mc-input
+            [id]="'champCursusAnnee' + i"
+            [label]="LIBELLES.eleve.labelCursusAnnee"
+            type="number"
+            [(ngModel)]="annee.annee"
+            [mcAutoFocus]="i === indexAFocaliserCursus()"
+          />
+          <mc-input
+            [id]="'champCursusNiveau' + i"
+            [label]="LIBELLES.eleve.labelCursusNiveau"
+            [(ngModel)]="annee.niveau"
+          />
+          <mc-input
+            [id]="'champCursusEtab' + i"
+            [label]="LIBELLES.eleve.labelCursusEtablissement"
+            [(ngModel)]="annee.etablissement"
+          />
+          <mc-textarea
+            [id]="'champCursusAccomp' + i"
+            [label]="LIBELLES.eleve.labelCursusAccompagnement"
+            [lignes]="2"
+            [(ngModel)]="annee.accompagnement"
+          />
+          <mc-bouton-destruction
+            [idBase]="'btnSupprimerCursus' + i"
+            [desactive]="false"
+            [tooltipDesactive]="''"
+            [petit]="true"
+            (confirme)="supprimerCursus(i)"
+          />
         </li>
       }
     </ul>
@@ -114,11 +288,26 @@
   <section class="form-eleve__section" aria-labelledby="titreFormNotes">
     <h3 id="titreFormNotes" class="form-eleve__titre-section">{{ LIBELLES.eleve.sectionNotes }}</h3>
     <div class="form-eleve__grille">
-      <mc-textarea id="champFormDroitImage" [label]="LIBELLES.eleve.labelDroitImage" [(ngModel)]="formEleve.notesDroitImage" />
-      <mc-textarea id="champFormBaignade" [label]="LIBELLES.eleve.labelAutorisationBaignade" [(ngModel)]="formEleve.notesAutorisationBaignade" />
-      <mc-textarea id="champFormPPA" [label]="LIBELLES.eleve.labelPPA" [(ngModel)]="formEleve.notesPPA" />
-      <mc-textarea id="champFormESS" [label]="LIBELLES.eleve.labelESS" [(ngModel)]="formEleve.notesESS" />
+      <mc-textarea
+        id="champFormDroitImage"
+        [label]="LIBELLES.eleve.labelDroitImage"
+        [(ngModel)]="formEleve.notesDroitImage"
+      />
+      <mc-textarea
+        id="champFormBaignade"
+        [label]="LIBELLES.eleve.labelAutorisationBaignade"
+        [(ngModel)]="formEleve.notesAutorisationBaignade"
+      />
+      <mc-textarea
+        id="champFormPPA"
+        [label]="LIBELLES.eleve.labelPPA"
+        [(ngModel)]="formEleve.notesPPA"
+      />
+      <mc-textarea
+        id="champFormESS"
+        [label]="LIBELLES.eleve.labelESS"
+        [(ngModel)]="formEleve.notesESS"
+      />
     </div>
   </section>
-
 </div>

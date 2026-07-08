@@ -54,7 +54,7 @@ describe('EcranDemarrageComponent', () => {
       spy.mockRestore();
     });
 
-    it('désactive le mode consultation référentiel s\'il était actif', async () => {
+    it("désactive le mode consultation référentiel s'il était actif", async () => {
       contexteService.modeConsultationReferentiel.set(true);
       const donnees: DonneesApplication = DonneesMother.base();
       const spy = vi.spyOn(router, 'navigate').mockResolvedValue(true);

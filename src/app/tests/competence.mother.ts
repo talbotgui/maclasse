@@ -2,7 +2,6 @@ import { Competence } from '../modeles/referentiels.modele';
 
 /** Fournit des arbres de {@link Competence} prêts à l'emploi pour les tests. */
 export class CompetenceMother {
-
   /**
    * Retourne un arbre à 2 domaines (Français, Mathématiques) avec 3 niveaux de profondeur.
    * Couvre les cas de recherche insensible à la casse/accents, de navigation par chemin
@@ -28,9 +27,7 @@ export class CompetenceMother {
       {
         id: 'MATH',
         libelle: 'Mathématiques',
-        enfants: [
-          { id: 'MATH-NB', libelle: 'Nombres et calculs' },
-        ],
+        enfants: [{ id: 'MATH-NB', libelle: 'Nombres et calculs' }],
       },
     ];
   }

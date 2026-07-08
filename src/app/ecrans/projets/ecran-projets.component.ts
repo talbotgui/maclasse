@@ -59,7 +59,7 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
   protected readonly projetSelectionne = computed<Projet | null>(() => {
     const id = this.contexteService.projetSelectionne();
     if (!id) return null;
-    return this.donneesService.donnees()?.projets.find(p => p.id === id) ?? null;
+    return this.donneesService.donnees()?.projets.find((p) => p.id === id) ?? null;
   });
 
   /** `true` si le formulaire est en mode édition ou création. */
@@ -86,9 +86,9 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
     const filtresDomaines = this.domainesFiltres();
     let projets = this.projetService.rechercherProjets(terme);
     if (filtresDomaines.length > 0) {
-      projets = projets.filter(p =>
-        p.periodes.some(periode =>
-          periode.competencesIds.some(cId => {
+      projets = projets.filter((p) =>
+        p.periodes.some((periode) =>
+          periode.competencesIds.some((cId) => {
             const chemin = this.competenceService.obtenirChemin(cId);
             return chemin.length > 0 && filtresDomaines.includes(chemin[0].id);
           }),
@@ -187,9 +187,9 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
    */
   protected basculerFiltreDomaine(id: string, actif: boolean): void {
     if (actif) {
-      this.domainesFiltres.update(ids => [...ids, id]);
+      this.domainesFiltres.update((ids) => [...ids, id]);
     } else {
-      this.domainesFiltres.update(ids => ids.filter(i => i !== id));
+      this.domainesFiltres.update((ids) => ids.filter((i) => i !== id));
     }
   }
 
@@ -201,7 +201,7 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
   /** Implémentation de `AvecNavigationGardee`. */
   public confirmerNavigation(): Promise<boolean> {
     if (!this.enModeEdition()) return Promise.resolve(true);
-    return new Promise<boolean>(resolve => {
+    return new Promise<boolean>((resolve) => {
       this.resolveGarde = resolve;
       this.popinAvertissementVisible.set(true);
     });

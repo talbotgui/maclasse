@@ -13,7 +13,9 @@
           <li class="accueil__seance">
             <span class="accueil__horaire">{{ seance.heureDebut }} – {{ seance.heureFin }}</span>
             <span class="accueil__disciplines">{{ seance.disciplines.join(', ') }}</span>
-            <span class="accueil__eleves">{{ seance.nbEleves }}&nbsp;{{ LIBELLES.accueil.labelNbEleves }}</span>
+            <span class="accueil__eleves"
+              >{{ seance.nbEleves }}&nbsp;{{ LIBELLES.accueil.labelNbEleves }}</span
+            >
           </li>
         }
       </ul>

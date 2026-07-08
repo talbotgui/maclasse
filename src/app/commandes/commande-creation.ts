@@ -42,7 +42,7 @@ export class CommandeCreation<T extends { id: string }> implements Commande {
   public annuler(donnees: DonneesApplication): DonneesApplication {
     const clone = structuredClone(donnees);
     const tableau = this.accesseur(clone);
-    const index = tableau.findIndex(e => e.id === this.element.id);
+    const index = tableau.findIndex((e) => e.id === this.element.id);
     if (index !== -1) {
       tableau.splice(index, 1);
     }

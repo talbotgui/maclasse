@@ -11,7 +11,6 @@ import { SelecteursBase } from './selecteurs-base';
  * Premier domaine visible : EMC, avec sous-domaines EMC-C2 et EMC-CM1.
  */
 export class SelecteursCompetences extends SelecteursBase {
-
   // --- Champ de recherche dans l'arbre ---
   /**
    * Champ de recherche textuel dans l'arbre de compétences.

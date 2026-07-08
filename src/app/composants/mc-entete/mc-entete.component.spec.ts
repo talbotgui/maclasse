@@ -21,17 +21,21 @@ describe('McEnteteComponent', () => {
   let sauvegardeAutoService: SauvegardeAutoService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [provideRouter([{ path: '**', component: RouteStub }])] });
+    TestBed.configureTestingModule({
+      providers: [provideRouter([{ path: '**', component: RouteStub }])],
+    });
     donneesService = TestBed.inject(DonneesService);
     contexteService = TestBed.inject(ContexteService);
     sauvegardeAutoService = TestBed.inject(SauvegardeAutoService);
-    donneesService.charger(DonneesMother.base({
-      classe: {
-        niveau: 'CM2',
-        annee: 'CM2',
-        eleves: [EleveMother.base('e1', 'MARTIN', 'Alice')],
-      },
-    }));
+    donneesService.charger(
+      DonneesMother.base({
+        classe: {
+          niveau: 'CM2',
+          annee: 'CM2',
+          eleves: [EleveMother.base('e1', 'MARTIN', 'Alice')],
+        },
+      }),
+    );
     const fixture = TestBed.createComponent(McEnteteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -80,7 +84,9 @@ describe('McEnteteComponent', () => {
     });
 
     it('appelle sauvegarder puis demarrer', async () => {
-      const spySauvegarder = vi.spyOn(sauvegardeAutoService, 'sauvegarder').mockResolvedValue(undefined);
+      const spySauvegarder = vi
+        .spyOn(sauvegardeAutoService, 'sauvegarder')
+        .mockResolvedValue(undefined);
       const spyDemarrer = vi.spyOn(sauvegardeAutoService, 'demarrer');
 
       await component['surConfirmationSauvegarde']('secret123');

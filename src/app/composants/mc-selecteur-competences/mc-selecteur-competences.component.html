@@ -1,5 +1,4 @@
 <div class="mc-selecteur-competences">
-
   @if (domaines().length > 0) {
     <fieldset class="mc-selecteur-competences__domaines">
       <legend class="sr-only">{{ LIBELLES.selecteurCompetences.ariaFiltreDomaine }}</legend>
@@ -24,7 +23,9 @@
       [attr.aria-expanded]="estOuvert()"
       aria-autocomplete="list"
       [attr.aria-controls]="'listeSuggestionsCompetences' + contexteId()"
-      [attr.aria-activedescendant]="idOptionFocalisee() ? 'optionComp_' + idOptionFocalisee() : null"
+      [attr.aria-activedescendant]="
+        idOptionFocalisee() ? 'optionComp_' + idOptionFocalisee() : null
+      "
       [value]="saisie()"
       (input)="surSaisie($event)"
       (focus)="surFocus()"
@@ -48,7 +49,9 @@
             [attr.aria-selected]="competencesSelectionnees().includes(option.id)"
             (mousedown)="$event.preventDefault()"
             (click)="selectionnerOption(option.id)"
-          >{{ option.libelle }}</li>
+          >
+            {{ option.libelle }}
+          </li>
         }
       </ul>
     } @else if (estOuvert() && saisie().trim() && suggestions().length === 0) {
@@ -72,10 +75,11 @@
             class="mc-selecteur-competences__chip-supprimer"
             [attr.aria-label]="LIBELLES.selecteurCompetences.ariaSupprimer + comp.cheminComplet"
             (click)="supprimerCompetence(comp.id)"
-          >✕</button>
+          >
+            ✕
+          </button>
         </li>
       }
     </ul>
   }
-
 </div>

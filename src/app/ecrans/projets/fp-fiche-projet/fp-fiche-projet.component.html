@@ -1,18 +1,33 @@
 <div class="fiche-projet">
-
   <!-- Bandeau -->
   <div class="fiche-projet__bandeau">
     <h2 class="fiche-projet__titre">{{ projet().nom }}</h2>
     <div class="fiche-projet__bandeau-actions">
-      <button id="btnModifierProjet" class="mc-btn-primaire" [mcAutoFocus]="focusDemande()" (click)="onModifier()">{{ LIBELLES.commun.modifier }}</button>
-      <mc-bouton-destruction [idBase]="'btnSupprimerProjet'" [desactive]="false" [tooltipDesactive]="''" (confirme)="onSupprimer()" />
-      <button id="btnImprimerProjet" class="mc-btn-fantome" (click)="onImprimer()">{{ LIBELLES.projet.boutonImprimer }}</button>
+      <button
+        id="btnModifierProjet"
+        class="mc-btn-primaire"
+        [mcAutoFocus]="focusDemande()"
+        (click)="onModifier()"
+      >
+        {{ LIBELLES.commun.modifier }}
+      </button>
+      <mc-bouton-destruction
+        [idBase]="'btnSupprimerProjet'"
+        [desactive]="false"
+        [tooltipDesactive]="''"
+        (confirme)="onSupprimer()"
+      />
+      <button id="btnImprimerProjet" class="mc-btn-fantome" (click)="onImprimer()">
+        {{ LIBELLES.projet.boutonImprimer }}
+      </button>
     </div>
   </div>
 
   <!-- Section : Informations générales -->
   <section class="fiche-projet__section" aria-labelledby="titreInfosProjet">
-    <h3 id="titreInfosProjet" class="fiche-projet__titre-section">{{ LIBELLES.projet.sectionInfos }}</h3>
+    <h3 id="titreInfosProjet" class="fiche-projet__titre-section">
+      {{ LIBELLES.projet.sectionInfos }}
+    </h3>
     @if (projet().description) {
       <p class="fiche-projet__description">{{ projet().description }}</p>
     }
@@ -25,7 +40,9 @@
   <!-- Section : Périodes -->
   @if (projet().periodes.length > 0) {
     <section class="fiche-projet__section" aria-labelledby="titrePeriodesProjet">
-      <h3 id="titrePeriodesProjet" class="fiche-projet__titre-section">{{ LIBELLES.projet.sectionPeriodes }}</h3>
+      <h3 id="titrePeriodesProjet" class="fiche-projet__titre-section">
+        {{ LIBELLES.projet.sectionPeriodes }}
+      </h3>
       <ul class="fiche-projet__periodes">
         @for (periode of projet().periodes; track periode.periodeNom) {
           <li class="fiche-projet__periode">
@@ -44,7 +61,10 @@
             }
             @if (periode.competencesIds.length > 0) {
               <ul class="fiche-projet__competences">
-                @for (libelle of obtenirLibellesCompetences(periode.competencesIds); track libelle) {
+                @for (
+                  libelle of obtenirLibellesCompetences(periode.competencesIds);
+                  track libelle
+                ) {
                   <li>{{ libelle }}</li>
                 }
               </ul>
@@ -54,5 +74,4 @@
       </ul>
     </section>
   }
-
 </div>

@@ -36,6 +36,12 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash /workspaces/maclasse/.claude/hooks/formatter.sh",
+            "timeout": 30,
+            "statusMessage": "Formatage Prettier..."
+          },
+          {
+            "type": "command",
             "command": "bash /workspaces/maclasse/.claude/hooks/verif-service.sh",
             "timeout": 180,
             "statusMessage": "Vérification compilation + tests + couverture ≥ 80%...",

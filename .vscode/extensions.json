@@ -4,6 +4,7 @@
     "angular.ng-template",
     "anthropic.claude-code",
     "searking.preview-vscode",
-    "ms-playwright.playwright"
+    "ms-playwright.playwright",
+    "esbenp.prettier-vscode"
   ]
 }

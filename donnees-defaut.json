@@ -15,9 +15,7 @@
         "nom": "Martinot",
         "sexe": "M",
         "niveau": "CM1",
-        "groupes": [
-          "A"
-        ],
+        "groupes": ["A"],
         "dateNaissance": "2015-09-15",
         "dateArrivee": "2023-09-04",
         "statut": "DC",
@@ -68,10 +66,7 @@
         "nom": "Gratin",
         "sexe": "F",
         "niveau": "CM1",
-        "groupes": [
-          "A",
-          "B"
-        ],
+        "groupes": ["A", "B"],
         "dateNaissance": "2015-03-22",
         "dateArrivee": "2024-09-02",
         "statut": "DC",
@@ -108,9 +103,7 @@
         "nom": "Ducobu",
         "sexe": "M",
         "niveau": "CM2",
-        "groupes": [
-          "B"
-        ],
+        "groupes": ["B"],
         "dateNaissance": "2014-11-07",
         "dateArrivee": "2021-09-06",
         "statut": "DC",
@@ -176,9 +169,7 @@
         "nom": "Zimmermann",
         "sexe": "M",
         "niveau": "CM1",
-        "groupes": [
-          "A"
-        ],
+        "groupes": ["A"],
         "dateNaissance": "2015-05-12",
         "dateArrivee": "2024-09-02",
         "statut": "DC",
@@ -222,9 +213,7 @@
         "nom": "Dubouchon",
         "sexe": "M",
         "niveau": "CM2",
-        "groupes": [
-          "C"
-        ],
+        "groupes": ["C"],
         "dateNaissance": "2014-02-03",
         "dateArrivee": "2020-09-07",
         "statut": "DC",
@@ -280,9 +269,7 @@
         "nom": "Dubouchon",
         "sexe": "F",
         "niveau": "CM1",
-        "groupes": [
-          "B"
-        ],
+        "groupes": ["B"],
         "dateNaissance": "2015-09-28",
         "dateArrivee": "2021-09-06",
         "statut": "DC",
@@ -326,9 +313,7 @@
         "nom": "Dupont",
         "sexe": "M",
         "niveau": "CM1",
-        "groupes": [
-          "A"
-        ],
+        "groupes": ["A"],
         "dateNaissance": "2015-01-14",
         "dateArrivee": "2023-09-04",
         "statut": "DC",
@@ -385,9 +370,7 @@
         "nom": "Petit-Tonnerre",
         "sexe": "M",
         "niveau": "CM2",
-        "groupes": [
-          "C"
-        ],
+        "groupes": ["C"],
         "dateNaissance": "2014-06-30",
         "dateArrivee": "2022-01-10",
         "statut": "DE",
@@ -452,9 +435,7 @@
         "nom": "Martin",
         "sexe": "F",
         "niveau": "CM2",
-        "groupes": [
-          "B"
-        ],
+        "groupes": ["B"],
         "dateNaissance": "2014-07-08",
         "dateArrivee": "2020-09-07",
         "statut": "DC",
@@ -503,9 +484,7 @@
         "nom": "Lombardi",
         "sexe": "F",
         "niveau": "CM2",
-        "groupes": [
-          "A"
-        ],
+        "groupes": ["A"],
         "dateNaissance": "2014-11-25",
         "dateArrivee": "2022-09-05",
         "statut": "DC",
@@ -555,9 +534,7 @@
         "nom": "Blanche-Oreille",
         "sexe": "M",
         "niveau": "CM1",
-        "groupes": [
-          "C"
-        ],
+        "groupes": ["C"],
         "dateNaissance": "2015-04-18",
         "dateArrivee": "2024-09-02",
         "statut": "DC",
@@ -9418,13 +9395,7 @@
       }
     ],
     "configEmploiDuTemps": {
-      "joursOuvres": [
-        "lundi",
-        "mardi",
-        "mercredi",
-        "jeudi",
-        "vendredi"
-      ],
+      "joursOuvres": ["lundi", "mardi", "mercredi", "jeudi", "vendredi"],
       "heureDebutJournee": "08:30",
       "heureFinJournee": "16:30"
     }
@@ -9440,11 +9411,7 @@
           "heureFin": "09:30",
           "titre": "Lecture – Compréhension de texte",
           "objectifs": "",
-          "competencesIds": [
-            "FR-CM1-1-8",
-            "FR-CM1-1-9",
-            "FR-CM1-1-12"
-          ],
+          "competencesIds": ["FR-CM1-1-8", "FR-CM1-1-9", "FR-CM1-1-12"],
           "deroulement": "",
           "ressources": "",
           "description": "Extrait de roman jeunesse : identifier le schéma narratif.",
@@ -9454,9 +9421,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ]
+          "disciplinesIds": ["F"]
         },
         {
           "id": "aa000001-0000-4000-8000-000000000002",
@@ -9464,11 +9429,7 @@
           "heureFin": "10:30",
           "titre": "Numération – Les grands nombres",
           "objectifs": "",
-          "competencesIds": [
-            "MAT-CM1-1-3",
-            "MAT-CM1-1-4",
-            "MAT-CM1-1-5"
-          ],
+          "competencesIds": ["MAT-CM1-1-3", "MAT-CM1-1-4", "MAT-CM1-1-5"],
           "deroulement": "",
           "ressources": "",
           "description": "Lire, écrire et comparer des entiers jusqu'au milliard.",
@@ -9478,9 +9439,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ]
+          "disciplinesIds": ["M"]
         },
         {
           "id": "aa000001-0000-4000-8000-000000000003",
@@ -9494,11 +9453,7 @@
           "heureFin": "11:45",
           "titre": "Grammaire – Le groupe nominal",
           "objectifs": "",
-          "competencesIds": [
-            "FR-CM1-5-19",
-            "FR-CM1-5-20",
-            "FR-CM1-5-26"
-          ],
+          "competencesIds": ["FR-CM1-5-19", "FR-CM1-5-20", "FR-CM1-5-26"],
           "deroulement": "",
           "ressources": "",
           "description": "Identifier le déterminant, le nom noyau et les expansions.",
@@ -9508,9 +9463,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ]
+          "disciplinesIds": ["F"]
         },
         {
           "id": "aa000001-0000-4000-8000-000000000005",
@@ -9524,11 +9477,7 @@
           "heureFin": "14:30",
           "titre": "Géométrie – Les figures planes",
           "objectifs": "",
-          "competencesIds": [
-            "MAT-CM1-3-7",
-            "MAT-CM1-3-8",
-            "MAT-CM1-3-9"
-          ],
+          "competencesIds": ["MAT-CM1-3-7", "MAT-CM1-3-8", "MAT-CM1-3-9"],
           "deroulement": "",
           "ressources": "",
           "description": "Propriétés du carré, rectangle, losange et parallélogramme.",
@@ -9538,9 +9487,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ]
+          "disciplinesIds": ["M"]
         },
         {
           "id": "aa000001-0000-4000-8000-000000000007",
@@ -9548,10 +9495,7 @@
           "heureFin": "15:30",
           "titre": "Orthographe – Les homophones grammaticaux",
           "objectifs": "",
-          "competencesIds": [
-            "FR-CM1-5-22",
-            "FR-CM1-5-34"
-          ],
+          "competencesIds": ["FR-CM1-5-22", "FR-CM1-5-34"],
           "deroulement": "",
           "ressources": "",
           "description": "a/à, et/est, on/ont, son/sont.",
@@ -9561,9 +9505,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ]
+          "disciplinesIds": ["F"]
         }
       ]
     },
@@ -9577,11 +9519,7 @@
           "heureFin": "09:30",
           "titre": "Calcul mental – Multiplication et division",
           "objectifs": "",
-          "competencesIds": [
-            "MAT-CM1-1-35",
-            "MAT-CM1-1-43",
-            "MAT-CM1-1-52"
-          ],
+          "competencesIds": ["MAT-CM1-1-35", "MAT-CM1-1-43", "MAT-CM1-1-52"],
           "deroulement": "",
           "ressources": "",
           "description": "Tables de multiplication, doubles et moitiés.",
@@ -9591,9 +9529,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ]
+          "disciplinesIds": ["M"]
         },
         {
           "id": "aa000002-0000-4000-8000-000000000002",
@@ -9601,10 +9537,7 @@
           "heureFin": "10:30",
           "titre": "Production d'écrits – Rédiger un récit",
           "objectifs": "",
-          "competencesIds": [
-            "FR-CM1-2-7",
-            "FR-CM1-2-11"
-          ],
+          "competencesIds": ["FR-CM1-2-7", "FR-CM1-2-11"],
           "deroulement": "",
           "ressources": "",
           "description": "Écrire la suite d'une histoire en respectant la cohérence narrative.",
@@ -9614,9 +9547,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ]
+          "disciplinesIds": ["F"]
         },
         {
           "id": "aa000002-0000-4000-8000-000000000003",
@@ -9630,11 +9561,7 @@
           "heureFin": "11:45",
           "titre": "Fractions – Introduction",
           "objectifs": "",
-          "competencesIds": [
-            "MAT-CM1-1-14",
-            "MAT-CM1-1-17",
-            "MAT-CM1-1-20"
-          ],
+          "competencesIds": ["MAT-CM1-1-14", "MAT-CM1-1-17", "MAT-CM1-1-20"],
           "deroulement": "",
           "ressources": "",
           "description": "Notion de partage égal, fractions simples.",
@@ -9644,9 +9571,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ]
+          "disciplinesIds": ["M"]
         },
         {
           "id": "aa000002-0000-4000-8000-000000000005",
@@ -9660,10 +9585,7 @@
           "heureFin": "14:30",
           "titre": "Vocabulaire – Familles de mots",
           "objectifs": "",
-          "competencesIds": [
-            "FR-CM1-4-4",
-            "FR-CM1-4-9"
-          ],
+          "competencesIds": ["FR-CM1-4-4", "FR-CM1-4-9"],
           "deroulement": "",
           "ressources": "",
           "description": "Radical, préfixe, suffixe ; enrichir le lexique.",
@@ -9673,9 +9595,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ]
+          "disciplinesIds": ["F"]
         },
         {
           "id": "aa000002-0000-4000-8000-000000000007",
@@ -9683,10 +9603,7 @@
           "heureFin": "15:30",
           "titre": "Problèmes – Situations multiplicatives",
           "objectifs": "",
-          "competencesIds": [
-            "MAT-CM1-1-55",
-            "MAT-CM1-1-56"
-          ],
+          "competencesIds": ["MAT-CM1-1-55", "MAT-CM1-1-56"],
           "deroulement": "",
           "ressources": "",
           "description": "Résoudre des problèmes à étapes impliquant la multiplication.",
@@ -9696,9 +9613,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ]
+          "disciplinesIds": ["M"]
         }
       ]
     },
@@ -9712,10 +9627,7 @@
           "heureFin": "09:30",
           "titre": "Dictée préparée",
           "objectifs": "",
-          "competencesIds": [
-            "FR-CM1-2-10",
-            "FR-CM1-4-8"
-          ],
+          "competencesIds": ["FR-CM1-2-10", "FR-CM1-4-8"],
           "deroulement": "",
           "ressources": "",
           "description": "Révision des règles travaillées en début de semaine.",
@@ -9725,9 +9637,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ]
+          "disciplinesIds": ["F"]
         },
         {
           "id": "aa000004-0000-4000-8000-000000000002",
@@ -9735,11 +9645,7 @@
           "heureFin": "10:30",
           "titre": "Opérations – Pose et calcul",
           "objectifs": "",
-          "competencesIds": [
-            "MAT-CM1-1-49",
-            "MAT-CM1-1-50",
-            "MAT-CM1-1-52"
-          ],
+          "competencesIds": ["MAT-CM1-1-49", "MAT-CM1-1-50", "MAT-CM1-1-52"],
           "deroulement": "",
           "ressources": "",
           "description": "Multiplication posée à deux chiffres, division euclidienne.",
@@ -9749,9 +9655,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ]
+          "disciplinesIds": ["M"]
         },
         {
           "id": "aa000004-0000-4000-8000-000000000003",
@@ -9765,11 +9669,7 @@
           "heureFin": "11:45",
           "titre": "Conjugaison – Les temps du passé",
           "objectifs": "",
-          "competencesIds": [
-            "FR-CM1-5-35",
-            "FR-CM1-5-38",
-            "FR-CM1-5-41"
-          ],
+          "competencesIds": ["FR-CM1-5-35", "FR-CM1-5-38", "FR-CM1-5-41"],
           "deroulement": "",
           "ressources": "",
           "description": "Imparfait et passé composé : emploi et formation.",
@@ -9779,9 +9679,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ]
+          "disciplinesIds": ["F"]
         },
         {
           "id": "aa000004-0000-4000-8000-000000000005",
@@ -9795,12 +9693,7 @@
           "heureFin": "14:30",
           "titre": "Mesures – Longueurs et périmètres",
           "objectifs": "",
-          "competencesIds": [
-            "MAT-CM1-2-1",
-            "MAT-CM1-2-3",
-            "MAT-CM1-2-7",
-            "MAT-CM1-2-8"
-          ],
+          "competencesIds": ["MAT-CM1-2-1", "MAT-CM1-2-3", "MAT-CM1-2-7", "MAT-CM1-2-8"],
           "deroulement": "",
           "ressources": "",
           "description": "Unités de longueur, conversions, calcul de périmètre.",
@@ -9810,9 +9703,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ]
+          "disciplinesIds": ["M"]
         },
         {
           "id": "aa000004-0000-4000-8000-000000000007",
@@ -9820,10 +9711,7 @@
           "heureFin": "15:30",
           "titre": "Lecture autonome – Album de littérature",
           "objectifs": "",
-          "competencesIds": [
-            "FR-CM1-1-17",
-            "FR-CM1-1-18"
-          ],
+          "competencesIds": ["FR-CM1-1-17", "FR-CM1-1-18"],
           "deroulement": "",
           "ressources": "",
           "description": "Lecture silencieuse et carnet de lecteur.",
@@ -9833,9 +9721,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ]
+          "disciplinesIds": ["F"]
         }
       ]
     },
@@ -9849,11 +9735,7 @@
           "heureFin": "09:30",
           "titre": "Évaluation – Numération et calcul",
           "objectifs": "",
-          "competencesIds": [
-            "MAT-CM1-1-3",
-            "MAT-CM1-1-47",
-            "MAT-CM1-1-49"
-          ],
+          "competencesIds": ["MAT-CM1-1-3", "MAT-CM1-1-47", "MAT-CM1-1-49"],
           "deroulement": "",
           "ressources": "",
           "description": "Bilan de la semaine.",
@@ -9863,9 +9745,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ]
+          "disciplinesIds": ["M"]
         },
         {
           "id": "aa000005-0000-4000-8000-000000000002",
@@ -9873,11 +9753,7 @@
           "heureFin": "10:30",
           "titre": "Lecture – Débat littéraire",
           "objectifs": "",
-          "competencesIds": [
-            "FR-CM1-1-16",
-            "FR-CM1-3-12",
-            "FR-CM1-3-14"
-          ],
+          "competencesIds": ["FR-CM1-1-16", "FR-CM1-3-12", "FR-CM1-3-14"],
           "deroulement": "",
           "ressources": "",
           "description": "Partager ses impressions sur le roman en cours.",
@@ -9887,9 +9763,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ]
+          "disciplinesIds": ["F"]
         },
         {
           "id": "aa000005-0000-4000-8000-000000000003",
@@ -9903,11 +9777,7 @@
           "heureFin": "11:45",
           "titre": "Synthèse – Ce que j'ai appris cette semaine",
           "objectifs": "",
-          "competencesIds": [
-            "MAT-CM1-1-47",
-            "MAT-CM1-1-35",
-            "MAT-CM1-1-55"
-          ],
+          "competencesIds": ["MAT-CM1-1-47", "MAT-CM1-1-35", "MAT-CM1-1-55"],
           "deroulement": "",
           "ressources": "",
           "description": "Retour réflexif sur les notions mathématiques de la semaine.",
@@ -9917,9 +9787,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ]
+          "disciplinesIds": ["M"]
         },
         {
           "id": "aa000005-0000-4000-8000-000000000005",
@@ -9933,10 +9801,7 @@
           "heureFin": "14:30",
           "titre": "Rédaction – Bilan personnel de la semaine",
           "objectifs": "",
-          "competencesIds": [
-            "FR-CM1-2-4",
-            "FR-CM1-2-8"
-          ],
+          "competencesIds": ["FR-CM1-2-4", "FR-CM1-2-8"],
           "deroulement": "",
           "ressources": "",
           "description": "Écrire un court texte sur ses réussites et difficultés.",
@@ -9946,9 +9811,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ]
+          "disciplinesIds": ["F"]
         },
         {
           "id": "aa000005-0000-4000-8000-000000000007",
@@ -9956,11 +9819,7 @@
           "heureFin": "15:30",
           "titre": "Jeux mathématiques",
           "objectifs": "",
-          "competencesIds": [
-            "MAT-CM1-1-60",
-            "MAT-CM1-1-58",
-            "MAT-CM1-1-57"
-          ],
+          "competencesIds": ["MAT-CM1-1-60", "MAT-CM1-1-58", "MAT-CM1-1-57"],
           "deroulement": "",
           "ressources": "",
           "description": "Activités de logique et résolution de problèmes originaux.",
@@ -9970,9 +9829,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ]
+          "disciplinesIds": ["M"]
         }
       ]
     }
@@ -9999,55 +9856,35 @@
         {
           "periodeNom": "Période 1",
           "description": "Découverte du projet : lecture de journaux existants, identification des rubriques. Écriture d'un premier article collectif sur la rentrée.",
-          "competencesIds": [
-            "FR-CM1-1-8",
-            "FR-CM1-1-9",
-            "FR-CM1-1-7"
-          ],
+          "competencesIds": ["FR-CM1-1-8", "FR-CM1-1-9", "FR-CM1-1-7"],
           "debut": "2025-09-02",
           "fin": "2025-10-17"
         },
         {
           "periodeNom": "Période 2",
           "description": "Mise en page du numéro 2 : introduction à la mise en page et à l'illustration. Enrichissement du vocabulaire de presse.",
-          "competencesIds": [
-            "FR-CM1-2-7",
-            "FR-CM1-2-6",
-            "FR-CM1-2-5"
-          ],
+          "competencesIds": ["FR-CM1-2-7", "FR-CM1-2-6", "FR-CM1-2-5"],
           "debut": "2025-11-04",
           "fin": "2025-12-19"
         },
         {
           "periodeNom": "Période 3",
           "description": "Numéro spécial « Vivre ensemble » : rédaction de témoignages et d'interviews croisées entre élèves.",
-          "competencesIds": [
-            "EMC-C2-1-1",
-            "EMC-C2-1-5",
-            "FR-CM1-1-9"
-          ],
+          "competencesIds": ["EMC-C2-1-1", "EMC-C2-1-5", "FR-CM1-1-9"],
           "debut": "2026-01-05",
           "fin": "2026-02-06"
         },
         {
           "periodeNom": "Période 4",
           "description": "Reportage sur notre quartier : collecte d'informations, écriture de descriptions géographiques et illustration photographique.",
-          "competencesIds": [
-            "QLM-C2-2-37",
-            "QLM-C2-2-38",
-            "FR-CM1-2-3"
-          ],
+          "competencesIds": ["QLM-C2-2-37", "QLM-C2-2-38", "FR-CM1-2-3"],
           "debut": "2026-02-23",
           "fin": "2026-04-10"
         },
         {
           "periodeNom": "Période 5",
           "description": "Numéro bilan de l'année : rétrospective illustrée, article de clôture, couverture artistique réalisée collectivement.",
-          "competencesIds": [
-            "FR-CM1-2-6",
-            "FR-CM1-2-7",
-            "FR-CM1-2-8"
-          ],
+          "competencesIds": ["FR-CM1-2-6", "FR-CM1-2-7", "FR-CM1-2-8"],
           "debut": "2026-04-27",
           "fin": "2026-07-04"
         }
@@ -10068,54 +9905,35 @@
         {
           "periodeNom": "Période 1",
           "description": "Préparation du projet : observation du sol, identification des légumes à planter. Premières hypothèses sur les besoins des plantes.",
-          "competencesIds": [
-            "QLM-C2-1-9",
-            "QLM-C2-1-13"
-          ],
+          "competencesIds": ["QLM-C2-1-9", "QLM-C2-1-13"],
           "debut": "2025-09-02",
           "fin": "2025-10-17"
         },
         {
           "periodeNom": "Période 2",
           "description": "Semis en godets : mesure de la germination (hauteur, durée). Relevés de températures et comparaison des conditions de croissance.",
-          "competencesIds": [
-            "QLM-C2-1-10",
-            "MAT-CM1-2-4",
-            "MAT-CM1-2-6"
-          ],
+          "competencesIds": ["QLM-C2-1-10", "MAT-CM1-2-4", "MAT-CM1-2-6"],
           "debut": "2025-11-04",
           "fin": "2025-12-19"
         },
         {
           "periodeNom": "Période 3",
           "description": "Plantation en pleine terre : mise en œuvre de l'arrosage raisonné. Carnet de suivi des observations hebdomadaires.",
-          "competencesIds": [
-            "QLM-C2-1-14",
-            "QLM-C2-1-11"
-          ],
+          "competencesIds": ["QLM-C2-1-14", "QLM-C2-1-11"],
           "debut": "2026-01-05",
           "fin": "2026-02-06"
         },
         {
           "periodeNom": "Période 4",
           "description": "Taille, entretien et lutte biologique contre les nuisibles. Comparaison des variétés et enregistrement des résultats.",
-          "competencesIds": [
-            "QLM-C2-1-15",
-            "QLM-C2-1-16",
-            "MAT-CM1-2-3"
-          ],
+          "competencesIds": ["QLM-C2-1-15", "QLM-C2-1-16", "MAT-CM1-2-3"],
           "debut": "2026-02-23",
           "fin": "2026-04-10"
         },
         {
           "periodeNom": "Période 5",
           "description": "Récolte et dégustation. Bilan scientifique : qu'avons-nous appris ? Présentation du carnet de suivi à la classe.",
-          "competencesIds": [
-            "QLM-C2-1-9",
-            "QLM-C2-1-10",
-            "QLM-C2-1-13",
-            "QLM-C2-1-17"
-          ],
+          "competencesIds": ["QLM-C2-1-9", "QLM-C2-1-10", "QLM-C2-1-13", "QLM-C2-1-17"],
           "debut": "2026-04-27",
           "fin": "2026-07-04"
         }
@@ -10137,20 +9955,14 @@
         {
           "periodeNom": "Période 4",
           "description": "Répétitions intégrales : coordination chant / mouvement. Travail d'expression corporelle et placement sur scène.",
-          "competencesIds": [
-            "EPS-C2-3-2"
-          ],
+          "competencesIds": ["EPS-C2-3-2"],
           "debut": "2026-02-23",
           "fin": "2026-04-10"
         },
         {
           "periodeNom": "Période 5",
           "description": "Filage général et représentation devant les familles. Bilan collectif sur le vécu du projet et les apprentissages réalisés.",
-          "competencesIds": [
-            "EMC-C2-1-1",
-            "EMC-C2-1-5",
-            "EMC-C2-1-4"
-          ],
+          "competencesIds": ["EMC-C2-1-1", "EMC-C2-1-5", "EMC-C2-1-4"],
           "debut": "2026-04-27",
           "fin": "2026-07-04"
         }
@@ -10186,9 +9998,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10202,9 +10012,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10225,9 +10033,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10241,9 +10047,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10264,9 +10068,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10280,9 +10082,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10303,9 +10103,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10319,9 +10117,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10335,9 +10131,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10351,9 +10145,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10374,9 +10166,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10390,9 +10180,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10413,9 +10201,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10429,9 +10215,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10452,9 +10236,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10468,9 +10250,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10484,9 +10264,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10500,9 +10278,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10523,9 +10299,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10539,9 +10313,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10562,9 +10334,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10578,9 +10348,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10601,9 +10369,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10617,9 +10383,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10633,9 +10397,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10649,9 +10411,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10672,9 +10432,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10688,9 +10446,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10711,9 +10467,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10727,9 +10481,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10750,9 +10502,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10766,9 +10516,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10782,9 +10530,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10798,9 +10544,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10821,9 +10565,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10837,9 +10579,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10860,9 +10600,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10876,9 +10614,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10899,9 +10635,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10915,9 +10649,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10940,9 +10672,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10956,9 +10686,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10979,9 +10707,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10995,9 +10721,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11018,9 +10742,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11034,9 +10756,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11057,9 +10777,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11073,9 +10791,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11089,9 +10805,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11105,9 +10819,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11128,9 +10840,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11144,9 +10854,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11167,9 +10875,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11183,9 +10889,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11206,9 +10910,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11222,9 +10924,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11238,9 +10938,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11254,9 +10952,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11277,9 +10973,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11293,9 +10987,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11316,9 +11008,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11332,9 +11022,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11355,9 +11043,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11371,9 +11057,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11387,9 +11071,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11403,9 +11085,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11426,9 +11106,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11442,9 +11120,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11465,9 +11141,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11481,9 +11155,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11504,9 +11176,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11520,9 +11190,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11536,9 +11204,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11552,9 +11218,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11575,9 +11239,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11591,9 +11253,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11614,9 +11274,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11630,9 +11288,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11653,9 +11309,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11669,9 +11323,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11694,9 +11346,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11710,9 +11360,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11733,9 +11381,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11749,9 +11395,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11772,9 +11416,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11788,9 +11430,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11811,9 +11451,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11827,9 +11465,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11843,9 +11479,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11859,9 +11493,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11882,9 +11514,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11898,9 +11528,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11921,9 +11549,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11937,9 +11563,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11960,9 +11584,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11976,9 +11598,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11992,9 +11612,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12008,9 +11626,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12031,9 +11647,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12047,9 +11661,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12070,9 +11682,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12086,9 +11696,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12109,9 +11717,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12125,9 +11731,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12141,9 +11745,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12157,9 +11759,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12180,9 +11780,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12196,9 +11794,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12219,9 +11815,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12235,9 +11829,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12258,9 +11850,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12274,9 +11864,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12290,9 +11878,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12306,9 +11892,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12329,9 +11913,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12345,9 +11927,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12368,9 +11948,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12384,9 +11962,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12407,9 +11983,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "F"
-          ],
+          "disciplinesIds": ["F"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -12423,9 +11997,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": [
-            "M"
-          ],
+          "disciplinesIds": ["M"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],

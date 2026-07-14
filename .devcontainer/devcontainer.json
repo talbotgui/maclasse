@@ -1,4 +1,4 @@
 {
   "name": "maclasse",
-  "postCreateCommand": "mkdir -p ~/.claude/projects/-workspaces-maclasse && rm -rf ~/.claude/projects/-workspaces-maclasse/memory && ln -s /workspaces/maclasse/.claude/memory ~/.claude/projects/-workspaces-maclasse/memory"
+  "postCreateCommand": "mkdir -p ~/.claude/projects/-workspaces-maclasse && rm -rf ~/.claude/projects/-workspaces-maclasse/memory && ln -s /workspaces/maclasse/.claude/memory ~/.claude/projects/-workspaces-maclasse/memory && npm ci"
 }

@@ -670,6 +670,11 @@ button {
     display: none;
   }
 
+  // Paramétrage : l'indicateur « Non enregistré » n'a pas de sens sur un tirage papier.
+  .parametrage__pastille-modif {
+    display: none;
+  }
+
   section {
     margin-bottom: 0px !important;
     padding-bottom: 0px !important;

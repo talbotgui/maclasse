@@ -22,6 +22,7 @@
     @switch (sectionActive()) {
       <!-- Section : Enseignant & Classe -->
       @case ('enseignantClasse') {
+        @let ecModifie = estEnseignantClasseModifie();
         <section class="parametrage__section" aria-labelledby="titreEnseignantClasse">
           <h2 id="titreEnseignantClasse" class="parametrage__titre-section">
             {{ LIBELLES.parametrage.sections.enseignantClasse }}
@@ -30,17 +31,24 @@
             <button
               id="btnEnregistrerEnseignantClasse"
               class="mc-btn-primaire"
+              [disabled]="!ecModifie"
               (click)="enregistrerEnseignantClasse()"
             >
-              {{ LIBELLES.commun.enregistrer }}
+              {{ ecModifie ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre }}
             </button>
             <button
               id="btnAnnulerEnseignantClasse"
               class="mc-btn-fantome"
+              [disabled]="!ecModifie"
               (click)="annulerEnseignantClasse()"
             >
               {{ LIBELLES.commun.annuler }}
             </button>
+            @if (ecModifie) {
+              <span class="parametrage__pastille-modif" role="status">{{
+                LIBELLES.parametrage.pastilleNonEnregistre
+              }}</span>
+            }
           </div>
           <div class="parametrage__formulaire">
             <mc-input
@@ -80,6 +88,7 @@
           </div>
           <ul class="parametrage__liste-items">
             @for (periode of copiePeriodes(); track periode.id; let i = $index) {
+              @let periodeModifiee = estPeriodeLigneModifiee(i);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champPeriodeNom' + i"
@@ -103,10 +112,16 @@
                   <button
                     [id]="'btnEnregistrerPeriode' + i"
                     class="mc-btn-primaire mc-btn-sm"
+                    [disabled]="!periodeModifiee"
                     (click)="enregistrerPeriode(i)"
                   >
-                    {{ LIBELLES.commun.enregistrer }}
+                    {{ periodeModifiee ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre }}
                   </button>
+                  @if (periodeModifiee) {
+                    <span class="parametrage__pastille-modif" role="status">{{
+                      LIBELLES.parametrage.pastilleNonEnregistre
+                    }}</span>
+                  }
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerPeriode' + i"
@@ -123,6 +138,7 @@
 
       <!-- Section : Semaine & Horaires -->
       @case ('semaineHoraires') {
+        @let shModifie = estSemaineHorairesModifie();
         <section class="parametrage__section" aria-labelledby="titreSemaineHoraires">
           <h2 id="titreSemaineHoraires" class="parametrage__titre-section">
             {{ LIBELLES.parametrage.sections.semaineHoraires }}
@@ -131,17 +147,24 @@
             <button
               id="btnEnregistrerSemaineHoraires"
               class="mc-btn-primaire"
+              [disabled]="!shModifie"
               (click)="enregistrerSemaineHoraires()"
             >
-              {{ LIBELLES.commun.enregistrer }}
+              {{ shModifie ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre }}
             </button>
             <button
               id="btnAnnulerSemaineHoraires"
               class="mc-btn-fantome"
+              [disabled]="!shModifie"
               (click)="annulerSemaineHoraires()"
             >
               {{ LIBELLES.commun.annuler }}
             </button>
+            @if (shModifie) {
+              <span class="parametrage__pastille-modif" role="status">{{
+                LIBELLES.parametrage.pastilleNonEnregistre
+              }}</span>
+            }
           </div>
           <div class="parametrage__formulaire">
             <fieldset class="parametrage__groupe-jours">
@@ -184,6 +207,7 @@
           </div>
           <ul class="parametrage__liste-items">
             @for (groupe of copieGroupes(); track groupe.id; let i = $index) {
+              @let groupeModifie = estGroupeLigneModifiee(i);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champGroupeLibelle' + i"
@@ -195,10 +219,16 @@
                   <button
                     [id]="'btnEnregistrerGroupe' + i"
                     class="mc-btn-primaire mc-btn-sm"
+                    [disabled]="!groupeModifie"
                     (click)="enregistrerGroupe(i)"
                   >
-                    {{ LIBELLES.commun.enregistrer }}
+                    {{ groupeModifie ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre }}
                   </button>
+                  @if (groupeModifie) {
+                    <span class="parametrage__pastille-modif" role="status">{{
+                      LIBELLES.parametrage.pastilleNonEnregistre
+                    }}</span>
+                  }
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerGroupe' + i"
@@ -230,6 +260,7 @@
           </div>
           <ul class="parametrage__liste-items">
             @for (statut of copieBareme(); track statut.id; let i = $index) {
+              @let statutModifie = estStatutAcquisitionLigneModifiee(i);
               <li class="parametrage__item parametrage__item--bareme">
                 <mc-input
                   [id]="'champStatutId' + i"
@@ -269,10 +300,16 @@
                   <button
                     [id]="'btnEnregistrerStatut' + i"
                     class="mc-btn-primaire mc-btn-sm"
+                    [disabled]="!statutModifie"
                     (click)="enregistrerStatutAcquisition(i)"
                   >
-                    {{ LIBELLES.commun.enregistrer }}
+                    {{ statutModifie ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre }}
                   </button>
+                  @if (statutModifie) {
+                    <span class="parametrage__pastille-modif" role="status">{{
+                      LIBELLES.parametrage.pastilleNonEnregistre
+                    }}</span>
+                  }
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerStatut' + i"
@@ -304,6 +341,7 @@
           </div>
           <ul class="parametrage__liste-items">
             @for (statut of copieStatutsEleve(); track statut.id; let i = $index) {
+              @let statutEleveModifie = estStatutEleveLigneModifiee(i);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champStatutEleveId' + i"
@@ -320,10 +358,18 @@
                   <button
                     [id]="'btnEnregistrerStatutEleve' + i"
                     class="mc-btn-primaire mc-btn-sm"
+                    [disabled]="!statutEleveModifie"
                     (click)="enregistrerStatutEleve(i)"
                   >
-                    {{ LIBELLES.commun.enregistrer }}
+                    {{
+                      statutEleveModifie ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre
+                    }}
                   </button>
+                  @if (statutEleveModifie) {
+                    <span class="parametrage__pastille-modif" role="status">{{
+                      LIBELLES.parametrage.pastilleNonEnregistre
+                    }}</span>
+                  }
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerStatutEleve' + i"
@@ -355,6 +401,7 @@
           </div>
           <ul class="parametrage__liste-items">
             @for (type of copieTypesContact(); track type.id; let i = $index) {
+              @let typeContactModifie = estTypeContactLigneModifiee(i);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champTypeContactId' + i"
@@ -371,10 +418,18 @@
                   <button
                     [id]="'btnEnregistrerTypeContact' + i"
                     class="mc-btn-primaire mc-btn-sm"
+                    [disabled]="!typeContactModifie"
                     (click)="enregistrerTypeContact(i)"
                   >
-                    {{ LIBELLES.commun.enregistrer }}
+                    {{
+                      typeContactModifie ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre
+                    }}
                   </button>
+                  @if (typeContactModifie) {
+                    <span class="parametrage__pastille-modif" role="status">{{
+                      LIBELLES.parametrage.pastilleNonEnregistre
+                    }}</span>
+                  }
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerTypeContact' + i"
@@ -402,6 +457,7 @@
           </div>
           <ul class="parametrage__liste-items">
             @for (raison of copieRaisonsAbsence(); track raison.id; let i = $index) {
+              @let raisonModifiee = estRaisonAbsenceLigneModifiee(i);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champRaisonLibelle' + i"
@@ -413,10 +469,16 @@
                   <button
                     [id]="'btnEnregistrerRaison' + i"
                     class="mc-btn-primaire mc-btn-sm"
+                    [disabled]="!raisonModifiee"
                     (click)="enregistrerRaisonAbsence(i)"
                   >
-                    {{ LIBELLES.commun.enregistrer }}
+                    {{ raisonModifiee ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre }}
                   </button>
+                  @if (raisonModifiee) {
+                    <span class="parametrage__pastille-modif" role="status">{{
+                      LIBELLES.parametrage.pastilleNonEnregistre
+                    }}</span>
+                  }
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerRaison' + i"
@@ -448,6 +510,7 @@
           </div>
           <ul class="parametrage__liste-items">
             @for (freq of copieFrequencesAbsence(); track freq.id; let i = $index) {
+              @let frequenceModifiee = estFrequenceAbsenceLigneModifiee(i);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champFrequenceLibelle' + i"
@@ -459,10 +522,18 @@
                   <button
                     [id]="'btnEnregistrerFrequence' + i"
                     class="mc-btn-primaire mc-btn-sm"
+                    [disabled]="!frequenceModifiee"
                     (click)="enregistrerFrequenceAbsence(i)"
                   >
-                    {{ LIBELLES.commun.enregistrer }}
+                    {{
+                      frequenceModifiee ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre
+                    }}
                   </button>
+                  @if (frequenceModifiee) {
+                    <span class="parametrage__pastille-modif" role="status">{{
+                      LIBELLES.parametrage.pastilleNonEnregistre
+                    }}</span>
+                  }
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerFrequence' + i"
@@ -490,6 +561,7 @@
           </div>
           <ul class="parametrage__liste-items">
             @for (jourFerie of copieJoursFeries(); track jourFerie.id; let i = $index) {
+              @let jourFerieModifie = estJourFerieLigneModifiee(i);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champJourFerieNom' + i"
@@ -507,10 +579,18 @@
                   <button
                     [id]="'btnEnregistrerJourFerie' + i"
                     class="mc-btn-primaire mc-btn-sm"
+                    [disabled]="!jourFerieModifie"
                     (click)="enregistrerJourFerie(i)"
                   >
-                    {{ LIBELLES.commun.enregistrer }}
+                    {{
+                      jourFerieModifie ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre
+                    }}
                   </button>
+                  @if (jourFerieModifie) {
+                    <span class="parametrage__pastille-modif" role="status">{{
+                      LIBELLES.parametrage.pastilleNonEnregistre
+                    }}</span>
+                  }
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerJourFerie' + i"
@@ -527,6 +607,7 @@
 
       <!-- Section : Préférences -->
       @case ('preferences') {
+        @let prefModifie = estPreferencesModifie();
         <section class="parametrage__section" aria-labelledby="titrePreferences">
           <h2 id="titrePreferences" class="parametrage__titre-section">
             {{ LIBELLES.parametrage.sections.preferences }}
@@ -535,17 +616,24 @@
             <button
               id="btnEnregistrerPreferences"
               class="mc-btn-primaire"
+              [disabled]="!prefModifie"
               (click)="enregistrerPreferences()"
             >
-              {{ LIBELLES.commun.enregistrer }}
+              {{ prefModifie ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre }}
             </button>
             <button
               id="btnAnnulerPreferences"
               class="mc-btn-fantome"
+              [disabled]="!prefModifie"
               (click)="annulerPreferences()"
             >
               {{ LIBELLES.commun.annuler }}
             </button>
+            @if (prefModifie) {
+              <span class="parametrage__pastille-modif" role="status">{{
+                LIBELLES.parametrage.pastilleNonEnregistre
+              }}</span>
+            }
           </div>
           <div class="parametrage__formulaire">
             <mc-input
@@ -560,6 +648,7 @@
 
       <!-- Section : Domaines de compétences -->
       @case ('domainesCompetences') {
+        @let domModifie = estDomainesCompetencesModifie();
         <section class="parametrage__section" aria-labelledby="titreDomainesCompetences">
           <h2 id="titreDomainesCompetences" class="parametrage__titre-section">
             {{ LIBELLES.parametrage.sections.domainesCompetences }}
@@ -568,17 +657,24 @@
             <button
               id="btnEnregistrerDomaines"
               class="mc-btn-primaire"
+              [disabled]="!domModifie"
               (click)="enregistrerDomainesCompetences()"
             >
-              {{ LIBELLES.commun.enregistrer }}
+              {{ domModifie ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre }}
             </button>
             <button
               id="btnAnnulerDomaines"
               class="mc-btn-fantome"
+              [disabled]="!domModifie"
               (click)="annulerDomainesCompetences()"
             >
               {{ LIBELLES.commun.annuler }}
             </button>
+            @if (domModifie) {
+              <span class="parametrage__pastille-modif" role="status">{{
+                LIBELLES.parametrage.pastilleNonEnregistre
+              }}</span>
+            }
           </div>
           <p class="parametrage__domaines-info">{{ LIBELLES.parametrage.labelDomainesInfo }}</p>
           <ul

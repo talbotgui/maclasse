@@ -137,6 +137,24 @@
     margin-left: auto;
   }
 
+  &__pastille-modif {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--texte-principal);
+
+    &::before {
+      content: '';
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background-color: var(--avertissement);
+      flex-shrink: 0;
+    }
+  }
+
   &__apercu {
     display: flex;
     flex-direction: column;

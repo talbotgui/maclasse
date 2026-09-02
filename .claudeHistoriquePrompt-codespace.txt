@@ -2432,3 +2432,87 @@ Aucun.
 Complète le plan
 ---
 2026-09-02 20:05:00 [Cahier journal notes textarea] corrige tout
+---
+2026-09-02 20:11:09 [Distinguer formulaires modifiés écrans paramétrage] lance les développements. Quand tu as finis, lance un sous-agent sans mémoire de cette session pour relire le code modifié par la session
+---
+2026-09-02 20:29:21 [Distinguer formulaires modifiés écrans paramétrage] <task-notification>
+<task-id>a9bfbd98e18f67e70</task-id>
+<tool-use-id>toolu_0175jzkqwDqHxu2v5mx2cPE1</tool-use-id>
+<output-file>/tmp/claude-1000/-workspaces-maclasse/d65384e3-c092-437e-b466-736da5eeedab/tasks/a9bfbd98e18f67e70.output</output-file>
+<status>completed</status>
+<summary>Agent "Relecture code paramétrage" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>## Rapport de relecture — Indicateur de modification (écran Paramétrage)
+
+État build : `npx tsc --noEmit` OK, `npx ng test --watch=false` **879/879 tests verts** (50 fichiers). Couverture globale 90 %+.
+
+---
+
+### Points bloquants
+
+**1. Contraste WCAG AA de la pastille — `ecran-parametrage.component.scss:145`**
+`.parametrage__pastille-modif { color: var(--avertissement) }` avec un texte de 13 px (`0.8125rem`) sur fond clair :
+- Océan (défaut) `#f59e0b` sur `#f8fafc` ≈ **1,9:1**
+- Forêt/Crépuscule/Terre `#d97706` sur blanc ≈ **3,2:1**
+- Contraste `#cc7700` sur blanc ≈ **3,9:1**
+
+Tous sous le seuil **4,5:1** exigé pour du texte normal (WCAG 1.4.3). `rgaa-accessibilite.md` impose « Tous les contrôles AXE au vert » ; la règle `color-contrast` d'AXE échouera dans tous les thèmes, y compris le thème « Contraste ».
+Correctif : mettre le **texte** en `var(--texte-principal)` (ou `--texte-secondaire`) et ne garder `var(--avertissement)` que sur la puce `::before`, ou créer une variable dédiée plus foncée dans les thèmes.
+NB : le critère 1.4.1 (couleur seule) est respecté — le texte « Non enregistré » + le libellé bouton « Enregistrer » ⇄ « Enregistré » portent l'information indépendamment de la couleur.
+
+---
+
+### Points d'amélioration
+
+**2. Couverture du composant sous le seuil — `ecran-parametrage.component.ts`**
+65,8 % stmts / 64,05 % branches / 67,28 % fn / 72,34 % lines, sous les 80 % de `tests-code.md`. `ng test` reste vert car le seuil est évalué globalement, mais la fonctionnalité ajoute ~120 lignes partiellement couvertes (non couvert : `annulerDomainesCompetences` l.769-777, branche `collecterIdsDomaines` vide, l.740).
+6 des 8 sections liste (bareme, statutsEleve, typesContact, raisonsAbsence, frequencesAbsence, joursFeries) n'ont que le test « nouvelle ligne = modifiée » ; il manque le cas « ligne existante inchangée → puis modifiée » (présent seulement pour périodes et groupes).
+
+**3. Object Mother manquant — `ecran-parametrage.component.spec.ts:217-224` et `:393-400`**
+`const domaineN1 = {…}` est dupliqué à l'identique dans deux `describe`. `tests-code.md` : « Toute donnée de test réutilisée dans plus d'un test doit passer par un Object Mother ». Un `CompetenceMother` existe déjà (`src/app/tests/competence.mother.ts`, `CompetenceMother.arbreSimple()`) — à réutiliser/étendre.
+
+**4. Correction fonctionnelle de `ObjetUtils.sontEgaux` — `objet.utils.ts`**
+Cas limites documentés en JSDoc mais non gérés, et non testés :
+- `NaN` vs `NaN` → `false` (typeof `number`, jamais `===`).
+- Deux `Date` quelconques → `true` (`Object.keys` vide des deux côtés).
+- Clé absente vs `undefined` explicite : `{a:undefined,b:1}` vs `{b:1,c:undefined}` → `true` à tort (longueurs égales, `objetB['a']` vaut `undefined`). Il faudrait un `cle in objetB`.
+
+Aucun de ces cas ne survient dans l'usage actuel (les données comparées sont des chaînes ISO, nombres, booléens et tableaux JSON — pas d'objets `Date`), donc **pas de bug fonctionnel réel** ici. Recommandation : soit ajouter les gardes (`Number.isNaN`, `cle in objetB`), soit ajouter des tests qui figent explicitement le comportement (NaN, clé absente vs undefined). L'ordre des clés est correctement géré et testé.
+
+**5. Duplication (point 7 de la demande)**
+Le helper générique `estLigneModifiee&lt;T extends {id:string}&gt;` est bien conçu. En revanche les 8 wrappers `estXxxLigneModifiee`, le `switch` de l'`effect`, les 8 signaux `copieXxx` + `indexAFocaliserXxx` et les 8 blocs de template quasi identiques pourraient être pilotés par une table `Record&lt;SectionId, {lireCopie, lireStore, …}&gt;`. C'est cohérent avec la répétition déjà massive du fichier (`ajouterXxx`/`enregistrerXxx`/`supprimerXxx`/`estXxxUtilise` ×8) donc non bloquant, mais un sous-composant « bouton Enregistrer + pastille » ou cette table réduirait fortement la surface. À arbitrer.
+
+**6. Nommage — `ecran-parametrage.component.ts:802` `estLigneModifiee`**
+Méthode `private` (helper interne, pas lue depuis un template). `conventions-nommage.md` réserve `est` aux « méthodes récupérant un état depuis un template HTML » et donne justement `verifierGroupeUtilise` en exemple correct. Renommer en `verifierLigneModifiee`. Les `estXxxModifie` / `estXxxLigneModifiee` `protected` appelés par le template sont eux conformes.
+
+**7. Impression — `styles.scss` `@media print` (l.659)**
+`.parametrage__pastille-modif` n'est pas masquée à l'impression alors que `.mc-btn-primaire`/`.mc-btn-fantome` le sont (l.664-671). L'écran Paramétrage n'a pas de fonction Imprimer, impact faible, mais le texte « Non enregistré » resterait visible sur un Ctrl+P navigateur. Si on veut le masquer, ce doit être dans le bloc global (`scss-css.md` : « jamais gérer l'impression dans les SCSS de composant »).
+
+---
+
+### Points mineurs
+
+**8. Annonce lecteur d'écran** — la pastille `&lt;span&gt;` apparaît/disparaît sans `aria-live`/`role="status"`. Le changement de libellé du bouton + `[disabled]` portent déjà l'info ; `role="status"` sur le span serait un plus.
+
+**9. Risque de régression E2E (non exécuté ici)** — `parametrage.spec.ts:346` : `champDelaiSauvegarde.fill('5')` puis `btnEnregistrerPreferences.click()`. Si la valeur du jeu figé `maclasse-test.zip` vaut déjà `5`, le formulaire n'est pas modifié → bouton `disabled` → le `.click()` échouera. Idem pour tout test cliquant ENREGISTRER/ANNULER sans modification préalable. La majorité des tests `fill()` d'abord (OK), mais à contrôler au prochain run E2E. Les sélecteurs (ciblage par `#id`) ne sont pas impactés par le changement de texte.
+
+**10. `estSemaineHorairesModifie`** — `basculerJourOuvre` réordonne `joursOuvres` selon `JOURS_SEMAINE` ; si le store stocke les jours dans un autre ordre, la comparaison signalera « modifié » à tort. Peu probable (données authored). Pourrait trier `joursOuvres` avant comparaison, comme le fait `estDomainesCompetencesModifie` pour les domaines.
+
+**11. `enregistrerPeriode` &amp; autres sections liste** — passent `this.copiePeriodes()[index]` au service sans `structuredClone` (contrairement à `enregistrerSemaineHoraires`). Pré-existant, hors périmètre, mais à vérifier côté `ReferentielService` : si pas de clone, `estLigneModifiee` comparerait la même référence (toujours « non modifié »).
+
+**12. Effet de réinitialisation** — l'`effect` dépend de `donneesService.donnees()` ; après enregistrement d'une ligne, il fait `copiePeriodes.set(structuredClone(store))`, ce qui efface les autres lignes non enregistrées en cours d'édition. Comportement pré-existant (l.212-215), non introduit ici, mais accentué par l'usage : l'utilisateur peut être surpris que la pastille « valide » implicitement en supprimant ses autres brouillons.
+
+---
+
+### Points vérifiés conformes
+
+- **Cohérence pastille / libellé** : les 12 blocs utilisent la même variable `@let xModifie` pour `[disabled]`, le libellé ternaire et le `@if` de la pastille → mutuellement exclusifs et cohérents.
+- **Détection « modifié »** : `estDomainesCompetencesModifie` normalise correctement (tout actif → `[]`, tri des deux côtés) ; « décocher tout » avec store `[]` → non modifié, cohérent avec la sémantique documentée « vide = tout afficher ».
+- **Réactivité OnPush en production** : les formulaires sont des objets simples non réactifs, mais toutes les mutations passent par des événements (`ngModelChange`, `click`, `change`) qui déclenchent la détection de changement ; le bouton se met bien à jour à la frappe. Confirmé par le test `spec.ts:323` qui dispatche un vrai event `input` + `detectChanges`.
+- **Qualité des tests** : non tautologiques (vérification via les vraies méthodes et données réelles, pas de mock, `vi.spyOn` non utilisé abusivement), assertions sur valeurs exactes (`'Enregistré'` / `'Enregistrer'`), `@let` pour n'évaluer qu'une fois par cycle.
+- **Angular** : OnPush conservé, `@if`/`@for`/`@switch` natifs, aucun `emit()` en template (le composant n'a pas d'`output()`), `input()`/`signal()`/`computed()` corrects, pas de `any` (sauf `$any($event.target)` en template, usage standard).
+- **libelles.ts** : `commun.enregistre` et `parametrage.pastilleNonEnregistre` bien placés, pas de doublon.</result>
+<usage><subagent_tokens>120381</subagent_tokens><tool_uses>27</tool_uses><duration_ms>404361</duration_ms></usage>
+</task-notification>
+---
+2026-09-02 20:30:35 [Distinguer formulaires modifiés écrans paramétrage] corrige tout

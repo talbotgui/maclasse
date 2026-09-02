@@ -13,6 +13,7 @@ export const LIBELLES = {
   /** Libellés communs réutilisés dans plusieurs domaines. */
   commun: {
     enregistrer: 'Enregistrer',
+    enregistre: 'Enregistré',
     annuler: 'Annuler',
     supprimer: 'Supprimer',
     modifier: 'Modifier',
@@ -315,6 +316,7 @@ export const LIBELLES = {
     labelJourFerieDate: 'Date',
     labelDelaiSauvegarde: 'Délai de sauvegarde automatique (minutes)',
     tooltipValeurUtilisee: 'Cette valeur est utilisée et ne peut pas être supprimée',
+    pastilleNonEnregistre: 'Non enregistré',
     labelDomainesInfo:
       'Cochez les domaines et sous-domaines à utiliser dans votre classe. Décochez tout pour tout afficher.',
     ariaCheckboxDomaine: 'Activer le domaine',

@@ -22,6 +22,7 @@ import { McChampHeureComponent } from '../../composants/mc-champ-heure/mc-champ-
 import { McChipFiltreComponent } from '../../composants/mc-chip-filtre/mc-chip-filtre.component';
 import { McBoutonDestructionComponent } from '../../composants/mc-bouton-destruction/mc-bouton-destruction.component';
 import { McBadgeStatutComponent } from '../../composants/mc-badge-statut/mc-badge-statut.component';
+import { ObjetUtils } from '../../utilitaires/objet.utils';
 import type { Enseignant } from '../../modeles/donnees-application.modele';
 import type {
   Competence,
@@ -252,12 +253,7 @@ export class EcranParametrageComponent {
           const actifs = d.configuration.domainesActifs;
           if (!actifs || actifs.length === 0) {
             // Rien de configuré → tout cocher
-            const tousIds = new Set<string>();
-            d.referentiels.competences.forEach((n1) => {
-              tousIds.add(n1.id);
-              n1.enfants?.forEach((n2) => tousIds.add(n2.id));
-            });
-            this.copieDomainesActifs.set(tousIds);
+            this.copieDomainesActifs.set(new Set(this.collecterIdsDomaines()));
           } else {
             this.copieDomainesActifs.set(new Set(actifs));
           }
@@ -754,12 +750,7 @@ export class EcranParametrageComponent {
     const actifs = this.copieDomainesActifs();
 
     // Si tous les nœuds N1 et N2 sont actifs, on stocke [] (= tout afficher)
-    const tousIds: string[] = [];
-    d.referentiels.competences.forEach((n1) => {
-      tousIds.push(n1.id);
-      n1.enfants?.forEach((n2) => tousIds.push(n2.id));
-    });
-    const toutActif = tousIds.every((id) => actifs.has(id));
+    const toutActif = this.collecterIdsDomaines().every((id) => actifs.has(id));
 
     this.donneesService.executer(
       new CommandeRemplacement<string[]>(
@@ -779,15 +770,183 @@ export class EcranParametrageComponent {
     if (!d) return;
     const actifs = d.configuration.domainesActifs;
     if (!actifs || actifs.length === 0) {
-      const tousIds = new Set<string>();
-      d.referentiels.competences.forEach((n1) => {
-        tousIds.add(n1.id);
-        n1.enfants?.forEach((n2) => tousIds.add(n2.id));
-      });
-      this.copieDomainesActifs.set(tousIds);
+      this.copieDomainesActifs.set(new Set(this.collecterIdsDomaines()));
     } else {
       this.copieDomainesActifs.set(new Set(actifs));
     }
     this.cdr.markForCheck();
+  }
+
+  /**
+   * Collecte les identifiants de tous les domaines N1 et sous-domaines N2 de l'arbre complet.
+   * @returns Liste plate de tous les identifiants (vide si les données ne sont pas chargées).
+   */
+  private collecterIdsDomaines(): string[] {
+    const d = this.donneesService.donnees();
+    if (!d) return [];
+    const ids: string[] = [];
+    d.referentiels.competences.forEach((n1) => {
+      ids.push(n1.id);
+      n1.enfants?.forEach((n2) => ids.push(n2.id));
+    });
+    return ids;
+  }
+
+  /**
+   * Indique si une ligne éditée inline diffère de sa version enregistrée dans le store.
+   * Une ligne absente du store (création en cours) est considérée comme modifiée.
+   * @param ligne Ligne de la copie locale (`undefined` si l'index est hors bornes).
+   * @param listeStore Liste correspondante dans le store.
+   * @returns `true` si la ligne est nouvelle ou a été modifiée.
+   */
+  private verifierLigneModifiee<T extends { id: string }>(
+    ligne: T | undefined,
+    listeStore: readonly T[],
+  ): boolean {
+    if (!ligne) return false;
+    const enregistree = listeStore.find((e) => e.id === ligne.id);
+    return !enregistree || !ObjetUtils.sontEgaux(enregistree, ligne);
+  }
+
+  /** @returns `true` si le formulaire Enseignant & Classe diffère du store. */
+  protected estEnseignantClasseModifie(): boolean {
+    const d = this.donneesService.donnees();
+    if (!d) return false;
+    return !ObjetUtils.sontEgaux(this.formEnseignantClasse, {
+      prenom: d.enseignant.prenom,
+      nom: d.enseignant.nom,
+      annee: d.enseignant.annee,
+      niveauClasse: d.classe.niveau,
+    });
+  }
+
+  /**
+   * @returns `true` si le formulaire Semaine & Horaires diffère du store.
+   * La liste des jours ouvrés est triée avant comparaison : seul l'ensemble des jours
+   * compte, pas leur ordre de saisie.
+   */
+  protected estSemaineHorairesModifie(): boolean {
+    const d = this.donneesService.donnees();
+    if (!d) return false;
+    const store = d.referentiels.configEmploiDuTemps;
+    return !ObjetUtils.sontEgaux(
+      {
+        ...this.formSemaineHoraires,
+        joursOuvres: [...this.formSemaineHoraires.joursOuvres].sort(),
+      },
+      { ...store, joursOuvres: [...store.joursOuvres].sort() },
+    );
+  }
+
+  /** @returns `true` si le formulaire Préférences diffère du store. */
+  protected estPreferencesModifie(): boolean {
+    const d = this.donneesService.donnees();
+    if (!d) return false;
+    return (
+      this.formPreferences.delaiSauvegardeAutoMinutes !== d.configuration.delaiSauvegardeAutoMinutes
+    );
+  }
+
+  /** @returns `true` si la sélection des domaines diffère de la configuration enregistrée. */
+  protected estDomainesCompetencesModifie(): boolean {
+    const d = this.donneesService.donnees();
+    if (!d) return false;
+    const actifs = this.copieDomainesActifs();
+    const toutActif = this.collecterIdsDomaines().every((id) => actifs.has(id));
+    const copieNormalisee = (toutActif ? [] : [...actifs]).sort();
+    const storeNormalise = [...(d.configuration.domainesActifs ?? [])].sort();
+    return !ObjetUtils.sontEgaux(copieNormalisee, storeNormalise);
+  }
+
+  /**
+   * @param index Index de la ligne dans la copie locale.
+   * @returns `true` si la période est nouvelle ou modifiée.
+   */
+  protected estPeriodeLigneModifiee(index: number): boolean {
+    const d = this.donneesService.donnees();
+    return !!d && this.verifierLigneModifiee(this.copiePeriodes()[index], d.referentiels.periodes);
+  }
+
+  /**
+   * @param index Index de la ligne dans la copie locale.
+   * @returns `true` si le groupe est nouveau ou modifié.
+   */
+  protected estGroupeLigneModifiee(index: number): boolean {
+    const d = this.donneesService.donnees();
+    return !!d && this.verifierLigneModifiee(this.copieGroupes()[index], d.referentiels.groupes);
+  }
+
+  /**
+   * @param index Index de la ligne dans la copie locale.
+   * @returns `true` si le statut d'acquisition est nouveau ou modifié.
+   */
+  protected estStatutAcquisitionLigneModifiee(index: number): boolean {
+    const d = this.donneesService.donnees();
+    return (
+      !!d &&
+      this.verifierLigneModifiee(this.copieBareme()[index], d.referentiels.statutsAcquisition)
+    );
+  }
+
+  /**
+   * @param index Index de la ligne dans la copie locale.
+   * @returns `true` si le statut élève est nouveau ou modifié.
+   */
+  protected estStatutEleveLigneModifiee(index: number): boolean {
+    const d = this.donneesService.donnees();
+    return (
+      !!d &&
+      this.verifierLigneModifiee(this.copieStatutsEleve()[index], d.referentiels.statutsEleve)
+    );
+  }
+
+  /**
+   * @param index Index de la ligne dans la copie locale.
+   * @returns `true` si le type de contact est nouveau ou modifié.
+   */
+  protected estTypeContactLigneModifiee(index: number): boolean {
+    const d = this.donneesService.donnees();
+    return (
+      !!d &&
+      this.verifierLigneModifiee(this.copieTypesContact()[index], d.referentiels.typesContact)
+    );
+  }
+
+  /**
+   * @param index Index de la ligne dans la copie locale.
+   * @returns `true` si la raison d'absence est nouvelle ou modifiée.
+   */
+  protected estRaisonAbsenceLigneModifiee(index: number): boolean {
+    const d = this.donneesService.donnees();
+    return (
+      !!d &&
+      this.verifierLigneModifiee(this.copieRaisonsAbsence()[index], d.referentiels.raisonsAbsence)
+    );
+  }
+
+  /**
+   * @param index Index de la ligne dans la copie locale.
+   * @returns `true` si la fréquence d'absence est nouvelle ou modifiée.
+   */
+  protected estFrequenceAbsenceLigneModifiee(index: number): boolean {
+    const d = this.donneesService.donnees();
+    return (
+      !!d &&
+      this.verifierLigneModifiee(
+        this.copieFrequencesAbsence()[index],
+        d.referentiels.frequencesAbsence,
+      )
+    );
+  }
+
+  /**
+   * @param index Index de la ligne dans la copie locale.
+   * @returns `true` si le jour férié est nouveau ou modifié.
+   */
+  protected estJourFerieLigneModifiee(index: number): boolean {
+    const d = this.donneesService.donnees();
+    return (
+      !!d && this.verifierLigneModifiee(this.copieJoursFeries()[index], d.referentiels.joursFeries)
+    );
   }
 }

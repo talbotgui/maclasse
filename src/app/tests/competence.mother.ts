@@ -7,6 +7,22 @@ export class CompetenceMother {
    * Couvre les cas de recherche insensible à la casse/accents, de navigation par chemin
    * et d'extraction de libellé breadcrumb.
    */
+  /**
+   * Retourne un domaine N1 « Français » avec deux sous-domaines N2 feuilles
+   * (`d1-1` Lecture, `d1-2` Écriture). Adapté à l'écran paramétrage qui n'affiche
+   * que deux niveaux de profondeur.
+   */
+  static domaineAvecSousDomaines(): Competence {
+    return {
+      id: 'd1',
+      libelle: 'Français',
+      enfants: [
+        { id: 'd1-1', libelle: 'Lecture', enfants: [] },
+        { id: 'd1-2', libelle: 'Écriture', enfants: [] },
+      ],
+    };
+  }
+
   static arbreSimple(): Competence[] {
     return [
       {

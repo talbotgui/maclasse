@@ -2311,3 +2311,111 @@ Tous les champs des sous-blocs concernés ont déjà des `id` uniques conformes 
 ---
 2026-07-08 20:41:43 [Sans titre] je souhaite configurer un formatteur de code pour ce projet paramétré pour VSCode est déclenché systématiquement après chaque modification faite par ClaudeCode.
 Que me proposes-tu ?
+---
+2026-09-02 19:14:30 [Sans titre] Un bug a été détecté par un utilisateur de l'application. Voici le scénario de reproduction :
+- création d'un fichier de donnée
+- saisie de deux temps dans un journal prévu pour le mardi suivant aujourd'hui
+- sauvegarde du fichier
+- import du fichier
+- le cahier journal n'est plus sur le mardi suivant mais a été déplacé au mardi suivant
+
+Analyse le problème et décrit le moi (sans faire de modification)
+---
+2026-09-02 19:18:12 [Bug décalage journal au mardi suivant] propose moi une solution
+---
+2026-09-02 19:21:46 [Sans titre] J'ai besoin d'une évolution de l'écran du cahier journal pour permettre de saisir, dans un TEXTAREA, des notes. Ce champs est à mettre tout en haut, au dessus des temps.
+Propose moi des compléments/propositions/idées
+---
+2026-09-02 19:29:00 [Cahier journal notes textarea] §4=A au blur
+idée 1 : afficher le TEXTAREA après la création d'une première séance
+idée 2 : non
+idée 3 : reporter à la duplication
+idée 4 : ajoute un h2 avec la date formatée
+idée 5 : afficher les notes, dans un P, à l'impression
+idée 6&7 : non
+idée 8&9 : oui
+---
+2026-09-02 19:29:30 [Bug décalage journal au mardi suivant] démarre un sous-agent ne reprenant pas tes connaissances pour faire une relecture de code
+---
+2026-09-02 19:34:18 [Cahier journal notes textarea] 1. Dès qu'une journée existe
+2. effect+signal
+---
+2026-09-02 19:35:51 [Bug décalage journal au mardi suivant] <task-notification>
+<task-id>a7aa66265e439c6cd</task-id>
+<tool-use-id>toolu_01P5ffpwwyUUnGfbTGTWHRy7</tool-use-id>
+<output-file>/tmp/claude-1000/-workspaces-maclasse/c5671e1e-c34b-459f-b50e-e7ec86a0f24a/tasks/a7aa66265e439c6cd.output</output-file>
+<status>completed</status>
+<summary>Agent "Relecture de code des modifications" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>All checks complete. Git access was blocked in this environment, so I reviewed the working-tree state of every listed file directly (the "before" is inferred from the bug description); `tsc` and `ng test` both ran clean.
+
+---
+
+## (a) Verdict global
+
+**Le correctif est correct, complet et non régressif.** Les deux `tsc --noEmit` (app + spec) passent, et `ng test --no-watch` passe intégralement (49 fichiers, 822 tests). Couverture `donnees.service.ts` : 100 % lignes / 100 % fonctions / 94 % branches (les 2 branches non couvertes — lignes 42/48 — sont des `computed` préexistants sans rapport avec le correctif).
+
+La logique de `decalerCahierJournalVersSemaineSuivante` est saine sur tous les cas limites, et le nouveau routage d'outputs (`creationDemandee` / `demarrageTermine` / `referentielDemande`) est cohérent et complet. Aucun problème bloquant.
+
+## (b) Problèmes bloquants
+
+Aucun.
+
+## (c) Remarques de qualité / conformité aux règles
+
+1. **Nombre magique `7`** — `src/app/services/avecEtat/donnees.service.ts:98`
+   `DateUtils.ajouterJours(DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()), 7)`.
+   `architecture.md` (« Chercher avant de créer » / « Toute valeur numérique dont la signification n'est pas évidente doit être nommée », exceptions limitées à `0,1,-1,2`). `DateUtils.JOURS_PAR_SEMAINE = 7` existe déjà mais en `private static`. Suggestion : l'exposer, ou ajouter un helper `DateUtils.lundiSemaineProchaine()` / `ajouterSemaines()`. Ce helper factoriserait aussi le calcul `lundiDeLaSemaine(dateAujourdhui()) + 7` qui est aujourd'hui dupliqué à l'identique dans le service (l.96‑99), dans le spec (`donnees.service.spec.ts:109‑112`) et dans l'e2e (`cahier-journal.spec.ts:30‑32`).
+
+2. **Terminologie incohérente « prochaine » vs « suivante »** — le paramètre s'appelle `recentrerCahierJournalSurSemaineProchaine` (`donnees.service.ts:69`), la méthode privée `decalerCahierJournalVersSemaineSuivante` (l.87), la variable de l'écran `recentrerCahierJournal` (`ecran-demarrage.component.ts:66`). Cosmétique, mais `conventions-nommage.md` valorise la cohérence du vocabulaire métier — choisir un seul terme.
+
+3. **Accord féminin** — `premierDate` (`donnees.service.ts:91`) devrait être `premiereDate` (« date » est féminin), cf. `conventions-nommage.md` (nommage français).
+
+4. **Délégation d'output non conforme à la lettre** — `angular-typescript.md` exige que tout `output()` ait une méthode `onXxx()` dédiée et interdit d'émettre ailleurs que via cette délégation. Le template de la popin fait `(click)="creer()"`, `(click)="charger()"`, `(click)="accederReferentiel()"`, et ces méthodes appellent `.emit()` directement. Le nouvel output `creationDemandee` suit ce schéma préexistant (déjà en place pour `demarrageTermine` et `referentielDemande`), donc le correctif n'aggrave pas la situation — mais si le fichier est retouché, aligner sur `onCreationDemandee()` etc. Les handlers *parent* (`surCreationDemandee`, `surDemarrageTermine`, `surReferentielDemande`) sont eux corrects (préfixe `sur` pour un handler d'événement).
+
+5. **Constante au niveau module dans le mother** — `cahier-journal.mother.ts:7` `export const DATES_TEST = {…} as const;` contredit `architecture.md` (« Aucune constante au niveau du module (hors d'une classe) »). Pattern préexistant dans ce fichier (aux côtés de `SeanceMother`/`JourneeMother`) ; à signaler seulement si le diff l'a introduit.
+
+6. **Visibilité / JSDoc** — conformes : tous les nouveaux membres (`charger` 2e param, `decalerCahierJournalVersSemaineSuivante`, les 3 outputs, `chargerEtNaviguerAccueil`, les 3 handlers) portent une JSDoc rédigée avec `@param`. Outputs en `protected readonly` (conforme `angular-typescript.md`). `OnPush`, `inject()`, `output()` : OK.
+
+### Analyse de fond — `decalerCahierJournalVersSemaineSuivante`
+
+- **Sign/logique** : `delta = differenceEnJours(lundiOrigine, lundiCible)` = `lundiCible − lundiOrigine` (multiple de 7). Chaque journée est décalée du même `delta` → **jour de semaine préservé** et **écarts relatifs préservés** (y compris cahier sur plusieurs semaines : la journée la plus tardive conserve son offset &gt; 7 j). Correct.
+- **Cahier vide** : `return` anticipé (l.88‑90). **Une seule journée** : OK. **Changement d'année** : `ajouterJours` utilise `Date.setDate` → rollover mois/année sûr.
+- **DST** : `differenceEnJours` fait `Math.round(ms / 86_400_000)` → absorbe le ±1 h et retombe sur un nombre de jours exact (toujours multiple de 7 ici) ; `ajouterJours` via `setDate` est DST-safe. **Pas de bug DST.**
+- **Week-ends / fériés** : non pris en compte, mais comme le jour de semaine est conservé, des journées en jours ouvrés le restent. Conforme à l'intention.
+- **`premierDate`** : `reduce` avec comparaison lexicographique sur chaînes ISO `YYYY-MM-DD` → correct.
+- **Gating** : seuls `creationDemandee` et `referentielDemande` passent `true` ; `demarrageTermine` (import ZIP) passe `false`. **Correspond exactement à l'intention du bug.** Mutation faite sur le `structuredClone`, avant `.set()`. OK.
+
+### Autres appelants / régressions
+
+- **Seul appelant de production de `charger()`** : `ecran-demarrage.component.ts` (l.69 et l.81). Le nouveau paramètre a une valeur par défaut `false` → tous les appels de test existants (`DonneesMother.base()` sans 2e arg dans ~50 specs) restent inchangés. Aucune régression unitaire (confirmé : 822 tests verts).
+- **e2e** : `testAvecDonnees` (`avec-donnees.fixture.ts`) passe par le bouton **CRÉER** (`#btnCreer`) → chemin `creationDemandee` → recentrage **toujours appliqué**. Les tests qui inspectent les dates du cahier journal (`cahier-journal.spec.ts`, `accueil.spec.ts`) utilisent cette fixture → **pas de régression**. `testAvecZip` (E2E-03/04/05) n'assert que la navigation vers `/accueil` et les messages d'erreur, jamais les dates du cahier journal. Le ZIP de test est pourtant bien généré depuis `public/donnees-defaut.json` (`global-setup.ts:33`), donc après le correctif un import ne recentrera plus — mais aucune assertion e2e existante ne s'appuie là-dessus. (Playwright non exécuté ici ; conclusion par inspection.)
+
+### Qualité des nouveaux tests
+
+- `donnees.service.spec.ts:97‑145` — **solide** : 4 tests, aucun mock, `DateUtils` réel, valeurs de référence recalculées avec le même utilitaire (conforme `tests-code.md`). Couvre : recentrage appliqué, jour de semaine + écart relatif conservés, défaut = no-op, cahier vide = no-op.
+- `ecran-demarrage.component.spec.ts:57‑66 / 101‑110 / 144‑153` — **corrects et non tautologiques** : `vi.spyOn(donneesService, 'charger')` **sans `mockImplementation`** (spy observateur, méthode réelle exécutée) puis `toHaveBeenCalledWith(donnees, true|false)` — exactement le pattern imposé par `tests-code.md`. Vérifient réellement le routage du flag par chemin.
+- `popin-demarrage.component.spec.ts:28‑102` — appellent la vraie méthode `creer()` (pas `.emit()` direct) et espionnent `.emit` ; inclut un test négatif (`creer()` n'émet pas `demarrageTermine`). Conforme.
+
+### Lacunes de test (non bloquantes)
+
+- Pas de test que `surCreationDemandee` remet `modeConsultationReferentiel` à `false` (il n'existe que pour `surDemarrageTermine`, `ecran-demarrage.component.spec.ts:90`). Le helper privé partagé garantit le comportement, mais la symétrie manque.
+- Pas de test pour un cahier journal **multi-semaines** (vérifier que la dernière journée garde un offset &gt; 7 j) ni pour le cas **`delta == 0`** (cahier déjà dans la semaine cible → aucun décalage).
+- Les tests de recentrage de `ecran-demarrage.component.spec.ts` utilisent `DonneesMother.base()` dont `cahierJournal` vaut `[]` : ils n'assertent donc que le flag, pas un décalage réel (acceptable, le décalage est couvert côté `donnees.service.spec.ts`).
+- `popin-demarrage.component.spec.ts:79,88` — nouveaux tests d'erreur de `creer()` qui utilisent `expect(...erreur()).toBeTruthy()`. `tests-code.md` (« Assertions sur les chaînes formatées ») déconseille `toBeTruthy()` sur une valeur texte : préférer `toBe(LIBELLES.demarrage.erreurFichier)`. Pattern préexistant dans ce spec, mais reconduit par le correctif.
+
+## (d) Suggestions optionnelles
+
+1. Exposer `DateUtils.JOURS_PAR_SEMAINE` (ou ajouter `DateUtils.lundiSemaineProchaine()`) et l'utiliser en `donnees.service.ts:98` + factoriser le calcul dupliqué service/spec/e2e.
+2. Uniformiser « semaine suivante » partout (param, méthode, variable, JSDoc).
+3. Renommer `premierDate` → `premiereDate`.
+4. Ajouter un test `surCreationDemandee` → `modeConsultationReferentiel` repasse à `false`, et un test `decalerCahierJournalVersSemaineSuivante` sur cahier multi-semaines + cas `delta == 0`.
+5. Si `popin-demarrage` est retouché : introduire `onCreationDemandee()` / `onDemarrageTermine()` / `onReferentielDemande()` et remplacer les `toBeTruthy()` par l'égalité au libellé exact.</result>
+<usage><subagent_tokens>104160</subagent_tokens><tool_uses>31</tool_uses><duration_ms>356379</duration_ms></usage>
+</task-notification>
+---
+2026-09-02 19:38:12 [Bug décalage journal au mardi suivant] traite les 5 points
+---
+2026-09-02 19:44:32 [Sans titre] dans les écrans de paramétrage, il n'est pas possible de distinguer les formulaires modifiés nécessitant de cliquer sur le bouton ENREGISTRER de ceux non modifié. Je pense qu'utiliser la nuance de la couleur du bouton ENREGISTRER est utilisable (bouton plus clair si le formulaire n'est pas modifié). Propose moi des idées/compléments
+---
+2026-09-02 19:49:08 [Distinguer formulaires modifiés écrans paramétrage] Je retiens les idées 1 (le disabled), 4 (la pastille) et 6 (ENREGISTRER => ENREGISTRE). Détaille un plan de développement

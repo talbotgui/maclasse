@@ -167,6 +167,21 @@ describe('DateUtils', () => {
     });
   });
 
+  /** Retourne le lundi de la semaine ISO suivant celle de la date donnée. */
+  describe('lundiDeLaSemaineSuivante', () => {
+    it('retourne le lundi suivant pour un lundi', () => {
+      expect(DateUtils.lundiDeLaSemaineSuivante('2026-06-15')).toBe('2026-06-22');
+    });
+
+    it('retourne le lundi de la semaine suivante pour un mercredi', () => {
+      expect(DateUtils.lundiDeLaSemaineSuivante('2026-06-17')).toBe('2026-06-22');
+    });
+
+    it('franchit un changement de mois', () => {
+      expect(DateUtils.lundiDeLaSemaineSuivante('2026-06-30')).toBe('2026-07-06');
+    });
+  });
+
   /** Calcule la différence signée en jours entre deux dates ISO. */
   describe('differenceEnJours', () => {
     it('retourne 7 entre un lundi et le lundi suivant', () => {

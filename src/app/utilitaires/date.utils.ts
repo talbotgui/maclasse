@@ -27,8 +27,8 @@ export class DateUtils {
   /** Offset du jeudi dans l'algorithme ISO de calcul du numéro de semaine (lundi = 1). */
   private static readonly INDEX_JEUDI_ISO = 4;
 
-  /** Nombre de jours dans une semaine. */
-  private static readonly JOURS_PAR_SEMAINE = 7;
+  /** Nombre de jours dans une semaine — également exposé pour les calculs hebdomadaires externes. */
+  public static readonly JOURS_PAR_SEMAINE = 7;
 
   /**
    * Ajoute un nombre de jours (positif ou négatif) à une date ISO.
@@ -127,6 +127,15 @@ export class DateUtils {
     const [annee, mois, jour] = date.split('-').map(Number);
     const jourSemaine = new Date(annee, mois - 1, jour).getDay();
     return DateUtils.ajouterJours(date, -((jourSemaine + 6) % DateUtils.JOURS_PAR_SEMAINE));
+  }
+
+  /**
+   * Retourne la date du lundi de la semaine ISO qui suit celle de la date donnée.
+   * @param date Date au format `YYYY-MM-DD`.
+   * @returns Date du lundi de la semaine suivante au format `YYYY-MM-DD`.
+   */
+  public static lundiDeLaSemaineSuivante(date: string): string {
+    return DateUtils.ajouterJours(DateUtils.lundiDeLaSemaine(date), DateUtils.JOURS_PAR_SEMAINE);
   }
 
   /**

@@ -25,9 +25,11 @@ import type { DonneesApplication } from '../../../modeles/donnees-application.mo
  * - **Référentiel** : charge `donnees-defaut.json` pour la seule consultation du référentiel
  *   de compétences, sans donner accès au reste de l'application.
  *
- * Émet `demarrageTermine` (Créer/Charger) ou `referentielDemande` (Référentiel)
- * avec les données chargées ; l'écran démarrage appelle alors `DonneesService.charger()`
- * et navigue vers l'écran approprié.
+ * Émet `creationDemandee` (Créer), `demarrageTermine` (Charger) ou `referentielDemande`
+ * (Référentiel) avec les données chargées ; l'écran démarrage appelle alors
+ * `DonneesService.charger()` et navigue vers l'écran approprié. Le recentrage du cahier
+ * journal sur la semaine suivante est réservé aux données d'exemple (`creationDemandee`,
+ * `referentielDemande`) — un fichier importé (`demarrageTermine`) est chargé tel quel.
  * En cas d'erreur, un message inline est affiché et la popin reste ouverte.
  */
 @Component({
@@ -37,7 +39,17 @@ import type { DonneesApplication } from '../../../modeles/donnees-application.mo
   styleUrl: './popin-demarrage.component.scss',
 })
 export class PopinDemarrageComponent extends ComposantBase {
-  /** Émis avec les données chargées ou déchiffrées dès qu'elles sont disponibles. */
+  /**
+   * Émis avec les données d'exemple lors de la création d'un nouveau fichier.
+   * Le cahier journal d'exemple sera recentré sur la semaine suivante par l'écran démarrage.
+   */
+  protected readonly creationDemandee: OutputEmitterRef<DonneesApplication> =
+    output<DonneesApplication>();
+
+  /**
+   * Émis avec les données déchiffrées d'un fichier ZIP importé par l'utilisateur.
+   * Les dates sont conservées telles quelles (pas de recentrage du cahier journal).
+   */
   protected readonly demarrageTermine: OutputEmitterRef<DonneesApplication> =
     output<DonneesApplication>();
 
@@ -80,6 +92,30 @@ export class PopinDemarrageComponent extends ComposantBase {
   }
 
   /**
+   * Délègue vers le parent l'émission de `creationDemandee` avec les données d'exemple.
+   * @param donnees Données d'exemple à transmettre.
+   */
+  protected onCreationDemandee(donnees: DonneesApplication): void {
+    this.creationDemandee.emit(donnees);
+  }
+
+  /**
+   * Délègue vers le parent l'émission de `demarrageTermine` avec les données importées.
+   * @param donnees Données déchiffrées à transmettre.
+   */
+  protected onDemarrageTermine(donnees: DonneesApplication): void {
+    this.demarrageTermine.emit(donnees);
+  }
+
+  /**
+   * Délègue vers le parent l'émission de `referentielDemande` avec les données d'exemple.
+   * @param donnees Données d'exemple à transmettre.
+   */
+  protected onReferentielDemande(donnees: DonneesApplication): void {
+    this.referentielDemande.emit(donnees);
+  }
+
+  /**
    * Mémorise le fichier ZIP sélectionné dans l'input file.
    * @param event Événement de changement de l'input.
    */
@@ -91,9 +127,9 @@ export class PopinDemarrageComponent extends ComposantBase {
 
   /**
    * Crée un nouveau fichier depuis les données d'exemple `donnees-defaut.json`.
-   * Les dates du cahier journal sont décalées vers la semaine suivant la date courante
-   * afin que les données d'exemple soient immédiatement pertinentes à l'ouverture.
-   * Émet `demarrageTermine` en cas de succès, affiche une erreur sinon.
+   * Les dates du cahier journal d'exemple seront décalées vers la semaine suivant la date
+   * courante par l'écran démarrage, afin que les données soient immédiatement pertinentes.
+   * Émet `creationDemandee` en cas de succès, affiche une erreur sinon.
    */
   protected async creer(): Promise<void> {
     if (this.enChargement()) return;
@@ -103,7 +139,7 @@ export class PopinDemarrageComponent extends ComposantBase {
       const reponse = await fetch('/maclasse/donnees-defaut.json');
       if (!reponse.ok) throw new Error('Fichier introuvable');
       const donnees = (await reponse.json()) as DonneesApplication;
-      this.demarrageTermine.emit(donnees);
+      this.onCreationDemandee(donnees);
     } catch {
       this.erreur.set(this.LIBELLES.demarrage.erreurFichier);
     } finally {
@@ -124,7 +160,7 @@ export class PopinDemarrageComponent extends ComposantBase {
       const mdp = this.motDePasse().trim();
       const donnees = await this.chiffrementService.dechiffrer(fichier, mdp);
       this.contexteService.motDePasse = mdp;
-      this.demarrageTermine.emit(donnees);
+      this.onDemarrageTermine(donnees);
     } catch (e) {
       this.erreur.set(
         e instanceof DOMException
@@ -154,7 +190,7 @@ export class PopinDemarrageComponent extends ComposantBase {
       const reponse = await fetch('/maclasse/donnees-defaut.json');
       if (!reponse.ok) throw new Error('Fichier introuvable');
       const donnees = (await reponse.json()) as DonneesApplication;
-      this.referentielDemande.emit(donnees);
+      this.onReferentielDemande(donnees);
     } catch {
       this.erreur.set(this.LIBELLES.demarrage.erreurFichier);
     } finally {

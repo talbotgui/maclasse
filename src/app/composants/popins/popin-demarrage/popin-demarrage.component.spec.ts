@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, beforeAll, afterEach, vi } from 'vite
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { PopinDemarrageComponent } from './popin-demarrage.component';
 import { DonneesMother } from '../../../tests/donnees.mother';
+import { LIBELLES } from '../../../libelles';
 import type { DonneesApplication } from '../../../modeles/donnees-application.modele';
 
 beforeAll(() => {
@@ -26,7 +27,7 @@ describe('PopinDemarrageComponent', () => {
   });
 
   describe('creer()', () => {
-    it('fetch réussi → émet demarrageTermine avec les données', async () => {
+    it('fetch réussi → émet creationDemandee avec les données', async () => {
       const donnees: DonneesApplication = DonneesMother.base();
       vi.stubGlobal(
         'fetch',
@@ -35,11 +36,26 @@ describe('PopinDemarrageComponent', () => {
           json: () => Promise.resolve(donnees),
         }),
       );
-      const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
+      const spy = vi.spyOn((component as any).creationDemandee, 'emit');
 
       await component['creer']();
 
       expect(spy).toHaveBeenCalledWith(expect.objectContaining({ version: '1.0' }));
+    });
+
+    it('fetch réussi → n’émet pas demarrageTermine (réservé à l’import)', async () => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve(DonneesMother.base()),
+        }),
+      );
+      const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
+
+      await component['creer']();
+
+      expect(spy).not.toHaveBeenCalled();
     });
 
     it('fetch réussi → enChargement repasse à false', async () => {
@@ -61,7 +77,7 @@ describe('PopinDemarrageComponent', () => {
 
       await component['creer']();
 
-      expect((component as any).erreur()).toBeTruthy();
+      expect((component as any).erreur()).toBe(LIBELLES.demarrage.erreurFichier);
       expect((component as any).enChargement()).toBe(false);
     });
 
@@ -70,7 +86,7 @@ describe('PopinDemarrageComponent', () => {
 
       await component['creer']();
 
-      expect((component as any).erreur()).toBeTruthy();
+      expect((component as any).erreur()).toBe(LIBELLES.demarrage.erreurFichier);
     });
 
     it('appel pendant enChargement → ignoré', async () => {
@@ -78,7 +94,7 @@ describe('PopinDemarrageComponent', () => {
         'fetch',
         vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(DonneesMother.base()) }),
       );
-      const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
+      const spy = vi.spyOn((component as any).creationDemandee, 'emit');
       (component as any).enChargement.set(true);
 
       await component['creer']();
@@ -135,8 +151,7 @@ describe('PopinDemarrageComponent', () => {
 
       await component['charger']();
 
-      const erreur = (component as any).erreur() as string;
-      expect(erreur).toBeTruthy();
+      expect((component as any).erreur()).toBe(LIBELLES.demarrage.erreurMotDePasse);
     });
 
     it('autre erreur → affiche erreur fichier', async () => {
@@ -149,7 +164,7 @@ describe('PopinDemarrageComponent', () => {
 
       await component['charger']();
 
-      expect((component as any).erreur()).toBeTruthy();
+      expect((component as any).erreur()).toBe(LIBELLES.demarrage.erreurFichier);
       expect((component as any).enChargement()).toBe(false);
     });
   });
@@ -190,7 +205,7 @@ describe('PopinDemarrageComponent', () => {
 
       await component['accederReferentiel']();
 
-      expect((component as any).erreur()).toBeTruthy();
+      expect((component as any).erreur()).toBe(LIBELLES.demarrage.erreurFichier);
       expect((component as any).enChargement()).toBe(false);
     });
 
@@ -199,7 +214,7 @@ describe('PopinDemarrageComponent', () => {
 
       await component['accederReferentiel']();
 
-      expect((component as any).erreur()).toBeTruthy();
+      expect((component as any).erreur()).toBe(LIBELLES.demarrage.erreurFichier);
     });
 
     it('appel pendant enChargement → ignoré', async () => {
@@ -245,6 +260,35 @@ describe('PopinDemarrageComponent', () => {
       (component as any).enChargement.set(false);
 
       expect(component['peutCharger']).toBe(true);
+    });
+  });
+
+  describe('délégation des outputs', () => {
+    it('onCreationDemandee émet creationDemandee avec les données', () => {
+      const donnees = DonneesMother.base();
+      const spy = vi.spyOn((component as any).creationDemandee, 'emit');
+
+      (component as any).onCreationDemandee(donnees);
+
+      expect(spy).toHaveBeenCalledWith(donnees);
+    });
+
+    it('onDemarrageTermine émet demarrageTermine avec les données', () => {
+      const donnees = DonneesMother.base();
+      const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
+
+      (component as any).onDemarrageTermine(donnees);
+
+      expect(spy).toHaveBeenCalledWith(donnees);
+    });
+
+    it('onReferentielDemande émet referentielDemande avec les données', () => {
+      const donnees = DonneesMother.base();
+      const spy = vi.spyOn((component as any).referentielDemande, 'emit');
+
+      (component as any).onReferentielDemande(donnees);
+
+      expect(spy).toHaveBeenCalledWith(donnees);
     });
   });
 });

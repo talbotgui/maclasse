@@ -128,7 +128,8 @@
       <ul class="fiche-eleve__liste-resumee-cursus">
         @for (annee of eleve().cursus; track annee.annee) {
           <li>
-            {{ annee.annee }}–{{ +(annee.annee) + 1 }} — {{ annee.niveau }} — {{ annee.etablissement }}
+            {{ annee.annee }}–{{ +annee.annee + 1 }} — {{ annee.niveau }} —
+            {{ annee.etablissement }}
           </li>
         }
       </ul>

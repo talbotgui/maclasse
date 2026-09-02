@@ -37,12 +37,36 @@ export class EcranDemarrageComponent {
   private readonly router = inject(Router);
 
   /**
-   * Reçoit les données chargées depuis la popin (Créer/Charger), les charge dans le service,
-   * quitte le mode consultation référentiel s'il était actif, et navigue vers l'écran d'accueil.
-   * @param donnees Données déchiffrées ou issues du fichier d'exemple.
+   * Reçoit les données d'exemple depuis la popin (bouton "Créer"), les charge dans le service
+   * en recentrant le cahier journal sur la semaine suivante, quitte le mode consultation
+   * référentiel s'il était actif, et navigue vers l'écran d'accueil.
+   * @param donnees Données issues du fichier d'exemple `donnees-defaut.json`.
+   */
+  protected async surCreationDemandee(donnees: DonneesApplication): Promise<void> {
+    await this.chargerEtNaviguerAccueil(donnees, true);
+  }
+
+  /**
+   * Reçoit les données déchiffrées d'un fichier ZIP importé par l'utilisateur, les charge
+   * dans le service sans modifier les dates, quitte le mode consultation référentiel s'il
+   * était actif, et navigue vers l'écran d'accueil.
+   * @param donnees Données déchiffrées issues du fichier importé.
    */
   protected async surDemarrageTermine(donnees: DonneesApplication): Promise<void> {
-    this.donneesService.charger(donnees);
+    await this.chargerEtNaviguerAccueil(donnees, false);
+  }
+
+  /**
+   * Charge les données, désactive le mode consultation référentiel et navigue vers l'accueil.
+   * @param donnees Données à charger.
+   * @param recentrerCahierJournalSurSemaineSuivante `true` pour décaler le cahier journal vers
+   * la semaine suivante (données d'exemple), `false` pour conserver les dates (fichier importé).
+   */
+  private async chargerEtNaviguerAccueil(
+    donnees: DonneesApplication,
+    recentrerCahierJournalSurSemaineSuivante: boolean,
+  ): Promise<void> {
+    this.donneesService.charger(donnees, recentrerCahierJournalSurSemaineSuivante);
     this.contexteService.modeConsultationReferentiel.set(false);
     await this.router.navigate(['/accueil']);
   }
@@ -54,7 +78,7 @@ export class EcranDemarrageComponent {
    * @param donnees Données d'exemple chargées pour la consultation.
    */
   protected async surReferentielDemande(donnees: DonneesApplication): Promise<void> {
-    this.donneesService.charger(donnees);
+    this.donneesService.charger(donnees, true);
     this.contexteService.modeConsultationReferentiel.set(true);
     await this.router.navigate(['/competences']);
   }

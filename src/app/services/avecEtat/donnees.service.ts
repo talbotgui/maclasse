@@ -53,14 +53,25 @@ export class DonneesService {
 
   /**
    * Charge un jeu de données et réinitialise les piles UNDO/REDO.
-   * Les dates du cahier journal sont décalées pour correspondre à la semaine
-   * suivant la date courante, afin que les données soient immédiatement pertinentes.
-   * Appeler cette méthode au chargement d'un fichier ou à la création d'un nouveau fichier.
+   *
+   * Le recentrage du cahier journal sur la semaine suivante ne concerne que les
+   * données d'exemple (création d'un nouveau fichier, consultation du référentiel) :
+   * un fichier ZIP importé par l'utilisateur doit conserver ses dates telles quelles,
+   * sans quoi chaque aller-retour de sauvegarde décalerait son cahier journal.
+   *
    * @param donnees Données à charger — clonées pour isolation.
+   * @param recentrerCahierJournalSurSemaineSuivante `true` pour décaler les dates du
+   * cahier journal vers la semaine suivant la date courante (données d'exemple uniquement).
+   * `false` par défaut : les dates sont conservées à l'identique.
    */
-  public charger(donnees: DonneesApplication): void {
+  public charger(
+    donnees: DonneesApplication,
+    recentrerCahierJournalSurSemaineSuivante = false,
+  ): void {
     const clone = structuredClone(donnees);
-    this.decalerCahierJournalVersSemaineSuivante(clone);
+    if (recentrerCahierJournalSurSemaineSuivante) {
+      this.decalerCahierJournalVersSemaineSuivante(clone);
+    }
     this.donneesModifiables.set(clone);
     this.pileUndo.set([]);
     this.pileRedo.set([]);
@@ -77,15 +88,12 @@ export class DonneesService {
     if (donnees.cahierJournal.length === 0) {
       return;
     }
-    const premierDate = donnees.cahierJournal.reduce(
+    const premiereDate = donnees.cahierJournal.reduce(
       (min, j) => (j.date < min ? j.date : min),
       donnees.cahierJournal[0].date,
     );
-    const lundiOrigine = DateUtils.lundiDeLaSemaine(premierDate);
-    const lundiCible = DateUtils.ajouterJours(
-      DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()),
-      7,
-    );
+    const lundiOrigine = DateUtils.lundiDeLaSemaine(premiereDate);
+    const lundiCible = DateUtils.lundiDeLaSemaineSuivante(DateUtils.dateAujourdhui());
     const delta = DateUtils.differenceEnJours(lundiOrigine, lundiCible);
     donnees.cahierJournal.forEach((j) => {
       j.date = DateUtils.ajouterJours(j.date, delta);

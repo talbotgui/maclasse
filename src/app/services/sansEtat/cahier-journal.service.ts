@@ -94,6 +94,32 @@ export class CahierJournalService {
   }
 
   /**
+   * Modifie les notes libres d'une journée.
+   * La valeur est normalisée : une chaîne vide ou blanche efface les notes (`undefined`).
+   * Sans effet si la journée n'existe pas ou si la valeur normalisée est inchangée.
+   * @param date Date ISO de la journée.
+   * @param notes Nouveau contenu des notes.
+   */
+  public modifierNotesJournee(date: string, notes: string): void {
+    const ancienneJournee = this.donneesService
+      .donnees()
+      ?.cahierJournal.find((j) => j.date === date);
+    if (!ancienneJournee) return;
+    const notesNettoyees = notes.trim();
+    const valeur = notesNettoyees.length > 0 ? notesNettoyees : undefined;
+    if (ancienneJournee.notes === valeur) return;
+    const nouvelleJournee: JourneeJournal = { ...ancienneJournee, notes: valeur };
+    this.donneesService.executer(
+      new CommandeModification<JourneeJournal>(
+        (d) => d.cahierJournal,
+        ancienneJournee,
+        nouvelleJournee,
+        LIBELLES.commandes.modificationNotesJournee,
+      ),
+    );
+  }
+
+  /**
    * Ajoute une séance à la journée identifiée par la date.
    * La séance est ajoutée en fin de liste — le tri est géré par l'écran.
    * Sans effet si la journée n'existe pas ou si aucune donnée n'est chargée.
@@ -267,6 +293,7 @@ export class CahierJournalService {
 
   /**
    * Duplique toutes les séances de `dateSource` vers `dateCible` en générant de nouveaux UUIDs.
+   * Les notes de la journée source sont également reportées sur la journée cible.
    * Si `dateCible` n'a pas encore de journée, une journée est créée avec ces séances.
    * Si `dateCible` existe déjà, son contenu est remplacé.
    * Sans effet si la journée source n'existe pas.
@@ -283,17 +310,30 @@ export class CahierJournalService {
       id: crypto.randomUUID(),
     }));
 
+    // Les notes de la journée source sont reportées telles quelles (présentes ou absentes)
+    // sur la journée cible, qui reflète intégralement la source après duplication.
+    const notesReportees = journeeSource.notes;
+
     const journeeCible = donnees.cahierJournal.find((j) => j.date === dateCible);
     if (!journeeCible) {
       this.donneesService.executer(
         new CommandeCreation<JourneeJournal>(
           (d) => d.cahierJournal,
-          { id: crypto.randomUUID(), date: dateCible, seances: seancesClonees },
+          {
+            id: crypto.randomUUID(),
+            date: dateCible,
+            seances: seancesClonees,
+            ...(notesReportees !== undefined ? { notes: notesReportees } : {}),
+          },
           LIBELLES.commandes.duplicationJournee,
         ),
       );
     } else {
-      const nouvelleJournee: JourneeJournal = { ...journeeCible, seances: seancesClonees };
+      const nouvelleJournee: JourneeJournal = {
+        ...journeeCible,
+        seances: seancesClonees,
+        ...(notesReportees !== undefined ? { notes: notesReportees } : { notes: undefined }),
+      };
       this.donneesService.executer(
         new CommandeModification<JourneeJournal>(
           (d) => d.cahierJournal,

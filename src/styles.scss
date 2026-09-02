@@ -674,4 +674,25 @@ button {
     margin-bottom: 0px !important;
     padding-bottom: 0px !important;
   }
+
+  // Cahier journal : à l'impression, remplacer le champ de saisie des notes
+  // par un simple paragraphe lisible (voir .cj__notes-impression plus bas).
+  .cj__notes-saisie {
+    display: none;
+  }
+
+  .cj__notes-impression {
+    display: block;
+    margin: 0;
+    padding: 0.25rem 1rem 0.5rem;
+    white-space: pre-wrap;
+  }
+}
+
+// Cahier journal : le paragraphe de notes n'est visible qu'à l'impression
+// (voir le bloc @media print ci-dessus). Masqué à l'écran.
+@media screen {
+  .cj__notes-impression {
+    display: none;
+  }
 }

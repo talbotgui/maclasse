@@ -403,6 +403,58 @@ describe('CahierJournalService', () => {
     });
   });
 
+  /** Modifie les notes libres d'une journée ; normalise le vide en `undefined`. */
+  describe('modifierNotesJournee', () => {
+    it('enregistre les notes sur la journée', () => {
+      service.initialiserJourneeVide(DatesTest.lundiPaire);
+      service.modifierNotesJournee(DatesTest.lundiPaire, 'Sortie piscine, prévoir bonnets');
+      expect(donneesService.donnees()?.cahierJournal[0].notes).toBe(
+        'Sortie piscine, prévoir bonnets',
+      );
+    });
+
+    it('normalise une valeur vide ou blanche en undefined', () => {
+      service.initialiserJourneeVide(DatesTest.lundiPaire);
+      service.modifierNotesJournee(DatesTest.lundiPaire, 'Notes initiales');
+      service.modifierNotesJournee(DatesTest.lundiPaire, '   ');
+      expect(donneesService.donnees()?.cahierJournal[0].notes).toBeUndefined();
+    });
+
+    it('retire les espaces de début et de fin avant enregistrement', () => {
+      service.initialiserJourneeVide(DatesTest.lundiPaire);
+      service.modifierNotesJournee(DatesTest.lundiPaire, '  Sortie piscine  ');
+      expect(donneesService.donnees()?.cahierJournal[0].notes).toBe('Sortie piscine');
+    });
+
+    it("n'émet aucune commande si seuls les espaces de bordure changent", () => {
+      service.initialiserJourneeVide(DatesTest.lundiPaire);
+      service.modifierNotesJournee(DatesTest.lundiPaire, 'Sortie piscine');
+      service.modifierNotesJournee(DatesTest.lundiPaire, '  Sortie piscine  ');
+      donneesService.annuler(); // annule la seule modification de notes
+      expect(donneesService.donnees()?.cahierJournal[0].notes).toBeUndefined();
+    });
+
+    it("sans effet si la journée n'existe pas", () => {
+      service.modifierNotesJournee(DatesTest.lundiPaire, 'Notes');
+      expect(donneesService.donnees()?.cahierJournal).toHaveLength(0);
+    });
+
+    it("n'émet aucune commande si la valeur normalisée est inchangée", () => {
+      service.initialiserJourneeVide(DatesTest.lundiPaire);
+      service.modifierNotesJournee(DatesTest.lundiPaire, 'Notes');
+      service.modifierNotesJournee(DatesTest.lundiPaire, 'Notes');
+      donneesService.annuler(); // annule la seule modification de notes
+      expect(donneesService.donnees()?.cahierJournal[0].notes).toBeUndefined();
+    });
+
+    it('supporte le UNDO', () => {
+      service.initialiserJourneeVide(DatesTest.lundiPaire);
+      service.modifierNotesJournee(DatesTest.lundiPaire, 'Notes');
+      donneesService.annuler();
+      expect(donneesService.donnees()?.cahierJournal[0].notes).toBeUndefined();
+    });
+  });
+
   /** Copie une séance vers une autre journée (existante ou créée) avec un nouvel UUID. */
   describe('dupliquerSeance', () => {
     it('duplique dans une journée existante', () => {
@@ -482,6 +534,28 @@ describe('CahierJournalService', () => {
         .donnees()
         ?.cahierJournal.find((j) => j.date === DatesTest.lundiImpaire)?.seances[0].id;
       expect(seanceId).not.toBe('s1');
+    });
+
+    it('reporte les notes de la source vers une nouvelle journée', () => {
+      service.initialiserJourneeVide(DatesTest.lundiPaire);
+      service.modifierNotesJournee(DatesTest.lundiPaire, 'Notes de la journée source');
+      service.dupliquerJournee(DatesTest.lundiPaire, DatesTest.lundiImpaire);
+      expect(
+        donneesService.donnees()?.cahierJournal.find((j) => j.date === DatesTest.lundiImpaire)
+          ?.notes,
+      ).toBe('Notes de la journée source');
+    });
+
+    it('remplace les notes de la journée cible existante par celles de la source', () => {
+      service.initialiserJourneeVide(DatesTest.lundiPaire);
+      service.modifierNotesJournee(DatesTest.lundiPaire, 'Notes source');
+      service.initialiserJourneeVide(DatesTest.lundiImpaire);
+      service.modifierNotesJournee(DatesTest.lundiImpaire, 'Notes cible à écraser');
+      service.dupliquerJournee(DatesTest.lundiPaire, DatesTest.lundiImpaire);
+      expect(
+        donneesService.donnees()?.cahierJournal.find((j) => j.date === DatesTest.lundiImpaire)
+          ?.notes,
+      ).toBe('Notes source');
     });
 
     it("sans effet si la journée source n'existe pas", () => {

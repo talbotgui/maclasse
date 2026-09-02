@@ -4,13 +4,23 @@
  * Colonne droite : liste des séances et formulaire de saisie.
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { CahierJournalService } from '../../services/sansEtat/cahier-journal.service';
 import { CompetenceService } from '../../services/sansEtat/competence.service';
 import { DateUtils } from '../../utilitaires/date.utils';
 import { McMiniCalendrierComponent } from '../../composants/mc-mini-calendrier/mc-mini-calendrier.component';
+import { McTextareaComponent } from '../../composants/mc-textarea/mc-textarea.component';
 import { PopinAvertissementComponent } from '../../composants/popins/popin-avertissement/popin-avertissement.component';
 import { PopinWarningsAbsencesComponent } from '../../composants/popins/popin-warnings-absences/popin-warnings-absences.component';
 import { CjFormulaireSeanceComponent } from './cj-formulaire-seance/cj-formulaire-seance.component';
@@ -27,7 +37,9 @@ import type { JourSemaine } from '../../modeles/emploi-du-temps.modele';
   selector: 'ecran-cahier-journal',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ReactiveFormsModule,
     McMiniCalendrierComponent,
+    McTextareaComponent,
     PopinAvertissementComponent,
     PopinWarningsAbsencesComponent,
     CjFormulaireSeanceComponent,
@@ -75,6 +87,16 @@ export class EcranCahierJournalComponent {
   /** Messages de conflits à afficher dans la popin. */
   protected readonly conflits = signal<string[]>([]);
 
+  /** Détection de changement pour resynchroniser le champ de notes en mode OnPush. */
+  private readonly cdr = inject(ChangeDetectorRef);
+
+  /**
+   * Champ de saisie des notes libres de la journée.
+   * Resynchronisé par un `effect` à chaque changement d'identité de la journée
+   * (changement de date, undo/redo, enregistrement) ; jamais pendant la frappe.
+   */
+  protected readonly notesControl = new FormControl<string>('', { nonNullable: true });
+
   /** Journée sélectionnée depuis le store. */
   protected readonly journeeSelectionnee = computed<JourneeJournal | null>(
     () =>
@@ -114,6 +136,32 @@ export class EcranCahierJournalComponent {
   protected readonly dateFormatee = computed<string>(() =>
     DateUtils.formaterDateLong(this.dateSelectionnee()),
   );
+
+  /** Notes enregistrées de la journée sélectionnée (version persistée, pour l'impression et l'affichage conditionnel). */
+  protected readonly notesJournee = computed<string>(() => this.journeeSelectionnee()?.notes ?? '');
+
+  /**
+   * Resynchronise le champ de saisie des notes sur la journée sélectionnée.
+   * Ne se déclenche que sur changement d'identité de la journée, donc jamais
+   * pendant la saisie (aucune commande n'est émise avant le blur).
+   */
+  public constructor() {
+    effect(() => {
+      this.notesControl.setValue(this.notesJournee(), { emitEvent: false });
+      this.cdr.markForCheck();
+    });
+  }
+
+  /**
+   * Enregistre les notes de la journée sélectionnée (déclenché à la perte de focus).
+   * Le service ignore l'appel si la valeur normalisée est inchangée.
+   */
+  protected enregistrerNotes(): void {
+    this.cahierJournalService.modifierNotesJournee(
+      this.dateSelectionnee(),
+      this.notesControl.value,
+    );
+  }
 
   /**
    * Navigue à une date voisine.

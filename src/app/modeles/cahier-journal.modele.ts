@@ -46,6 +46,8 @@ export interface JourneeJournal {
   id: string;
   /** Date de la journée au format ISO (ex. : `"2026-06-09"`). */
   date: string;
+  /** Notes libres de la journée (rappels, événements, effectif…). Indépendantes des séances. */
+  notes?: string;
   /** Séances de la journée, triées par heure de début. */
   seances: Seance[];
 }

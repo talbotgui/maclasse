@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { EcranCahierJournalComponent } from './ecran-cahier-journal.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
+import { CahierJournalService } from '../../services/sansEtat/cahier-journal.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { SeanceMother } from '../../tests/cahier-journal.mother';
 import { EleveMother } from '../../tests/eleve.mother';
@@ -253,6 +254,105 @@ describe('EcranCahierJournalComponent', () => {
   describe('dateFormatee', () => {
     it('retourne la date sélectionnée formatée en français long', () => {
       expect((component as any).dateFormatee()).toBe(DateUtils.formaterDateLong(dateTest));
+    });
+  });
+
+  describe('notes de la journée', () => {
+    it('affiche le titre de date dès qu’une journée existe, même sans séance', () => {
+      donneesService.charger(
+        DonneesMother.base({ cahierJournal: [{ id: 'j1', date: dateTest, seances: [] }] }),
+      );
+      fixture.detectChanges();
+
+      const titre = fixture.nativeElement.querySelector('.cj__titre-journee');
+      expect(titre?.textContent?.trim()).toBe(DateUtils.formaterDateLong(dateTest));
+    });
+
+    it('masque la zone de notes tant qu’aucune séance n’existe', () => {
+      donneesService.charger(
+        DonneesMother.base({ cahierJournal: [{ id: 'j1', date: dateTest, seances: [] }] }),
+      );
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.cj__notes')).toBeNull();
+    });
+
+    it('affiche la zone de notes dès qu’une séance existe', () => {
+      expect(fixture.nativeElement.querySelector('.cj__notes')).not.toBeNull();
+    });
+
+    it('notesJournee et notesControl reflètent les notes de la journée sélectionnée', () => {
+      donneesService.charger(
+        DonneesMother.base({
+          cahierJournal: [
+            { id: 'j1', date: dateTest, seances: [seance1], notes: 'Sortie piscine' },
+          ],
+        }),
+      );
+      fixture.detectChanges();
+
+      expect((component as any).notesJournee()).toBe('Sortie piscine');
+      expect((component as any).notesControl.value).toBe('Sortie piscine');
+    });
+
+    it('notesJournee est vide si la journée n’a pas de notes', () => {
+      expect((component as any).notesJournee()).toBe('');
+      expect((component as any).notesControl.value).toBe('');
+    });
+
+    it('notesControl se resynchronise au changement de date', () => {
+      donneesService.charger(
+        DonneesMother.base({
+          cahierJournal: [
+            { id: 'j1', date: dateTest, seances: [seance1], notes: 'Notes A' },
+            {
+              id: 'j2',
+              date: DateUtils.ajouterJours(dateTest, 1),
+              seances: [seance1],
+              notes: 'Notes B',
+            },
+          ],
+        }),
+      );
+      fixture.detectChanges();
+      expect((component as any).notesControl.value).toBe('Notes A');
+
+      (component as any).naviguerJour(1);
+      fixture.detectChanges();
+
+      expect((component as any).notesControl.value).toBe('Notes B');
+    });
+
+    it('enregistrerNotes délègue au service avec la date et la valeur courante', () => {
+      const cahierJournalService = TestBed.inject(CahierJournalService);
+      const spy = vi.spyOn(cahierJournalService, 'modifierNotesJournee');
+
+      (component as any).notesControl.setValue('Réunion 17h');
+      (component as any).enregistrerNotes();
+
+      expect(spy).toHaveBeenCalledWith(dateTest, 'Réunion 17h');
+    });
+
+    it('persiste les notes saisies dans le store', () => {
+      (component as any).notesControl.setValue('Prévoir les tablettes');
+      (component as any).enregistrerNotes();
+
+      const journee = donneesService.donnees()?.cahierJournal.find((j) => j.date === dateTest);
+      expect(journee?.notes).toBe('Prévoir les tablettes');
+    });
+
+    it('conserve la zone de notes visible pour une journée sans séance mais avec des notes', () => {
+      donneesService.charger(
+        DonneesMother.base({
+          cahierJournal: [{ id: 'j1', date: dateTest, seances: [], notes: 'Mémo important' }],
+        }),
+      );
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.cj__notes')).not.toBeNull();
+      expect(fixture.nativeElement.querySelector('.cj__notes-impression')?.textContent).toContain(
+        'Mémo important',
+      );
     });
   });
 });

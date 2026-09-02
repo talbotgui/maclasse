@@ -251,7 +251,9 @@ related:
 
 ```
 {
+  id: string,        // UUID
   date: string,      // ISO date
+  notes?: string,    // mémo libre de la journée (rappels, événements…), indépendant des séances
   seances: Seance[]
 }
 ```

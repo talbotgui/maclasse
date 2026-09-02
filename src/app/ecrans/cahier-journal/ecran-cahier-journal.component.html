@@ -140,6 +140,25 @@
         </button>
       </div>
     } @else {
+      <h2 class="cj__titre-journee">{{ dateFormatee() }}</h2>
+
+      @if (seances().length > 0 || notesJournee()) {
+        <div class="cj__notes">
+          <mc-textarea
+            id="champNotesJournee"
+            class="cj__notes-saisie"
+            [formControl]="notesControl"
+            (focusout)="enregistrerNotes()"
+            [label]="LIBELLES.cahierJournal.labelNotes"
+            [placeholder]="LIBELLES.cahierJournal.placeholderNotes"
+            [lignes]="3"
+          />
+          @if (notesJournee()) {
+            <p class="cj__notes-impression">{{ notesJournee() }}</p>
+          }
+        </div>
+      }
+
       <div class="cj__seances-liste">
         @if (seances().length === 0) {
           <p class="cj__seances-vide">{{ LIBELLES.cahierJournal.aucuneSeance }}</p>

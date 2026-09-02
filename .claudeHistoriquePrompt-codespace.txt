@@ -2419,3 +2419,16 @@ Aucun.
 2026-09-02 19:44:32 [Sans titre] dans les écrans de paramétrage, il n'est pas possible de distinguer les formulaires modifiés nécessitant de cliquer sur le bouton ENREGISTRER de ceux non modifié. Je pense qu'utiliser la nuance de la couleur du bouton ENREGISTRER est utilisable (bouton plus clair si le formulaire n'est pas modifié). Propose moi des idées/compléments
 ---
 2026-09-02 19:49:08 [Distinguer formulaires modifiés écrans paramétrage] Je retiens les idées 1 (le disabled), 4 (la pastille) et 6 (ENREGISTRER => ENREGISTRE). Détaille un plan de développement
+---
+2026-09-02 19:50:26 [Cahier journal notes textarea] développe
+---
+2026-09-02 19:55:02 [Distinguer formulaires modifiés écrans paramétrage] 1. ANNULER aussi désactivé
+2. pastille à côté du bouton
+3. pastille par ligne
+4. oui
+5. commun.enregistre
+6. uniquement par l'état
+
+Complète le plan
+---
+2026-09-02 20:05:00 [Cahier journal notes textarea] corrige tout

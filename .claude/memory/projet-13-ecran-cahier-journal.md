@@ -49,6 +49,18 @@ Trois zones :
 ### En-tête
 
 - **Date du jour** affiché en titre (ex. "Lundi 9 juin 2026")
+- Dans la **colonne de droite**, un `<h2 class="cj__titre-journee">` reprend la date formatée dès qu'une journée existe (même sans séance) — nécessaire à l'impression, la colonne gauche étant masquée en `@media print`
+
+### Notes de la journée
+
+- Champ `notes?: string` sur `JourneeJournal` (mémo libre : rappels, événements, effectif…), indépendant des séances
+- `mc-textarea` en haut de la colonne de droite, **au-dessus de la liste des séances**, visible dès qu'une séance existe **ou** que des notes sont déjà enregistrées (`@if (seances().length > 0 || notesJournee())`)
+- Enregistrement **au blur** (`(focusout)` sur le `mc-textarea`) via `CahierJournalService.modifierNotesJournee(date, notes)` → `CommandeModification` (UNDO/REDO) ; le service **trim** la valeur (vide → `undefined`) et ignore l'appel si elle est inchangée
+- Champ réactif `notesControl = new FormControl('', { nonNullable: true })` (Reactive Forms — pas de `ngModel`), resynchronisé par un `effect` (`setValue(..., { emitEvent: false })` + `cdr.markForCheck()`) sur `notesJournee()` — jamais pendant la frappe
+- `notesJournee = computed(() => journeeSelectionnee()?.notes ?? '')` : version persistée, utilisée pour le `<p>` d'impression et la condition d'affichage
+- Impression : un `<p class="cj__notes-impression">` (masqué à l'écran) remplace le textarea ; bascule gérée dans le `@media print` de `styles.scss` (`.cj__notes-saisie` masquée, `.cj__notes-impression` affichée `white-space: pre-wrap`)
+- `dupliquerJournee` reporte les notes de la source vers la cible (création **et** remplacement) ; `dupliquerSeance` ne les touche pas (notes = niveau journée)
+- Libellés : `cahierJournal.labelNotes`, `cahierJournal.placeholderNotes`, `commandes.modificationNotesJournee`
 
 ### Cas 1 — Aucune entrée pour ce jour
 

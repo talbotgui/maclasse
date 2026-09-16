@@ -34,3 +34,17 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [Plan tests composants](plans-02-testsDeComposant.md) — 11 étapes : 31 composants à couvrir, du plus simple (pur/CVA) aux écrans complexes
 - [Problèmes dans les tests](plans-03-problemesTests.md) — 7 catégories : subscribe() interdit (25 occ.), tests tautologiques, branche EDT manquante, mocks, assertions trop faibles
 - [Tests E2E fonctionnels](plans-04-testsE2E.md) — 104 scénarios couvrant démarrage, entête, accueil, élèves, projets, compétences, EDT, CJ, paramétrage, UNDO/REDO, sauvegarde auto, responsive, RGAA, versions
+
+## Plans d'évolution
+
+- [Cahier journal — absences dans la note](plans-05-cahierJournalAbsencesNotes.md) — Pré-remplissage `notes` avec absences régulières+ponctuelles du jour (si vide), filtrage par parité de semaine
+- [Cahier journal — pastilles élèves/groupes](plans-06-cahierJournalPastillesElevesConcernes.md) — Nouveau composant mc-pastilles-eleves-concernes, pastilles statiques (mc-disc-pill) dans cahier journal + EDT
+- [Sauvegarde automatique](plans-07-sauvegardeAutomatique.md) — Démarrage après chargement ZIP, sauvegarde conditionnée à modification, délai 5min configurable bornes 1-60, relance timer
+- [EDT — titre "Mes emplois du temps"](plans-09-edtTitreListeEdt.md) — Titre de section au-dessus de la liste EDT, classe réutilisable en prévision de la liste des EDT calculés
+- [EDT — absences régulières + icône conflit](plans-10-edtAbsencesRegulieres.md) — Bandeau d'absences pertinentes pour l'EDT sélectionné (jour+parité) + câblage de l'icône ⚠ par créneau déjà prévue mais jamais codée
+- [EDT — créneaux à temps multiples](plans-11-edtTempsMultiples.md) — 1 à 4 "temps" indépendants par créneau (horaire propre à chacun), refonte CreneauEdt, migration de données à concevoir
+- [EDT — emplois du temps calculés](plans-12-edtEmploisCalcules.md) — Nouvelle entité persistée en lecture seule, calcul à la volée depuis récréations/temps de classe/absences régulières
+
+## Plans de correction
+
+- [Conflit EDT — parité de semaine](plans-08-conflitEdtParite.md) — Bug confirmé : calculerConflitsAbsences ignore la parité paire/impaire, correctif via verifierCompatibiliteFrequences existante

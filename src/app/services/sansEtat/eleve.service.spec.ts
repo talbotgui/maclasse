@@ -3,7 +3,12 @@ import { TestBed } from '@angular/core/testing';
 import { EleveService } from './eleve.service';
 import { DonneesService } from '../avecEtat/donnees.service';
 import { DonneesMother } from '../../tests/donnees.mother';
-import { EleveMother } from '../../tests/eleve.mother';
+import {
+  AbsencePonctuelleMother,
+  AbsenceRecurrenteMother,
+  EleveMother,
+} from '../../tests/eleve.mother';
+import { DatesTest } from '../../tests/cahier-journal.mother';
 
 describe('EleveService', () => {
   let service: EleveService;
@@ -244,6 +249,116 @@ describe('EleveService', () => {
       );
       const conflits = service.calculerConflitsAbsences('e1', '09:00', '10:00', 'lundi');
       expect(conflits).toHaveLength(2);
+    });
+  });
+
+  /** Génère les libellés des absences (récurrentes + ponctuelles) du jour, triés NOM Prénom. */
+  describe('genererLibellesAbsencesDuJour', () => {
+    it('retourne tableau vide si aucune donnée chargée', () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({});
+      const s = TestBed.inject(EleveService);
+      expect(s.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([]);
+    });
+
+    it('inclut une absence récurrente de parité "lesDeux"', () => {
+      service.creerEleve(
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base({ paritesSemaine: 'lesDeux' })],
+        }),
+      );
+      expect(service.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([
+        '- MARTIN Paul : Orthophonie (09:00-10:00)',
+      ]);
+    });
+
+    it('inclut une absence récurrente de parité identique à la date', () => {
+      service.creerEleve(
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base({ paritesSemaine: 'paire' })],
+        }),
+      );
+      expect(service.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([
+        '- MARTIN Paul : Orthophonie (09:00-10:00)',
+      ]);
+    });
+
+    it('exclut une absence récurrente de parité différente', () => {
+      service.creerEleve(
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base({ paritesSemaine: 'impaire' })],
+        }),
+      );
+      expect(service.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([]);
+    });
+
+    it('exclut une absence récurrente sur un autre jour', () => {
+      service.creerEleve(
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base({ jour: 'mardi' })],
+        }),
+      );
+      expect(service.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([]);
+    });
+
+    it('inclut une absence ponctuelle à la date exacte', () => {
+      service.creerEleve(
+        EleveMother.base('e1', 'DUPONT', 'Marie', {
+          absencesPonctuelles: [
+            AbsencePonctuelleMother.base({
+              date: DatesTest.lundiPaire,
+              justification: 'Rendez-vous médical',
+            }),
+          ],
+        }),
+      );
+      expect(service.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([
+        '- DUPONT Marie : Rendez-vous médical',
+      ]);
+    });
+
+    it('exclut une absence ponctuelle sur une autre date', () => {
+      service.creerEleve(
+        EleveMother.base('e1', 'DUPONT', 'Marie', {
+          absencesPonctuelles: [AbsencePonctuelleMother.base({ date: DatesTest.lundiImpaire })],
+        }),
+      );
+      expect(service.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([]);
+    });
+
+    it('trie les lignes par NOM Prénom', () => {
+      service.creerEleve(
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base({ id: 'ar1' })],
+        }),
+      );
+      service.creerEleve(
+        EleveMother.base('e2', 'DUPONT', 'Marie', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base({ id: 'ar2' })],
+        }),
+      );
+      expect(service.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([
+        '- DUPONT Marie : Orthophonie (09:00-10:00)',
+        '- MARTIN Paul : Orthophonie (09:00-10:00)',
+      ]);
+    });
+
+    it('combine absence récurrente et ponctuelle pour un même élève', () => {
+      service.creerEleve(
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+          absencesPonctuelles: [
+            AbsencePonctuelleMother.base({
+              date: DatesTest.lundiPaire,
+              justification: 'Sortie scolaire',
+            }),
+          ],
+        }),
+      );
+      expect(service.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([
+        '- MARTIN Paul : Orthophonie (09:00-10:00)',
+        '- MARTIN Paul : Sortie scolaire',
+      ]);
     });
   });
 });

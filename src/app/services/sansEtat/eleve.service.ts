@@ -88,9 +88,7 @@ export class EleveService {
    */
   public rechercherEleves(terme: string): Eleve[] {
     const eleves = this.donneesService.donnees()?.classe.eleves ?? [];
-    const tries = [...eleves].sort((a, b) =>
-      `${a.nom} ${a.prenom}`.localeCompare(`${b.nom} ${b.prenom}`, 'fr'),
-    );
+    const tries = this.trierElevesParNomPrenom(eleves);
     if (!terme.trim()) return tries;
     const t = TexteUtils.normaliserPourRecherche(terme);
     return tries.filter(
@@ -129,5 +127,51 @@ export class EleveService {
           DateUtils.chevauchementHoraire(a.heureDebut, a.heureFin, heureDebut, heureFin),
       )
       .map((a) => a.libelle);
+  }
+
+  /**
+   * Génère les libellés des absences (récurrentes et ponctuelles) du jour donné.
+   * Une absence récurrente est retenue si son jour correspond ET si sa parité de semaine
+   * est `"lesDeux"` ou coïncide avec la parité de la date. Une absence ponctuelle est
+   * retenue si sa date correspond exactement.
+   * @param date Date ISO du jour à analyser.
+   * @returns Une ligne par absence retenue, triées par élève (NOM Prénom), ou `[]` si aucune.
+   */
+  public genererLibellesAbsencesDuJour(date: string): string[] {
+    const donnees = this.donneesService.donnees();
+    if (!donnees) return [];
+    const jourSemaine = DateUtils.obtenirJourSemaine(date);
+    const parite = DateUtils.calculerParite(date);
+    const eleves = this.trierElevesParNomPrenom(donnees.classe.eleves);
+    const lignes: string[] = [];
+    for (const eleve of eleves) {
+      for (const abs of eleve.absencesRecurrentes) {
+        if (
+          abs.jour === jourSemaine &&
+          (abs.paritesSemaine === 'lesDeux' || abs.paritesSemaine === parite)
+        ) {
+          lignes.push(
+            `- ${eleve.nom} ${eleve.prenom} : ${abs.libelle} (${abs.heureDebut}-${abs.heureFin})`,
+          );
+        }
+      }
+      for (const abs of eleve.absencesPonctuelles) {
+        if (abs.date === date) {
+          lignes.push(`- ${eleve.nom} ${eleve.prenom} : ${abs.justification}`);
+        }
+      }
+    }
+    return lignes;
+  }
+
+  /**
+   * Trie une liste d'élèves par NOM puis Prénom (ordre alphabétique français), sans muter l'original.
+   * @param eleves Élèves à trier.
+   * @returns Nouveau tableau trié.
+   */
+  private trierElevesParNomPrenom(eleves: Eleve[]): Eleve[] {
+    return [...eleves].sort((a, b) =>
+      `${a.nom} ${a.prenom}`.localeCompare(`${b.nom} ${b.prenom}`, 'fr'),
+    );
   }
 }

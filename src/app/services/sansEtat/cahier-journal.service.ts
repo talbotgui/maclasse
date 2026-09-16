@@ -9,6 +9,7 @@ import { CommandeCreation } from '../../commandes/commande-creation';
 import { CommandeModification } from '../../commandes/commande-modification';
 import { CommandeSuppression } from '../../commandes/commande-suppression';
 import { DonneesService } from '../avecEtat/donnees.service';
+import { EleveService } from './eleve.service';
 import { DateUtils } from '../../utilitaires/date.utils';
 import { LIBELLES } from '../../libelles';
 
@@ -21,8 +22,15 @@ export class CahierJournalService {
   /** Accès aux données de l'application et soumission des commandes. */
   private readonly donneesService = inject(DonneesService);
 
+  /** Service élèves, utilisé pour générer le pré-remplissage des notes de journée. */
+  private readonly eleveService = inject(EleveService);
+
   /**
    * Initialise une journée vide pour la date donnée.
+   * Les notes sont pré-remplies avec les absences du jour (récurrentes et ponctuelles) s'il en
+   * existe au moins une. Aucune garde `if (journee.notes)` supplémentaire n'est nécessaire :
+   * cette méthode ne s'exécute jamais sur une journée déjà existante (voir la vérification
+   * ci-dessous), donc `notes` n'a jamais pu être renseigné avant cet appel.
    * Sans effet si une entrée existe déjà pour cette date ou si aucune donnée n'est chargée.
    * @param date Date ISO de la journée à créer (ex. : `"2026-06-09"`).
    */
@@ -30,10 +38,16 @@ export class CahierJournalService {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
     if (donnees.cahierJournal.some((j) => j.date === date)) return;
+    const notesInitiales = this.genererNotesInitiales(date);
     this.donneesService.executer(
       new CommandeCreation<JourneeJournal>(
         (d) => d.cahierJournal,
-        { id: crypto.randomUUID(), date, seances: [] },
+        {
+          id: crypto.randomUUID(),
+          date,
+          seances: [],
+          ...(notesInitiales ? { notes: notesInitiales } : {}),
+        },
         LIBELLES.commandes.initialisationJourneeVide,
       ),
     );
@@ -43,6 +57,10 @@ export class CahierJournalService {
    * Initialise une journée en important les créneaux de l'EDT applicable à cette date.
    * Détermine la parité ISO de la semaine pour sélectionner les EDTs compatibles.
    * Trie les séances par heure de début croissante.
+   * Les notes sont pré-remplies avec les absences du jour (récurrentes et ponctuelles) s'il en
+   * existe au moins une. Aucune garde `if (journee.notes)` supplémentaire n'est nécessaire :
+   * cette méthode ne s'exécute jamais sur une journée déjà existante (voir la vérification
+   * ci-dessous), donc `notes` n'a jamais pu être renseigné avant cet appel.
    * Sans effet si une journée existe déjà pour cette date ou si la date tombe un week-end.
    * @param date Date ISO de la journée à initialiser.
    */
@@ -84,13 +102,32 @@ export class CahierJournalService {
       }
     }
     seances.sort((a, b) => a.heureDebut.localeCompare(b.heureDebut));
+    const notesInitiales = this.genererNotesInitiales(date);
     this.donneesService.executer(
       new CommandeCreation<JourneeJournal>(
         (d) => d.cahierJournal,
-        { id: crypto.randomUUID(), date, seances },
+        {
+          id: crypto.randomUUID(),
+          date,
+          seances,
+          ...(notesInitiales ? { notes: notesInitiales } : {}),
+        },
         LIBELLES.commandes.initialisationDepuisEdt,
       ),
     );
+  }
+
+  /**
+   * Génère le contenu initial des notes d'une journée à partir des absences du jour.
+   * Combine les absences récurrentes et ponctuelles via
+   * `EleveService.genererLibellesAbsencesDuJour`.
+   * @param date Date ISO de la journée.
+   * @returns Texte des notes pré-remplies, ou `undefined` si aucune absence ce jour-là.
+   */
+  private genererNotesInitiales(date: string): string | undefined {
+    const lignes = this.eleveService.genererLibellesAbsencesDuJour(date);
+    if (lignes.length === 0) return undefined;
+    return [LIBELLES.cahierJournal.enteteAbsencesJour, ...lignes].join('\n');
   }
 
   /**

@@ -4413,3 +4413,14 @@ Aucun changement requis a priori : `surSauvegarder()`/`surConfirmationSauvegarde
   7. Les deux méthodes d'initialisation (`initialiserJourneeVide` ligne 29-40, `initialiserDepuisEdt` ligne 49-94) construisent chacune leur objet `JourneeJournal` littéral inline (lignes 36 et 90) — il faudra y insérer l'appel à la future `genererNotesInitiales` à ces deux points précis.
   
 </agent-message>
+---
+2026-09-16 20:31:55 [Sans titre] Encore un plan à rédiger pour une nouvelle évolution : permettre de déplacer un temps depuis l'écran des emplois du temps. Propose moi des idées
+---
+2026-09-16 20:32:45 [Plan cahier journal absences notes] modifie le hook
+---
+2026-09-16 20:33:26 [Plan cahier journal absences notes] démarre un sous-agent/session sans ta mémoire courante pour relire les développements réalisés
+---
+2026-09-16 20:37:23 [Déplacer un temps depuis l'écran des emplois du temps] A : changer uniquement le jour
+B : déclencher le déplacement depuis le formulaire de droite
+C : garder l'heure début/fin identique
+D : recalcul les conflits après le déplacement

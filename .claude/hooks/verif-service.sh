@@ -37,7 +37,7 @@ echo "OK"
 # ── 2. Tests unitaires + couverture ─────────────────────────────────────────
 echo ""
 echo "=== 2/2  Tests et couverture (ng test --coverage) ==="
-if ! TEST_OUT=$(ng test --watch=false --coverage 2>&1); then
+if ! TEST_OUT=$(npx ng test --watch=false --coverage 2>&1); then
   echo "ÉCHEC — Tests en erreur ou couverture < 80% sur au moins une métrique :"
   echo "$TEST_OUT"
   exit 2

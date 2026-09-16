@@ -5,7 +5,11 @@ import { DonneesService } from '../avecEtat/donnees.service';
 import { Seance } from '../../modeles/cahier-journal.modele';
 import { EmploiDuTemps } from '../../modeles/emploi-du-temps.modele';
 import { DonneesMother } from '../../tests/donnees.mother';
-import { EleveMother } from '../../tests/eleve.mother';
+import {
+  AbsencePonctuelleMother,
+  AbsenceRecurrenteMother,
+  EleveMother,
+} from '../../tests/eleve.mother';
 import { DatesTest, SeanceMother } from '../../tests/cahier-journal.mother';
 import { DateUtils } from '../../utilitaires/date.utils';
 
@@ -45,6 +49,25 @@ describe('CahierJournalService', () => {
       service.initialiserJourneeVide(DatesTest.lundiPaire);
       donneesService.annuler();
       expect(donneesService.donnees()?.cahierJournal).toHaveLength(0);
+    });
+
+    it('pré-remplit les notes avec les absences du jour', () => {
+      const d = DonneesMother.base();
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+        }),
+      ];
+      donneesService.charger(d);
+      service.initialiserJourneeVide(DatesTest.lundiPaire);
+      expect(donneesService.donnees()?.cahierJournal[0].notes).toBe(
+        'Absences du jour :\n- MARTIN Paul : Orthophonie (09:00-10:00)',
+      );
+    });
+
+    it('laisse les notes à undefined si aucune absence ce jour-là', () => {
+      service.initialiserJourneeVide(DatesTest.lundiPaire);
+      expect(donneesService.donnees()?.cahierJournal[0].notes).toBeUndefined();
     });
   });
 
@@ -257,6 +280,52 @@ describe('CahierJournalService', () => {
       expect(ids[0]).not.toBe('c1');
       expect(ids[1]).not.toBe('c2');
       expect(new Set(ids).size).toBe(ids.length);
+    });
+
+    it('pré-remplit les notes avec les absences du jour', () => {
+      const d = DonneesMother.base();
+      d.emploisDuTemps = [EDT_LUNDI];
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+        }),
+      ];
+      donneesService.charger(d);
+      service.initialiserDepuisEdt(DatesTest.lundiPaire);
+      expect(donneesService.donnees()?.cahierJournal[0].notes).toBe(
+        'Absences du jour :\n- MARTIN Paul : Orthophonie (09:00-10:00)',
+      );
+    });
+
+    it('respecte la parité de semaine pour le pré-remplissage des notes', () => {
+      const d = DonneesMother.base();
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base({ paritesSemaine: 'impaire' })],
+        }),
+      ];
+      donneesService.charger(d);
+      service.initialiserDepuisEdt(DatesTest.lundiPaire); // semaine paire → absence exclue
+      expect(donneesService.donnees()?.cahierJournal[0].notes).toBeUndefined();
+    });
+
+    it('inclut une absence ponctuelle dans le pré-remplissage des notes', () => {
+      const d = DonneesMother.base();
+      d.classe.eleves = [
+        EleveMother.base('e1', 'DUPONT', 'Marie', {
+          absencesPonctuelles: [
+            AbsencePonctuelleMother.base({
+              date: DatesTest.lundiPaire,
+              justification: 'Rendez-vous médical',
+            }),
+          ],
+        }),
+      ];
+      donneesService.charger(d);
+      service.initialiserDepuisEdt(DatesTest.lundiPaire);
+      expect(donneesService.donnees()?.cahierJournal[0].notes).toBe(
+        'Absences du jour :\n- DUPONT Marie : Rendez-vous médical',
+      );
     });
   });
 

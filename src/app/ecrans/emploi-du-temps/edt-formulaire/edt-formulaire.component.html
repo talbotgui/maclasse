@@ -59,8 +59,17 @@
     <form class="edt-formulaire" id="formCreneau" (ngSubmit)="onEnregistrerCreneau()">
       <h2 class="edt-formulaire__titre">
         {{ estEditionCreneau() ? LIBELLES.commun.modifier : LIBELLES.commun.creer }}
-        {{ LIBELLES.edt.suffixeCreneau }} – {{ jourLibelle() }}
+        {{ LIBELLES.edt.suffixeCreneau }}
       </h2>
+
+      <mc-select
+        id="selectJourCreneau"
+        [(ngModel)]="formCreneau.jour"
+        name="jour"
+        [options]="optionsJour()"
+        [label]="LIBELLES.edt.labelJour"
+        [mcAutoFocus]="focusDemande()"
+      />
 
       <mc-champ-heure
         id="inputHeureDebutCreneau"
@@ -68,7 +77,6 @@
         name="heureDebut"
         [label]="LIBELLES.edt.labelHeureDebut"
         [required]="true"
-        [mcAutoFocus]="focusDemande()"
       />
 
       <mc-champ-heure

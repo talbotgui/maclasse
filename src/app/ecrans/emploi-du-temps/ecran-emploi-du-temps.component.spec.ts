@@ -208,6 +208,70 @@ describe('EcranEmploiDuTempsComponent', () => {
       const edtApres = donneesService.donnees()?.emploisDuTemps.find((e) => e.id === 'edt1');
       expect(edtApres?.creneaux.some((c) => c.id === 'c99')).toBe(true);
     });
+
+    it('déplace un créneau existant vers un autre jour', () => {
+      (component as any).edtSelectionne.set(edtBase);
+      fixture.detectChanges();
+      const creneauDeplace: CreneauEdt = { ...creneauLundi, jour: 'mardi' };
+
+      (component as any).onCreneauEnregistre(creneauDeplace);
+      fixture.detectChanges();
+
+      expect(
+        (component as any).obtenirCreneauDeGrille('mardi', {
+          heureDebut: '09:00',
+          heureFin: '10:00',
+        })?.id,
+      ).toBe('c1');
+      expect(
+        (component as any).obtenirCreneauDeGrille('lundi', {
+          heureDebut: '09:00',
+          heureFin: '10:00',
+        }),
+      ).toBeUndefined();
+    });
+  });
+
+  describe('edtsAvecConflits après déplacement de créneau', () => {
+    it('signale un conflit créé par le déplacement vers un jour/horaire occupé par un autre EDT', () => {
+      const edtA = EdtMother.base({
+        id: 'edtA',
+        creneaux: [CreneauMother.lundi9h10({ id: 'ca', jour: 'mardi' })],
+      });
+      const edtB = EdtMother.base({
+        id: 'edtB',
+        creneaux: [CreneauMother.lundi9h10({ id: 'cb', jour: 'lundi' })],
+      });
+      donneesService.charger(DonneesMother.base({ emploisDuTemps: [edtA, edtB] }));
+      (component as any).edtSelectionne.set(edtB);
+      fixture.detectChanges();
+      expect((component as any).edtsAvecConflits().has('edtB')).toBe(false);
+
+      (component as any).onCreneauEnregistre({ ...edtB.creneaux[0], jour: 'mardi' });
+      fixture.detectChanges();
+
+      expect((component as any).edtsAvecConflits().has('edtB')).toBe(true);
+    });
+
+    it('résout un conflit existant en déplaçant un créneau vers un jour libre chez les autres EDT', () => {
+      const edtA = EdtMother.base({
+        id: 'edtA',
+        creneaux: [CreneauMother.lundi9h10({ id: 'ca', jour: 'lundi' })],
+      });
+      const edtB = EdtMother.base({
+        id: 'edtB',
+        creneaux: [CreneauMother.lundi9h10({ id: 'cb', jour: 'lundi' })],
+      });
+      donneesService.charger(DonneesMother.base({ emploisDuTemps: [edtA, edtB] }));
+      (component as any).edtSelectionne.set(edtB);
+      fixture.detectChanges();
+      expect((component as any).edtsAvecConflits().has('edtB')).toBe(true);
+
+      (component as any).onCreneauEnregistre({ ...edtB.creneaux[0], jour: 'mardi' });
+      fixture.detectChanges();
+
+      expect((component as any).edtsAvecConflits().has('edtB')).toBe(false);
+    });
   });
 
   describe('onCreneauSupprime', () => {

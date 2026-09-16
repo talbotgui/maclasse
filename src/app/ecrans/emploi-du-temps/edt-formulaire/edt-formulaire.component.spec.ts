@@ -20,6 +20,7 @@ describe('EdtFormulaireComponent', () => {
     fixture = TestBed.createComponent(EdtFormulaireComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('domaines', [{ id: 'd1', libelle: 'Français', enfants: [] }]);
+    fixture.componentRef.setInput('joursOuvres', ['lundi', 'mardi', 'mercredi']);
     fixture.detectChanges();
   });
 
@@ -78,6 +79,25 @@ describe('EdtFormulaireComponent', () => {
       fixture.detectChanges();
 
       expect((component as any).formCreneau.heureDebut).toBe('11:00');
+    });
+  });
+
+  describe('optionsJour', () => {
+    it('reflète les jours ouvrés reçus en input', () => {
+      fixture.componentRef.setInput('joursOuvres', ['lundi', 'jeudi']);
+      fixture.detectChanges();
+
+      expect((component as any).optionsJour()).toEqual([
+        { valeur: 'lundi', libelle: 'Lundi' },
+        { valeur: 'jeudi', libelle: 'Jeudi' },
+      ]);
+    });
+
+    it('retourne [] si aucun jour ouvré fourni', () => {
+      fixture.componentRef.setInput('joursOuvres', []);
+      fixture.detectChanges();
+
+      expect((component as any).optionsJour()).toEqual([]);
     });
   });
 
@@ -206,6 +226,22 @@ describe('EdtFormulaireComponent', () => {
       (component as any).onEnregistrerCreneau();
 
       expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('émet le nouveau jour choisi, heureDebut/heureFin inchangés', () => {
+      const creneau = CreneauMother.lundi9h10({ jour: 'lundi' });
+      fixture.componentRef.setInput('creneau', creneau);
+      fixture.detectChanges();
+      (component as any).formCreneau.jour = 'jeudi';
+
+      const spy = vi.spyOn((component as any).creneauEnregistre, 'emit');
+
+      (component as any).onEnregistrerCreneau();
+
+      const emis = spy.mock.calls[0][0] as CreneauEdt;
+      expect(emis.jour).toBe('jeudi');
+      expect(emis.heureDebut).toBe(creneau.heureDebut);
+      expect(emis.heureFin).toBe(creneau.heureFin);
     });
   });
 });

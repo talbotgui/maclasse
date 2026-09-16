@@ -27,8 +27,10 @@ import type {
   EmploiDuTemps,
   CreneauEdt,
   ElevesConcernes,
+  JourSemaine,
 } from '../../../modeles/emploi-du-temps.modele';
 import type { Competence } from '../../../modeles/referentiels.modele';
+import type { OptionFormulaire } from '../../../modeles/composants.modele';
 
 /**
  * Formulaire contextuel de l'emploi du temps.
@@ -70,6 +72,9 @@ export class EdtFormulaireComponent {
   /** Domaines de niveau 1 pour les chips de disciplines. */
   public readonly domaines: InputSignal<Competence[]> = input<Competence[]>([]);
 
+  /** Jours ouvrés configurés, proposés dans le sélecteur de jour du créneau. */
+  public readonly joursOuvres: InputSignal<JourSemaine[]> = input<JourSemaine[]>([]);
+
   /** Émis avec l'EDT modifié à la sauvegarde des propriétés. */
   public readonly edtEnregistre: OutputEmitterRef<EmploiDuTemps> = output<EmploiDuTemps>();
 
@@ -99,6 +104,11 @@ export class EdtFormulaireComponent {
     { valeur: 'pauseDejeuner', libelle: LIBELLES.edt.typePauseDejeuner },
   ];
 
+  /** Options de jour proposées pour le créneau, limitées aux jours ouvrés configurés. */
+  protected readonly optionsJour = computed<OptionFormulaire[]>(() =>
+    this.joursOuvres().map((jour) => ({ valeur: jour, libelle: LIBELLES.edt.joursLibelles[jour] })),
+  );
+
   /** Copie locale de l'EDT en cours d'édition. */
   protected formEdt: EmploiDuTemps | null = null;
 
@@ -109,12 +119,6 @@ export class EdtFormulaireComponent {
   protected readonly estEditionCreneau = computed(
     () => this.creneau() !== null && !!this.creneau()?.id,
   );
-
-  /** Libellé du jour de la semaine du créneau courant, ou chaîne vide si aucun créneau. */
-  protected readonly jourLibelle = computed(() => {
-    const jour = this.creneau()?.jour;
-    return jour ? LIBELLES.edt.joursLibelles[jour] : '';
-  });
 
   /** Charge les copies locales à chaque changement des entrées. */
   public constructor() {

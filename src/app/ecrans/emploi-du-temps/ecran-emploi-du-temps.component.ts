@@ -9,6 +9,7 @@ import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { EmploiDuTempsService } from '../../services/sansEtat/emploi-du-temps.service';
 import { CompetenceService } from '../../services/sansEtat/competence.service';
 import { EdtFormulaireComponent } from './edt-formulaire/edt-formulaire.component';
+import { McPastillesElevesConcernesComponent } from '../../composants/mc-pastilles-eleves-concernes/mc-pastilles-eleves-concernes.component';
 import { DateUtils } from '../../utilitaires/date.utils';
 import type {
   EmploiDuTemps,
@@ -27,7 +28,7 @@ import type { Competence } from '../../modeles/referentiels.modele';
 @Component({
   selector: 'ecran-emploi-du-temps',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [EdtFormulaireComponent],
+  imports: [EdtFormulaireComponent, McPastillesElevesConcernesComponent],
   templateUrl: './ecran-emploi-du-temps.component.html',
   styleUrl: './ecran-emploi-du-temps.component.scss',
 })

@@ -1,0 +1,10 @@
+@if (pastilles().length > 0) {
+  <div
+    class="mc-pastilles-eleves-concernes"
+    [attr.aria-label]="LIBELLES.elevesConcernes.ariaListePastilles"
+  >
+    @for (pastille of pastilles(); track pastille.id) {
+      <span class="mc-disc-pill">{{ pastille.libelle }}</span>
+    }
+  </div>
+}

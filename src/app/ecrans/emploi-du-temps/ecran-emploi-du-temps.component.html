@@ -87,6 +87,9 @@
                         @if (creneau.titre) {
                           <span class="edt__creneau-titre">{{ creneau.titre }}</span>
                         }
+                        <mc-pastilles-eleves-concernes
+                          [elevesConcernes]="creneau.elevesConcernes"
+                        />
                       </button>
                     } @else {
                       <button

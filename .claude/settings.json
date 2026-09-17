@@ -15,7 +15,7 @@
       "Read(//home/codespace/.claude/**)"
     ],
     "deny": [
-      "Bash(git *)",
+      "Bash(git commit *)",
       "Bash(rm -rf *)",
       "Bash(curl *)",
       "Bash(wget *)",

@@ -20,6 +20,7 @@ import { CahierJournalService } from '../../services/sansEtat/cahier-journal.ser
 import { CompetenceService } from '../../services/sansEtat/competence.service';
 import { DateUtils } from '../../utilitaires/date.utils';
 import { McMiniCalendrierComponent } from '../../composants/mc-mini-calendrier/mc-mini-calendrier.component';
+import { McPastillesElevesConcernesComponent } from '../../composants/mc-pastilles-eleves-concernes/mc-pastilles-eleves-concernes.component';
 import { McTextareaComponent } from '../../composants/mc-textarea/mc-textarea.component';
 import { PopinAvertissementComponent } from '../../composants/popins/popin-avertissement/popin-avertissement.component';
 import { PopinWarningsAbsencesComponent } from '../../composants/popins/popin-warnings-absences/popin-warnings-absences.component';
@@ -39,6 +40,7 @@ import type { JourSemaine } from '../../modeles/emploi-du-temps.modele';
   imports: [
     ReactiveFormsModule,
     McMiniCalendrierComponent,
+    McPastillesElevesConcernesComponent,
     McTextareaComponent,
     PopinAvertissementComponent,
     PopinWarningsAbsencesComponent,

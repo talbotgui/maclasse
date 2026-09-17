@@ -172,6 +172,7 @@
               @if (seance.titre) {
                 <span class="cj__seance-titre">{{ seance.titre }}</span>
               }
+              <mc-pastilles-eleves-concernes [elevesConcernes]="seance.elevesConcernes" />
               <div class="cj__seance-controles">
                 <button
                   [id]="'btnMonterSeance' + seance.id"

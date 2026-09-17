@@ -366,6 +366,7 @@ export const LIBELLES = {
     modeEleves: 'Élèves spécifiques',
     ariaGroupes: 'Groupes',
     ariaEleves: 'Élèves',
+    ariaListePastilles: 'Élèves concernés',
   },
 
   /** Libellés des actions soumises au mécanisme UNDO/REDO, affichés dans les tooltips. */

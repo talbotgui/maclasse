@@ -33,13 +33,13 @@ export class SauvegardeAutoService {
    * Démarre le minuteur de sauvegarde automatique.
    * Le délai est lu depuis `configuration.delaiSauvegardeAutoMinutes` des données chargées.
    * Si le minuteur était déjà actif, il est réinitialisé.
-   * À appeler après la première sauvegarde manuelle réussie.
+   * À appeler après la première sauvegarde manuelle réussie ou après le chargement d'un ZIP existant.
    */
   public demarrer(): void {
     this.arreter();
     const delaiMinutes =
-      this.donneesService.donnees()?.configuration.delaiSauvegardeAutoMinutes ?? 2;
-    this.timer = setInterval(() => void this.sauvegarder(), delaiMinutes * 60_000);
+      this.donneesService.donnees()?.configuration.delaiSauvegardeAutoMinutes ?? 5;
+    this.timer = setInterval(() => void this.sauvegarderSiModifie(), delaiMinutes * 60_000);
   }
 
   /**
@@ -74,6 +74,16 @@ export class SauvegardeAutoService {
    */
   public get timerActif(): boolean {
     return this.timer !== null;
+  }
+
+  /**
+   * Effectue la sauvegarde uniquement si des données sont en attente de sauvegarde.
+   * Appelée à chaque tick du minuteur automatique, contrairement à `sauvegarder()`
+   * qui sauvegarde inconditionnellement.
+   */
+  private async sauvegarderSiModifie(): Promise<void> {
+    if (!this.donneesService.aDonneesModifiees()) return;
+    await this.sauvegarder();
   }
 
   /**

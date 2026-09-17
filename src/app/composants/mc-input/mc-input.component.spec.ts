@@ -118,5 +118,24 @@ describe('McInputComponent', () => {
 
       expect(inputEl().required).toBe(true);
     });
+
+    it('min fourni → attribut min rendu', () => {
+      fixture.componentRef.setInput('min', 1);
+      fixture.detectChanges();
+
+      expect(inputEl().getAttribute('min')).toBe('1');
+    });
+
+    it('max fourni → attribut max rendu', () => {
+      fixture.componentRef.setInput('max', 60);
+      fixture.detectChanges();
+
+      expect(inputEl().getAttribute('max')).toBe('60');
+    });
+
+    it('min/max non fournis → attributs absents', () => {
+      expect(inputEl().getAttribute('min')).toBeNull();
+      expect(inputEl().getAttribute('max')).toBeNull();
+    });
   });
 });

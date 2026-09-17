@@ -10,6 +10,8 @@
     [type]="type()"
     [placeholder]="placeholder()"
     [required]="required()"
+    [attr.min]="min()"
+    [attr.max]="max()"
     [disabled]="estDesactive()"
     [value]="valeur()"
     (input)="surChangement($any($event.target).value)"

@@ -1,10 +1,11 @@
-import { describe, it, expect, beforeEach, beforeAll, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, beforeAll, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Router } from '@angular/router';
 import { EcranDemarrageComponent } from './ecran-demarrage.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
+import { SauvegardeAutoService } from '../../services/sansEtat/sauvegarde-auto.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import type { DonneesApplication } from '../../modeles/donnees-application.modele';
 
@@ -18,6 +19,7 @@ describe('EcranDemarrageComponent', () => {
   let component: EcranDemarrageComponent;
   let donneesService: DonneesService;
   let contexteService: ContexteService;
+  let sauvegardeAutoService: SauvegardeAutoService;
   let router: Router;
 
   beforeEach(() => {
@@ -27,10 +29,15 @@ describe('EcranDemarrageComponent', () => {
     });
     donneesService = TestBed.inject(DonneesService);
     contexteService = TestBed.inject(ContexteService);
+    sauvegardeAutoService = TestBed.inject(SauvegardeAutoService);
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(EcranDemarrageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    sauvegardeAutoService.arreter();
   });
 
   describe('surCreationDemandee', () => {
@@ -73,6 +80,16 @@ describe('EcranDemarrageComponent', () => {
       await (component as any).surCreationDemandee(donnees);
 
       expect(contexteService.modeConsultationReferentiel()).toBe(false);
+      spy.mockRestore();
+    });
+
+    it('ne démarre pas la sauvegarde automatique', async () => {
+      const donnees: DonneesApplication = DonneesMother.base();
+      const spy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+      await (component as any).surCreationDemandee(donnees);
+
+      expect(sauvegardeAutoService.timerActif).toBe(false);
       spy.mockRestore();
     });
   });
@@ -119,6 +136,16 @@ describe('EcranDemarrageComponent', () => {
       expect(spyCharger).toHaveBeenCalledWith(donnees, false);
       spyNav.mockRestore();
     });
+
+    it('démarre la sauvegarde automatique', async () => {
+      const donnees: DonneesApplication = DonneesMother.base();
+      const spy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+      await (component as any).surDemarrageTermine(donnees);
+
+      expect(sauvegardeAutoService.timerActif).toBe(true);
+      spy.mockRestore();
+    });
   });
 
   describe('surReferentielDemande', () => {
@@ -161,6 +188,16 @@ describe('EcranDemarrageComponent', () => {
 
       expect(spyCharger).toHaveBeenCalledWith(donnees, true);
       spyNav.mockRestore();
+    });
+
+    it('ne démarre pas la sauvegarde automatique', async () => {
+      const donnees: DonneesApplication = DonneesMother.base();
+      const spy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+      await (component as any).surReferentielDemande(donnees);
+
+      expect(sauvegardeAutoService.timerActif).toBe(false);
+      spy.mockRestore();
     });
   });
 

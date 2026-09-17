@@ -37,6 +37,12 @@ export class McInputComponent extends ComposantBase implements ControlValueAcces
   /** Indique si le champ est obligatoire. Ajoute `required` et un astérisque visuel. */
   public readonly required: InputSignal<boolean> = input(false);
 
+  /** Valeur minimale acceptée (attribut `min` natif), `null` pour ne pas la contraindre. */
+  public readonly min: InputSignal<number | null> = input<number | null>(null);
+
+  /** Valeur maximale acceptée (attribut `max` natif), `null` pour ne pas la contraindre. */
+  public readonly max: InputSignal<number | null> = input<number | null>(null);
+
   /** Valeur courante du champ. */
   protected readonly valeur = signal('');
 

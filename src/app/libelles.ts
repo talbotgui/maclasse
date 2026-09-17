@@ -317,6 +317,7 @@ export const LIBELLES = {
     labelJourFerieNom: 'Nom',
     labelJourFerieDate: 'Date',
     labelDelaiSauvegarde: 'Délai de sauvegarde automatique (minutes)',
+    erreurDelaiSauvegardeHorsBornes: 'Le délai doit être compris entre 1 et 60 minutes.',
     tooltipValeurUtilisee: 'Cette valeur est utilisée et ne peut pas être supprimée',
     pastilleNonEnregistre: 'Non enregistré',
     labelDomainesInfo:

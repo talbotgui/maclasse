@@ -6,6 +6,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
+import { SauvegardeAutoService } from '../../services/sansEtat/sauvegarde-auto.service';
 import { PopinDemarrageComponent } from '../../composants/popins/popin-demarrage/popin-demarrage.component';
 import { LIBELLES } from '../../libelles';
 import type { DonneesApplication } from '../../modeles/donnees-application.modele';
@@ -33,6 +34,9 @@ export class EcranDemarrageComponent {
   /** Service de contexte : bascule le mode consultation référentiel seul. */
   private readonly contexteService = inject(ContexteService);
 
+  /** Service de sauvegarde automatique : démarré après chargement d'un ZIP existant. */
+  private readonly sauvegardeAutoService = inject(SauvegardeAutoService);
+
   /** Router Angular pour la navigation après chargement. */
   private readonly router = inject(Router);
 
@@ -49,11 +53,13 @@ export class EcranDemarrageComponent {
   /**
    * Reçoit les données déchiffrées d'un fichier ZIP importé par l'utilisateur, les charge
    * dans le service sans modifier les dates, quitte le mode consultation référentiel s'il
-   * était actif, et navigue vers l'écran d'accueil.
+   * était actif, navigue vers l'écran d'accueil puis démarre la sauvegarde automatique
+   * (le mot de passe de déchiffrement est déjà connu à ce stade).
    * @param donnees Données déchiffrées issues du fichier importé.
    */
   protected async surDemarrageTermine(donnees: DonneesApplication): Promise<void> {
     await this.chargerEtNaviguerAccueil(donnees, false);
+    this.sauvegardeAutoService.demarrer();
   }
 
   /**

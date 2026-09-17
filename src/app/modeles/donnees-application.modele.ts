@@ -14,7 +14,7 @@ import { Bulletin, Ppi } from './ppi-bulletin.modele';
  * Paramètres de configuration de l'application choisis par l'enseignant.
  */
 export interface ConfigApplication {
-  /** Délai entre deux sauvegardes automatiques, en minutes (défaut : 2). */
+  /** Délai entre deux sauvegardes automatiques, en minutes (défaut : 5, borné entre 1 et 60). */
   delaiSauvegardeAutoMinutes: number;
   /**
    * Identifiants des domaines (N1) et sous-domaines (N2) actifs dans l'arbre des compétences.

@@ -608,6 +608,7 @@
       <!-- Section : Préférences -->
       @case ('preferences') {
         @let prefModifie = estPreferencesModifie();
+        @let prefValide = preferencesValides();
         <section class="parametrage__section" aria-labelledby="titrePreferences">
           <h2 id="titrePreferences" class="parametrage__titre-section">
             {{ LIBELLES.parametrage.sections.preferences }}
@@ -616,7 +617,7 @@
             <button
               id="btnEnregistrerPreferences"
               class="mc-btn-primaire"
-              [disabled]="!prefModifie"
+              [disabled]="!prefModifie || !prefValide"
               (click)="enregistrerPreferences()"
             >
               {{ prefModifie ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre }}
@@ -640,8 +641,15 @@
               id="champDelaiSauvegarde"
               [label]="LIBELLES.parametrage.labelDelaiSauvegarde"
               type="number"
+              [min]="delaiSauvegardeMin"
+              [max]="delaiSauvegardeMax"
               [(ngModel)]="formPreferences.delaiSauvegardeAutoMinutes"
             />
+            @if (!prefValide) {
+              <p class="parametrage__erreur" role="alert">
+                {{ LIBELLES.parametrage.erreurDelaiSauvegardeHorsBornes }}
+              </p>
+            }
           </div>
         </section>
       }

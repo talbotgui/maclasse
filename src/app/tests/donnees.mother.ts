@@ -9,7 +9,7 @@ export class DonneesMother {
   static base(surcharge: Partial<DonneesApplication> = {}): DonneesApplication {
     return {
       version: '1.0',
-      configuration: { delaiSauvegardeAutoMinutes: 2 },
+      configuration: { delaiSauvegardeAutoMinutes: 5 },
       enseignant: { prenom: 'Test', nom: 'ENS', annee: '2025-2026' },
       classe: { niveau: 'CM2', annee: 'CM2', eleves: [] },
       referentiels: {

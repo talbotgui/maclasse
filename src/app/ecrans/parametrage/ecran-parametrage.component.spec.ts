@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { EcranParametrageComponent } from './ecran-parametrage.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
+import { SauvegardeAutoService } from '../../services/sansEtat/sauvegarde-auto.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { CompetenceMother } from '../../tests/competence.mother';
 
@@ -9,6 +10,7 @@ describe('EcranParametrageComponent', () => {
   let fixture: ComponentFixture<EcranParametrageComponent>;
   let component: EcranParametrageComponent;
   let donneesService: DonneesService;
+  let sauvegardeAutoService: SauvegardeAutoService;
 
   const donnees = DonneesMother.base({
     enseignant: { prenom: 'Marie', nom: 'DUPONT', annee: '2025-2026' },
@@ -38,9 +40,14 @@ describe('EcranParametrageComponent', () => {
     TestBed.configureTestingModule({});
     donneesService = TestBed.inject(DonneesService);
     donneesService.charger(donnees);
+    sauvegardeAutoService = TestBed.inject(SauvegardeAutoService);
     fixture = TestBed.createComponent(EcranParametrageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    sauvegardeAutoService.arreter();
   });
 
   describe('activerSection', () => {
@@ -152,6 +159,91 @@ describe('EcranParametrageComponent', () => {
       (component as any).annulerPreferences();
 
       expect((component as any).formPreferences.delaiSauvegardeAutoMinutes).toBe(5);
+    });
+
+    describe('preferencesValides', () => {
+      it('borne minimale (1) valide', () => {
+        (component as any).formPreferences.delaiSauvegardeAutoMinutes = 1;
+
+        expect((component as any).preferencesValides()).toBe(true);
+      });
+
+      it('borne maximale (60) valide', () => {
+        (component as any).formPreferences.delaiSauvegardeAutoMinutes = 60;
+
+        expect((component as any).preferencesValides()).toBe(true);
+      });
+
+      it('0 invalide (sous la borne minimale)', () => {
+        (component as any).formPreferences.delaiSauvegardeAutoMinutes = 0;
+
+        expect((component as any).preferencesValides()).toBe(false);
+      });
+
+      it('61 invalide (au-dessus de la borne maximale)', () => {
+        (component as any).formPreferences.delaiSauvegardeAutoMinutes = 61;
+
+        expect((component as any).preferencesValides()).toBe(false);
+      });
+    });
+
+    describe('rendu du bouton Enregistrer (composition modifié || invalide)', () => {
+      const saisir = (valeur: string) => {
+        const input = fixture.nativeElement.querySelector(
+          '#champDelaiSauvegarde-input',
+        ) as HTMLInputElement;
+        input.value = valeur;
+        input.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+      };
+
+      const btn = () =>
+        fixture.nativeElement.querySelector('#btnEnregistrerPreferences') as HTMLButtonElement;
+
+      it('modifié et valide → actif', () => {
+        saisir('10');
+
+        expect(btn().disabled).toBe(false);
+      });
+
+      it('modifié mais invalide → reste désactivé', () => {
+        saisir('61');
+
+        expect(btn().disabled).toBe(true);
+      });
+
+      it('non modifié (valeur initiale valide) → désactivé', () => {
+        expect(btn().disabled).toBe(true);
+      });
+    });
+
+    it('enregistrerPreferences ne modifie pas le store si le délai est hors bornes', () => {
+      (component as any).formPreferences.delaiSauvegardeAutoMinutes = 61;
+
+      (component as any).enregistrerPreferences();
+
+      expect(donneesService.donnees()?.configuration.delaiSauvegardeAutoMinutes).toBe(5);
+    });
+
+    describe('relance du timer de sauvegarde automatique', () => {
+      it('timer inactif → demarrer() non rappelé', () => {
+        const spy = vi.spyOn(sauvegardeAutoService, 'demarrer');
+        (component as any).formPreferences.delaiSauvegardeAutoMinutes = 10;
+
+        (component as any).enregistrerPreferences();
+
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      it('timer actif → demarrer() rappelé pour appliquer le nouveau délai', () => {
+        sauvegardeAutoService.demarrer();
+        const spy = vi.spyOn(sauvegardeAutoService, 'demarrer');
+        (component as any).formPreferences.delaiSauvegardeAutoMinutes = 10;
+
+        (component as any).enregistrerPreferences();
+
+        expect(spy).toHaveBeenCalled();
+      });
     });
   });
 

@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ReferentielService } from '../../services/sansEtat/referentiel.service';
+import { SauvegardeAutoService } from '../../services/sansEtat/sauvegarde-auto.service';
 import { CommandeRemplacement } from '../../commandes/commande-par-index';
 import { McAutoFocusDirective } from '../../directives/mc-auto-focus.directive';
 import { McInputComponent } from '../../composants/mc-input/mc-input.component';
@@ -90,6 +91,9 @@ export class EcranParametrageComponent {
   /** Service référentiel : CRUD des listes configurables. */
   private readonly referentielService = inject(ReferentielService);
 
+  /** Service de sauvegarde automatique : relance du timer si le délai change en session. */
+  private readonly sauvegardeAutoService = inject(SauvegardeAutoService);
+
   /** Détection de changement pour mise à jour manuelle en mode OnPush. */
   private readonly cdr = inject(ChangeDetectorRef);
 
@@ -146,7 +150,19 @@ export class EcranParametrageComponent {
   };
 
   /** Copie locale du formulaire Préférences. */
-  protected formPreferences = { delaiSauvegardeAutoMinutes: 2 };
+  protected formPreferences = { delaiSauvegardeAutoMinutes: 5 };
+
+  /** Borne minimale acceptée pour le délai de sauvegarde automatique, en minutes. */
+  private static readonly DELAI_SAUVEGARDE_MIN = 1;
+
+  /** Borne maximale acceptée pour le délai de sauvegarde automatique, en minutes. */
+  private static readonly DELAI_SAUVEGARDE_MAX = 60;
+
+  /** Borne minimale exposée au template pour l'attribut natif `min` du champ délai. */
+  protected readonly delaiSauvegardeMin = EcranParametrageComponent.DELAI_SAUVEGARDE_MIN;
+
+  /** Borne maximale exposée au template pour l'attribut natif `max` du champ délai. */
+  protected readonly delaiSauvegardeMax = EcranParametrageComponent.DELAI_SAUVEGARDE_MAX;
 
   /** Copies locales des listes éditables inline. */
   protected copiePeriodes = signal<Periode[]>([]);
@@ -358,7 +374,7 @@ export class EcranParametrageComponent {
   /** Enregistre les préférences. */
   protected enregistrerPreferences(): void {
     const d = this.donneesService.donnees();
-    if (!d) return;
+    if (!d || !this.preferencesValides()) return;
     this.donneesService.executer(
       new CommandeRemplacement<number>(
         (data, v) => {
@@ -368,6 +384,18 @@ export class EcranParametrageComponent {
         this.formPreferences.delaiSauvegardeAutoMinutes,
         LIBELLES.commandes.modificationPreferences,
       ),
+    );
+    if (this.sauvegardeAutoService.timerActif) {
+      this.sauvegardeAutoService.demarrer();
+    }
+  }
+
+  /** @returns `true` si le délai de sauvegarde automatique saisi est compris dans les bornes autorisées. */
+  protected preferencesValides(): boolean {
+    const delai = this.formPreferences.delaiSauvegardeAutoMinutes;
+    return (
+      delai >= EcranParametrageComponent.DELAI_SAUVEGARDE_MIN &&
+      delai <= EcranParametrageComponent.DELAI_SAUVEGARDE_MAX
     );
   }
 

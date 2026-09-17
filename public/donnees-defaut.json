@@ -9970,7 +9970,7 @@
     }
   ],
   "configuration": {
-    "delaiSauvegardeAutoMinutes": 2,
+    "delaiSauvegardeAutoMinutes": 5,
     "domainesActifs": [
       "EMC-C2",
       "EMC-CM1",

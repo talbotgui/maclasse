@@ -52,3 +52,7 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 ## Plans de correction
 
 - [Conflit EDT — parité de semaine](plans-08-conflitEdtParite.md) — Bug confirmé : calculerConflitsAbsences ignore la parité paire/impaire, correctif via verifierCompatibiliteFrequences existante
+
+## Audits
+
+- [Inventaire soucis SOU-XXX](plans-13-inventaireSoucisAudit.md) — Audit Angular/Signals/RGAA du 2026-09-17 : 43 constats (6 CRITIQUE dont pertes de données, 15 MAJEUR, 13 MODÉRÉ, 9 MINEUR), pas encore un plan de correction validé

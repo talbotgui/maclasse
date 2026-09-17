@@ -8,6 +8,10 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 
 - [Profil utilisateur](user-profil.md) — Développeur Angular 21, RGAA, qualité Sonar, nommage français, collaboration avec validation préalable
 
+## Référence
+
+- [Commandes dev](reference-commandesDev.md) — npm start (ng serve :4200), npm test (ng test/Vitest+couverture), npm run e2e* (Playwright, webServer auto)
+
 ## Projet
 
 - [Description générale](projet-01-descriptionGenerale.md) — SPA Angular 21 offline, mono-utilisateur, ZIP chiffré AES-GCM, périmètre fonctionnel complet

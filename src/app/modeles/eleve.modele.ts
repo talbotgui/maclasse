@@ -125,3 +125,14 @@ export interface Eleve {
   /** Dispositifs médicaux ou traitements en cours (texte libre, optionnel). */
   dispositifsMedicaux?: string;
 }
+
+/**
+ * Absence récurrente d'un élève jugée pertinente pour un emploi du temps donné
+ * (jour utilisé par un créneau de l'EDT et parité de semaine compatible).
+ */
+export interface AbsencePertinente {
+  /** Élève concerné par l'absence. */
+  eleve: Eleve;
+  /** Absence récurrente jugée pertinente. */
+  absence: AbsenceRecurrente;
+}

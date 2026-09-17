@@ -196,12 +196,16 @@ export const LIBELLES = {
   /** Libellés de l'écran Emploi du temps. */
   edt: {
     titre: 'Emploi du temps',
+    titreListeEdt: 'Mes emplois du temps',
     boutonCreer: 'Créer un emploi du temps',
     boutonImprimer: 'Imprimer',
     aucunEdtSelectionne: 'Sélectionnez un emploi du temps ou créez-en un.',
     avertissementChevauchementEdt: 'Cet emploi du temps chevauche un autre emploi du temps.',
     ariaVoirConflitEdt: 'Voir les emplois du temps en conflit',
     prefixeChevaucheEdt: 'Chevauche : ',
+    titreAbsencesPertinentes: 'Absences régulières sur cette période',
+    avertissementConflitAbsence: 'Ce créneau est en conflit avec une absence récurrente.',
+    ariaVoirConflitAbsence: 'Voir les absences en conflit avec ce créneau',
     labelNom: "Nom de l'emploi du temps",
     labelDateDebut: 'Date de début',
     labelDateFin: 'Date de fin',

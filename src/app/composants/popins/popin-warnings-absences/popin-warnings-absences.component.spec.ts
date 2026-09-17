@@ -70,6 +70,26 @@ describe('PopinWarningsAbsencesComponent', () => {
     });
   });
 
+  describe('contexteId', () => {
+    it('par défaut (non fourni) → IDs sans suffixe', () => {
+      const titre = fixture.nativeElement.querySelector('#titreWarnings');
+      const bouton = fixture.nativeElement.querySelector('#btnWarningsFermer');
+      expect(titre).not.toBeNull();
+      expect(bouton).not.toBeNull();
+    });
+
+    it('fourni → suffixe les IDs pour éviter les doublons entre deux instances', () => {
+      fixture.componentRef.setInput('contexteId', 'Absences');
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('#titreWarningsAbsences')).not.toBeNull();
+      expect(fixture.nativeElement.querySelector('#btnWarningsFermerAbsences')).not.toBeNull();
+      expect(
+        fixture.nativeElement.querySelector('dialog').getAttribute('aria-labelledby'),
+      ).toBe('titreWarningsAbsences');
+    });
+  });
+
   describe('fermer', () => {
     it("émet l'output annule", () => {
       const spy = vi.spyOn((component as any).annule, 'emit');

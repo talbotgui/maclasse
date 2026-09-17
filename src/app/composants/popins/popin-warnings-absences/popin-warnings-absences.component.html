@@ -2,12 +2,14 @@
   #dialog
   class="mc-popin"
   aria-modal="true"
-  aria-labelledby="titreWarnings"
+  [attr.aria-labelledby]="'titreWarnings' + contexteId()"
   (cancel)="surCancel($event)"
 >
   <div class="mc-popover-carte">
     <div class="mc-popover-entete">
-      <span id="titreWarnings" class="mc-popover-titre">{{ LIBELLES.popins.warnings.titre }}</span>
+      <span [id]="'titreWarnings' + contexteId()" class="mc-popover-titre">{{
+        LIBELLES.popins.warnings.titre
+      }}</span>
     </div>
 
     <div class="mc-popin__corps">
@@ -24,7 +26,7 @@
 
     <div class="mc-popover-pied">
       <button
-        id="btnWarningsFermer"
+        [id]="'btnWarningsFermer' + contexteId()"
         type="button"
         class="mc-btn-primaire"
         [mcAutoFocus]="visible()"

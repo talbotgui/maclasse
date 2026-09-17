@@ -1,3 +1,19 @@
+@if (edtSelectionne() && absencesPertinentes().length > 0) {
+  <div class="edt__bandeau-absences">
+    <p class="edt__titre-section">{{ LIBELLES.edt.titreAbsencesPertinentes }}</p>
+    <ul>
+      @for (item of absencesPertinentes(); track item.absence.id) {
+        <li>
+          {{ item.eleve.nom }} {{ item.eleve.prenom }} — {{ item.absence.libelle }} ({{
+            LIBELLES.edt.joursLibelles[item.absence.jour]
+          }}
+          {{ item.absence.heureDebut }}-{{ item.absence.heureFin }})
+        </li>
+      }
+    </ul>
+  </div>
+}
+
 <div class="edt">
   <!-- ── Colonne gauche : liste des EDT ── -->
   <div class="edt__gauche">
@@ -7,6 +23,8 @@
         {{ LIBELLES.edt.boutonCreer }}
       </button>
     </div>
+
+    <h2 class="edt__titre-section">{{ LIBELLES.edt.titreListeEdt }}</h2>
 
     @if (edts().length === 0) {
       <p class="edt__liste-vide">{{ LIBELLES.edt.aucunEdtSelectionne }}</p>
@@ -89,19 +107,41 @@
                     [class.edt__grille-cellule--vide]="!creneau"
                   >
                     @if (creneau) {
-                      <button
-                        [id]="'btnCreneau' + creneau.id"
-                        class="edt__btn-creneau"
-                        (click)="selectionnerCreneau(creneau)"
-                      >
-                        <span class="edt__creneau-type">{{ creneau.type }}</span>
-                        @if (creneau.titre) {
-                          <span class="edt__creneau-titre">{{ creneau.titre }}</span>
+                      <div class="edt__creneau-cellule">
+                        <button
+                          [id]="'btnCreneau' + creneau.id"
+                          class="edt__btn-creneau"
+                          (click)="selectionnerCreneau(creneau)"
+                        >
+                          <span class="edt__creneau-type">{{ creneau.type }}</span>
+                          @if (creneau.titre) {
+                            <span class="edt__creneau-titre">{{ creneau.titre }}</span>
+                          }
+                          <mc-pastilles-eleves-concernes
+                            [elevesConcernes]="creneau.elevesConcernes"
+                          />
+                        </button>
+                        @if (creneauxAvecConflits().has(creneau.id)) {
+                          <button
+                            [id]="'btnConflitCreneau' + creneau.id"
+                            type="button"
+                            class="edt__btn-icone-conflit"
+                            [attr.aria-label]="
+                              LIBELLES.edt.ariaVoirConflitAbsence +
+                              ' : ' +
+                              LIBELLES.edt.joursLibelles[creneau.jour] +
+                              ' ' +
+                              creneau.heureDebut +
+                              '-' +
+                              creneau.heureFin
+                            "
+                            title="{{ LIBELLES.edt.avertissementConflitAbsence }}"
+                            (click)="afficherConflitsAbsences(creneau, $event)"
+                          >
+                            ⚠
+                          </button>
                         }
-                        <mc-pastilles-eleves-concernes
-                          [elevesConcernes]="creneau.elevesConcernes"
-                        />
-                      </button>
+                      </div>
                     } @else {
                       <button
                         [id]="'btnAjouterCreneau' + jour + ligne.heureDebut"
@@ -171,7 +211,15 @@
 />
 
 <popin-warnings-absences
+  contexteId="Edt"
   [visible]="popinConflitsEdtVisible()"
   [conflits]="conflitsEdt()"
   (annule)="fermerConflitsEdt()"
+/>
+
+<popin-warnings-absences
+  contexteId="Absences"
+  [visible]="popinConflitsAbsencesVisible()"
+  [conflits]="conflitsAbsences()"
+  (annule)="fermerConflitsAbsences()"
 />

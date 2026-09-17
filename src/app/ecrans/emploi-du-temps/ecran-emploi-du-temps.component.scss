@@ -1,12 +1,35 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
 
+.edt__bandeau-absences {
+  flex-shrink: 0;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--bordure);
+  background-color: color-mix(in srgb, var(--avertissement) 10%, transparent);
+
+  ul {
+    margin: 0.375rem 0 0;
+    padding: 0 0 0 1.25rem;
+    font-size: 0.8125rem;
+    color: var(--texte-principal);
+  }
+}
+
+.edt__titre-section {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--texte-principal);
+}
+
 .edt {
+  flex: 1;
   display: grid;
   grid-template-columns: 14rem 1fr 22rem;
-  height: 100%;
+  min-height: 0;
   overflow: hidden;
 
   &__gauche {
@@ -198,6 +221,11 @@
     border-top: 2px dashed var(--bordure);
   }
 
+  &__creneau-cellule {
+    position: relative;
+    width: 100%;
+  }
+
   &__btn-creneau {
     display: flex;
     flex-direction: column;
@@ -212,6 +240,30 @@
 
     &:hover {
       background-color: color-mix(in srgb, var(--accent) 20%, transparent);
+    }
+  }
+
+  &__btn-icone-conflit {
+    position: absolute;
+    top: 0.125rem;
+    right: 0.125rem;
+    z-index: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--avertissement);
+    font-size: 0.75rem;
+    line-height: 1;
+    border-radius: 4px;
+    padding: 0.0625rem 0.1875rem;
+
+    &:hover {
+      background-color: var(--fond-survol);
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--couleur-focus);
+      outline-offset: 2px;
     }
   }
 

@@ -4,6 +4,7 @@ import { EcranEmploiDuTempsComponent } from './ecran-emploi-du-temps.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { EdtMother, CreneauMother } from '../../tests/emploi-du-temps.mother';
+import { EleveMother, AbsenceRecurrenteMother } from '../../tests/eleve.mother';
 import type { EmploiDuTemps, CreneauEdt } from '../../modeles/emploi-du-temps.modele';
 
 describe('EcranEmploiDuTempsComponent', () => {
@@ -33,6 +34,21 @@ describe('EcranEmploiDuTempsComponent', () => {
       const edts = (component as any).edts() as EmploiDuTemps[];
       expect(edts).toHaveLength(1);
       expect(edts[0].id).toBe('edt1');
+    });
+  });
+
+  describe('titre de la liste des EDT', () => {
+    it('affiche le titre "Mes emplois du temps" quand la liste est remplie', () => {
+      const titre = fixture.nativeElement.querySelector('.edt__gauche .edt__titre-section');
+      expect(titre?.textContent?.trim()).toBe('Mes emplois du temps');
+    });
+
+    it('affiche le titre "Mes emplois du temps" quand la liste est vide', () => {
+      donneesService.charger(DonneesMother.base({ emploisDuTemps: [] }));
+      fixture.detectChanges();
+
+      const titre = fixture.nativeElement.querySelector('.edt__gauche .edt__titre-section');
+      expect(titre?.textContent?.trim()).toBe('Mes emplois du temps');
     });
   });
 
@@ -396,6 +412,135 @@ describe('EcranEmploiDuTempsComponent', () => {
 
       boutonConflit.click();
       expect((component as any).popinConflitsEdtVisible()).toBe(true);
+    });
+  });
+
+  describe('absencesPertinentes', () => {
+    it('retourne [] quand aucun EDT n’est sélectionné', () => {
+      expect((component as any).absencesPertinentes()).toEqual([]);
+    });
+
+    it('retourne les absences pertinentes pour l’EDT sélectionné', () => {
+      const absence = AbsenceRecurrenteMother.base();
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Paul', {
+        absencesRecurrentes: [absence],
+      });
+      donneesService.charger(DonneesMother.avecEleves([eleve], { emploisDuTemps: [edtBase] }));
+      fixture.detectChanges();
+
+      (component as any).selectionnerEdt(edtBase);
+
+      expect((component as any).absencesPertinentes()).toEqual([{ eleve, absence }]);
+    });
+
+    it('exclut les absences dont la parité est incompatible avec l’EDT sélectionné', () => {
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Paul', {
+        absencesRecurrentes: [AbsenceRecurrenteMother.base({ paritesSemaine: 'impaire' })],
+      });
+      const edtPaire = EdtMother.base({
+        id: 'edtPaire',
+        frequence: 'paire',
+        creneaux: [CreneauMother.lundi9h10({ id: 'cPaire' })],
+      });
+      donneesService.charger(DonneesMother.avecEleves([eleve], { emploisDuTemps: [edtPaire] }));
+      fixture.detectChanges();
+
+      (component as any).selectionnerEdt(edtPaire);
+
+      expect((component as any).absencesPertinentes()).toEqual([]);
+    });
+
+    it('n’affiche pas le bandeau quand aucun EDT n’est sélectionné', () => {
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.edt__bandeau-absences')).toBeNull();
+    });
+
+    it('affiche le bandeau avec les absences pertinentes quand l’EDT sélectionné en a', () => {
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Paul', {
+        absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+      });
+      donneesService.charger(DonneesMother.avecEleves([eleve], { emploisDuTemps: [edtBase] }));
+      fixture.detectChanges();
+      (component as any).selectionnerEdt(edtBase);
+      fixture.detectChanges();
+
+      const bandeau = fixture.nativeElement.querySelector('.edt__bandeau-absences');
+      expect(bandeau).not.toBeNull();
+      expect(bandeau.textContent).toContain('MARTIN Paul');
+      expect(bandeau.textContent).toContain('Orthophonie');
+    });
+  });
+
+  describe('creneauxAvecConflits / afficherConflitsAbsences / fermerConflitsAbsences', () => {
+    it('retourne un ensemble vide quand aucun EDT n’est sélectionné', () => {
+      expect((component as any).creneauxAvecConflits()).toEqual(new Set());
+    });
+
+    it('identifie les créneaux en conflit avec une absence élève', () => {
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Paul', {
+        absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+      });
+      donneesService.charger(DonneesMother.avecEleves([eleve], { emploisDuTemps: [edtBase] }));
+      fixture.detectChanges();
+
+      (component as any).selectionnerEdt(edtBase);
+
+      expect((component as any).creneauxAvecConflits()).toEqual(new Set(['c1']));
+    });
+
+    it('affiche les conflits du créneau et arrête la propagation du clic', () => {
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Paul', {
+        absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+      });
+      donneesService.charger(DonneesMother.avecEleves([eleve], { emploisDuTemps: [edtBase] }));
+      fixture.detectChanges();
+      (component as any).selectionnerEdt(edtBase);
+
+      const stopPropagation = vi.fn();
+      (component as any).afficherConflitsAbsences(creneauLundi, { stopPropagation });
+
+      expect(stopPropagation).toHaveBeenCalled();
+      expect((component as any).popinConflitsAbsencesVisible()).toBe(true);
+      expect((component as any).conflitsAbsences()).toEqual(['MARTIN Paul — Orthophonie']);
+    });
+
+    it('fermerConflitsAbsences masque la popin et vide les conflits', () => {
+      (component as any).popinConflitsAbsencesVisible.set(true);
+      (component as any).conflitsAbsences.set(['MARTIN Paul — Orthophonie']);
+
+      (component as any).fermerConflitsAbsences();
+
+      expect((component as any).popinConflitsAbsencesVisible()).toBe(false);
+      expect((component as any).conflitsAbsences()).toEqual([]);
+    });
+
+    it('affiche le bouton icône de conflit uniquement sur les créneaux concernés', () => {
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Paul', {
+        absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+      });
+      donneesService.charger(DonneesMother.avecEleves([eleve], { emploisDuTemps: [edtBase] }));
+      fixture.detectChanges();
+      (component as any).selectionnerEdt(edtBase);
+      fixture.detectChanges();
+
+      const boutonConflit = fixture.nativeElement.querySelector(
+        '#btnConflitCreneau' + creneauLundi.id,
+      ) as HTMLButtonElement;
+      expect(boutonConflit).not.toBeNull();
+
+      boutonConflit.click();
+      expect((component as any).popinConflitsAbsencesVisible()).toBe(true);
+    });
+
+    it('n’affiche pas le bouton icône de conflit quand il n’y a pas de conflit', () => {
+      fixture.detectChanges();
+      (component as any).selectionnerEdt(edtBase);
+      fixture.detectChanges();
+
+      const boutonConflit = fixture.nativeElement.querySelector(
+        '#btnConflitCreneau' + creneauLundi.id,
+      );
+      expect(boutonConflit).toBeNull();
     });
   });
 

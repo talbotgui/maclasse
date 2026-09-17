@@ -5,6 +5,7 @@
 
 import { Injectable, inject } from '@angular/core';
 import { EmploiDuTemps, CreneauEdt, FrequenceSemaine } from '../../modeles/emploi-du-temps.modele';
+import { AbsencePertinente } from '../../modeles/eleve.modele';
 import { CommandeCreation } from '../../commandes/commande-creation';
 import { CommandeModification } from '../../commandes/commande-modification';
 import { CommandeSuppression } from '../../commandes/commande-suppression';
@@ -197,8 +198,8 @@ export class EmploiDuTempsService {
 
   /**
    * Calcule les conflits entre un créneau et les absences récurrentes des élèves concernés.
-   * La parité de semaine n'est pas prise en compte — tout chevauchement horaire sur le même
-   * jour est signalé, quelle que soit la parité de l'absence.
+   * Un conflit n'est retenu que si la parité de semaine de l'EDT et celle de l'absence
+   * sont compatibles (`verifierCompatibiliteFrequences`).
    * @param creneauId UUID du créneau à analyser (cherché dans tous les EDTs).
    * @returns Liste de libellés au format `"NOM Prénom — libellé d'absence"`.
    */
@@ -207,11 +208,15 @@ export class EmploiDuTempsService {
     if (!donnees) return [];
 
     let creneau: CreneauEdt | undefined;
+    let edtTrouve: EmploiDuTemps | undefined;
     for (const edt of donnees.emploisDuTemps) {
       creneau = edt.creneaux.find((c) => c.id === creneauId);
-      if (creneau) break;
+      if (creneau) {
+        edtTrouve = edt;
+        break;
+      }
     }
-    if (!creneau) return [];
+    if (!creneau || !edtTrouve) return [];
 
     const creneauTrouve = creneau;
     const tousEleves = donnees.classe.eleves;
@@ -235,6 +240,7 @@ export class EmploiDuTempsService {
       for (const abs of eleve.absencesRecurrentes) {
         if (
           abs.jour === creneauTrouve.jour &&
+          this.verifierCompatibiliteFrequences(edtTrouve.frequence, abs.paritesSemaine) &&
           DateUtils.chevauchementHoraire(
             abs.heureDebut,
             abs.heureFin,
@@ -247,6 +253,36 @@ export class EmploiDuTempsService {
       }
     }
     return conflits;
+  }
+
+  /**
+   * Retourne les absences récurrentes des élèves pertinentes pour l'EDT fourni :
+   * absences dont le jour est utilisé par au moins un créneau de l'EDT et dont la parité
+   * de semaine est compatible avec la fréquence de l'EDT.
+   * @param edt EDT pour lequel calculer les absences pertinentes.
+   * @returns Paires élève/absence, triées NOM Prénom, vide si aucune donnée chargée.
+   */
+  public obtenirAbsencesPertinentes(edt: EmploiDuTemps): AbsencePertinente[] {
+    const donnees = this.donneesService.donnees();
+    if (!donnees) return [];
+
+    const joursUtilises = new Set(edt.creneaux.map((c) => c.jour));
+    const eleves = [...donnees.classe.eleves].sort((a, b) =>
+      `${a.nom} ${a.prenom}`.localeCompare(`${b.nom} ${b.prenom}`, 'fr'),
+    );
+
+    const resultats: AbsencePertinente[] = [];
+    for (const eleve of eleves) {
+      for (const absence of eleve.absencesRecurrentes) {
+        if (
+          joursUtilises.has(absence.jour) &&
+          this.verifierCompatibiliteFrequences(edt.frequence, absence.paritesSemaine)
+        ) {
+          resultats.push({ eleve, absence });
+        }
+      }
+    }
+    return resultats;
   }
 
   /**

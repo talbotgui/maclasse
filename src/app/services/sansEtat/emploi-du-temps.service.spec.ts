@@ -4,7 +4,7 @@ import { EmploiDuTempsService } from './emploi-du-temps.service';
 import { DonneesService } from '../avecEtat/donnees.service';
 import { EmploiDuTemps, CreneauEdt } from '../../modeles/emploi-du-temps.modele';
 import { DonneesMother } from '../../tests/donnees.mother';
-import { EleveMother } from '../../tests/eleve.mother';
+import { EleveMother, AbsenceRecurrenteMother } from '../../tests/eleve.mother';
 import { EdtMother, CreneauMother } from '../../tests/emploi-du-temps.mother';
 
 describe('EmploiDuTempsService', () => {
@@ -572,6 +572,129 @@ describe('EmploiDuTempsService', () => {
       };
       service.creerEdt({ ...EdtMother.base(), creneaux: [CRENEAU_INCONNU] });
       expect(service.calculerConflitsAbsences('ci')).toEqual([]);
+    });
+
+    it("ne détecte pas de conflit si l'EDT est en semaine paire et l'absence en semaine impaire", () => {
+      const d = DonneesMother.base();
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base({ paritesSemaine: 'impaire' })],
+        }),
+      ];
+      donneesService.charger(d);
+      service.creerEdt({
+        ...EdtMother.base(),
+        frequence: 'paire',
+        creneaux: [CreneauMother.lundi9h10()],
+      });
+      expect(service.calculerConflitsAbsences('c1')).toEqual([]);
+    });
+
+    it("détecte un conflit si l'EDT et l'absence sont sur la même parité", () => {
+      const d = DonneesMother.base();
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base({ paritesSemaine: 'paire' })],
+        }),
+      ];
+      donneesService.charger(d);
+      service.creerEdt({
+        ...EdtMother.base(),
+        frequence: 'paire',
+        creneaux: [CreneauMother.lundi9h10()],
+      });
+      const conflits = service.calculerConflitsAbsences('c1');
+      expect(conflits).toHaveLength(1);
+      expect(conflits[0]).toBe('MARTIN Paul — Orthophonie');
+    });
+
+    it("détecte un conflit si l'absence est en 'lesDeux', compatible avec toute fréquence d'EDT", () => {
+      const d = DonneesMother.base();
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base({ paritesSemaine: 'lesDeux' })],
+        }),
+      ];
+      donneesService.charger(d);
+      service.creerEdt({
+        ...EdtMother.base(),
+        frequence: 'impaire',
+        creneaux: [CreneauMother.lundi9h10()],
+      });
+      const conflits = service.calculerConflitsAbsences('c1');
+      expect(conflits).toHaveLength(1);
+      expect(conflits[0]).toBe('MARTIN Paul — Orthophonie');
+    });
+  });
+
+  describe('obtenirAbsencesPertinentes', () => {
+    it('retourne [] si aucune donnée chargée', () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({});
+      const serviceSansDonnees = TestBed.inject(EmploiDuTempsService);
+      expect(serviceSansDonnees.obtenirAbsencesPertinentes(EdtMother.base())).toEqual([]);
+    });
+
+    it("retourne [] pour un EDT sans créneau (aucun jour utilisé)", () => {
+      const d = DonneesMother.base();
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+        }),
+      ];
+      donneesService.charger(d);
+      expect(service.obtenirAbsencesPertinentes(EdtMother.base({ creneaux: [] }))).toEqual([]);
+    });
+
+    it("exclut une absence dont le jour n'est utilisé par aucun créneau de l'EDT", () => {
+      const d = DonneesMother.base();
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base({ jour: 'vendredi' })],
+        }),
+      ];
+      donneesService.charger(d);
+      const edt = EdtMother.base({ creneaux: [CreneauMother.lundi9h10()] });
+      expect(service.obtenirAbsencesPertinentes(edt)).toEqual([]);
+    });
+
+    it('exclut une absence dont la parité est incompatible avec la fréquence de l’EDT', () => {
+      const d = DonneesMother.base();
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base({ paritesSemaine: 'impaire' })],
+        }),
+      ];
+      donneesService.charger(d);
+      const edt = EdtMother.base({ frequence: 'paire', creneaux: [CreneauMother.lundi9h10()] });
+      expect(service.obtenirAbsencesPertinentes(edt)).toEqual([]);
+    });
+
+    it("inclut une absence en 'lesDeux', compatible avec toute fréquence d'EDT", () => {
+      const d = DonneesMother.base();
+      const absence = AbsenceRecurrenteMother.base({ paritesSemaine: 'lesDeux' });
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', { absencesRecurrentes: [absence] }),
+      ];
+      donneesService.charger(d);
+      const edt = EdtMother.base({ frequence: 'impaire', creneaux: [CreneauMother.lundi9h10()] });
+      expect(service.obtenirAbsencesPertinentes(edt)).toEqual([
+        { eleve: d.classe.eleves[0], absence },
+      ]);
+    });
+
+    it('trie les résultats par NOM Prénom', () => {
+      const d = DonneesMother.base();
+      const absenceMartin = AbsenceRecurrenteMother.base({ id: 'arM' });
+      const absenceDupont = AbsenceRecurrenteMother.base({ id: 'arD' });
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', { absencesRecurrentes: [absenceMartin] }),
+        EleveMother.base('e2', 'DUPONT', 'Alice', { absencesRecurrentes: [absenceDupont] }),
+      ];
+      donneesService.charger(d);
+      const edt = EdtMother.base({ creneaux: [CreneauMother.lundi9h10()] });
+      const resultats = service.obtenirAbsencesPertinentes(edt);
+      expect(resultats.map((r) => r.eleve.nom)).toEqual(['DUPONT', 'MARTIN']);
     });
   });
 });

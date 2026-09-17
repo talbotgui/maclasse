@@ -29,6 +29,13 @@ export class PopinWarningsAbsencesComponent extends ComposantBase {
   /** Liste des messages de conflit à afficher. */
   public readonly conflits: InputSignal<string[]> = input<string[]>([]);
 
+  /**
+   * Suffixe d'identifiant, requis quand plusieurs instances de cette popin
+   * coexistent simultanément dans le même écran (ex. : conflits EDT et conflits
+   * créneau/absence sur l'écran emploi du temps).
+   */
+  public readonly contexteId: InputSignal<string> = input('');
+
   /** Émis quand l'utilisateur ferme la popin (bouton FERMER ou Échap). */
   protected readonly annule: OutputEmitterRef<void> = output<void>();
 

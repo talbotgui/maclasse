@@ -132,6 +132,12 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   /** Messages des EDT en conflit avec l'EDT consulté, affichés dans la popin de détail. */
   protected readonly conflitsEdt = signal<string[]>([]);
 
+  /** Contrôle la visibilité de la popin de détail des conflits créneau/absence élève. */
+  protected readonly popinConflitsAbsencesVisible = signal(false);
+
+  /** Messages des absences en conflit avec le créneau consulté, affichés dans la popin de détail. */
+  protected readonly conflitsAbsences = signal<string[]>([]);
+
   /** Index de l'EDT actuellement inclus dans l'ordre de tabulation (roving tabindex). */
   protected readonly indexEdtFocalise = signal(0);
 
@@ -202,6 +208,25 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
     const ids = new Set<string>();
     for (const edt of this.edts()) {
       if (this.emploiDuTempsService.validerChevauchement(edt)) ids.add(edt.id);
+    }
+    return ids;
+  });
+
+  /** Absences régulières pertinentes pour l'EDT sélectionné (jour utilisé + parité compatible). */
+  protected readonly absencesPertinentes = computed(() => {
+    const edt = this.edtSelectionne();
+    return edt ? this.emploiDuTempsService.obtenirAbsencesPertinentes(edt) : [];
+  });
+
+  /** Identifiants des créneaux de l'EDT sélectionné en conflit avec une absence élève. */
+  protected readonly creneauxAvecConflits = computed<Set<string>>(() => {
+    const edt = this.edtSelectionne();
+    if (!edt) return new Set();
+    const ids = new Set<string>();
+    for (const creneau of edt.creneaux) {
+      if (this.emploiDuTempsService.calculerConflitsAbsences(creneau.id).length > 0) {
+        ids.add(creneau.id);
+      }
     }
     return ids;
   });
@@ -353,6 +378,24 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   protected fermerConflitsEdt(): void {
     this.popinConflitsEdtVisible.set(false);
     this.conflitsEdt.set([]);
+  }
+
+  /**
+   * Affiche le détail des absences élèves en conflit avec le créneau donné.
+   * @param creneau Créneau dont l'icône de conflit a été activée.
+   * @param event Événement de clic, dont la propagation est stoppée pour éviter
+   * de déclencher la sélection du créneau (bouton frère dans la même cellule).
+   */
+  protected afficherConflitsAbsences(creneau: CreneauEdt, event: Event): void {
+    event.stopPropagation();
+    this.conflitsAbsences.set(this.emploiDuTempsService.calculerConflitsAbsences(creneau.id));
+    this.popinConflitsAbsencesVisible.set(true);
+  }
+
+  /** Ferme la popin de détail des conflits créneau/absence élève. */
+  protected fermerConflitsAbsences(): void {
+    this.popinConflitsAbsencesVisible.set(false);
+    this.conflitsAbsences.set([]);
   }
 
   /**

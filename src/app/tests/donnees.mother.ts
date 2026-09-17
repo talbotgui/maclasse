@@ -1,4 +1,5 @@
 import { DonneesApplication } from '../modeles/donnees-application.modele';
+import { Eleve } from '../modeles/eleve.modele';
 
 /** Fournit des instances de {@link DonneesApplication} prêtes à l'emploi pour les tests. */
 export class DonneesMother {
@@ -33,5 +34,18 @@ export class DonneesMother {
       bulletins: [],
       ...surcharge,
     };
+  }
+
+  /**
+   * Retourne un {@link DonneesApplication} avec la classe peuplée des {@link eleves} fournis.
+   * @param eleves Élèves à placer dans `classe.eleves`.
+   * @param surcharge Surcharge additionnelle des autres champs.
+   */
+  static avecEleves(
+    eleves: Eleve[],
+    surcharge: Partial<DonneesApplication> = {},
+  ): DonneesApplication {
+    const donnees = DonneesMother.base(surcharge);
+    return { ...donnees, classe: { ...donnees.classe, eleves } };
   }
 }

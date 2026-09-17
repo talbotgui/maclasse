@@ -714,7 +714,9 @@ button {
   // formulaire masquées (layout à 3 colonnes propre à cet écran, sans équivalent
   // dans mc-colonne-gauche/droite).
   .edt__gauche,
-  .edt__droite {
+  .edt__droite,
+  .edt__bandeau-absences,
+  .edt__btn-icone-conflit {
     display: none;
   }
 

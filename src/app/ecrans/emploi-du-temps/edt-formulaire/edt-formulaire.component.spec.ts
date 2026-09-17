@@ -41,15 +41,28 @@ describe('EdtFormulaireComponent', () => {
       expect((component as any).formEdt).not.toBe(edt);
     });
 
-    it("changement d'edt → formEdt rechargé", () => {
-      const e1 = EdtMother.base({ nom: 'EDT 1' });
-      const e2 = EdtMother.base({ nom: 'EDT 2' });
+    it("changement d'identité d'edt → formEdt rechargé", () => {
+      const e1 = EdtMother.base({ id: 'edt1', nom: 'EDT 1' });
+      const e2 = EdtMother.base({ id: 'edt2', nom: 'EDT 2' });
       fixture.componentRef.setInput('edt', e1);
       fixture.detectChanges();
       fixture.componentRef.setInput('edt', e2);
       fixture.detectChanges();
 
       expect((component as any).formEdt.nom).toBe('EDT 2');
+    });
+
+    it('régression SOU-020 : même identité d’edt avec contenu différent → formEdt non écrasé', () => {
+      const e1 = EdtMother.base({ id: 'edt1', nom: 'EDT 1' });
+      fixture.componentRef.setInput('edt', e1);
+      fixture.detectChanges();
+      (component as any).formEdt.nom = 'Saisie en cours';
+
+      const e1Modifie = EdtMother.base({ id: 'edt1', nom: 'EDT 1 (modifié ailleurs)' });
+      fixture.componentRef.setInput('edt', e1Modifie);
+      fixture.detectChanges();
+
+      expect((component as any).formEdt.nom).toBe('Saisie en cours');
     });
   });
 
@@ -70,15 +83,74 @@ describe('EdtFormulaireComponent', () => {
       expect((component as any).formCreneau).not.toBe(creneau);
     });
 
-    it('changement de créneau → formCreneau rechargé', () => {
-      const c1 = CreneauMother.lundi9h10({ heureDebut: '09:00' });
-      const c2 = CreneauMother.lundi9h10({ heureDebut: '11:00' });
+    it('changement d’identité de créneau → formCreneau rechargé', () => {
+      const c1 = CreneauMother.lundi9h10({ id: 'c1', heureDebut: '09:00' });
+      const c2 = CreneauMother.lundi9h10({ id: 'c2', heureDebut: '11:00' });
       fixture.componentRef.setInput('creneau', c1);
       fixture.detectChanges();
       fixture.componentRef.setInput('creneau', c2);
       fixture.detectChanges();
 
       expect((component as any).formCreneau.heureDebut).toBe('11:00');
+    });
+
+    it('régression SOU-020 : même identité de créneau avec contenu différent → formCreneau non écrasé', () => {
+      const c1 = CreneauMother.lundi9h10({ id: 'c1', heureDebut: '09:00' });
+      fixture.componentRef.setInput('creneau', c1);
+      fixture.detectChanges();
+      (component as any).formCreneau.heureDebut = '07:30';
+
+      const c1Modifie = CreneauMother.lundi9h10({ id: 'c1', heureDebut: '11:00' });
+      fixture.componentRef.setInput('creneau', c1Modifie);
+      fixture.detectChanges();
+
+      expect((component as any).formCreneau.heureDebut).toBe('07:30');
+    });
+  });
+
+  describe('estModifie', () => {
+    it('retourne false juste après le chargement des propriétés EDT', () => {
+      fixture.componentRef.setInput('edt', EdtMother.base({ nom: 'Mon EDT' }));
+      fixture.detectChanges();
+
+      expect(component.estModifie()).toBe(false);
+    });
+
+    it('retourne true après modification locale des propriétés EDT', () => {
+      fixture.componentRef.setInput('edt', EdtMother.base({ nom: 'Mon EDT' }));
+      fixture.detectChanges();
+
+      (component as any).formEdt.nom = 'Nom modifié';
+
+      expect(component.estModifie()).toBe(true);
+    });
+
+    it('retourne false juste après le chargement du créneau', () => {
+      fixture.componentRef.setInput('creneau', CreneauMother.lundi9h10());
+      fixture.detectChanges();
+
+      expect(component.estModifie()).toBe(false);
+    });
+
+    it('retourne true après modification locale du créneau', () => {
+      fixture.componentRef.setInput('creneau', CreneauMother.lundi9h10({ heureDebut: '09:00' }));
+      fixture.detectChanges();
+
+      (component as any).formCreneau.heureDebut = '10:00';
+
+      expect(component.estModifie()).toBe(true);
+    });
+
+    it('revient à false après rechargement sur un edt de identité différente', () => {
+      fixture.componentRef.setInput('edt', EdtMother.base({ id: 'edt1', nom: 'Mon EDT' }));
+      fixture.detectChanges();
+      (component as any).formEdt.nom = 'Nom modifié';
+      expect(component.estModifie()).toBe(true);
+
+      fixture.componentRef.setInput('edt', EdtMother.base({ id: 'edt2', nom: 'Autre EDT' }));
+      fixture.detectChanges();
+
+      expect(component.estModifie()).toBe(false);
     });
   });
 
@@ -242,6 +314,44 @@ describe('EdtFormulaireComponent', () => {
       expect(emis.jour).toBe('jeudi');
       expect(emis.heureDebut).toBe(creneau.heureDebut);
       expect(emis.heureFin).toBe(creneau.heureFin);
+    });
+  });
+
+  describe('onEdtAnnule / onEdtSupprime / onCreneauSupprime', () => {
+    it('onEdtAnnule émet edtAnnule', () => {
+      const spy = vi.spyOn((component as any).edtAnnule, 'emit');
+
+      (component as any).onEdtAnnule();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('onEdtSupprime émet edtSupprime', () => {
+      const spy = vi.spyOn((component as any).edtSupprime, 'emit');
+
+      (component as any).onEdtSupprime();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it("onCreneauSupprime émet creneauSupprime avec l'id du créneau", () => {
+      fixture.componentRef.setInput('creneau', CreneauMother.lundi9h10({ id: 'c9' }));
+      fixture.detectChanges();
+      const spy = vi.spyOn((component as any).creneauSupprime, 'emit');
+
+      (component as any).onCreneauSupprime();
+
+      expect(spy).toHaveBeenCalledWith('c9');
+    });
+
+    it("onCreneauSupprime n'émet pas si formCreneau=null", () => {
+      fixture.componentRef.setInput('creneau', null);
+      fixture.detectChanges();
+      const spy = vi.spyOn((component as any).creneauSupprime, 'emit');
+
+      (component as any).onCreneauSupprime();
+
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 });

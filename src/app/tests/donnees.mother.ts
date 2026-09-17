@@ -20,8 +20,6 @@ export class DonneesMother {
         typesContact: [],
         groupes: [],
         joursFeries: [],
-        raisonsAbsence: [],
-        frequencesAbsence: [],
         configEmploiDuTemps: {
           joursOuvres: ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'],
           heureDebutJournee: '08:30',

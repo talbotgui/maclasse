@@ -10,6 +10,8 @@ import { DateUtils } from '../../utilitaires/date.utils';
 
 /** Vue résumée d'une séance pédagogique pour l'affichage de l'accueil. */
 interface SeanceResumee {
+  /** Identifiant de la séance source, pour un suivi de piste (`track`) fiable. */
+  id: string;
   /** Heure de début au format `HH:MM`. */
   heureDebut: string;
   /** Heure de fin au format `HH:MM`. */
@@ -81,7 +83,7 @@ export class EcranAccueilComponent {
           }
         }
 
-        return { heureDebut: s.heureDebut, heureFin: s.heureFin, disciplines, nbEleves };
+        return { id: s.id, heureDebut: s.heureDebut, heureFin: s.heureFin, disciplines, nbEleves };
       });
   });
 }

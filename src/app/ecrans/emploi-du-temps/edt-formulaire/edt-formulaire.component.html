@@ -41,13 +41,13 @@
         <button id="btnEnregistrerEdt" type="submit" class="mc-btn-primaire">
           {{ LIBELLES.commun.enregistrer }}
         </button>
-        <button id="btnAnnulerEdt" type="button" class="mc-btn-fantome" (click)="edtAnnule.emit()">
+        <button id="btnAnnulerEdt" type="button" class="mc-btn-fantome" (click)="onEdtAnnule()">
           {{ LIBELLES.commun.annuler }}
         </button>
         <mc-bouton-destruction
           [idBase]="'btnSupprimerEdt'"
           [petit]="true"
-          (confirme)="edtSupprime.emit()"
+          (confirme)="onEdtSupprime()"
           >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction
         >
       </div>
@@ -138,7 +138,7 @@
           id="btnAnnulerCreneau"
           type="button"
           class="mc-btn-fantome"
-          (click)="edtAnnule.emit()"
+          (click)="onEdtAnnule()"
         >
           {{ LIBELLES.commun.annuler }}
         </button>
@@ -146,7 +146,7 @@
           <mc-bouton-destruction
             [idBase]="'btnSupprimerCreneau'"
             [petit]="true"
-            (confirme)="creneauSupprime.emit(formCreneau.id)"
+            (confirme)="onCreneauSupprime()"
             >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction
           >
         }

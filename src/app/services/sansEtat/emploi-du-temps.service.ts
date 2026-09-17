@@ -152,16 +152,26 @@ export class EmploiDuTempsService {
 
   /**
    * Retourne `true` si l'EDT fourni a au moins un créneau en conflit avec un autre EDT.
+   * @param edt EDT à vérifier (peut ne pas encore être persisté).
+   * @returns `true` si un chevauchement est détecté avec un autre EDT.
+   */
+  public validerChevauchement(edt: EmploiDuTemps): boolean {
+    return this.obtenirEdtsEnConflit(edt).length > 0;
+  }
+
+  /**
+   * Retourne les EDT dont au moins un créneau est en conflit avec l'EDT fourni.
    * Un conflit nécessite trois conditions simultanées :
    * 1. Fréquences compatibles (peuvent s'appliquer la même semaine).
    * 2. Plages de dates qui se chevauchent (null = sans limite).
    * 3. Au moins un créneau sur le même jour et le même horaire.
    * @param edt EDT à vérifier (peut ne pas encore être persisté).
-   * @returns `true` si un chevauchement est détecté avec un autre EDT.
+   * @returns Liste des EDT en conflit, dans leur ordre d'apparition dans les données.
    */
-  public validerChevauchement(edt: EmploiDuTemps): boolean {
+  public obtenirEdtsEnConflit(edt: EmploiDuTemps): EmploiDuTemps[] {
     const autresEdts =
       this.donneesService.donnees()?.emploisDuTemps.filter((e) => e.id !== edt.id) ?? [];
+    const conflits: EmploiDuTemps[] = [];
     for (const autre of autresEdts) {
       if (!this.verifierCompatibiliteFrequences(edt.frequence, autre.frequence)) continue;
       const debut1 = edt.dateDebut ?? '0000-01-01';
@@ -175,12 +185,14 @@ export class EmploiDuTempsService {
             c1.jour === c2.jour &&
             DateUtils.chevauchementHoraire(c1.heureDebut, c1.heureFin, c2.heureDebut, c2.heureFin)
           ) {
-            return true;
+            conflits.push(autre);
+            break;
           }
         }
+        if (conflits.at(-1) === autre) break;
       }
     }
-    return false;
+    return conflits;
   }
 
   /**

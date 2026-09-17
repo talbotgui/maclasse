@@ -94,27 +94,6 @@ export interface JourFerie {
 }
 
 /**
- * Raison d'absence d'un élève (ex. : "Inclusion", "Maladie").
- */
-export interface RaisonAbsence {
-  /** Identifiant court. */
-  id: string;
-  /** Libellé affiché dans les formulaires. */
-  libelle: string;
-}
-
-/**
- * Fréquence de répétition d'une absence (ex. : semaine paire, chaque semaine).
- * Référentiel affiché dans le formulaire d'absence récurrente.
- */
-export interface FrequenceAbsence {
-  /** Identifiant court (ex. : `"SP"`, `"SI"`, `"CS"`). */
-  id: string;
-  /** Libellé affiché dans les formulaires. */
-  libelle: string;
-}
-
-/**
  * Configuration globale de l'emploi du temps.
  * Définit les jours ouvrés et les bornes horaires de la journée scolaire.
  */
@@ -146,10 +125,6 @@ export interface Referentiels {
   groupes: Groupe[];
   /** Jours fériés et périodes de vacances de l'année. */
   joursFeries: JourFerie[];
-  /** Raisons d'absence disponibles dans les formulaires. */
-  raisonsAbsence: RaisonAbsence[];
-  /** Fréquences de répétition disponibles pour les absences récurrentes. */
-  frequencesAbsence: FrequenceAbsence[];
   /** Paramètres de la grille hebdomadaire. */
   configEmploiDuTemps: ConfigEmploiDuTemps;
 }

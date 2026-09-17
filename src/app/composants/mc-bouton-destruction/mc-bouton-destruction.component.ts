@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../composant-base';
+import { McAutoFocusDirective } from '../../directives/mc-auto-focus.directive';
 
 /**
  * Composant bouton de suppression à double confirmation.
@@ -14,6 +15,7 @@ import { ComposantBase } from '../../composant-base';
 @Component({
   selector: 'mc-bouton-destruction',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [McAutoFocusDirective],
   templateUrl: './mc-bouton-destruction.component.html',
   styleUrl: './mc-bouton-destruction.component.scss',
 })

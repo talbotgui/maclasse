@@ -62,6 +62,8 @@ export interface Contact {
  * Année de scolarité antérieure d'un élève.
  */
 export interface CursusAnnee {
+  /** Identifiant unique de l'entrée de cursus. */
+  id: string;
   /** Année scolaire (ex. : `2024` pour l'année 2024-2025). */
   annee: number;
   /** Niveau de classe suivi cette année-là (ex. : `"CE2"`). */

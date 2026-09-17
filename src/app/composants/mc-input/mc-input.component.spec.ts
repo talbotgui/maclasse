@@ -39,6 +39,12 @@ describe('McInputComponent', () => {
 
       expect((component as any).valeur()).toBe('');
     });
+
+    it('nombre (type="number") → converti en chaîne pour l’affichage', () => {
+      component.writeValue(5);
+
+      expect((component as any).valeur()).toBe('5');
+    });
   });
 
   describe('registerOnChange', () => {
@@ -52,6 +58,32 @@ describe('McInputComponent', () => {
       fixture.detectChanges();
 
       expect(cb).toHaveBeenCalledWith('Marie');
+    });
+
+    it('régression SOU-039 : type="number" → callback appelé avec un nombre, pas une chaîne', () => {
+      fixture.componentRef.setInput('type', 'number');
+      fixture.detectChanges();
+      const cb = vi.fn();
+      component.registerOnChange(cb);
+
+      inputEl().value = '5';
+      inputEl().dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      expect(cb).toHaveBeenCalledWith(5);
+    });
+
+    it('type="number" avec saisie vidée → callback appelé avec une chaîne vide', () => {
+      fixture.componentRef.setInput('type', 'number');
+      fixture.detectChanges();
+      const cb = vi.fn();
+      component.registerOnChange(cb);
+
+      inputEl().value = '';
+      inputEl().dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      expect(cb).toHaveBeenCalledWith('');
     });
   });
 

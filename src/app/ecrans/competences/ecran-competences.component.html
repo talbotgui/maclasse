@@ -32,6 +32,10 @@
       </ul>
     }
 
+    @if (erreurExport(); as message) {
+      <p class="mc-popin__erreur" role="alert">{{ message }}</p>
+    }
+
     <div class="competences__panier-actions">
       <button
         id="btnViderPanier"

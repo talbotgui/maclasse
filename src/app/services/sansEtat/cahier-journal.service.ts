@@ -384,21 +384,33 @@ export class CahierJournalService {
 
   /**
    * Calcule les conflits entre une séance et les absences récurrentes des élèves concernés.
-   * Le jour de la semaine est déduit de la date ISO (pas de vérification de parité).
+   * Le jour de la semaine et la parité de semaine sont déduits de la date ISO.
    * @param date Date ISO de la journée.
    * @param seanceId UUID de la séance à analyser.
    * @returns Liste de libellés au format `"NOM Prénom — libellé d'absence"`.
    */
   public calculerConflitsAbsences(date: string, seanceId: string): string[] {
+    const journee = this.donneesService.donnees()?.cahierJournal.find((j) => j.date === date);
+    const seance = journee?.seances.find((s) => s.id === seanceId);
+    if (!seance) return [];
+    return this.calculerConflitsPourSeance(date, seance);
+  }
+
+  /**
+   * Calcule les conflits entre une séance et les absences récurrentes des élèves concernés,
+   * sans exiger que la séance soit déjà présente dans le cahier journal — utile pour
+   * évaluer une séance avant son tout premier enregistrement.
+   * @param date Date ISO de la journée.
+   * @param seance Séance à analyser (objet complet, pas seulement son id).
+   * @returns Liste de libellés au format `"NOM Prénom — libellé d'absence"`.
+   */
+  public calculerConflitsPourSeance(date: string, seance: Seance): string[] {
     const donnees = this.donneesService.donnees();
     if (!donnees) return [];
-    const journee = donnees.cahierJournal.find((j) => j.date === date);
-    if (!journee) return [];
-    const seance = journee.seances.find((s) => s.id === seanceId);
-    if (!seance) return [];
 
     const jourSemaine = DateUtils.obtenirJourSemaine(date);
     if (jourSemaine === 'samedi' || jourSemaine === 'dimanche') return [];
+    const parite = DateUtils.calculerParite(date);
 
     const tousEleves = donnees.classe.eleves;
     let elevesIds: string[];
@@ -421,6 +433,7 @@ export class CahierJournalService {
       for (const abs of eleve.absencesRecurrentes) {
         if (
           abs.jour === jourSemaine &&
+          (abs.paritesSemaine === 'lesDeux' || abs.paritesSemaine === parite) &&
           DateUtils.chevauchementHoraire(
             abs.heureDebut,
             abs.heureFin,

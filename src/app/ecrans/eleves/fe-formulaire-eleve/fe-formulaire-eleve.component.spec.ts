@@ -38,7 +38,7 @@ describe('FeFormulaireEleveComponent', () => {
       expect((component as any).formEleve).not.toBe(eleve);
     });
 
-    it("changement de l'input eleve → formEleve rechargé", () => {
+    it("changement d'identité de l'input eleve → formEleve rechargé", () => {
       const e1 = EleveMother.base('e1', 'MARTIN', 'Alice');
       const e2 = EleveMother.base('e2', 'DUPONT', 'Bob');
       fixture.componentRef.setInput('eleve', e1);
@@ -47,6 +47,19 @@ describe('FeFormulaireEleveComponent', () => {
       fixture.detectChanges();
 
       expect((component as any).formEleve.nom).toBe('DUPONT');
+    });
+
+    it('régression SOU-020 : même identité d’élève avec contenu différent → formEleve non écrasé', () => {
+      const e1 = EleveMother.base('e1', 'MARTIN', 'Alice');
+      fixture.componentRef.setInput('eleve', e1);
+      fixture.detectChanges();
+      (component as any).formEleve.nom = 'Saisie en cours';
+
+      const e1Modifie = EleveMother.base('e1', 'MARTIN-MODIFIE', 'Alice');
+      fixture.componentRef.setInput('eleve', e1Modifie);
+      fixture.detectChanges();
+
+      expect((component as any).formEleve.nom).toBe('Saisie en cours');
     });
   });
 

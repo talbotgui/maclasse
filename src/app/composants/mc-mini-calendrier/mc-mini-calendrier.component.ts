@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../composant-base';
+import { DateUtils } from '../../utilitaires/date.utils';
 import type { JourFerie } from '../../modeles/referentiels.modele';
 import type { JourSemaine } from '../../modeles/emploi-du-temps.modele';
 import type { CaseCalendrier } from '../../modeles/composants.modele';
@@ -173,6 +174,20 @@ export class McMiniCalendrierComponent extends ComposantBase {
   protected selectionnerJour(caseCalendrier: CaseCalendrier): void {
     if (!caseCalendrier.date || caseCalendrier.grise) return;
     this.jourChange.emit(caseCalendrier.date);
+  }
+
+  /**
+   * Construit le libellé accessible d'une case du calendrier : date lisible en français,
+   * suffixée si le jour est "aujourd'hui" et/ou possède déjà des séances renseignées.
+   * @param caseCalendrier Case du calendrier à décrire.
+   * @returns Libellé accessible complet.
+   */
+  protected obtenirLibelleJour(caseCalendrier: CaseCalendrier): string {
+    if (!caseCalendrier.date) return '';
+    let libelle = DateUtils.formaterDateLong(caseCalendrier.date);
+    if (caseCalendrier.estAujourdhui) libelle += this.LIBELLES.aria.calendrierAujourdhui;
+    if (caseCalendrier.avecEntree) libelle += this.LIBELLES.aria.calendrierAvecEntree;
+    return libelle;
   }
 
   /**

@@ -132,6 +132,26 @@ describe('EcranAccueilComponent', () => {
       expect(seances[0].heureDebut).toBe('09:00');
       expect(seances[0].heureFin).toBe('10:30');
     });
+
+    it('régression SOU-035 : deux séances au même horaire s’affichent toutes les deux sans erreur', () => {
+      donneesService.charger(DonneesMother.base({ cahierJournal: [] }));
+      cahierJournalService.initialiserJourneeVide(dateAujourdhui);
+      cahierJournalService.ajouterSeance(
+        dateAujourdhui,
+        SeanceMother.pedagogique({ id: 's1', heureDebut: '09:00', heureFin: '10:00' }),
+      );
+      cahierJournalService.ajouterSeance(
+        dateAujourdhui,
+        SeanceMother.pedagogique({ id: 's2', heureDebut: '09:00', heureFin: '10:00' }),
+      );
+
+      expect(() => fixture.detectChanges()).not.toThrow();
+
+      const items = fixture.nativeElement.querySelectorAll('.accueil__seance');
+      expect(items).toHaveLength(2);
+      const ids = (component as any).seancesResumees().map((s: { id: string }) => s.id);
+      expect(ids).toEqual(['s1', 's2']);
+    });
   });
 
   describe('dateFormatee', () => {

@@ -42,7 +42,7 @@
           [class.mc-mini-calendrier__jour--aujourdhui]="caseCalendrier.estAujourdhui"
           [disabled]="caseCalendrier.grise"
           [attr.aria-pressed]="caseCalendrier.estSelectionnee"
-          [attr.aria-label]="caseCalendrier.date"
+          [attr.aria-label]="obtenirLibelleJour(caseCalendrier)"
           (click)="selectionnerJour(caseCalendrier)"
         >
           {{ +caseCalendrier.date.substring(8) }}

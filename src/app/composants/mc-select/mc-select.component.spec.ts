@@ -105,6 +105,32 @@ describe('McSelectComponent', () => {
     });
   });
 
+  describe('valeurAffichee — cohérence quand la valeur ne correspond à aucune option', () => {
+    it("valeur absente des options → le DOM affiche la première option, cohérent avec l'état interne", () => {
+      component.writeValue('INEXISTANT');
+      fixture.detectChanges();
+
+      expect(selectEl().value).toBe('CM1');
+      expect((component as any).valeurAffichee()).toBe('CM1');
+    });
+
+    it('avecOptionVide=true et valeur absente → le DOM affiche l’option vide', () => {
+      fixture.componentRef.setInput('avecOptionVide', true);
+      component.writeValue('INEXISTANT');
+      fixture.detectChanges();
+
+      expect(selectEl().value).toBe('');
+      expect((component as any).valeurAffichee()).toBe('');
+    });
+
+    it('valeur correspondant à une option → conservée telle quelle', () => {
+      component.writeValue('CM2');
+      fixture.detectChanges();
+
+      expect((component as any).valeurAffichee()).toBe('CM2');
+    });
+  });
+
   describe('rendu', () => {
     it("autant d'options que de valeurs (sans option vide)", () => {
       expect(optionEls()).toHaveLength(2);

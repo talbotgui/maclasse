@@ -6,11 +6,9 @@
 import { Injectable, inject } from '@angular/core';
 import {
   ConfigEmploiDuTemps,
-  FrequenceAbsence,
   Groupe,
   JourFerie,
   Periode,
-  RaisonAbsence,
   StatutAcquisition,
   StatutEleve,
   TypeContact,
@@ -284,106 +282,6 @@ export class ReferentielService {
         type,
         index,
         LIBELLES.commandes.suppressionTypeContact,
-      ),
-    );
-  }
-
-  /**
-   * Ajoute une raison d'absence.
-   * @param raison Raison à ajouter.
-   */
-  public ajouterRaisonAbsence(raison: RaisonAbsence): void {
-    this.donneesService.executer(
-      new CommandeCreation(
-        (d) => d.referentiels.raisonsAbsence,
-        raison,
-        LIBELLES.commandes.ajoutRaisonAbsence,
-      ),
-    );
-  }
-
-  /**
-   * Modifie une raison d'absence.
-   * @param ancienne Valeur actuelle.
-   * @param nouvelle Nouvelle valeur.
-   */
-  public modifierRaisonAbsence(ancienne: RaisonAbsence, nouvelle: RaisonAbsence): void {
-    this.donneesService.executer(
-      new CommandeModification(
-        (d) => d.referentiels.raisonsAbsence,
-        ancienne,
-        nouvelle,
-        LIBELLES.commandes.modificationRaisonAbsence,
-      ),
-    );
-  }
-
-  /**
-   * Supprime une raison d'absence.
-   * @param raison Raison à supprimer.
-   */
-  public supprimerRaisonAbsence(raison: RaisonAbsence): void {
-    const index =
-      this.donneesService
-        .donnees()
-        ?.referentiels.raisonsAbsence.findIndex((r) => r.id === raison.id) ?? -1;
-    if (index === -1) return;
-    this.donneesService.executer(
-      new CommandeSuppression(
-        (d) => d.referentiels.raisonsAbsence,
-        raison,
-        index,
-        LIBELLES.commandes.suppressionRaisonAbsence,
-      ),
-    );
-  }
-
-  /**
-   * Ajoute une fréquence d'absence.
-   * @param frequence Fréquence à ajouter.
-   */
-  public ajouterFrequenceAbsence(frequence: FrequenceAbsence): void {
-    this.donneesService.executer(
-      new CommandeCreation(
-        (d) => d.referentiels.frequencesAbsence,
-        frequence,
-        LIBELLES.commandes.ajoutFrequenceAbsence,
-      ),
-    );
-  }
-
-  /**
-   * Modifie une fréquence d'absence.
-   * @param ancienne Valeur actuelle.
-   * @param nouvelle Nouvelle valeur.
-   */
-  public modifierFrequenceAbsence(ancienne: FrequenceAbsence, nouvelle: FrequenceAbsence): void {
-    this.donneesService.executer(
-      new CommandeModification(
-        (d) => d.referentiels.frequencesAbsence,
-        ancienne,
-        nouvelle,
-        LIBELLES.commandes.modificationFrequenceAbsence,
-      ),
-    );
-  }
-
-  /**
-   * Supprime une fréquence d'absence.
-   * @param frequence Fréquence à supprimer.
-   */
-  public supprimerFrequenceAbsence(frequence: FrequenceAbsence): void {
-    const index =
-      this.donneesService
-        .donnees()
-        ?.referentiels.frequencesAbsence.findIndex((f) => f.id === frequence.id) ?? -1;
-    if (index === -1) return;
-    this.donneesService.executer(
-      new CommandeSuppression(
-        (d) => d.referentiels.frequencesAbsence,
-        frequence,
-        index,
-        LIBELLES.commandes.suppressionFrequenceAbsence,
       ),
     );
   }

@@ -8,6 +8,8 @@
  * Les périodes sont triées par date de début croissante.
  */
 export interface ProjetPeriode {
+  /** Identifiant unique de la période. */
+  id: string;
   /** Nom de la période (ex. : `"Période 1"`). */
   periodeNom: string;
   /** Date de début au format ISO. */

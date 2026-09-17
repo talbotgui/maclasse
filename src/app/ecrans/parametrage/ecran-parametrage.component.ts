@@ -27,11 +27,9 @@ import { ObjetUtils } from '../../utilitaires/objet.utils';
 import type { Enseignant } from '../../modeles/donnees-application.modele';
 import type {
   Competence,
-  FrequenceAbsence,
   Groupe,
   JourFerie,
   Periode,
-  RaisonAbsence,
   StatutAcquisition,
   StatutEleve,
   TypeContact,
@@ -48,8 +46,6 @@ type SectionId =
   | 'bareme'
   | 'statutsEleve'
   | 'typesContact'
-  | 'raisonsAbsence'
-  | 'frequencesAbsence'
   | 'joursFeries'
   | 'preferences'
   | 'domainesCompetences';
@@ -124,8 +120,6 @@ export class EcranParametrageComponent {
     { id: 'bareme', libelle: LIBELLES.parametrage.sections.bareme },
     { id: 'statutsEleve', libelle: LIBELLES.parametrage.sections.statutsEleve },
     { id: 'typesContact', libelle: LIBELLES.parametrage.sections.typesContact },
-    { id: 'raisonsAbsence', libelle: LIBELLES.parametrage.sections.raisonsAbsence },
-    { id: 'frequencesAbsence', libelle: LIBELLES.parametrage.sections.frequencesAbsence },
     { id: 'joursFeries', libelle: LIBELLES.parametrage.sections.joursFeries },
     { id: 'preferences', libelle: LIBELLES.parametrage.sections.preferences },
     { id: 'domainesCompetences', libelle: LIBELLES.parametrage.sections.domainesCompetences },
@@ -174,10 +168,6 @@ export class EcranParametrageComponent {
   protected copieStatutsEleve = signal<StatutEleve[]>([]);
   /** Copies locales des types de contact. */
   protected copieTypesContact = signal<TypeContact[]>([]);
-  /** Copies locales des raisons d'absence. */
-  protected copieRaisonsAbsence = signal<RaisonAbsence[]>([]);
-  /** Copies locales des fréquences d'absence. */
-  protected copieFrequencesAbsence = signal<FrequenceAbsence[]>([]);
   /** Copies locales des jours fériés. */
   protected copieJoursFeries = signal<JourFerie[]>([]);
 
@@ -191,10 +181,6 @@ export class EcranParametrageComponent {
   protected readonly indexAFocaliserStatutEleve = signal<number | null>(null);
   /** Index du type de contact venant d'être ajouté à focaliser (`null` si aucun). */
   protected readonly indexAFocaliserTypeContact = signal<number | null>(null);
-  /** Index de la raison d'absence venant d'être ajoutée à focaliser (`null` si aucune). */
-  protected readonly indexAFocaliserRaisonAbsence = signal<number | null>(null);
-  /** Index de la fréquence d'absence venant d'être ajoutée à focaliser (`null` si aucune). */
-  protected readonly indexAFocaliserFrequenceAbsence = signal<number | null>(null);
   /** Index du jour férié venant d'être ajouté à focaliser (`null` si aucun). */
   protected readonly indexAFocaliserJourFerie = signal<number | null>(null);
 
@@ -247,14 +233,6 @@ export class EcranParametrageComponent {
         case 'typesContact':
           this.copieTypesContact.set(structuredClone(d.referentiels.typesContact));
           this.indexAFocaliserTypeContact.set(null);
-          break;
-        case 'raisonsAbsence':
-          this.copieRaisonsAbsence.set(structuredClone(d.referentiels.raisonsAbsence));
-          this.indexAFocaliserRaisonAbsence.set(null);
-          break;
-        case 'frequencesAbsence':
-          this.copieFrequencesAbsence.set(structuredClone(d.referentiels.frequencesAbsence));
-          this.indexAFocaliserFrequenceAbsence.set(null);
           break;
         case 'joursFeries':
           this.copieJoursFeries.set(structuredClone(d.referentiels.joursFeries));
@@ -600,76 +578,6 @@ export class EcranParametrageComponent {
     return this.referentielService.estTypeContactUtilise(type.id);
   }
 
-  /** Ajoute une raison d'absence vide et demande le focus dessus. */
-  protected ajouterRaisonAbsence(): void {
-    this.copieRaisonsAbsence.update((liste) => [
-      ...liste,
-      { id: crypto.randomUUID(), libelle: '' },
-    ]);
-    this.indexAFocaliserRaisonAbsence.set(this.copieRaisonsAbsence().length - 1);
-  }
-
-  /**
-   * Enregistre une raison d'absence.
-   * @param index Index dans la copie locale.
-   */
-  protected enregistrerRaisonAbsence(index: number): void {
-    const d = this.donneesService.donnees();
-    if (!d) return;
-    const raison = this.copieRaisonsAbsence()[index];
-    const existante = d.referentiels.raisonsAbsence.find((r) => r.id === raison.id);
-    if (existante) {
-      this.referentielService.modifierRaisonAbsence(existante, raison);
-    } else {
-      this.referentielService.ajouterRaisonAbsence(raison);
-    }
-  }
-
-  /**
-   * Supprime une raison d'absence.
-   * @param raison Raison à supprimer.
-   */
-  protected supprimerRaisonAbsence(raison: RaisonAbsence): void {
-    this.referentielService.supprimerRaisonAbsence(raison);
-    this.copieRaisonsAbsence.update((liste) => liste.filter((r) => r.id !== raison.id));
-    this.indexAFocaliserRaisonAbsence.set(null);
-  }
-
-  /** Ajoute une fréquence d'absence vide et demande le focus dessus. */
-  protected ajouterFrequenceAbsence(): void {
-    this.copieFrequencesAbsence.update((liste) => [
-      ...liste,
-      { id: crypto.randomUUID(), libelle: '' },
-    ]);
-    this.indexAFocaliserFrequenceAbsence.set(this.copieFrequencesAbsence().length - 1);
-  }
-
-  /**
-   * Enregistre une fréquence d'absence.
-   * @param index Index dans la copie locale.
-   */
-  protected enregistrerFrequenceAbsence(index: number): void {
-    const d = this.donneesService.donnees();
-    if (!d) return;
-    const frequence = this.copieFrequencesAbsence()[index];
-    const existante = d.referentiels.frequencesAbsence.find((f) => f.id === frequence.id);
-    if (existante) {
-      this.referentielService.modifierFrequenceAbsence(existante, frequence);
-    } else {
-      this.referentielService.ajouterFrequenceAbsence(frequence);
-    }
-  }
-
-  /**
-   * Supprime une fréquence d'absence.
-   * @param frequence Fréquence à supprimer.
-   */
-  protected supprimerFrequenceAbsence(frequence: FrequenceAbsence): void {
-    this.referentielService.supprimerFrequenceAbsence(frequence);
-    this.copieFrequencesAbsence.update((liste) => liste.filter((f) => f.id !== frequence.id));
-    this.indexAFocaliserFrequenceAbsence.set(null);
-  }
-
   /** Ajoute un jour férié vide et demande le focus dessus. */
   protected ajouterJourFerie(): void {
     this.copieJoursFeries.update((liste) => [
@@ -937,33 +845,6 @@ export class EcranParametrageComponent {
     return (
       !!d &&
       this.verifierLigneModifiee(this.copieTypesContact()[index], d.referentiels.typesContact)
-    );
-  }
-
-  /**
-   * @param index Index de la ligne dans la copie locale.
-   * @returns `true` si la raison d'absence est nouvelle ou modifiée.
-   */
-  protected estRaisonAbsenceLigneModifiee(index: number): boolean {
-    const d = this.donneesService.donnees();
-    return (
-      !!d &&
-      this.verifierLigneModifiee(this.copieRaisonsAbsence()[index], d.referentiels.raisonsAbsence)
-    );
-  }
-
-  /**
-   * @param index Index de la ligne dans la copie locale.
-   * @returns `true` si la fréquence d'absence est nouvelle ou modifiée.
-   */
-  protected estFrequenceAbsenceLigneModifiee(index: number): boolean {
-    const d = this.donneesService.donnees();
-    return (
-      !!d &&
-      this.verifierLigneModifiee(
-        this.copieFrequencesAbsence()[index],
-        d.referentiels.frequencesAbsence,
-      )
     );
   }
 

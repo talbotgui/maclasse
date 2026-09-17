@@ -1,11 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   Signal,
   WritableSignal,
   computed,
   inject,
   signal,
+  viewChildren,
 } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ComposantBase } from '../../composant-base';
@@ -55,6 +57,12 @@ export class McEnteteComponent extends ComposantBase {
 
   /** Contrôle la visibilité du panneau de résultats de recherche. */
   protected readonly listeResultatsVisible: WritableSignal<boolean> = signal(false);
+
+  /** Éléments `<li role="option">` de résultats actuellement rendus, pour le focus clavier. */
+  private readonly elementsResultats = viewChildren<ElementRef<HTMLLIElement>>('optionResultat');
+
+  /** Index de l'option de résultat focalisée au clavier (-1 = aucune, roving tabindex). */
+  protected readonly indexResultatFocalise: WritableSignal<number> = signal(-1);
 
   /**
    * `true` quand la navigation doit être restreinte à `/competences` (mode consultation
@@ -130,6 +138,49 @@ export class McEnteteComponent extends ComposantBase {
     const resultats = this.rechercheGlobaleService.rechercher(terme);
     this.resultatsRecherche.set(resultats);
     this.listeResultatsVisible.set(resultats.length > 0);
+    this.indexResultatFocalise.set(-1);
+  }
+
+  /**
+   * Navigation clavier dans la liste de résultats (roving tabindex) :
+   * ↓/↑ déplacent le focus, Début/Fin sautent au premier/dernier résultat.
+   * @param event Événement clavier natif.
+   */
+  protected naviguerResultats(event: KeyboardEvent): void {
+    const options = this.elementsResultats();
+    if (options.length === 0) return;
+    const index = this.indexResultatFocalise();
+
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        this.focaliserResultat(Math.min(index + 1, options.length - 1));
+        break;
+
+      case 'ArrowUp':
+        event.preventDefault();
+        this.focaliserResultat(Math.max(index - 1, 0));
+        break;
+
+      case 'Home':
+        event.preventDefault();
+        this.focaliserResultat(0);
+        break;
+
+      case 'End':
+        event.preventDefault();
+        this.focaliserResultat(options.length - 1);
+        break;
+    }
+  }
+
+  /**
+   * Déplace le focus clavier vers le résultat à l'index donné.
+   * @param index Index de l'option à focaliser.
+   */
+  private focaliserResultat(index: number): void {
+    this.indexResultatFocalise.set(index);
+    this.elementsResultats()[index]?.nativeElement.focus();
   }
 
   /**

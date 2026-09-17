@@ -126,7 +126,7 @@
         {{ LIBELLES.eleve.sectionCursus }}
       </h3>
       <ul class="fiche-eleve__liste-resumee-cursus">
-        @for (annee of eleve().cursus; track annee.annee) {
+        @for (annee of eleve().cursus; track annee.id) {
           <li>
             {{ annee.annee }}–{{ +annee.annee + 1 }} — {{ annee.niveau }} —
             {{ annee.etablissement }}

@@ -9,7 +9,7 @@
       <p class="accueil__vide">{{ LIBELLES.accueil.aucunJournal }}</p>
     } @else {
       <ul class="accueil__liste">
-        @for (seance of seancesResumees(); track seance.heureDebut) {
+        @for (seance of seancesResumees(); track seance.id) {
           <li class="accueil__seance">
             <span class="accueil__horaire">{{ seance.heureDebut }} – {{ seance.heureFin }}</span>
             <span class="accueil__disciplines">{{ seance.disciplines.join(', ') }}</span>

@@ -3,14 +3,26 @@
  * Trois colonnes : liste des EDT, grille hebdomadaire, formulaire contextuel.
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  computed,
+  inject,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
 import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { EmploiDuTempsService } from '../../services/sansEtat/emploi-du-temps.service';
 import { CompetenceService } from '../../services/sansEtat/competence.service';
 import { EdtFormulaireComponent } from './edt-formulaire/edt-formulaire.component';
 import { McPastillesElevesConcernesComponent } from '../../composants/mc-pastilles-eleves-concernes/mc-pastilles-eleves-concernes.component';
+import { PopinAvertissementComponent } from '../../composants/popins/popin-avertissement/popin-avertissement.component';
+import { PopinWarningsAbsencesComponent } from '../../composants/popins/popin-warnings-absences/popin-warnings-absences.component';
 import { DateUtils } from '../../utilitaires/date.utils';
+import type { AvecNavigationGardee } from '../../gardes/modifications-non-enregistrees.garde';
 import type {
   EmploiDuTemps,
   CreneauEdt,
@@ -28,11 +40,16 @@ import type { Competence } from '../../modeles/referentiels.modele';
 @Component({
   selector: 'ecran-emploi-du-temps',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [EdtFormulaireComponent, McPastillesElevesConcernesComponent],
+  imports: [
+    EdtFormulaireComponent,
+    McPastillesElevesConcernesComponent,
+    PopinAvertissementComponent,
+    PopinWarningsAbsencesComponent,
+  ],
   templateUrl: './ecran-emploi-du-temps.component.html',
   styleUrl: './ecran-emploi-du-temps.component.scss',
 })
-export class EcranEmploiDuTempsComponent {
+export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   /** Ordre canonique des jours ouvrés. */
   private static readonly ORDRE_JOURS: JourSemaine[] = [
     'lundi',
@@ -105,6 +122,35 @@ export class EcranEmploiDuTempsComponent {
 
   /** Créneau passé au formulaire créneau (null quand le formulaire EDT est actif). */
   protected readonly creneauEdite = signal<CreneauEdt | null>(null);
+
+  /** Contrôle la visibilité de la popin d'avertissement de navigation (modifications non enregistrées). */
+  protected readonly popinNavigationVisible = signal(false);
+
+  /** Contrôle la visibilité de la popin de détail des conflits entre EDT. */
+  protected readonly popinConflitsEdtVisible = signal(false);
+
+  /** Messages des EDT en conflit avec l'EDT consulté, affichés dans la popin de détail. */
+  protected readonly conflitsEdt = signal<string[]>([]);
+
+  /** Index de l'EDT actuellement inclus dans l'ordre de tabulation (roving tabindex). */
+  protected readonly indexEdtFocalise = signal(0);
+
+  /**
+   * Demande de focus transmise à `edt-formulaire`, pulsée à chaque changement de sélection.
+   * `edt-formulaire` n'étant jamais recréé lors d'un passage d'un créneau/EDT à un autre
+   * (même bloc `@if`), un simple `true` statique ne suffit pas à redéclencher le focus :
+   * il faut une réelle transition `false` → `true` observée sur deux cycles de détection.
+   */
+  protected readonly focusDemandeFormulaire = signal(true);
+
+  /** Boutons de sélection d'EDT actuellement rendus, dans l'ordre d'affichage. */
+  private readonly optionsEdt = viewChildren<ElementRef<HTMLButtonElement>>('optionEdt');
+
+  /** Résolution de la promesse de navigation (garde CanDeactivate). */
+  private resolveGarde: ((result: boolean) => void) | null = null;
+
+  /** Référence au formulaire EDT/créneau actuellement affiché, s'il y en a un. */
+  private readonly formulaireEdt = viewChild(EdtFormulaireComponent);
 
   /** Liste complète des EDT depuis le store. */
   protected readonly edts = computed<EmploiDuTemps[]>(
@@ -180,6 +226,7 @@ export class EcranEmploiDuTempsComponent {
     this.edtSelectionne.set(edt);
     this.formEdt.set(edt);
     this.creneauEdite.set(null);
+    this.redemanderFocusFormulaire();
   }
 
   /** Lance la création d'un nouvel EDT (formulaire vide, grille vide). */
@@ -187,6 +234,7 @@ export class EcranEmploiDuTempsComponent {
     this.edtSelectionne.set(null);
     this.formEdt.set(EcranEmploiDuTempsComponent.creerEdtVide());
     this.creneauEdite.set(null);
+    this.redemanderFocusFormulaire();
   }
 
   /**
@@ -196,6 +244,7 @@ export class EcranEmploiDuTempsComponent {
   protected selectionnerCreneau(creneau: CreneauEdt): void {
     this.formEdt.set(null);
     this.creneauEdite.set(creneau);
+    this.redemanderFocusFormulaire();
   }
 
   /**
@@ -207,6 +256,17 @@ export class EcranEmploiDuTempsComponent {
     this.formEdt.set(null);
     const creneauxDuJour = this.edtSelectionne()?.creneaux.filter((c) => c.jour === jour) ?? [];
     this.creneauEdite.set(EcranEmploiDuTempsComponent.creerCreneauVide(jour, creneauxDuJour));
+    this.redemanderFocusFormulaire();
+  }
+
+  /**
+   * Pulse `focusDemandeFormulaire` (false puis true sur le cycle suivant) pour
+   * redéclencher `[mcAutoFocus]` sur `edt-formulaire`, qui n'est jamais recréé
+   * entre deux sélections successives.
+   */
+  private redemanderFocusFormulaire(): void {
+    this.focusDemandeFormulaire.set(false);
+    setTimeout(() => this.focusDemandeFormulaire.set(true));
   }
 
   /**
@@ -275,5 +335,93 @@ export class EcranEmploiDuTempsComponent {
   /** Lance l'impression de la grille de l'EDT sélectionné. */
   protected imprimer(): void {
     window.print();
+  }
+
+  /**
+   * Affiche le détail des EDT en conflit avec l'EDT donné.
+   * @param edt EDT dont l'icône de conflit a été activée.
+   */
+  protected afficherConflitsEdt(edt: EmploiDuTemps): void {
+    const conflits = this.emploiDuTempsService
+      .obtenirEdtsEnConflit(edt)
+      .map((autre) => LIBELLES.edt.prefixeChevaucheEdt + autre.nom);
+    this.conflitsEdt.set(conflits);
+    this.popinConflitsEdtVisible.set(true);
+  }
+
+  /** Ferme la popin de détail des conflits entre EDT. */
+  protected fermerConflitsEdt(): void {
+    this.popinConflitsEdtVisible.set(false);
+    this.conflitsEdt.set([]);
+  }
+
+  /**
+   * Navigation clavier dans la liste des EDT (roving tabindex) :
+   * ↓/↑ déplacent le focus, Début/Fin sautent au premier/dernier EDT.
+   * @param event Événement clavier natif.
+   */
+  protected naviguerListeEdt(event: KeyboardEvent): void {
+    const options = this.optionsEdt();
+    if (options.length === 0) return;
+    const index = this.indexEdtFocalise();
+
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        this.focaliserEdt(Math.min(index + 1, options.length - 1));
+        break;
+
+      case 'ArrowUp':
+        event.preventDefault();
+        this.focaliserEdt(Math.max(index - 1, 0));
+        break;
+
+      case 'Home':
+        event.preventDefault();
+        this.focaliserEdt(0);
+        break;
+
+      case 'End':
+        event.preventDefault();
+        this.focaliserEdt(options.length - 1);
+        break;
+    }
+  }
+
+  /**
+   * Déplace le focus clavier vers l'EDT à l'index donné.
+   * @param index Index de l'option à focaliser.
+   */
+  private focaliserEdt(index: number): void {
+    this.indexEdtFocalise.set(index);
+    this.optionsEdt()[index]?.nativeElement.focus();
+  }
+
+  /**
+   * Implémentation de `AvecNavigationGardee`.
+   * Retourne `true` immédiatement si aucun formulaire EDT/créneau n'est ouvert ou modifié,
+   * sinon ouvre la popin d'avertissement et attend la décision de l'utilisateur.
+   * @returns Promesse résolue à `true` pour autoriser la navigation.
+   */
+  public confirmerNavigation(): Promise<boolean> {
+    if (!this.formulaireEdt()?.estModifie()) return Promise.resolve(true);
+    return new Promise<boolean>((resolve) => {
+      this.resolveGarde = resolve;
+      this.popinNavigationVisible.set(true);
+    });
+  }
+
+  /** Confirme l'abandon des modifications et autorise la navigation. */
+  protected confirmerAbandonNavigation(): void {
+    this.popinNavigationVisible.set(false);
+    this.resolveGarde?.(true);
+    this.resolveGarde = null;
+  }
+
+  /** Annule la navigation et reste sur le formulaire en cours. */
+  protected annulerAbandonNavigation(): void {
+    this.popinNavigationVisible.set(false);
+    this.resolveGarde?.(false);
+    this.resolveGarde = null;
   }
 }

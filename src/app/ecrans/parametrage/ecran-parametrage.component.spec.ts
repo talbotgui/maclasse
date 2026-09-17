@@ -24,8 +24,6 @@ describe('EcranParametrageComponent', () => {
       ],
       statutsEleve: [{ id: 'DC', libelle: 'Dans la classe' }],
       typesContact: [{ id: 'P', libelle: 'Père' }],
-      raisonsAbsence: [{ id: 'r1', libelle: 'Maladie' }],
-      frequencesAbsence: [{ id: 'f1', libelle: 'Chaque semaine' }],
       joursFeries: [{ id: 'jf1', nom: 'Toussaint', date: '2025-11-01' }],
       configEmploiDuTemps: {
         joursOuvres: ['lundi', 'mardi', 'mercredi'],
@@ -481,6 +479,19 @@ describe('EcranParametrageComponent', () => {
 
         expect((component as any).estPreferencesModifie()).toBe(true);
       });
+
+      it('régression SOU-039 : ressaisir la même valeur via le champ DOM ne signale pas de modification', () => {
+        const champ = fixture.nativeElement.querySelector(
+          '#champDelaiSauvegarde-input',
+        ) as HTMLInputElement;
+
+        champ.value = '5';
+        champ.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        expect((component as any).formPreferences.delaiSauvegardeAutoMinutes).toBe(5);
+        expect((component as any).estPreferencesModifie()).toBe(false);
+      });
     });
 
     describe('section domainesCompetences', () => {
@@ -575,26 +586,6 @@ describe('EcranParametrageComponent', () => {
             ]),
         },
         {
-          section: 'raisonsAbsence',
-          detection: 'estRaisonAbsenceLigneModifiee',
-          ajout: 'ajouterRaisonAbsence',
-          muter: () =>
-            (component as any).copieRaisonsAbsence.update((l: any[]) => [
-              { ...l[0], libelle: 'Autre' },
-              ...l.slice(1),
-            ]),
-        },
-        {
-          section: 'frequencesAbsence',
-          detection: 'estFrequenceAbsenceLigneModifiee',
-          ajout: 'ajouterFrequenceAbsence',
-          muter: () =>
-            (component as any).copieFrequencesAbsence.update((l: any[]) => [
-              { ...l[0], libelle: 'Autre' },
-              ...l.slice(1),
-            ]),
-        },
-        {
           section: 'joursFeries',
           detection: 'estJourFerieLigneModifiee',
           ajout: 'ajouterJourFerie',
@@ -657,8 +648,6 @@ describe('EcranParametrageComponent', () => {
         expect(c.estStatutAcquisitionLigneModifiee(0)).toBe(false);
         expect(c.estStatutEleveLigneModifiee(0)).toBe(false);
         expect(c.estTypeContactLigneModifiee(0)).toBe(false);
-        expect(c.estRaisonAbsenceLigneModifiee(0)).toBe(false);
-        expect(c.estFrequenceAbsenceLigneModifiee(0)).toBe(false);
         expect(c.estJourFerieLigneModifiee(0)).toBe(false);
       });
     });
@@ -695,22 +684,6 @@ describe('EcranParametrageComponent', () => {
         liste: 'typesContact',
         enregistrer: 'enregistrerTypeContact',
         supprimer: 'supprimerTypeContact',
-        champ: 'libelle',
-      },
-      {
-        section: 'raisonsAbsence',
-        copie: 'copieRaisonsAbsence',
-        liste: 'raisonsAbsence',
-        enregistrer: 'enregistrerRaisonAbsence',
-        supprimer: 'supprimerRaisonAbsence',
-        champ: 'libelle',
-      },
-      {
-        section: 'frequencesAbsence',
-        copie: 'copieFrequencesAbsence',
-        liste: 'frequencesAbsence',
-        enregistrer: 'enregistrerFrequenceAbsence',
-        supprimer: 'supprimerFrequenceAbsence',
         champ: 'libelle',
       },
       {

@@ -26,6 +26,7 @@ export class PeriodeMother {
   /** Retourne une période avec les valeurs par défaut, surchargées par {@link surcharge}. */
   static base(surcharge: Partial<ProjetPeriode> = {}): ProjetPeriode {
     return {
+      id: 'pp1',
       periodeNom: 'Période 1',
       debut: '2025-09-01',
       fin: '2025-10-18',

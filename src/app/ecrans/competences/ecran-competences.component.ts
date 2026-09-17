@@ -50,6 +50,9 @@ export class EcranCompetencesComponent {
   /** `true` si la popin d'export est visible. */
   protected readonly popinExportVisible = signal(false);
 
+  /** Message d'erreur affiché si le dernier export a échoué, `null` sinon. */
+  protected readonly erreurExport = signal<string | null>(null);
+
   /** Panier courant depuis le contexte. */
   protected readonly panier = this.contexteService.panierCompetences;
 
@@ -112,6 +115,7 @@ export class EcranCompetencesComponent {
   protected confirmerExport(resultat: ResultatExportCompetences): void {
     this.popinExportVisible.set(false);
     const competences = this.panier();
+    let succes = false;
 
     if (resultat.cibleType === 'projet') {
       const projet = this.donneesService.donnees()?.projets.find((p) => p.id === resultat.cibleId);
@@ -123,6 +127,7 @@ export class EcranCompetencesComponent {
           competencesIds: [...new Set([...periode.competencesIds, ...competences])],
         };
         this.projetService.modifierPeriode(projet.id, periode, nouvellePeriode);
+        succes = true;
       }
     } else {
       const journee = this.donneesService
@@ -135,9 +140,15 @@ export class EcranCompetencesComponent {
           competencesIds: [...new Set([...(seance.competencesIds ?? []), ...competences])],
         };
         this.cahierJournalService.modifierSeance(resultat.cibleId, nouvelleSeance);
+        succes = true;
       }
     }
 
-    this.contexteService.panierCompetences.set([]);
+    if (succes) {
+      this.erreurExport.set(null);
+      this.contexteService.panierCompetences.set([]);
+    } else {
+      this.erreurExport.set(LIBELLES.competences.erreurExport);
+    }
   }
 }

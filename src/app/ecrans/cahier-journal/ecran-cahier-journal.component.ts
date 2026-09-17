@@ -12,10 +12,12 @@ import {
   effect,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
+import { ContexteService } from '../../services/avecEtat/contexte.service';
 import { CahierJournalService } from '../../services/sansEtat/cahier-journal.service';
 import { CompetenceService } from '../../services/sansEtat/competence.service';
 import { DateUtils } from '../../utilitaires/date.utils';
@@ -25,6 +27,7 @@ import { McTextareaComponent } from '../../composants/mc-textarea/mc-textarea.co
 import { PopinAvertissementComponent } from '../../composants/popins/popin-avertissement/popin-avertissement.component';
 import { PopinWarningsAbsencesComponent } from '../../composants/popins/popin-warnings-absences/popin-warnings-absences.component';
 import { CjFormulaireSeanceComponent } from './cj-formulaire-seance/cj-formulaire-seance.component';
+import type { AvecNavigationGardee } from '../../gardes/modifications-non-enregistrees.garde';
 import type { Seance, JourneeJournal } from '../../modeles/cahier-journal.modele';
 import type { Competence, JourFerie } from '../../modeles/referentiels.modele';
 import type { JourSemaine } from '../../modeles/emploi-du-temps.modele';
@@ -49,7 +52,7 @@ import type { JourSemaine } from '../../modeles/emploi-du-temps.modele';
   templateUrl: './ecran-cahier-journal.component.html',
   styleUrl: './ecran-cahier-journal.component.scss',
 })
-export class EcranCahierJournalComponent {
+export class EcranCahierJournalComponent implements AvecNavigationGardee {
   /** Constante centralisée des libellés. */
   protected readonly LIBELLES = LIBELLES;
 
@@ -62,14 +65,40 @@ export class EcranCahierJournalComponent {
   /** Service des compétences (domaines pour les chips de disciplines). */
   private readonly competenceService = inject(CompetenceService);
 
-  /** Date actuellement sélectionnée dans le calendrier. */
-  protected readonly dateSelectionnee = signal<string>(DateUtils.dateAujourdhui());
+  /** Contexte applicatif : mémorise le dernier jour consulté entre changements d'écran. */
+  private readonly contexteService = inject(ContexteService);
 
-  /** Séance sélectionnée pour modification (`null` si aucune). */
-  protected readonly seanceEditee = signal<Seance | null>(null);
+  /**
+   * Date actuellement sélectionnée dans le calendrier.
+   * Initialisée depuis `ContexteService.jourCourantCahierJournal` si un jour a déjà été
+   * consulté, sinon sur la date du jour.
+   */
+  protected readonly dateSelectionnee = signal<string>(
+    this.contexteService.jourCourantCahierJournal() ?? DateUtils.dateAujourdhui(),
+  );
+
+  /** Identifiant de la séance sélectionnée pour modification (`null` si aucune). */
+  protected readonly seanceEditeeId = signal<string | null>(null);
+
+  /**
+   * Séance actuellement en cours de modification, résolue à chaque lecture depuis
+   * `seances()` par identifiant plutôt que figée à l'ouverture du formulaire — reste
+   * à jour si une autre séance du jour est réordonnée (échange d'heures) pendant l'édition.
+   */
+  protected readonly seanceEditee = computed<Seance | null>(() => {
+    const id = this.seanceEditeeId();
+    if (!id) return null;
+    return this.seances().find((s) => s.id === id) ?? null;
+  });
 
   /** `true` si le formulaire de création de séance est ouvert. */
   protected readonly enCreationSeance = signal(false);
+
+  /**
+   * Position d'insertion choisie pour la séance en cours de création
+   * (0 = avant la première séance, `seances().length` = après la dernière).
+   */
+  protected readonly positionCreation = signal(0);
 
   /** Contrôle la visibilité de la popin de confirmation de suppression de journée. */
   protected readonly popinSupprimerVisible = signal(false);
@@ -88,6 +117,15 @@ export class EcranCahierJournalComponent {
 
   /** Messages de conflits à afficher dans la popin. */
   protected readonly conflits = signal<string[]>([]);
+
+  /** Contrôle la visibilité de la popin d'avertissement de navigation (modifications non enregistrées). */
+  protected readonly popinNavigationVisible = signal(false);
+
+  /** Résolution de la promesse de navigation (garde CanDeactivate). */
+  private resolveGarde: ((result: boolean) => void) | null = null;
+
+  /** Référence au formulaire de séance actuellement affiché (création ou édition), s'il y en a un. */
+  private readonly formulaireSeance = viewChild(CjFormulaireSeanceComponent);
 
   /** Détection de changement pour resynchroniser le champ de notes en mode OnPush. */
   private readonly cdr = inject(ChangeDetectorRef);
@@ -129,6 +167,20 @@ export class EcranCahierJournalComponent {
     () => this.donneesService.donnees()?.referentiels.joursFeries ?? [],
   );
 
+  /** Date ISO minimale de navigation du mini-calendrier (premier jour de la première période). */
+  protected readonly dateMinCalendrier = computed<string | null>(() => {
+    const periodes = this.donneesService.donnees()?.referentiels.periodes ?? [];
+    if (periodes.length === 0) return null;
+    return periodes.reduce((min, p) => (p.debut < min ? p.debut : min), periodes[0].debut);
+  });
+
+  /** Date ISO maximale de navigation du mini-calendrier (dernier jour de la dernière période). */
+  protected readonly dateMaxCalendrier = computed<string | null>(() => {
+    const periodes = this.donneesService.donnees()?.referentiels.periodes ?? [];
+    if (periodes.length === 0) return null;
+    return periodes.reduce((max, p) => (p.fin > max ? p.fin : max), periodes[0].fin);
+  });
+
   /** Domaines de niveau 1 pour les chips de disciplines. */
   protected readonly domaines = computed<Competence[]>(() =>
     this.competenceService.obtenirDomaines(),
@@ -137,6 +189,11 @@ export class EcranCahierJournalComponent {
   /** Libellé formaté de la date sélectionnée. */
   protected readonly dateFormatee = computed<string>(() =>
     DateUtils.formaterDateLong(this.dateSelectionnee()),
+  );
+
+  /** Heures de début/fin par défaut proposées pour la séance en cours de création. */
+  protected readonly heuresCreationParDefaut = computed<{ heureDebut: string; heureFin: string }>(
+    () => this.calculerHeuresParDefaut(this.positionCreation()),
   );
 
   /** Notes enregistrées de la journée sélectionnée (version persistée, pour l'impression et l'affichage conditionnel). */
@@ -151,6 +208,9 @@ export class EcranCahierJournalComponent {
     effect(() => {
       this.notesControl.setValue(this.notesJournee(), { emitEvent: false });
       this.cdr.markForCheck();
+    });
+    effect(() => {
+      this.contexteService.jourCourantCahierJournal.set(this.dateSelectionnee());
     });
   }
 
@@ -238,10 +298,35 @@ export class EcranCahierJournalComponent {
     this.popinDuplicationVisible.set(false);
   }
 
-  /** Ouvre le formulaire de création de séance. */
-  protected creerSeance(): void {
-    this.seanceEditee.set(null);
+  /**
+   * Ouvre le formulaire de création de séance à une position d'insertion donnée.
+   * @param position Indice d'insertion dans la liste triée (0 = avant la première séance,
+   * `seances().length` = après la dernière).
+   */
+  protected creerSeance(position: number): void {
+    this.seanceEditeeId.set(null);
+    this.positionCreation.set(position);
     this.enCreationSeance.set(true);
+  }
+
+  /**
+   * Calcule une plage horaire par défaut cohérente pour une nouvelle séance insérée
+   * à une position donnée, en comblant l'écart entre les deux séances voisines
+   * (ou les bornes de la journée scolaire en absence de voisine).
+   * @param position Indice d'insertion dans la liste triée par heure.
+   * @returns Heures de début et de fin par défaut à proposer dans le formulaire.
+   */
+  protected calculerHeuresParDefaut(position: number): { heureDebut: string; heureFin: string } {
+    const seances = this.seances();
+    const config = this.donneesService.donnees()?.referentiels.configEmploiDuTemps;
+    const heureDebutJournee = config?.heureDebutJournee ?? '08:00';
+    const heureFinJournee = config?.heureFinJournee ?? '17:00';
+    const precedente = position > 0 ? seances[position - 1] : null;
+    const suivante = position < seances.length ? seances[position] : null;
+    return {
+      heureDebut: precedente?.heureFin ?? heureDebutJournee,
+      heureFin: suivante?.heureDebut ?? heureFinJournee,
+    };
   }
 
   /**
@@ -249,7 +334,7 @@ export class EcranCahierJournalComponent {
    * @param seance Séance à modifier.
    */
   protected editerSeance(seance: Seance): void {
-    this.seanceEditee.set(seance);
+    this.seanceEditeeId.set(seance.id);
     this.enCreationSeance.set(false);
   }
 
@@ -262,17 +347,34 @@ export class EcranCahierJournalComponent {
     const date = this.dateSelectionnee();
     const journee = this.journeeSelectionnee();
     const existante = journee?.seances.find((s) => s.id === seance.id);
+    const conflitsDetectes = this.cahierJournalService.calculerConflitsPourSeance(date, seance);
+    const seanceAvecConflit: Seance = {
+      ...seance,
+      conflitDetecte: conflitsDetectes.length > 0,
+    };
     if (existante) {
-      this.cahierJournalService.modifierSeance(date, seance);
+      this.cahierJournalService.modifierSeance(date, seanceAvecConflit);
     } else {
-      this.cahierJournalService.ajouterSeance(date, seance);
+      this.cahierJournalService.ajouterSeance(date, seanceAvecConflit);
     }
-    const conflitsDetectes = this.cahierJournalService.calculerConflitsAbsences(date, seance.id);
     if (conflitsDetectes.length > 0) {
       this.conflits.set(conflitsDetectes);
       this.popinConflitsVisible.set(true);
     }
     this.fermerFormulaire();
+  }
+
+  /**
+   * Affiche à nouveau le détail des conflits d'une séance déjà marquée en conflit.
+   * @param seance Séance dont l'icône de conflit persistante a été activée.
+   */
+  protected afficherConflitsSeance(seance: Seance): void {
+    const conflits = this.cahierJournalService.calculerConflitsPourSeance(
+      this.dateSelectionnee(),
+      seance,
+    );
+    this.conflits.set(conflits);
+    this.popinConflitsVisible.set(true);
   }
 
   /** Ferme la popin de conflits. */
@@ -283,7 +385,7 @@ export class EcranCahierJournalComponent {
 
   /** Ferme le formulaire de séance. */
   protected fermerFormulaire(): void {
-    this.seanceEditee.set(null);
+    this.seanceEditeeId.set(null);
     this.enCreationSeance.set(false);
   }
 
@@ -293,7 +395,7 @@ export class EcranCahierJournalComponent {
    */
   protected supprimerSeance(seanceId: string): void {
     this.cahierJournalService.supprimerSeance(this.dateSelectionnee(), seanceId);
-    if (this.seanceEditee()?.id === seanceId) this.fermerFormulaire();
+    if (this.seanceEditeeId() === seanceId) this.fermerFormulaire();
   }
 
   /**
@@ -323,5 +425,33 @@ export class EcranCahierJournalComponent {
   /** Lance l'impression du cahier journal de la journée. */
   protected imprimer(): void {
     window.print();
+  }
+
+  /**
+   * Implémentation de `AvecNavigationGardee`.
+   * Retourne `true` immédiatement si aucun formulaire de séance n'est ouvert ou modifié,
+   * sinon ouvre la popin d'avertissement et attend la décision de l'utilisateur.
+   * @returns Promesse résolue à `true` pour autoriser la navigation.
+   */
+  public confirmerNavigation(): Promise<boolean> {
+    if (!this.formulaireSeance()?.estModifie()) return Promise.resolve(true);
+    return new Promise<boolean>((resolve) => {
+      this.resolveGarde = resolve;
+      this.popinNavigationVisible.set(true);
+    });
+  }
+
+  /** Confirme l'abandon des modifications et autorise la navigation. */
+  protected confirmerAbandonNavigation(): void {
+    this.popinNavigationVisible.set(false);
+    this.resolveGarde?.(true);
+    this.resolveGarde = null;
+  }
+
+  /** Annule la navigation et reste sur le formulaire en cours. */
+  protected annulerAbandonNavigation(): void {
+    this.popinNavigationVisible.set(false);
+    this.resolveGarde?.(false);
+    this.resolveGarde = null;
   }
 }

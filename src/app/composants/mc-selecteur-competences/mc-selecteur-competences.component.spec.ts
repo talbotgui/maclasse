@@ -184,13 +184,31 @@ describe('McSelecteurCompetencesComponent', () => {
       expect(champSaisie().value).toBe('');
     });
 
-    it('Escape ferme le panneau et vide le champ', () => {
+    it('Escape ferme le panneau sans vider la saisie', () => {
       saisir('lecture');
 
       appuyerTouche('Escape');
 
-      expect(champSaisie().value).toBe('');
+      expect(champSaisie().value).toBe('lecture');
       expect(suggestions()).toHaveLength(0);
+    });
+
+    it('End sélectionne la dernière option', () => {
+      saisir('a');
+
+      appuyerTouche('End');
+
+      const derniereOption = suggestions()[suggestions().length - 1];
+      expect(derniereOption.classList).toContain('mc-selecteur-competences__option--active');
+    });
+
+    it('Home revient à la première option', () => {
+      saisir('a');
+      appuyerTouche('End');
+
+      appuyerTouche('Home');
+
+      expect(suggestions()[0].classList).toContain('mc-selecteur-competences__option--active');
     });
   });
 

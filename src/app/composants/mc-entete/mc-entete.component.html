@@ -52,7 +52,6 @@
         class="mc-entete__nav-lien"
         routerLink="/competences"
         routerLinkActive="actif"
-        title="coucou"
         >{{ LIBELLES.navigation.competences }}</a
       >
       <a
@@ -117,13 +116,19 @@
             class="mc-entete__resultats"
             role="listbox"
             [attr.aria-label]="LIBELLES.entete.rechercheAria"
+            (keydown)="naviguerResultats($event)"
           >
-            @for (res of resultatsRecherche(); track res.id) {
+            @for (res of resultatsRecherche(); track res.id; let i = $index) {
               <li
+                #optionResultat
                 [id]="'resRecherche_' + res.id"
                 class="mc-entete__resultat-item"
                 role="option"
-                tabindex="0"
+                [attr.tabindex]="
+                  (indexResultatFocalise() === -1 ? i === 0 : i === indexResultatFocalise())
+                    ? 0
+                    : -1
+                "
                 (click)="surSelectionResultat(res)"
                 (keydown.enter)="surSelectionResultat(res)"
                 (keydown.space)="$event.preventDefault(); surSelectionResultat(res)"

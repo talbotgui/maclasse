@@ -810,5 +810,103 @@ describe('CahierJournalService', () => {
       expect(conflits).toHaveLength(1);
       expect(conflits[0]).toContain('MARTIN');
     });
+
+    it('ne détecte pas de conflit si la parité de semaine ne correspond pas', () => {
+      const d = DonneesMother.base();
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [
+            {
+              id: 'a1',
+              libelle: 'Orthophonie',
+              jour: 'lundi',
+              heureDebut: '09:00',
+              heureFin: '10:00',
+              paritesSemaine: 'impaire',
+            },
+          ],
+        }),
+      ];
+      d.cahierJournal = [
+        { id: 'j1', date: DatesTest.lundiPaire, seances: [SeanceMother.pedagogique()] },
+      ];
+      donneesService.charger(d);
+      expect(service.calculerConflitsAbsences(DatesTest.lundiPaire, 's1')).toEqual([]);
+    });
+
+    it('détecte un conflit si la parité de semaine correspond', () => {
+      const d = DonneesMother.base();
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [
+            {
+              id: 'a1',
+              libelle: 'Orthophonie',
+              jour: 'lundi',
+              heureDebut: '09:00',
+              heureFin: '10:00',
+              paritesSemaine: 'impaire',
+            },
+          ],
+        }),
+      ];
+      d.cahierJournal = [
+        { id: 'j1', date: DatesTest.lundiImpaire, seances: [SeanceMother.pedagogique()] },
+      ];
+      donneesService.charger(d);
+      const conflits = service.calculerConflitsAbsences(DatesTest.lundiImpaire, 's1');
+      expect(conflits).toHaveLength(1);
+      expect(conflits[0]).toBe('MARTIN Paul — Orthophonie');
+    });
+  });
+
+  /**
+   * Régression SOU-033 : variante de calculerConflitsAbsences prenant la séance directement,
+   * utilisable avant son tout premier enregistrement (pas encore présente dans le cahier journal).
+   */
+  describe('calculerConflitsPourSeance', () => {
+    it('retourne tableau vide si aucune donnée chargée', () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({});
+      const s = TestBed.inject(CahierJournalService);
+      expect(s.calculerConflitsPourSeance(DatesTest.lundiPaire, SeanceMother.pedagogique())).toEqual(
+        [],
+      );
+    });
+
+    it('retourne tableau vide pour un samedi', () => {
+      donneesService.charger(DonneesMother.base());
+      expect(
+        service.calculerConflitsPourSeance(DatesTest.samedi, SeanceMother.pedagogique()),
+      ).toEqual([]);
+    });
+
+    it("détecte un conflit sans que la séance soit déjà dans le cahier journal", () => {
+      const lundiTest = DateUtils.ajouterJours(
+        DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()),
+        7,
+      );
+      const d = DonneesMother.base();
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [
+            {
+              id: 'a1',
+              libelle: 'Orthophonie',
+              jour: 'lundi',
+              heureDebut: '09:30',
+              heureFin: '10:30',
+              paritesSemaine: 'lesDeux',
+            },
+          ],
+        }),
+      ];
+      donneesService.charger(d);
+
+      const seanceNonEnregistree = SeanceMother.pedagogique({ id: 'inedite' });
+      const conflits = service.calculerConflitsPourSeance(lundiTest, seanceNonEnregistree);
+
+      expect(conflits).toEqual(['MARTIN Paul — Orthophonie']);
+    });
   });
 });

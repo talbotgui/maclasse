@@ -463,6 +463,23 @@ button {
   border: 0;
 }
 
+// Un champ .sr-only reste dans l'ordre de tabulation (ex. <input type="file"> masqué
+// derrière un <label> stylé en bouton) : restaurer un indicateur de focus visible sur
+// le <label> associé, faute de quoi le focus clavier devient invisible.
+.sr-only:focus-visible + label {
+  outline: 3px solid var(--couleur-focus);
+  outline-offset: 2px;
+}
+
+.mc-popin__erreur {
+  margin: 0;
+  padding: 0.625rem 0.875rem;
+  border-radius: 4px;
+  background-color: color-mix(in srgb, var(--erreur) 10%, transparent);
+  color: var(--erreur);
+  font-size: 0.875rem;
+}
+
 .mc-disc-pill {
   display: inline-flex;
   align-items: center;
@@ -691,6 +708,23 @@ button {
     margin: 0;
     padding: 0.25rem 1rem 0.5rem;
     white-space: pre-wrap;
+  }
+
+  // Emploi du temps : seule la grille centrale s'imprime, colonnes liste EDT et
+  // formulaire masquées (layout à 3 colonnes propre à cet écran, sans équivalent
+  // dans mc-colonne-gauche/droite).
+  .edt__gauche,
+  .edt__droite {
+    display: none;
+  }
+
+  .edt {
+    grid-template-columns: 1fr;
+    display: block;
+  }
+
+  .edt__grille-conteneur {
+    overflow: visible;
   }
 }
 

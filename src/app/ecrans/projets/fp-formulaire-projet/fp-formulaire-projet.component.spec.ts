@@ -47,7 +47,7 @@ describe('FpFormulaireProjetComponent', () => {
       expect((component as any).formProjet).not.toBe(projet);
     });
 
-    it("changement de l'input projet → formProjet rechargé", () => {
+    it("changement d'identité de l'input projet → formProjet rechargé", () => {
       const p1 = ProjetMother.base({ id: 'p1', nom: 'Sciences' });
       const p2 = ProjetMother.base({ id: 'p2', nom: 'Arts' });
       fixture.componentRef.setInput('projet', p1);
@@ -56,6 +56,19 @@ describe('FpFormulaireProjetComponent', () => {
       fixture.detectChanges();
 
       expect((component as any).formProjet.nom).toBe('Arts');
+    });
+
+    it('régression SOU-020 : même identité de projet avec contenu différent → formProjet non écrasé', () => {
+      const p1 = ProjetMother.base({ id: 'p1', nom: 'Sciences' });
+      fixture.componentRef.setInput('projet', p1);
+      fixture.detectChanges();
+      (component as any).formProjet.nom = 'Saisie en cours';
+
+      const p1Modifie = ProjetMother.base({ id: 'p1', nom: 'Sciences (modifié ailleurs)' });
+      fixture.componentRef.setInput('projet', p1Modifie);
+      fixture.detectChanges();
+
+      expect((component as any).formProjet.nom).toBe('Saisie en cours');
     });
   });
 
@@ -141,6 +154,16 @@ describe('FpFormulaireProjetComponent', () => {
       const emis = spy.mock.calls[0][0] as Projet;
       expect(emis.nom).toBe('Sciences');
       expect(emis).not.toBe((component as any).formProjet);
+    });
+  });
+
+  describe('onAnnuler', () => {
+    it('émet annuler', () => {
+      const spy = vi.spyOn((component as any).annuler, 'emit');
+
+      (component as any).onAnnuler();
+
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import type { OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../../composant-base';
+import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { ChiffrementService } from '../../../services/sansEtat/chiffrement.service';
 import { ContexteService } from '../../../services/avecEtat/contexte.service';
 import type { DonneesApplication } from '../../../modeles/donnees-application.modele';
@@ -35,6 +36,7 @@ import type { DonneesApplication } from '../../../modeles/donnees-application.mo
 @Component({
   selector: 'popin-demarrage',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [McAutoFocusDirective],
   templateUrl: './popin-demarrage.component.html',
   styleUrl: './popin-demarrage.component.scss',
 })
@@ -76,6 +78,9 @@ export class PopinDemarrageComponent extends ComposantBase {
 
   /** Valeur courante du champ mot de passe. */
   protected readonly motDePasse = signal('');
+
+  /** `true` si le mot de passe saisi doit être affiché en clair. */
+  protected readonly motDePasseVisible = signal(false);
 
   /** `true` pendant un chargement en cours (spinner + désactivation des boutons). */
   protected readonly enChargement = signal(false);

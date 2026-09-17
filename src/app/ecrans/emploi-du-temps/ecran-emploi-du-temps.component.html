@@ -11,28 +11,39 @@
     @if (edts().length === 0) {
       <p class="edt__liste-vide">{{ LIBELLES.edt.aucunEdtSelectionne }}</p>
     } @else {
-      <ul class="edt__liste" role="listbox" [attr.aria-label]="LIBELLES.edt.ariaListeEdt">
-        @for (edt of edts(); track edt.id) {
+      <ul
+        class="edt__liste"
+        role="listbox"
+        [attr.aria-label]="LIBELLES.edt.ariaListeEdt"
+        (keydown)="naviguerListeEdt($event)"
+      >
+        @for (edt of edts(); track edt.id; let i = $index) {
           <li>
             <button
+              #optionEdt
               [id]="'btnSelectionnerEdt' + edt.id"
               class="edt__btn-edt"
               [class.edt__btn-edt--actif]="edtSelectionne()?.id === edt.id"
               role="option"
+              [attr.tabindex]="i === indexEdtFocalise() ? 0 : -1"
               [attr.aria-selected]="edtSelectionne()?.id === edt.id"
               (click)="selectionnerEdt(edt)"
+              (focus)="indexEdtFocalise.set(i)"
             >
               <span class="edt__btn-edt-nom">{{ edt.nom }}</span>
-              @if (edtsAvecConflits().has(edt.id)) {
-                <span
-                  class="edt__icone-conflit"
-                  role="img"
-                  [attr.aria-label]="LIBELLES.edt.avertissementChevauchement"
-                  title="{{ LIBELLES.edt.avertissementChevauchement }}"
-                  >⚠</span
-                >
-              }
             </button>
+            @if (edtsAvecConflits().has(edt.id)) {
+              <button
+                [id]="'btnConflitEdt' + edt.id"
+                type="button"
+                class="edt__icone-conflit"
+                [attr.aria-label]="LIBELLES.edt.ariaVoirConflitEdt + ' : ' + edt.nom"
+                title="{{ LIBELLES.edt.avertissementChevauchementEdt }}"
+                (click)="afficherConflitsEdt(edt)"
+              >
+                ⚠
+              </button>
+            }
           </li>
         }
       </ul>
@@ -135,7 +146,7 @@
   <div class="edt__droite">
     @if (formEdt() !== null || creneauEdite() !== null) {
       <edt-formulaire
-        [focusDemande]="true"
+        [focusDemande]="focusDemandeFormulaire()"
         [edt]="formEdt()"
         [creneau]="creneauEdite()"
         [domaines]="domaines()"
@@ -151,3 +162,16 @@
     }
   </div>
 </div>
+
+<popin-avertissement
+  [visible]="popinNavigationVisible()"
+  [message]="LIBELLES.commun.avertissementModifications"
+  (confirme)="confirmerAbandonNavigation()"
+  (annule)="annulerAbandonNavigation()"
+/>
+
+<popin-warnings-absences
+  [visible]="popinConflitsEdtVisible()"
+  [conflits]="conflitsEdt()"
+  (annule)="fermerConflitsEdt()"
+/>

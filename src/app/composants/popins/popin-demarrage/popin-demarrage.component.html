@@ -27,7 +27,7 @@
             type="button"
             class="mc-btn-primaire mc-popin--demarrage__carte-bouton"
             [disabled]="enChargement()"
-            autofocus
+            [mcAutoFocus]="true"
             (click)="creer()"
           >
             @if (enChargement()) {
@@ -67,14 +67,30 @@
 
           <div class="mc-champ">
             <label for="motDePasseChargement">{{ LIBELLES.demarrage.labelMotDePasse }}</label>
-            <input
-              id="motDePasseChargement"
-              type="password"
-              [value]="motDePasse()"
-              [disabled]="enChargement()"
-              (input)="motDePasse.set($any($event.target).value)"
-              (keydown.enter)="charger()"
-            />
+            <div class="mc-champ-mot-de-passe">
+              <input
+                id="motDePasseChargement"
+                [type]="motDePasseVisible() ? 'text' : 'password'"
+                [value]="motDePasse()"
+                [disabled]="enChargement()"
+                (input)="motDePasse.set($any($event.target).value)"
+                (keydown.enter)="charger()"
+              />
+              <button
+                id="btnBasculerMotDePasse"
+                type="button"
+                class="mc-btn-icone mc-btn-xs"
+                [attr.aria-label]="
+                  motDePasseVisible()
+                    ? LIBELLES.demarrage.ariaMasquerMotDePasse
+                    : LIBELLES.demarrage.ariaAfficherMotDePasse
+                "
+                [attr.aria-pressed]="motDePasseVisible()"
+                (click)="motDePasseVisible.set(!motDePasseVisible())"
+              >
+                {{ motDePasseVisible() ? '🙈' : '👁' }}
+              </button>
+            </div>
           </div>
 
           <button

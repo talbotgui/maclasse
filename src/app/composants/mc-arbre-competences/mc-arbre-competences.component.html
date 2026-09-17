@@ -22,22 +22,21 @@
     </div>
   }
 
-  <div class="mc-arbre-competences__arbre" role="tree">
+  <div
+    class="mc-arbre-competences__arbre"
+    role="tree"
+    [attr.aria-label]="LIBELLES.competences.ariaArbreCompetences"
+  >
     @if (noeudsAffiches().length === 0) {
       <p class="mc-liste-vide">{{ LIBELLES.commun.aucunResultat }}</p>
     }
-    @for (noeud of noeudsAffiches(); track noeud.competence.id) {
-      <div
-        class="mc-arbre-competences__noeud"
-        [style.padding-left.rem]="noeud.niveau * 1.25"
-        role="treeitem"
-        [attr.aria-expanded]="noeud.estFeuille ? null : noeud.estDeplie"
-        [attr.aria-selected]="noeud.estSelectionne"
-      >
+    @for (noeud of noeudsAffiches(); track noeud.competence.id; let i = $index) {
+      <div class="mc-arbre-competences__noeud" [style.padding-left.rem]="noeud.niveau * 1.25">
         @if (!noeud.estFeuille) {
           <button
             [id]="'noeudToggle_' + noeud.competence.id"
             type="button"
+            tabindex="-1"
             class="mc-arbre-competences__toggle"
             [attr.aria-label]="
               (noeud.estDeplie
@@ -55,15 +54,21 @@
           #boutonSelection
           [id]="'noeudSel_' + noeud.competence.id"
           type="button"
+          role="treeitem"
+          [attr.tabindex]="i === indexFocalise() ? 0 : -1"
+          [attr.aria-expanded]="noeud.estFeuille ? null : noeud.estDeplie"
+          [attr.aria-selected]="noeud.estSelectionne"
           class="mc-arbre-competences__libelle"
           [class.mc-arbre-competences__libelle--dans-panier]="noeud.estSelectionne"
-          (keydown)="naviguerClavier($event, $index)"
+          (keydown)="naviguerClavier($event, i)"
+          (focus)="surFocusNoeud(i)"
         >
           {{ noeud.competence.libelle }}
         </button>
         <button
           [id]="'btnAjouterPanier_' + noeud.competence.id"
           type="button"
+          tabindex="-1"
           class="mc-arbre-competences__ajouter mc-btn-icone mc-btn-xs"
           [attr.aria-label]="LIBELLES.competences.ariaAjouterAuPanier + noeud.competence.libelle"
           [disabled]="noeud.estSelectionne"

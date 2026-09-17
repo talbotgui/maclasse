@@ -44,7 +44,7 @@
         {{ LIBELLES.projet.sectionPeriodes }}
       </h3>
       <ul class="fiche-projet__periodes">
-        @for (periode of projet().periodes; track periode.periodeNom) {
+        @for (periode of periodesTriees(); track periode.id) {
           <li class="fiche-projet__periode">
             <div class="fiche-projet__periode-entete">
               <strong>{{ periode.periodeNom }}</strong>

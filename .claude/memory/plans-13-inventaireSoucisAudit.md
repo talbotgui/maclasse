@@ -141,7 +141,12 @@ Pour mémoire, les points suivants ont été spécifiquement vérifiés pendant 
 
 ## Suite à donner
 
-Cet inventaire est un **audit brut**, pas encore un plan de correction validé. Conformément à `collaboration.md`, chaque correction (ou lot de corrections groupées par écran/domaine) devra faire l'objet d'une reformulation et d'une validation explicite avant toute implémentation, en particulier pour prioriser :
-1. Les CRITIQUE à fort impact utilisateur (perte de données) : SOU-018, SOU-019, SOU-020.
-2. Les MAJEUR RGAA sur des composants très réutilisés : SOU-002 à SOU-005, SOU-034.
-3. Le reste, à planifier par lots thématiques (RGAA composants, Signals formulaires, référentiels de paramétrage morts, etc.).
+**Mise à jour 2026-09-17 (soir) : traité.** SOU-001 à SOU-027, SOU-029, SOU-031 à SOU-039 ainsi que SOU-040 à SOU-043 ont été implémentés en deux incréments successifs (revus par l'agent `revue-increment`, 4 anomalies remontées et corrigées : accessibilité clavier de l'icône de conflit EDT, visibilité `public` oubliée sur `fe-formulaire-eleve`, références E2E résiduelles après SOU-031, couverture manquante SOU-015). Suite complète `ng test` verte (1023 tests, 51 fichiers), couverture ≥ 90 % sur les 4 métriques, `ng build` (dev + prod) et `tsc` E2E propres.
+
+**Deux constats volontairement écartés, non corrigés :**
+- **SOU-028** (réutiliser `mc-colonne-gauche`/`mc-colonne-droite` sur l'écran EDT) : layout EDT à 3 colonnes avec scroll imbriqué incompatible avec les classes flex globales sans risque de régression visuelle non vérifiable en CLI.
+- **SOU-030** (convertir `formEleve`/`formProjet`/`formEdt`/`formCreneau` en signaux) : nécessiterait une migration complète vers Reactive Forms par formulaire (à l'image de SOU-041) ; jugé disproportionné pour un souci MINEUR purement latent (pas de bug actuel, ne se manifeste qu'en cas de passage futur à `provideZonelessChangeDetection()`).
+
+**Reste à faire, hors du périmètre de cet incrément :**
+- Nettoyer les deux clés orphelines `raisonsAbsence`/`frequencesAbsence` dans `public/donnees-defaut.json` (laissées telles quelles pour éviter un reformatage complet du fichier par un script — inertes, plus aucun code ne les lit).
+- Mettre à jour [[plans-04-testsE2E]] : les scénarios E2E-93 et E2E-94 (raison/fréquence d'absence) ont été supprimés avec SOU-031, E2E-80 a été réduit d'autant.

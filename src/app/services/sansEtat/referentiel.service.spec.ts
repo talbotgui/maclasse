@@ -129,6 +129,7 @@ describe('ReferentielService', () => {
         elevesIds: [],
         periodes: [
           {
+            id: 'pp1',
             periodeNom: 'Période 1',
             debut: '2025-09-01',
             fin: '2025-10-18',
@@ -312,40 +313,6 @@ describe('ReferentielService', () => {
       expect(donneesService.donnees()?.referentiels.configEmploiDuTemps.heureDebutJournee).toBe(
         '08:30',
       );
-    });
-  });
-
-  /** Vérifie l'ajout, la modification et la suppression de raisons et fréquences d'absence. */
-  describe("CRUD raisons et fréquences d'absence", () => {
-    beforeEach(() => donneesService.charger(DonneesMother.base()));
-
-    it("ajoute et supprime une raison d'absence", () => {
-      const raison = { id: 'M', libelle: 'Maladie' };
-      service.ajouterRaisonAbsence(raison);
-      expect(donneesService.donnees()?.referentiels.raisonsAbsence).toHaveLength(1);
-      service.supprimerRaisonAbsence(raison);
-      expect(donneesService.donnees()?.referentiels.raisonsAbsence).toHaveLength(0);
-    });
-
-    it("modifie une raison d'absence", () => {
-      const raison = { id: 'M', libelle: 'Maladie' };
-      service.ajouterRaisonAbsence(raison);
-      service.modifierRaisonAbsence(raison, { id: 'M', libelle: 'Médical' });
-      expect(donneesService.donnees()?.referentiels.raisonsAbsence[0].libelle).toBe('Médical');
-    });
-
-    it("ajoute et supprime une fréquence d'absence", () => {
-      const freq = { id: 'SP', libelle: 'Semaines paires' };
-      service.ajouterFrequenceAbsence(freq);
-      expect(donneesService.donnees()?.referentiels.frequencesAbsence).toHaveLength(1);
-      service.supprimerFrequenceAbsence(freq);
-      expect(donneesService.donnees()?.referentiels.frequencesAbsence).toHaveLength(0);
-    });
-
-    it('ne supprime pas raison si id inconnu', () => {
-      service.ajouterRaisonAbsence({ id: 'M', libelle: 'Maladie' });
-      service.supprimerRaisonAbsence({ id: 'X', libelle: 'Inconnu' });
-      expect(donneesService.donnees()?.referentiels.raisonsAbsence).toHaveLength(1);
     });
   });
 

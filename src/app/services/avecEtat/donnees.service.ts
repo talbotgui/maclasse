@@ -69,6 +69,7 @@ export class DonneesService {
     recentrerCahierJournalSurSemaineSuivante = false,
   ): void {
     const clone = structuredClone(donnees);
+    this.migrerIdentifiantsManquants(clone);
     if (recentrerCahierJournalSurSemaineSuivante) {
       this.decalerCahierJournalVersSemaineSuivante(clone);
     }
@@ -76,6 +77,24 @@ export class DonneesService {
     this.pileUndo.set([]);
     this.pileRedo.set([]);
     this.modifieeDepuisSauvegarde.set(false);
+  }
+
+  /**
+   * Attribue un `id` aux périodes de projet et entrées de cursus élève qui en sont
+   * dépourvues (fichiers créés avant l'introduction de ces champs).
+   * @param donnees Données à muter (déjà clonées).
+   */
+  private migrerIdentifiantsManquants(donnees: DonneesApplication): void {
+    for (const projet of donnees.projets) {
+      for (const periode of projet.periodes) {
+        if (!periode.id) periode.id = crypto.randomUUID();
+      }
+    }
+    for (const eleve of donnees.classe.eleves) {
+      for (const annee of eleve.cursus) {
+        if (!annee.id) annee.id = crypto.randomUUID();
+      }
+    }
   }
 
   /**

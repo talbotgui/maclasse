@@ -5,8 +5,6 @@ import type {
   TypeContact,
   JourFerie,
   Periode,
-  RaisonAbsence,
-  FrequenceAbsence,
 } from '../modeles/referentiels.modele';
 
 /** Fournit des instances de types référentiel prêtes à l'emploi pour les tests. */
@@ -85,21 +83,5 @@ export class PeriodeMother {
   /** Retourne une période minimale valide. */
   static base(surcharge: Partial<Periode> = {}): Periode {
     return { id: 'P1', nom: 'Période 1', debut: '2025-09-01', fin: '2025-10-31', ...surcharge };
-  }
-}
-
-/** Fournit des instances de {@link RaisonAbsence} prêtes à l'emploi pour les tests. */
-export class RaisonAbsenceMother {
-  /** Retourne une raison d'absence minimale valide. */
-  static base(id = 'INCLUSION', libelle = 'Inclusion'): RaisonAbsence {
-    return { id, libelle };
-  }
-}
-
-/** Fournit des instances de {@link FrequenceAbsence} prêtes à l'emploi pour les tests. */
-export class FrequenceAbsenceMother {
-  /** Retourne une fréquence d'absence minimale valide. */
-  static base(id = 'SP', libelle = 'Semaine paire'): FrequenceAbsence {
-    return { id, libelle };
   }
 }

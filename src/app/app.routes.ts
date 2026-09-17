@@ -54,6 +54,7 @@ export const routes: Routes = [
         (m) => m.EcranEmploiDuTempsComponent,
       ),
     canActivate: [donneesChargeesGarde, referentielSeulGarde],
+    canDeactivate: [modificationsNonEnregistreesGarde],
   },
   {
     path: 'cahier-journal',
@@ -62,5 +63,6 @@ export const routes: Routes = [
         (m) => m.EcranCahierJournalComponent,
       ),
     canActivate: [donneesChargeesGarde, referentielSeulGarde],
+    canDeactivate: [modificationsNonEnregistreesGarde],
   },
 ];

@@ -3,7 +3,7 @@ import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { FpFicheProjetComponent } from './fp-fiche-projet.component';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
 import { DonneesMother } from '../../../tests/donnees.mother';
-import { ProjetMother } from '../../../tests/projet.mother';
+import { ProjetMother, PeriodeMother } from '../../../tests/projet.mother';
 import { EleveMother } from '../../../tests/eleve.mother';
 
 describe('FpFicheProjetComponent', () => {
@@ -24,6 +24,22 @@ describe('FpFicheProjetComponent', () => {
     component = fixture.componentInstance;
     fixture.componentRef.setInput('projet', ProjetMother.base({ elevesIds: ['e1', 'e2'] }));
     fixture.detectChanges();
+  });
+
+  describe('periodesTriees', () => {
+    it('trie les périodes par date de début ascendante (SOU-025)', () => {
+      const projet = ProjetMother.base({
+        periodes: [
+          PeriodeMother.base({ id: 'pp2', periodeNom: 'Trimestre 2', debut: '2026-03-01' }),
+          PeriodeMother.base({ id: 'pp1', periodeNom: 'Trimestre 1', debut: '2025-09-01' }),
+        ],
+      });
+      fixture.componentRef.setInput('projet', projet);
+      fixture.detectChanges();
+
+      const triees = (component as any).periodesTriees();
+      expect(triees.map((p: { id: string }) => p.id)).toEqual(['pp1', 'pp2']);
+    });
   });
 
   describe('nomEleves', () => {

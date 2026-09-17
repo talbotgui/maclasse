@@ -3,7 +3,7 @@ import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { PopinExportCompetencesComponent } from './popin-export-competences.component';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
 import { DonneesMother } from '../../../tests/donnees.mother';
-import { ProjetMother } from '../../../tests/projet.mother';
+import { ProjetMother, PeriodeMother } from '../../../tests/projet.mother';
 import { SeanceMother } from '../../../tests/cahier-journal.mother';
 import { DateUtils } from '../../../utilitaires/date.utils';
 
@@ -33,8 +33,8 @@ describe('PopinExportCompetencesComponent', () => {
       id: 'p1',
       nom: 'Projet sciences',
       periodes: [
-        { periodeNom: 'Période 1', debut: '', fin: '', description: '', competencesIds: [] },
-        { periodeNom: 'Période 2', debut: '', fin: '', description: '', competencesIds: [] },
+        PeriodeMother.base({ id: 'pp1', periodeNom: 'Période 1', debut: '', fin: '' }),
+        PeriodeMother.base({ id: 'pp2', periodeNom: 'Période 2', debut: '', fin: '' }),
       ],
     });
     donneesService.charger(DonneesMother.base({ projets: [projet] }));

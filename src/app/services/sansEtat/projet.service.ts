@@ -119,10 +119,10 @@ export class ProjetService {
   }
 
   /**
-   * Modifie une période d'un projet (retrouvée par `periodeNom`).
+   * Modifie une période d'un projet (retrouvée par `id`).
    * Sans effet si le projet ou la période n'existe pas.
    * @param projetId UUID du projet.
-   * @param anciennePeriode Période actuelle (son `periodeNom` sert de clé).
+   * @param anciennePeriode Période actuelle (son `id` sert de clé).
    * @param nouvellePeriode Nouvelle valeur de la période.
    */
   public modifierPeriode(
@@ -135,7 +135,7 @@ export class ProjetService {
     const ancien = donnees.projets.find((p) => p.id === projetId);
     if (!ancien) return;
     const periodes = ancien.periodes.map((pp) =>
-      pp.periodeNom === anciennePeriode.periodeNom ? nouvellePeriode : pp,
+      pp.id === anciennePeriode.id ? nouvellePeriode : pp,
     );
     const nouveau: Projet = { ...ancien, periodes };
     this.donneesService.executer(
@@ -149,19 +149,19 @@ export class ProjetService {
   }
 
   /**
-   * Supprime une période d'un projet (retrouvée par `periodeNom`).
+   * Supprime une période d'un projet (retrouvée par `id`).
    * Sans effet si le projet ou la période n'existe pas.
    * @param projetId UUID du projet.
-   * @param periodeNom Nom de la période à supprimer.
+   * @param periodeId UUID de la période à supprimer.
    */
-  public supprimerPeriode(projetId: string, periodeNom: string): void {
+  public supprimerPeriode(projetId: string, periodeId: string): void {
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const ancien = donnees.projets.find((p) => p.id === projetId);
     if (!ancien) return;
     const nouveau: Projet = {
       ...ancien,
-      periodes: ancien.periodes.filter((pp) => pp.periodeNom !== periodeNom),
+      periodes: ancien.periodes.filter((pp) => pp.id !== periodeId),
     };
     this.donneesService.executer(
       new CommandeModification(

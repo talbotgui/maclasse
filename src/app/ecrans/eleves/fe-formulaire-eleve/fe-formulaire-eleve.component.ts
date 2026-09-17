@@ -77,10 +77,10 @@ export class FeFormulaireEleveComponent {
   public readonly typesContact: InputSignal<TypeContact[]> = input<TypeContact[]>([]);
 
   /** Émis avec l'élève modifié (ou créé) à la validation du formulaire. */
-  public readonly enregistrer: OutputEmitterRef<Eleve> = output<Eleve>();
+  protected readonly enregistrer: OutputEmitterRef<Eleve> = output<Eleve>();
 
   /** Émis quand l'utilisateur annule la saisie. */
-  public readonly annuler: OutputEmitterRef<void> = output<void>();
+  protected readonly annuler: OutputEmitterRef<void> = output<void>();
 
   /** Options pour le sélecteur de sexe. */
   protected readonly optionsSexe = [
@@ -107,6 +107,14 @@ export class FeFormulaireEleveComponent {
   /** Copie locale mutable de l'élève en cours de saisie. */
   protected formEleve: Eleve = this.creerEleveVide();
 
+  /**
+   * Identifiant de l'élève actuellement chargé dans `formEleve` (`null` en création),
+   * `undefined` tant qu'aucun chargement n'a eu lieu. Permet de ne recharger la copie
+   * locale que lors d'un changement réel d'élève édité, jamais lors d'une simple
+   * nouvelle référence de `eleve()` (ex. UNDO/REDO global sans rapport avec cet élève).
+   */
+  private idFormulaireCharge: string | null | undefined = undefined;
+
   /** Index du contact venant d'être ajouté, à focaliser (`null` si aucun). */
   protected readonly indexAFocaliserContact: WritableSignal<number | null> = signal(null);
 
@@ -119,10 +127,17 @@ export class FeFormulaireEleveComponent {
   /** Index de l'entrée de cursus venant d'être ajoutée, à focaliser (`null` si aucun). */
   protected readonly indexAFocaliserCursus: WritableSignal<number | null> = signal(null);
 
-  /** Charge la copie locale à chaque changement de l'élève reçu en entrée. */
+  /**
+   * Charge la copie locale lors d'un changement réel d'élève édité.
+   * Ignore les changements de référence de `eleve()` qui ne correspondent pas à un
+   * changement d'identité (ex. UNDO/REDO global), pour ne pas écraser la saisie en cours.
+   */
   public constructor() {
     effect(() => {
       const e = this.eleve();
+      const id = e?.id ?? null;
+      if (id === this.idFormulaireCharge) return;
+      this.idFormulaireCharge = id;
       this.formEleve = e ? structuredClone(e) : this.creerEleveVide();
       this.cdr.markForCheck();
     });
@@ -225,6 +240,7 @@ export class FeFormulaireEleveComponent {
   /** Ajoute une entrée de cursus vide et demande le focus dessus. */
   protected ajouterCursus(): void {
     const nouvelleAnnee: CursusAnnee = {
+      id: crypto.randomUUID(),
       annee: new Date().getFullYear(),
       niveau: '',
       etablissement: '',

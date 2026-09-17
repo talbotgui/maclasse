@@ -35,6 +35,12 @@ export interface Seance {
   description?: string;
   /** Périmètre des élèves concernés (type pédagogique uniquement). */
   elevesConcernes?: ElevesConcernes;
+  /**
+   * `true` si un conflit avec une absence récurrente a été détecté au dernier
+   * enregistrement et n'a pas été résolu depuis. Persisté pour rester visible dans la
+   * liste des séances au-delà de la fermeture de la popin d'avertissement transitoire.
+   */
+  conflitDetecte?: boolean;
 }
 
 /**

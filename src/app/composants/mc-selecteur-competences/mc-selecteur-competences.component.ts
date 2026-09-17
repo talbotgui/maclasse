@@ -136,8 +136,9 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
    * Navigation clavier dans la liste de suggestions (pattern ARIA combobox) :
    * - ↓ : option suivante (ouvre si fermé).
    * - ↑ : option précédente.
+   * - Début/Fin : première/dernière suggestion.
    * - Entrée : sélectionne l'option mise en évidence.
-   * - Échap : ferme et vide le champ.
+   * - Échap : ferme le panneau sans vider la saisie.
    * @param event Événement clavier natif.
    */
   protected naviguerClavier(event: KeyboardEvent): void {
@@ -156,6 +157,18 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
         this.indexFocalise.set(Math.max(index - 1, -1));
         break;
 
+      case 'Home':
+        if (options.length === 0) break;
+        event.preventDefault();
+        this.indexFocalise.set(0);
+        break;
+
+      case 'End':
+        if (options.length === 0) break;
+        event.preventDefault();
+        this.indexFocalise.set(options.length - 1);
+        break;
+
       case 'Enter': {
         event.preventDefault();
         const option = options[index];
@@ -165,7 +178,7 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
 
       case 'Escape':
         event.preventDefault();
-        this.fermer();
+        this.fermerPanneau();
         break;
     }
   }
@@ -216,8 +229,13 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
 
   /** Ferme le panneau et réinitialise la saisie et le focus clavier. */
   private fermer(): void {
+    this.fermerPanneau();
+    this.saisie.set('');
+  }
+
+  /** Ferme le panneau de suggestions et réinitialise le focus clavier, sans vider la saisie. */
+  private fermerPanneau(): void {
     this.estOuvert.set(false);
     this.indexFocalise.set(-1);
-    this.saisie.set('');
   }
 }

@@ -16,7 +16,9 @@
       <option value="">—</option>
     }
     @for (opt of options(); track opt.valeur) {
-      <option [value]="opt.valeur" [selected]="opt.valeur === valeur()">{{ opt.libelle }}</option>
+      <option [value]="opt.valeur" [selected]="opt.valeur === valeurAffichee()">
+        {{ opt.libelle }}
+      </option>
     }
   </select>
 </div>

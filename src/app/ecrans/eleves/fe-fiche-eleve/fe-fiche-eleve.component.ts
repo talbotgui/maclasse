@@ -46,13 +46,13 @@ export class FeFicheEleveComponent {
   public readonly typesContact: InputSignal<TypeContact[]> = input<TypeContact[]>([]);
 
   /** Émis quand l'utilisateur clique sur MODIFIER. */
-  public readonly modifier: OutputEmitterRef<void> = output<void>();
+  protected readonly modifier: OutputEmitterRef<void> = output<void>();
 
   /** Émis quand l'utilisateur confirme la suppression. */
-  public readonly supprimer: OutputEmitterRef<void> = output<void>();
+  protected readonly supprimer: OutputEmitterRef<void> = output<void>();
 
   /** Émis quand l'utilisateur clique sur IMPRIMER. */
-  public readonly imprimer: OutputEmitterRef<void> = output<void>();
+  protected readonly imprimer: OutputEmitterRef<void> = output<void>();
 
   /**
    * Résout le libellé d'un statut élève depuis son identifiant.

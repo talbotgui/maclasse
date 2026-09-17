@@ -55,4 +55,4 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 
 ## Audits
 
-- [Inventaire soucis SOU-XXX](plans-13-inventaireSoucisAudit.md) — Audit Angular/Signals/RGAA du 2026-09-17 : 43 constats (6 CRITIQUE dont pertes de données, 15 MAJEUR, 13 MODÉRÉ, 9 MINEUR), pas encore un plan de correction validé
+- [Inventaire soucis SOU-XXX](plans-13-inventaireSoucisAudit.md) — Audit Angular/Signals/RGAA du 2026-09-17 : 43 constats, **traité le 2026-09-17** (SOU-028/030 volontairement écartés, voir fichier)

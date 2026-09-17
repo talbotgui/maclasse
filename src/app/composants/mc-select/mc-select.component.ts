@@ -1,5 +1,12 @@
-import { ChangeDetectionStrategy, Component, forwardRef, input, signal } from '@angular/core';
-import type { InputSignal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  forwardRef,
+  input,
+  signal,
+} from '@angular/core';
+import type { InputSignal, Signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ComposantBase } from '../../composant-base';
 import type { OptionFormulaire } from '../../modeles/composants.modele';
@@ -41,8 +48,23 @@ export class McSelectComponent extends ComposantBase implements ControlValueAcce
    */
   public readonly avecOptionVide: InputSignal<boolean> = input(false);
 
-  /** Valeur sélectionnée courante. */
+  /** Valeur sélectionnée courante, telle que reçue du `FormControl` (peut ne correspondre à aucune option). */
   protected readonly valeur = signal('');
+
+  /**
+   * Valeur effectivement affichée dans le `<select>` natif : la valeur courante si elle
+   * correspond à une option, sinon la première option disponible (comportement du navigateur),
+   * ou une chaîne vide sans option — évite toute désynchronisation entre l'option visuellement
+   * sélectionnée et l'état interne du composant.
+   */
+  protected readonly valeurAffichee: Signal<string> = computed(() => {
+    const courante = this.valeur();
+    const valeursValides = this.avecOptionVide()
+      ? ['', ...this.options().map((o) => o.valeur)]
+      : this.options().map((o) => o.valeur);
+    if (valeursValides.length === 0) return courante;
+    return valeursValides.includes(courante) ? courante : valeursValides[0];
+  });
 
   /** Indique si le sélecteur est désactivé par le FormControl parent. */
   protected readonly estDesactive = signal(false);

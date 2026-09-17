@@ -61,10 +61,10 @@ export class FpFormulaireProjetComponent {
   public readonly projet: InputSignal<Projet | null> = input<Projet | null>(null);
 
   /** Émis avec le projet modifié (ou créé) à la validation. */
-  public readonly enregistrer: OutputEmitterRef<Projet> = output<Projet>();
+  protected readonly enregistrer: OutputEmitterRef<Projet> = output<Projet>();
 
   /** Émis quand l'utilisateur annule la saisie. */
-  public readonly annuler: OutputEmitterRef<void> = output<void>();
+  protected readonly annuler: OutputEmitterRef<void> = output<void>();
 
   /** Liste des élèves de la classe pour les chips de sélection. */
   protected readonly eleves = computed(() => this.donneesService.donnees()?.classe.eleves ?? []);
@@ -75,10 +75,23 @@ export class FpFormulaireProjetComponent {
   /** Index de la période venant d'être ajoutée, à focaliser (`null` si aucune). */
   protected readonly indexAFocaliserPeriode: WritableSignal<number | null> = signal(null);
 
-  /** Charge la copie locale à chaque changement du projet reçu en entrée. */
+  /**
+   * Identifiant du projet actuellement chargé dans `formProjet` (`null` en création),
+   * `undefined` tant qu'aucun chargement n'a eu lieu.
+   */
+  private idFormulaireCharge: string | null | undefined = undefined;
+
+  /**
+   * Charge la copie locale lors d'un changement réel de projet édité.
+   * Ignore les changements de référence de `projet()` qui ne correspondent pas à un
+   * changement d'identité (ex. UNDO/REDO global), pour ne pas écraser la saisie en cours.
+   */
   public constructor() {
     effect(() => {
       const p = this.projet();
+      const id = p?.id ?? null;
+      if (id === this.idFormulaireCharge) return;
+      this.idFormulaireCharge = id;
       this.formProjet = p ? structuredClone(p) : this.creerProjetVide();
       this.cdr.markForCheck();
     });
@@ -100,6 +113,7 @@ export class FpFormulaireProjetComponent {
   /** Ajoute une période vide à la fin de la liste et demande le focus dessus. */
   protected ajouterPeriode(): void {
     const nouvellePeriode: ProjetPeriode = {
+      id: crypto.randomUUID(),
       periodeNom: '',
       debut: '',
       fin: '',
@@ -133,6 +147,11 @@ export class FpFormulaireProjetComponent {
   /** Émet le projet modifié au parent pour persistence. */
   protected onEnregistrer(): void {
     this.enregistrer.emit(structuredClone(this.formProjet));
+  }
+
+  /** Délègue l'annulation de la saisie au parent. */
+  protected onAnnuler(): void {
+    this.annuler.emit();
   }
 
   /** Crée un objet Projet vide pour les créations. */

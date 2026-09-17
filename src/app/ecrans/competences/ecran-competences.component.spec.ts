@@ -4,7 +4,7 @@ import { EcranCompetencesComponent } from './ecran-competences.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
 import { DonneesMother } from '../../tests/donnees.mother';
-import { ProjetMother } from '../../tests/projet.mother';
+import { ProjetMother, PeriodeMother } from '../../tests/projet.mother';
 import { SeanceMother } from '../../tests/cahier-journal.mother';
 import type { ResultatExportCompetences } from '../../composants/popins/popin-export-competences/popin-export-competences.component';
 import { DateUtils } from '../../utilitaires/date.utils';
@@ -27,7 +27,7 @@ describe('EcranCompetencesComponent', () => {
           ProjetMother.base({
             id: 'p1',
             periodes: [
-              { periodeNom: 'P1', debut: '', fin: '', description: '', competencesIds: [] },
+              PeriodeMother.base({ id: 'pp1', periodeNom: 'P1', debut: '', fin: '' }),
             ],
           }),
         ],
@@ -138,6 +138,37 @@ describe('EcranCompetencesComponent', () => {
       expect(projet?.periodes[0].competencesIds).toContain('c2');
       expect(contexteService.panierCompetences()).toEqual([]);
       expect((component as any).popinExportVisible()).toBe(false);
+      expect((component as any).erreurExport()).toBeNull();
+    });
+
+    it('régression SOU-026 : période introuvable → conserve le panier et affiche une erreur', () => {
+      contexteService.panierCompetences.set(['c1', 'c2']);
+
+      const resultat: ResultatExportCompetences = {
+        cibleType: 'projet',
+        cibleId: 'p1',
+        secondaireId: '99',
+      };
+
+      (component as any).confirmerExport(resultat);
+
+      expect(contexteService.panierCompetences()).toEqual(['c1', 'c2']);
+      expect((component as any).erreurExport()).toBeTruthy();
+    });
+
+    it('régression SOU-026 : projet introuvable → conserve le panier et affiche une erreur', () => {
+      contexteService.panierCompetences.set(['c1']);
+
+      const resultat: ResultatExportCompetences = {
+        cibleType: 'projet',
+        cibleId: 'inconnu',
+        secondaireId: '0',
+      };
+
+      (component as any).confirmerExport(resultat);
+
+      expect(contexteService.panierCompetences()).toEqual(['c1']);
+      expect((component as any).erreurExport()).toBeTruthy();
     });
   });
 

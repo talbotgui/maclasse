@@ -10,8 +10,6 @@ import { SelecteursBase } from './selecteurs-base';
  *   - Statuts acquisition : A (0), EC (1), NA (2), NE (3) — 4 entrées
  *   - Statuts élève     : HE (0), DE (1), DC (2) — DC UTILISÉ
  *   - Types de contact  : P (0), M (1), S (2), F (3), A (4) — 5 entrées
- *   - Raisons absence   : I (0), O (1), PM (2), P (3), A (4) — 5 entrées
- *   - Fréquences absence: SP (0), SI (1), CS (2) — 3 entrées
  *   - Périodes          : 0 entrée (à créer → index 0)
  *   - Jours fériés      : 0 entrée (à créer → index 0)
  *   - Config EDT        : lundi–vendredi, 08:30–16:30
@@ -37,10 +35,6 @@ export class SelecteursParametrage extends SelecteursBase {
   readonly btnSectionStatutsEleve: Locator;
   /** Bouton de navigation vers la section "Types de contact". */
   readonly btnSectionTypesContact: Locator;
-  /** Bouton de navigation vers la section "Raisons d'absence". */
-  readonly btnSectionRaisonsAbsence: Locator;
-  /** Bouton de navigation vers la section "Fréquences d'absence". */
-  readonly btnSectionFrequencesAbsence: Locator;
   /** Bouton de navigation vers la section "Jours fériés". */
   readonly btnSectionJoursFeries: Locator;
   /** Bouton de navigation vers la section "Préférences". */
@@ -196,38 +190,6 @@ export class SelecteursParametrage extends SelecteursBase {
   /** Bouton ENREGISTRER le sixième type de contact (index 5). */
   readonly btnEnregistrerTypeContact5: Locator;
 
-  // --- Section : Raisons d'absence (5 dans le jeu de données — index 0 à 4) ---
-  /** Bouton AJOUTER une nouvelle raison d'absence. */
-  readonly btnAjouterRaison: Locator;
-  /** Champ Libellé de la première raison d'absence ([id] dynamique). */
-  readonly champRaisonLibelle0: Locator;
-  /** Bouton ENREGISTRER la première raison d'absence (index 0). */
-  readonly btnEnregistrerRaison0: Locator;
-  /** Bouton SUPPRIMER la première raison d'absence (premier état, index 0). */
-  readonly btnSupprimerRaison0: Locator;
-  /** Bouton CONFIRMER la suppression de la première raison (index 0). */
-  readonly btnSupprimerRaison0Confirmer: Locator;
-  /** Champ Libellé de la sixième raison d'absence (index 5 — après AJOUTER sur 5 existants). */
-  readonly champRaisonLibelle5: Locator;
-  /** Bouton ENREGISTRER la sixième raison d'absence (index 5). */
-  readonly btnEnregistrerRaison5: Locator;
-
-  // --- Section : Fréquences d'absence (3 dans le jeu de données — index 0 à 2) ---
-  /** Bouton AJOUTER une nouvelle fréquence d'absence. */
-  readonly btnAjouterFrequence: Locator;
-  /** Champ Libellé de la première fréquence d'absence ([id] dynamique). */
-  readonly champFrequenceLibelle0: Locator;
-  /** Bouton ENREGISTRER la première fréquence d'absence (index 0). */
-  readonly btnEnregistrerFrequence0: Locator;
-  /** Bouton SUPPRIMER la première fréquence d'absence (premier état, index 0). */
-  readonly btnSupprimerFrequence0: Locator;
-  /** Bouton CONFIRMER la suppression de la première fréquence (index 0). */
-  readonly btnSupprimerFrequence0Confirmer: Locator;
-  /** Champ Libellé de la quatrième fréquence (index 3 — après AJOUTER sur 3 existants). */
-  readonly champFrequenceLibelle3: Locator;
-  /** Bouton ENREGISTRER la quatrième fréquence (index 3). */
-  readonly btnEnregistrerFrequence3: Locator;
-
   // --- Section : Jours fériés (0 dans le jeu de données — le premier créé = index 0) ---
   /** Bouton AJOUTER un nouveau jour férié. */
   readonly btnAjouterJourFerie: Locator;
@@ -268,8 +230,6 @@ export class SelecteursParametrage extends SelecteursBase {
     this.btnSectionBareme = page.locator('#btnSectionbareme');
     this.btnSectionStatutsEleve = page.locator('#btnSectionstatutsEleve');
     this.btnSectionTypesContact = page.locator('#btnSectiontypesContact');
-    this.btnSectionRaisonsAbsence = page.locator('#btnSectionraisonsAbsence');
-    this.btnSectionFrequencesAbsence = page.locator('#btnSectionfrequencesAbsence');
     this.btnSectionJoursFeries = page.locator('#btnSectionjoursFeries');
     this.btnSectionPreferences = page.locator('#btnSectionpreferences');
     this.btnSectionDomainesCompetences = page.locator('#btnSectiondomainesCompetences');
@@ -351,22 +311,6 @@ export class SelecteursParametrage extends SelecteursBase {
     this.champTypeContactId5 = page.locator('#champTypeContactId5-input');
     this.champTypeContactLibelle5 = page.locator('#champTypeContactLibelle5-input');
     this.btnEnregistrerTypeContact5 = page.locator('#btnEnregistrerTypeContact5');
-
-    this.btnAjouterRaison = page.locator('#btnAjouterRaison');
-    this.champRaisonLibelle0 = page.locator('#champRaisonLibelle0-input');
-    this.btnEnregistrerRaison0 = page.locator('#btnEnregistrerRaison0');
-    this.btnSupprimerRaison0 = page.locator('#btnSupprimerRaison0');
-    this.btnSupprimerRaison0Confirmer = page.locator('#btnSupprimerRaison0_confirmer');
-    this.champRaisonLibelle5 = page.locator('#champRaisonLibelle5-input');
-    this.btnEnregistrerRaison5 = page.locator('#btnEnregistrerRaison5');
-
-    this.btnAjouterFrequence = page.locator('#btnAjouterFrequence');
-    this.champFrequenceLibelle0 = page.locator('#champFrequenceLibelle0-input');
-    this.btnEnregistrerFrequence0 = page.locator('#btnEnregistrerFrequence0');
-    this.btnSupprimerFrequence0 = page.locator('#btnSupprimerFrequence0');
-    this.btnSupprimerFrequence0Confirmer = page.locator('#btnSupprimerFrequence0_confirmer');
-    this.champFrequenceLibelle3 = page.locator('#champFrequenceLibelle3-input');
-    this.btnEnregistrerFrequence3 = page.locator('#btnEnregistrerFrequence3');
 
     this.btnAjouterJourFerie = page.locator('#btnAjouterJourFerie');
     this.champJourFerieNom0 = page.locator('#champJourFerieNom0-input');

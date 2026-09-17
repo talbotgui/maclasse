@@ -46,6 +46,8 @@
       [joursFeries]="joursFeries()"
       [joursOuvres]="joursOuvres()"
       [jourSelectionne]="dateSelectionnee()"
+      [dateMin]="dateMinCalendrier()"
+      [dateMax]="dateMaxCalendrier()"
       (jourChange)="surChangementDate($event)"
     />
 
@@ -53,6 +55,8 @@
       <button
         id="btnInitialiserVide"
         class="mc-btn-secondaire mc-btn-sm"
+        [disabled]="journeeSelectionnee() !== null"
+        [attr.aria-describedby]="journeeSelectionnee() !== null ? 'descInitialisation' : null"
         (click)="initialiserVide()"
       >
         {{ LIBELLES.cahierJournal.boutonInitialiserVide }}
@@ -60,10 +64,17 @@
       <button
         id="btnInitialiserEdt"
         class="mc-btn-secondaire mc-btn-sm"
+        [disabled]="journeeSelectionnee() !== null"
+        [attr.aria-describedby]="journeeSelectionnee() !== null ? 'descInitialisation' : null"
         (click)="initialiserDepuisEdt()"
       >
         {{ LIBELLES.cahierJournal.boutonInitialiserEdt }}
       </button>
+      @if (journeeSelectionnee() !== null) {
+        <span id="descInitialisation" class="sr-only">{{
+          LIBELLES.cahierJournal.tooltipJourneeDejaInitialisee
+        }}</span>
+      }
 
       @if (journeeSelectionnee()) {
         <button
@@ -165,12 +176,45 @@
         }
 
         @for (seance of seances(); track seance.id; let i = $index) {
+          <button
+            [id]="'btnAjouterSeanceAvant' + seance.id"
+            class="mc-btn-ajouter cj__intercalaire"
+            [disabled]="enCreationSeance()"
+            [attr.aria-label]="LIBELLES.cahierJournal.ariaAjouterSeanceAPosition"
+            (click)="creerSeance(i)"
+          >
+            +
+          </button>
+
+          @if (enCreationSeance() && positionCreation() === i) {
+            <cj-formulaire-seance
+              [focusDemande]="true"
+              [seance]="null"
+              [journee]="journeeSelectionnee()"
+              [domaines]="domaines()"
+              [heuresParDefaut]="heuresCreationParDefaut()"
+              (enregistrer)="onEnregistrerSeance($event)"
+              (annuler)="fermerFormulaire()"
+            />
+          }
+
           <article class="cj__seance" [class.cj__seance--editee]="seanceEditee()?.id === seance.id">
             <div class="cj__seance-entete">
               <span class="cj__seance-heures">{{ seance.heureDebut }} – {{ seance.heureFin }}</span>
               <span class="cj__seance-type">{{ seance.type }}</span>
               @if (seance.titre) {
                 <span class="cj__seance-titre">{{ seance.titre }}</span>
+              }
+              @if (seance.conflitDetecte) {
+                <button
+                  [id]="'btnConflitSeance' + seance.id"
+                  type="button"
+                  class="cj__icone-conflit"
+                  [attr.aria-label]="LIBELLES.cahierJournal.ariaVoirConflitSeance"
+                  (click)="afficherConflitsSeance(seance)"
+                >
+                  ⚠
+                </button>
               }
               <mc-pastilles-eleves-concernes [elevesConcernes]="seance.elevesConcernes" />
               <div class="cj__seance-controles">
@@ -236,12 +280,13 @@
           }
         }
 
-        @if (enCreationSeance()) {
+        @if (enCreationSeance() && positionCreation() === seances().length) {
           <cj-formulaire-seance
             [focusDemande]="true"
             [seance]="null"
             [journee]="journeeSelectionnee()"
             [domaines]="domaines()"
+            [heuresParDefaut]="heuresCreationParDefaut()"
             (enregistrer)="onEnregistrerSeance($event)"
             (annuler)="fermerFormulaire()"
           />
@@ -253,7 +298,7 @@
           id="btnAjouterSeance"
           class="mc-btn-secondaire"
           [disabled]="enCreationSeance()"
-          (click)="creerSeance()"
+          (click)="creerSeance(seances().length)"
         >
           + {{ LIBELLES.cahierJournal.boutonAjouterSeance }}
         </button>
@@ -266,7 +311,7 @@
 
 <popin-avertissement
   [visible]="popinSupprimerVisible()"
-  [message]="LIBELLES.cahierJournal.boutonSupprimerJournee"
+  [message]="LIBELLES.cahierJournal.avertissementSuppressionJournee"
   (confirme)="confirmerSuppressionJournee()"
   (annule)="annulerSuppression()"
 />
@@ -275,4 +320,11 @@
   [visible]="popinConflitsVisible()"
   [conflits]="conflits()"
   (annule)="fermerConflits()"
+/>
+
+<popin-avertissement
+  [visible]="popinNavigationVisible()"
+  [message]="LIBELLES.commun.avertissementModifications"
+  (confirme)="confirmerAbandonNavigation()"
+  (annule)="annulerAbandonNavigation()"
 />

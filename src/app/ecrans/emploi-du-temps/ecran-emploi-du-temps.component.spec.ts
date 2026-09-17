@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, beforeAll, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { EcranEmploiDuTempsComponent } from './ecran-emploi-du-temps.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
@@ -10,6 +10,11 @@ describe('EcranEmploiDuTempsComponent', () => {
   let fixture: ComponentFixture<EcranEmploiDuTempsComponent>;
   let component: EcranEmploiDuTempsComponent;
   let donneesService: DonneesService;
+
+  beforeAll(() => {
+    HTMLDialogElement.prototype.showModal = vi.fn();
+    HTMLDialogElement.prototype.close = vi.fn();
+  });
 
   const creneauLundi = CreneauMother.lundi9h10({ id: 'c1' });
   const edtBase = EdtMother.base({ id: 'edt1', creneaux: [creneauLundi] });
@@ -302,6 +307,153 @@ describe('EcranEmploiDuTempsComponent', () => {
 
       expect((component as any).creneauEdite()).toBeNull();
       expect((component as any).formEdt()).toBeNull();
+    });
+  });
+
+  describe('confirmerNavigation (garde de navigation)', () => {
+    it('retourne true immédiatement si aucun formulaire n’est ouvert', async () => {
+      expect(await component.confirmerNavigation()).toBe(true);
+    });
+
+    it('retourne true immédiatement si le formulaire ouvert n’a pas été modifié', async () => {
+      (component as any).selectionnerEdt(edtBase);
+      fixture.detectChanges();
+
+      expect(await component.confirmerNavigation()).toBe(true);
+    });
+
+    it('ouvre la popin d’avertissement si le formulaire a été modifié, et confirme la navigation', async () => {
+      (component as any).selectionnerEdt(edtBase);
+      fixture.detectChanges();
+      const formulaire = (component as any).formulaireEdt();
+      formulaire.formEdt.nom = 'Nom modifié';
+
+      const promesse = component.confirmerNavigation();
+      fixture.detectChanges();
+      expect((component as any).popinNavigationVisible()).toBe(true);
+
+      (component as any).confirmerAbandonNavigation();
+      expect(await promesse).toBe(true);
+      expect((component as any).popinNavigationVisible()).toBe(false);
+    });
+
+    it('annule la navigation si l’utilisateur refuse', async () => {
+      (component as any).selectionnerEdt(edtBase);
+      fixture.detectChanges();
+      const formulaire = (component as any).formulaireEdt();
+      formulaire.formEdt.nom = 'Nom modifié';
+
+      const promesse = component.confirmerNavigation();
+      (component as any).annulerAbandonNavigation();
+
+      expect(await promesse).toBe(false);
+    });
+  });
+
+  describe('afficherConflitsEdt / fermerConflitsEdt', () => {
+    it('affiche les EDT en conflit avec des messages préfixés', () => {
+      const edtConflit = EdtMother.base({
+        id: 'edt2',
+        nom: 'EDT en conflit',
+        creneaux: [CreneauMother.lundi9h10({ id: 'c2' })],
+      });
+      donneesService.charger(
+        DonneesMother.base({ emploisDuTemps: [edtBase, edtConflit] }),
+      );
+      fixture.detectChanges();
+
+      (component as any).afficherConflitsEdt(edtBase);
+
+      expect((component as any).popinConflitsEdtVisible()).toBe(true);
+      expect((component as any).conflitsEdt()).toEqual(['Chevauche : EDT en conflit']);
+    });
+
+    it('fermerConflitsEdt masque la popin et vide les conflits', () => {
+      (component as any).popinConflitsEdtVisible.set(true);
+      (component as any).conflitsEdt.set(['Chevauche : X']);
+
+      (component as any).fermerConflitsEdt();
+
+      expect((component as any).popinConflitsEdtVisible()).toBe(false);
+      expect((component as any).conflitsEdt()).toEqual([]);
+    });
+
+    it('régression relecture : le bouton d’icône de conflit reste atteignable au clavier (pas de tabindex=-1 forcé)', () => {
+      const edtConflit = EdtMother.base({
+        id: 'edt2',
+        nom: 'EDT en conflit',
+        creneaux: [CreneauMother.lundi9h10({ id: 'c2' })],
+      });
+      donneesService.charger(DonneesMother.base({ emploisDuTemps: [edtBase, edtConflit] }));
+      fixture.detectChanges();
+
+      const boutonConflit = fixture.nativeElement.querySelector(
+        '#btnConflitEdt' + edtBase.id,
+      ) as HTMLButtonElement;
+
+      expect(boutonConflit).not.toBeNull();
+      expect(boutonConflit.getAttribute('tabindex')).toBeNull();
+
+      boutonConflit.click();
+      expect((component as any).popinConflitsEdtVisible()).toBe(true);
+    });
+  });
+
+  describe('naviguerListeEdt (roving tabindex)', () => {
+    beforeEach(() => {
+      const edt2 = EdtMother.base({ id: 'edt2', nom: 'Deuxième EDT', creneaux: [] });
+      donneesService.charger(DonneesMother.base({ emploisDuTemps: [edtBase, edt2] }));
+      fixture.detectChanges();
+    });
+
+    const boutonsEdt = () =>
+      Array.from(
+        fixture.nativeElement.querySelectorAll('.edt__btn-edt'),
+      ) as HTMLButtonElement[];
+
+    const liste = () => fixture.nativeElement.querySelector('.edt__liste') as HTMLUListElement;
+
+    it('ArrowDown déplace le focus sur l’EDT suivant', () => {
+      boutonsEdt()[0].focus();
+
+      liste().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+      fixture.detectChanges();
+
+      expect(document.activeElement).toBe(boutonsEdt()[1]);
+      expect((component as any).indexEdtFocalise()).toBe(1);
+    });
+
+    it('End puis Home ramène au premier EDT', () => {
+      boutonsEdt()[0].focus();
+      liste().dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
+      fixture.detectChanges();
+      expect(document.activeElement).toBe(boutonsEdt()[1]);
+
+      liste().dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+      fixture.detectChanges();
+
+      expect(document.activeElement).toBe(boutonsEdt()[0]);
+    });
+
+    it('ArrowUp depuis le premier EDT ne déplace pas le focus', () => {
+      boutonsEdt()[0].focus();
+
+      liste().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+      fixture.detectChanges();
+
+      expect(document.activeElement).toBe(boutonsEdt()[0]);
+    });
+  });
+
+  describe('redemanderFocusFormulaire (SOU-023)', () => {
+    it('pulse focusDemandeFormulaire à false puis true lors d’une nouvelle sélection', async () => {
+      (component as any).selectionnerEdt(edtBase);
+
+      expect((component as any).focusDemandeFormulaire()).toBe(false);
+
+      await new Promise((resolve) => setTimeout(resolve));
+
+      expect((component as any).focusDemandeFormulaire()).toBe(true);
     });
   });
 });

@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ContexteService } from './services/avecEtat/contexte.service';
 import { McEnteteComponent } from './composants/mc-entete/mc-entete.component';
 
 /**
  * Composant racine de l'application MaClasse.
  * Layout : en-tête (intégré à l'étape 9) + vue courante via `<router-outlet>`.
- * Applique le thème actif sur `<html>` en réaction au signal `themeActif`.
+ * Le thème actif est appliqué par `ContexteService` lui-même (construction et `basculerTheme()`),
+ * ce composant n'a donc aucune logique propre.
  */
 @Component({
   selector: 'app-root',
@@ -15,12 +15,4 @@ import { McEnteteComponent } from './composants/mc-entete/mc-entete.component';
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
-  /** Service de contexte global — utilisé pour l'application réactive du thème. */
-  protected readonly contexte = inject(ContexteService);
-
-  /** Câble l'effet d'application du thème dans le contexte d'injection du constructeur. */
-  public constructor() {
-    effect(() => this.contexte.appliquerTheme(this.contexte.themeActif()));
-  }
-}
+export class App {}

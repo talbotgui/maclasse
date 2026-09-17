@@ -56,6 +56,9 @@ export class McArbreCompetencesComponent extends ComposantBase {
   private readonly boutonsSelection =
     viewChildren<ElementRef<HTMLButtonElement>>('boutonSelection');
 
+  /** Index du nœud actuellement inclus dans l'ordre de tabulation (roving tabindex). */
+  protected readonly indexFocalise = signal(0);
+
   /** État déplié sauvegardé avant l'activation d'une recherche, `null` si inactif. */
   private readonly noeudsDepliésAvantRecherche = signal<Set<string> | null>(null);
 
@@ -190,24 +193,23 @@ export class McArbreCompetencesComponent extends ComposantBase {
    */
   protected naviguerClavier(event: KeyboardEvent, indexCourant: number): void {
     const noeuds = this.noeudsAffiches();
-    const boutons = this.boutonsSelection();
 
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault();
-        boutons[indexCourant + 1]?.nativeElement.focus();
+        this.focaliserNoeud(indexCourant + 1);
         break;
       case 'ArrowUp':
         event.preventDefault();
-        boutons[indexCourant - 1]?.nativeElement.focus();
+        this.focaliserNoeud(indexCourant - 1);
         break;
       case 'Home':
         event.preventDefault();
-        boutons[0]?.nativeElement.focus();
+        this.focaliserNoeud(0);
         break;
       case 'End':
         event.preventDefault();
-        boutons[boutons.length - 1]?.nativeElement.focus();
+        this.focaliserNoeud(this.boutonsSelection().length - 1);
         break;
       case 'ArrowRight': {
         event.preventDefault();
@@ -215,7 +217,7 @@ export class McArbreCompetencesComponent extends ComposantBase {
         if (!noeud.estFeuille && !noeud.estDeplie) {
           this.basculerNoeud(noeud.competence.id);
         } else if (!noeud.estFeuille && noeud.estDeplie) {
-          boutons[indexCourant + 1]?.nativeElement.focus();
+          this.focaliserNoeud(indexCourant + 1);
         }
         break;
       }
@@ -229,11 +231,36 @@ export class McArbreCompetencesComponent extends ComposantBase {
           while (i >= 0 && noeuds[i].niveau >= noeud.niveau) {
             i--;
           }
-          boutons[i]?.nativeElement.focus();
+          this.focaliserNoeud(i);
         }
         break;
       }
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        this.ajouterAuPanier(noeuds[indexCourant].competence.id);
+        break;
     }
+  }
+
+  /**
+   * Déplace le focus clavier vers le nœud à l'index donné et met à jour le roving tabindex.
+   * @param index Index du nœud à focaliser dans `noeudsAffiches`.
+   */
+  private focaliserNoeud(index: number): void {
+    const boutons = this.boutonsSelection();
+    if (index < 0 || index >= boutons.length) return;
+    this.indexFocalise.set(index);
+    boutons[index].nativeElement.focus();
+  }
+
+  /**
+   * Met à jour le roving tabindex quand un nœud reçoit le focus par un autre moyen que
+   * les flèches (ex. clic direct ou Tab entrant dans l'arbre).
+   * @param index Index du nœud focalisé.
+   */
+  protected surFocusNoeud(index: number): void {
+    this.indexFocalise.set(index);
   }
 
   /**

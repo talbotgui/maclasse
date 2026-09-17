@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, beforeAll, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { EcranCahierJournalComponent } from './ecran-cahier-journal.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
+import { ContexteService } from '../../services/avecEtat/contexte.service';
 import { CahierJournalService } from '../../services/sansEtat/cahier-journal.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { SeanceMother } from '../../tests/cahier-journal.mother';
@@ -13,6 +14,11 @@ describe('EcranCahierJournalComponent', () => {
   let fixture: ComponentFixture<EcranCahierJournalComponent>;
   let component: EcranCahierJournalComponent;
   let donneesService: DonneesService;
+
+  beforeAll(() => {
+    HTMLDialogElement.prototype.showModal = vi.fn();
+    HTMLDialogElement.prototype.close = vi.fn();
+  });
 
   const dateTest = DateUtils.ajouterJours(
     DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()),
@@ -99,13 +105,115 @@ describe('EcranCahierJournalComponent', () => {
   });
 
   describe('creerSeance', () => {
-    it('ouvre le formulaire de création', () => {
-      (component as any).seanceEditee.set(seance1);
+    it('ouvre le formulaire de création à la position donnée', () => {
+      (component as any).seanceEditeeId.set(seance1.id);
 
-      (component as any).creerSeance();
+      (component as any).creerSeance(1);
 
       expect((component as any).enCreationSeance()).toBe(true);
       expect((component as any).seanceEditee()).toBeNull();
+      expect((component as any).positionCreation()).toBe(1);
+    });
+  });
+
+  describe('positionnement du formulaire de création', () => {
+    it('affiche le formulaire de création avant la première séance à la position 0', () => {
+      (component as any).creerSeance(0);
+      fixture.detectChanges();
+
+      const elements = Array.from(
+        fixture.nativeElement.querySelectorAll('.cj__seance, cj-formulaire-seance'),
+      ) as Element[];
+      expect(elements.map((e) => e.tagName.toLowerCase())).toEqual([
+        'cj-formulaire-seance',
+        'article',
+        'article',
+      ]);
+    });
+
+    it('affiche le formulaire de création entre les deux séances à la position 1', () => {
+      (component as any).creerSeance(1);
+      fixture.detectChanges();
+
+      const elements = Array.from(
+        fixture.nativeElement.querySelectorAll('.cj__seance, cj-formulaire-seance'),
+      ) as Element[];
+      expect(elements.map((e) => e.tagName.toLowerCase())).toEqual([
+        'article',
+        'cj-formulaire-seance',
+        'article',
+      ]);
+    });
+
+    it('affiche le formulaire de création après la dernière séance à la position finale', () => {
+      (component as any).creerSeance(2);
+      fixture.detectChanges();
+
+      const elements = Array.from(
+        fixture.nativeElement.querySelectorAll('.cj__seance, cj-formulaire-seance'),
+      ) as Element[];
+      expect(elements.map((e) => e.tagName.toLowerCase())).toEqual([
+        'article',
+        'article',
+        'cj-formulaire-seance',
+      ]);
+    });
+  });
+
+  describe('calculerHeuresParDefaut', () => {
+    it('position 0 sans séance précédente → utilise l’heure de début de la journée scolaire', () => {
+      const heures = (component as any).calculerHeuresParDefaut(0);
+
+      expect(heures.heureDebut).toBe('08:30');
+    });
+
+    it('position en fin de liste sans séance suivante → utilise l’heure de fin de la journée scolaire', () => {
+      const heures = (component as any).calculerHeuresParDefaut(2);
+
+      expect(heures.heureFin).toBe('16:30');
+    });
+
+    it('position entre deux séances → comble l’écart entre la précédente et la suivante', () => {
+      const heures = (component as any).calculerHeuresParDefaut(1);
+
+      expect(heures.heureDebut).toBe(seance1.heureFin);
+      expect(heures.heureFin).toBe(seance2.heureDebut);
+    });
+  });
+
+  describe('heuresCreationParDefaut', () => {
+    it('reflète calculerHeuresParDefaut à la position de création courante', () => {
+      (component as any).creerSeance(0);
+
+      expect((component as any).heuresCreationParDefaut()).toEqual(
+        (component as any).calculerHeuresParDefaut(0),
+      );
+    });
+  });
+
+  describe('dateMinCalendrier / dateMaxCalendrier', () => {
+    it('retournent null si aucune période n’est configurée', () => {
+      expect((component as any).dateMinCalendrier()).toBeNull();
+      expect((component as any).dateMaxCalendrier()).toBeNull();
+    });
+
+    it('retournent les bornes min/max des périodes configurées', () => {
+      const base = DonneesMother.base();
+      donneesService.charger(
+        DonneesMother.base({
+          referentiels: {
+            ...base.referentiels,
+            periodes: [
+              { id: 'p1', nom: 'Trimestre 1', debut: '2025-09-01', fin: '2025-12-19' },
+              { id: 'p2', nom: 'Trimestre 2', debut: '2026-01-05', fin: '2026-03-27' },
+            ],
+          },
+        }),
+      );
+      fixture.detectChanges();
+
+      expect((component as any).dateMinCalendrier()).toBe('2025-09-01');
+      expect((component as any).dateMaxCalendrier()).toBe('2026-03-27');
     });
   });
 
@@ -113,8 +221,21 @@ describe('EcranCahierJournalComponent', () => {
     it('passe la séance en mode édition', () => {
       (component as any).editerSeance(seance1);
 
-      expect((component as any).seanceEditee()).toBe(seance1);
+      expect((component as any).seanceEditee()).toEqual(seance1);
       expect((component as any).enCreationSeance()).toBe(false);
+    });
+  });
+
+  describe('deplacerSeance', () => {
+    it('régression SOU-037 : seanceEditee reflète l’échange d’heures d’une séance adjacente réordonnée', () => {
+      (component as any).editerSeance(seance1);
+      expect((component as any).seanceEditee().heureDebut).toBe('09:00');
+
+      // Échange seance1 (index 0) avec seance2 (index 1) : seance1 prend les heures de seance2.
+      (component as any).deplacerSeance(0, 1);
+
+      expect((component as any).seanceEditee().id).toBe('s1');
+      expect((component as any).seanceEditee().heureDebut).toBe('10:00');
     });
   });
 
@@ -144,6 +265,82 @@ describe('EcranCahierJournalComponent', () => {
 
       expect((component as any).enCreationSeance()).toBe(false);
     });
+
+    it('régression SOU-033 : marque conflitDetecte=true si un conflit est détecté', () => {
+      donneesService.charger(
+        DonneesMother.base({
+          classe: {
+            ...DonneesMother.base().classe,
+            eleves: [
+              EleveMother.base('e1', 'M', 'A', {
+                absencesRecurrentes: [
+                  {
+                    id: 'ar1',
+                    libelle: 'Orthophonie',
+                    jour: 'lundi',
+                    heureDebut: '09:00',
+                    heureFin: '10:00',
+                    paritesSemaine: 'lesDeux',
+                  },
+                ],
+              }),
+            ],
+          },
+          cahierJournal: [{ id: 'j1', date: dateTest, seances: [seance1, seance2] }],
+        }),
+      );
+      (component as any).dateSelectionnee.set(dateTest);
+      fixture.detectChanges();
+
+      (component as any).onEnregistrerSeance(seance1);
+
+      const journee = donneesService.donnees()?.cahierJournal.find((j) => j.date === dateTest);
+      expect(journee?.seances.find((s) => s.id === 's1')?.conflitDetecte).toBe(true);
+      expect((component as any).popinConflitsVisible()).toBe(true);
+    });
+
+    it('régression SOU-033 : marque conflitDetecte=false si aucun conflit', () => {
+      (component as any).onEnregistrerSeance(seance1);
+
+      const journee = donneesService.donnees()?.cahierJournal.find((j) => j.date === dateTest);
+      expect(journee?.seances.find((s) => s.id === 's1')?.conflitDetecte).toBe(false);
+    });
+  });
+
+  describe('afficherConflitsSeance', () => {
+    it('recalcule et affiche les conflits pour une séance déjà marquée', () => {
+      donneesService.charger(
+        DonneesMother.base({
+          classe: {
+            ...DonneesMother.base().classe,
+            eleves: [
+              EleveMother.base('e1', 'M', 'A', {
+                absencesRecurrentes: [
+                  {
+                    id: 'ar1',
+                    libelle: 'Orthophonie',
+                    jour: 'lundi',
+                    heureDebut: '09:00',
+                    heureFin: '10:00',
+                    paritesSemaine: 'lesDeux',
+                  },
+                ],
+              }),
+            ],
+          },
+          cahierJournal: [
+            { id: 'j1', date: dateTest, seances: [{ ...seance1, conflitDetecte: true }] },
+          ],
+        }),
+      );
+      (component as any).dateSelectionnee.set(dateTest);
+      fixture.detectChanges();
+
+      (component as any).afficherConflitsSeance({ ...seance1, conflitDetecte: true });
+
+      expect((component as any).popinConflitsVisible()).toBe(true);
+      expect((component as any).conflits()).toEqual(['M A — Orthophonie']);
+    });
   });
 
   describe('supprimerSeance', () => {
@@ -155,7 +352,7 @@ describe('EcranCahierJournalComponent', () => {
     });
 
     it('ferme le formulaire si la séance éditée est supprimée', () => {
-      (component as any).seanceEditee.set(seance1);
+      (component as any).seanceEditeeId.set(seance1.id);
       (component as any).enCreationSeance.set(false);
 
       (component as any).supprimerSeance('s1');
@@ -241,7 +438,7 @@ describe('EcranCahierJournalComponent', () => {
 
   describe('fermerFormulaire', () => {
     it('reset seanceEditee et enCreationSeance', () => {
-      (component as any).seanceEditee.set(seance1);
+      (component as any).seanceEditeeId.set(seance1.id);
       (component as any).enCreationSeance.set(true);
 
       (component as any).fermerFormulaire();
@@ -353,6 +550,69 @@ describe('EcranCahierJournalComponent', () => {
       expect(fixture.nativeElement.querySelector('.cj__notes-impression')?.textContent).toContain(
         'Mémo important',
       );
+    });
+  });
+
+  describe('confirmerNavigation (garde de navigation)', () => {
+    it('retourne true immédiatement si aucun formulaire de séance n’est ouvert', async () => {
+      expect(await component.confirmerNavigation()).toBe(true);
+    });
+
+    it('retourne true immédiatement si le formulaire ouvert n’a pas été modifié', async () => {
+      (component as any).creerSeance(0);
+      fixture.detectChanges();
+
+      expect(await component.confirmerNavigation()).toBe(true);
+    });
+
+    it('ouvre la popin d’avertissement si le formulaire a été modifié, et confirme la navigation', async () => {
+      (component as any).creerSeance(0);
+      fixture.detectChanges();
+      const formulaire = (component as any).formulaireSeance();
+      formulaire.form.controls.titre.markAsDirty();
+      fixture.detectChanges();
+
+      const promesse = component.confirmerNavigation();
+      fixture.detectChanges();
+      expect((component as any).popinNavigationVisible()).toBe(true);
+
+      (component as any).confirmerAbandonNavigation();
+      expect(await promesse).toBe(true);
+      expect((component as any).popinNavigationVisible()).toBe(false);
+    });
+
+    it('annule la navigation et laisse le formulaire ouvert si l’utilisateur refuse', async () => {
+      (component as any).creerSeance(0);
+      fixture.detectChanges();
+      const formulaire = (component as any).formulaireSeance();
+      formulaire.form.controls.titre.markAsDirty();
+      fixture.detectChanges();
+
+      const promesse = component.confirmerNavigation();
+      (component as any).annulerAbandonNavigation();
+
+      expect(await promesse).toBe(false);
+      expect((component as any).enCreationSeance()).toBe(true);
+    });
+  });
+
+  describe('jourCourantCahierJournal (ContexteService) — SOU-015', () => {
+    it('initialise dateSelectionnee depuis ContexteService.jourCourantCahierJournal si déjà renseigné', () => {
+      const contexteService = TestBed.inject(ContexteService);
+      contexteService.jourCourantCahierJournal.set('2026-03-02');
+
+      const fixtureDediee = TestBed.createComponent(EcranCahierJournalComponent);
+
+      expect((fixtureDediee.componentInstance as any).dateSelectionnee()).toBe('2026-03-02');
+    });
+
+    it('répercute tout changement de dateSelectionnee vers ContexteService.jourCourantCahierJournal', () => {
+      const contexteService = TestBed.inject(ContexteService);
+
+      (component as any).dateSelectionnee.set('2026-04-10');
+      fixture.detectChanges();
+
+      expect(contexteService.jourCourantCahierJournal()).toBe('2026-04-10');
     });
   });
 });

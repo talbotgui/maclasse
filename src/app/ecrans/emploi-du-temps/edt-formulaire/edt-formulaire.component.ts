@@ -76,19 +76,19 @@ export class EdtFormulaireComponent {
   public readonly joursOuvres: InputSignal<JourSemaine[]> = input<JourSemaine[]>([]);
 
   /** Émis avec l'EDT modifié à la sauvegarde des propriétés. */
-  public readonly edtEnregistre: OutputEmitterRef<EmploiDuTemps> = output<EmploiDuTemps>();
+  protected readonly edtEnregistre: OutputEmitterRef<EmploiDuTemps> = output<EmploiDuTemps>();
 
   /** Émis pour déclencher la suppression de l'EDT. */
-  public readonly edtSupprime: OutputEmitterRef<void> = output<void>();
+  protected readonly edtSupprime: OutputEmitterRef<void> = output<void>();
 
   /** Émis avec le créneau modifié ou créé. */
-  public readonly creneauEnregistre: OutputEmitterRef<CreneauEdt> = output<CreneauEdt>();
+  protected readonly creneauEnregistre: OutputEmitterRef<CreneauEdt> = output<CreneauEdt>();
 
   /** Émis pour déclencher la suppression d'un créneau existant. */
-  public readonly creneauSupprime: OutputEmitterRef<string> = output<string>();
+  protected readonly creneauSupprime: OutputEmitterRef<string> = output<string>();
 
   /** Émis quand l'utilisateur annule. */
-  public readonly edtAnnule: OutputEmitterRef<void> = output<void>();
+  protected readonly edtAnnule: OutputEmitterRef<void> = output<void>();
 
   /** Options de fréquence pour l'EDT. */
   protected readonly optionsFrequence = [
@@ -115,23 +115,65 @@ export class EdtFormulaireComponent {
   /** Copie locale du créneau en cours d'édition. */
   protected formCreneau: CreneauEdt | null = null;
 
+  /** Valeur d'origine de l'EDT à l'ouverture du formulaire, pour la détection de modifications. */
+  private edtOrigine: EmploiDuTemps | null = null;
+
+  /** Valeur d'origine du créneau à l'ouverture du formulaire, pour la détection de modifications. */
+  private creneauOrigine: CreneauEdt | null = null;
+
+  /**
+   * Identifiant de l'EDT actuellement chargé dans `formEdt` (`null` si aucun),
+   * `undefined` tant qu'aucun chargement n'a eu lieu.
+   */
+  private idEdtCharge: string | null | undefined = undefined;
+
+  /**
+   * Identifiant du créneau actuellement chargé dans `formCreneau` (`null` si aucun),
+   * `undefined` tant qu'aucun chargement n'a eu lieu.
+   */
+  private idCreneauCharge: string | null | undefined = undefined;
+
   /** `true` si un créneau existant est en cours d'édition (pour afficher SUPPRIMER). */
   protected readonly estEditionCreneau = computed(
     () => this.creneau() !== null && !!this.creneau()?.id,
   );
 
-  /** Charge les copies locales à chaque changement des entrées. */
+  /**
+   * Charge les copies locales lors d'un changement réel d'EDT/créneau édité.
+   * Ignore les changements de référence qui ne correspondent pas à un changement
+   * d'identité (ex. UNDO/REDO global), pour ne pas écraser la saisie en cours.
+   */
   public constructor() {
     effect(() => {
       const e = this.edt();
+      const id = e?.id ?? null;
+      if (id === this.idEdtCharge) return;
+      this.idEdtCharge = id;
       this.formEdt = e ? structuredClone(e) : null;
+      this.edtOrigine = e ? structuredClone(e) : null;
       this.cdr.markForCheck();
     });
     effect(() => {
       const c = this.creneau();
+      const id = c?.id ?? null;
+      if (id === this.idCreneauCharge) return;
+      this.idCreneauCharge = id;
       this.formCreneau = c ? structuredClone(c) : null;
+      this.creneauOrigine = c ? structuredClone(c) : null;
       this.cdr.markForCheck();
     });
+  }
+
+  /**
+   * Indique si le formulaire actuellement affiché (propriétés EDT ou créneau) contient
+   * des modifications non enregistrées par rapport à sa valeur d'origine.
+   * @returns `true` si les propriétés EDT ou le créneau ont été modifiés depuis le chargement.
+   */
+  public estModifie(): boolean {
+    return (
+      JSON.stringify(this.formEdt) !== JSON.stringify(this.edtOrigine) ||
+      JSON.stringify(this.formCreneau) !== JSON.stringify(this.creneauOrigine)
+    );
   }
 
   /**
@@ -159,5 +201,20 @@ export class EdtFormulaireComponent {
   /** Enregistre le créneau. */
   protected onEnregistrerCreneau(): void {
     if (this.formCreneau) this.creneauEnregistre.emit(structuredClone(this.formCreneau));
+  }
+
+  /** Délègue l'annulation de la saisie (EDT ou créneau) au parent. */
+  protected onEdtAnnule(): void {
+    this.edtAnnule.emit();
+  }
+
+  /** Délègue la demande de suppression de l'EDT au parent. */
+  protected onEdtSupprime(): void {
+    this.edtSupprime.emit();
+  }
+
+  /** Délègue la demande de suppression du créneau en cours au parent. */
+  protected onCreneauSupprime(): void {
+    if (this.formCreneau) this.creneauSupprime.emit(this.formCreneau.id);
   }
 }

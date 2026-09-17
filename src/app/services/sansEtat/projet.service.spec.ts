@@ -184,19 +184,19 @@ describe('ProjetService', () => {
     });
   });
 
-  /** Supprime une période d'un projet par son nom ; sans effet si le projet ou la période est introuvable. */
+  /** Supprime une période d'un projet par son id ; sans effet si le projet ou la période est introuvable. */
   describe('supprimerPeriode', () => {
     it('supprime une période existante', () => {
       service.creerProjet(ProjetMother.base());
       service.ajouterPeriode('p1', PeriodeMother.base());
-      service.supprimerPeriode('p1', 'Période 1');
+      service.supprimerPeriode('p1', 'pp1');
       expect(donneesService.donnees()?.projets[0].periodes).toHaveLength(0);
     });
 
     it('sans effet si projet inexistant', () => {
       service.creerProjet(ProjetMother.base());
       service.ajouterPeriode('p1', PeriodeMother.base());
-      service.supprimerPeriode('inconnu', 'Période 1');
+      service.supprimerPeriode('inconnu', 'pp1');
       expect(donneesService.donnees()?.projets[0].periodes).toHaveLength(1);
     });
 
@@ -204,7 +204,38 @@ describe('ProjetService', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({});
       const s = TestBed.inject(ProjetService);
-      expect(() => s.supprimerPeriode('p1', 'Période 1')).not.toThrow();
+      expect(() => s.supprimerPeriode('p1', 'pp1')).not.toThrow();
+    });
+  });
+
+  /**
+   * Régression SOU-018 : deux périodes homonymes ne doivent plus être confondues,
+   * `modifierPeriode`/`supprimerPeriode` matchent désormais par `id` et non par `periodeNom`.
+   */
+  describe('périodes homonymes (régression SOU-018)', () => {
+    it('modifierPeriode ne modifie que la période ciblée, pas son homonyme', () => {
+      service.creerProjet(ProjetMother.base());
+      service.ajouterPeriode('p1', PeriodeMother.base({ id: 'pp1', periodeNom: '' }));
+      service.ajouterPeriode('p1', PeriodeMother.base({ id: 'pp2', periodeNom: '' }));
+
+      const cible = donneesService.donnees()!.projets[0].periodes[0];
+      service.modifierPeriode('p1', cible, { ...cible, competencesIds: ['c1'] });
+
+      const periodes = donneesService.donnees()!.projets[0].periodes;
+      expect(periodes[0].competencesIds).toEqual(['c1']);
+      expect(periodes[1].competencesIds).toEqual([]);
+    });
+
+    it('supprimerPeriode ne supprime que la période ciblée, pas son homonyme', () => {
+      service.creerProjet(ProjetMother.base());
+      service.ajouterPeriode('p1', PeriodeMother.base({ id: 'pp1', periodeNom: '' }));
+      service.ajouterPeriode('p1', PeriodeMother.base({ id: 'pp2', periodeNom: '' }));
+
+      service.supprimerPeriode('p1', 'pp1');
+
+      const periodes = donneesService.donnees()!.projets[0].periodes;
+      expect(periodes).toHaveLength(1);
+      expect(periodes[0].id).toBe('pp2');
     });
   });
 });

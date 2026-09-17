@@ -6,13 +6,20 @@ import { McArbreCompetencesComponent } from './mc-arbre-competences.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { CompetenceMother } from '../../tests/competence.mother';
+import { LIBELLES } from '../../libelles';
 
 /** Composant hôte minimal pour tester {@link McArbreCompetencesComponent} dans un contexte Angular réel. */
 @Component({
-  template: `<mc-arbre-competences [competencesSelectionnees]="[]" />`,
+  template: `<mc-arbre-competences
+    [competencesSelectionnees]="[]"
+    (selectionChange)="derniereSelection = $event"
+  />`,
   imports: [McArbreCompetencesComponent],
 })
-class ComposantHote {}
+class ComposantHote {
+  /** Dernière valeur émise par `selectionChange`, capturée pour assertion dans les tests. */
+  derniereSelection: string[] | null = null;
+}
 
 describe('McArbreCompetencesComponent', () => {
   let fixture: ComponentFixture<ComposantHote>;
@@ -171,6 +178,55 @@ describe('McArbreCompetencesComponent', () => {
       appuyerTouche(0, 'ArrowLeft');
 
       expect(document.activeElement).toBe(boutons[0]);
+    });
+  });
+
+  describe('navigation clavier — Entrée / Espace', () => {
+    it('Entrée ajoute le nœud focalisé au panier', () => {
+      const boutons = boutonsLibelle();
+      boutons[0].focus();
+
+      appuyerTouche(0, 'Enter');
+
+      expect((fixture.componentInstance as ComposantHote).derniereSelection).toContain('FR');
+    });
+
+    it('Espace ajoute le nœud focalisé au panier', () => {
+      cliquerToggle('FR');
+      const boutons = boutonsLibelle();
+      const indexEnfant = boutons.findIndex((b) => b.id === 'noeudSel_FR-LECT');
+      boutons[indexEnfant].focus();
+
+      appuyerTouche(indexEnfant, ' ');
+
+      expect((fixture.componentInstance as ComposantHote).derniereSelection).toContain('FR-LECT');
+    });
+  });
+
+  describe('roving tabindex', () => {
+    it('seul le nœud focalisé a tabindex=0, les autres -1', () => {
+      const boutons = boutonsLibelle();
+      boutons[1].focus();
+      fixture.detectChanges();
+
+      expect(boutons[0].getAttribute('tabindex')).toBe('-1');
+      expect(boutons[1].getAttribute('tabindex')).toBe('0');
+    });
+
+    it('le premier nœud a tabindex=0 avant toute interaction', () => {
+      const boutons = boutonsLibelle();
+
+      expect(boutons[0].getAttribute('tabindex')).toBe('0');
+    });
+  });
+
+  describe('accessibilité du conteneur', () => {
+    it('le conteneur role="tree" porte un aria-label', () => {
+      const arbre = fixture.debugElement.query(By.css('[role="tree"]'));
+
+      expect(arbre.nativeElement.getAttribute('aria-label')).toBe(
+        LIBELLES.competences.ariaArbreCompetences,
+      );
     });
   });
 });

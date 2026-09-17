@@ -2,15 +2,15 @@
  * Sous-composant d'affichage en lecture seule de la fiche d'un projet.
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
-import type { InputSignal, OutputEmitterRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import type { InputSignal, OutputEmitterRef, Signal } from '@angular/core';
 import { LIBELLES } from '../../../libelles';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { McBoutonDestructionComponent } from '../../../composants/mc-bouton-destruction/mc-bouton-destruction.component';
 import { CompetenceService } from '../../../services/sansEtat/competence.service';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
 import { DateUtils } from '../../../utilitaires/date.utils';
-import type { Projet } from '../../../modeles/projet.modele';
+import type { Projet, ProjetPeriode } from '../../../modeles/projet.modele';
 
 /**
  * Fiche projet en lecture seule.
@@ -43,13 +43,18 @@ export class FpFicheProjetComponent {
   public readonly focusDemande: InputSignal<boolean> = input(false);
 
   /** Émis quand l'utilisateur clique sur MODIFIER. */
-  public readonly modifier: OutputEmitterRef<void> = output<void>();
+  protected readonly modifier: OutputEmitterRef<void> = output<void>();
 
   /** Émis quand l'utilisateur confirme la suppression. */
-  public readonly supprimer: OutputEmitterRef<void> = output<void>();
+  protected readonly supprimer: OutputEmitterRef<void> = output<void>();
 
   /** Émis quand l'utilisateur clique sur IMPRIMER. */
-  public readonly imprimer: OutputEmitterRef<void> = output<void>();
+  protected readonly imprimer: OutputEmitterRef<void> = output<void>();
+
+  /** Périodes du projet triées par date de début ascendante. */
+  protected readonly periodesTriees: Signal<ProjetPeriode[]> = computed(() =>
+    [...this.projet().periodes].sort((a, b) => a.debut.localeCompare(b.debut)),
+  );
 
   /**
    * Résout les noms des élèves associés au projet.

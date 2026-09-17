@@ -8,8 +8,8 @@ import { SelecteursEmploiDuTemps } from '../selecteurs/selecteurs-emploi-du-temp
 // - Classe     : niveau CM1-CM2, année scolaire "Double niveau CM1-CM2"
 // - Config EDT : lundi–vendredi, 08:30–16:30
 // - 3 groupes (A/B/C), groupe A utilisé par des élèves
-// - 4 statuts acquisition, 3 statuts élève (DC utilisé), 5 types contact, 5 raisons absence
-// - 3 fréquences absence, 0 période scolaire, 0 jour férié
+// - 4 statuts acquisition, 3 statuts élève (DC utilisé), 5 types contact
+// - 0 période scolaire, 0 jour férié
 // - 18 domaines de compétences, domaine APS (index 0) inactif dans domainesActifs
 
 testAvecDonnees(
@@ -41,12 +41,6 @@ testAvecDonnees(
 
     await param.btnSectionTypesContact.click();
     await expect(param.btnAjouterTypeContact).toBeVisible();
-
-    await param.btnSectionRaisonsAbsence.click();
-    await expect(param.btnAjouterRaison).toBeVisible();
-
-    await param.btnSectionFrequencesAbsence.click();
-    await expect(param.btnAjouterFrequence).toBeVisible();
 
     await param.btnSectionJoursFeries.click();
     await expect(param.btnAjouterJourFerie).toBeVisible();
@@ -284,37 +278,9 @@ testAvecDonnees('E2E-92 — Ajouter un type de contact', async ({ appAvecDonnees
   await expect(entete.btnAnnuler).toBeEnabled();
 });
 
-testAvecDonnees("E2E-93 — Ajouter une raison d'absence", async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const param = new SelecteursParametrage(appAvecDonnees);
-
-  await entete.navParametrage.click();
-  await param.btnSectionRaisonsAbsence.click();
-
-  // 5 raisons existantes → nouvelle à l'index 5
-  await param.btnAjouterRaison.click();
-  await param.champRaisonLibelle5.fill('Rendez-vous médical');
-  await param.btnEnregistrerRaison5.click();
-
-  await expect(param.champRaisonLibelle5).toHaveValue('Rendez-vous médical');
-  await expect(entete.btnAnnuler).toBeEnabled();
-});
-
-testAvecDonnees("E2E-94 — Ajouter une fréquence d'absence", async ({ appAvecDonnees }) => {
-  const entete = new SelecteursEntete(appAvecDonnees);
-  const param = new SelecteursParametrage(appAvecDonnees);
-
-  await entete.navParametrage.click();
-  await param.btnSectionFrequencesAbsence.click();
-
-  // 3 fréquences existantes → nouvelle à l'index 3
-  await param.btnAjouterFrequence.click();
-  await param.champFrequenceLibelle3.fill('1 semaine sur 3');
-  await param.btnEnregistrerFrequence3.click();
-
-  await expect(param.champFrequenceLibelle3).toHaveValue('1 semaine sur 3');
-  await expect(entete.btnAnnuler).toBeEnabled();
-});
+// E2E-93 (raison d'absence) et E2E-94 (fréquence d'absence) supprimés avec SOU-031 :
+// les référentiels "Raisons d'absence" et "Fréquences d'absence" ont été retirés de
+// l'écran paramétrage (jamais utilisés ailleurs dans l'application).
 
 testAvecDonnees('E2E-95 — Ajouter un jour férié', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);

@@ -50,24 +50,25 @@ export class McInputComponent extends ComposantBase implements ControlValueAcces
   protected readonly estDesactive = signal(false);
 
   /** Callback de notification des changements, fourni par Angular Forms. */
-  protected onChange: (valeur: string) => void = () => {};
+  protected onChange: (valeur: string | number) => void = () => {};
 
   /** Callback de notification du touché, fourni par Angular Forms. */
   protected onTouched: () => void = () => {};
 
   /**
    * Reçoit la valeur depuis le FormControl et met à jour le signal interne.
-   * @param valeur Valeur fournie par Angular Forms (peut être `null` à l'initialisation).
+   * @param valeur Valeur fournie par Angular Forms (peut être `null` à l'initialisation,
+   * ou un `number` pour un champ `type="number"`).
    */
-  public writeValue(valeur: string | null | undefined): void {
-    this.valeur.set(valeur ?? '');
+  public writeValue(valeur: string | number | null | undefined): void {
+    this.valeur.set(valeur === null || valeur === undefined ? '' : String(valeur));
   }
 
   /**
    * Enregistre le callback appelé lors de chaque changement de valeur.
    * @param fn Fonction fournie par Angular Forms.
    */
-  public registerOnChange(fn: (valeur: string) => void): void {
+  public registerOnChange(fn: (valeur: string | number) => void): void {
     this.onChange = fn;
   }
 
@@ -89,11 +90,24 @@ export class McInputComponent extends ComposantBase implements ControlValueAcces
 
   /**
    * Notifie Angular Forms de la nouvelle valeur saisie.
-   * @param valeur Nouvelle valeur de l'input.
+   * Pour un champ `type="number"`, la valeur transmise au modèle est convertie en nombre,
+   * afin qu'une comparaison `!==` avec la valeur enregistrée reste cohérente.
+   * @param valeur Nouvelle valeur brute de l'input (toujours une chaîne côté DOM).
    */
   protected surChangement(valeur: string): void {
     this.valeur.set(valeur);
-    this.onChange(valeur);
+    this.onChange(this.type() === 'number' ? this.versValeurNumerique(valeur) : valeur);
+  }
+
+  /**
+   * Convertit une saisie textuelle en nombre pour les champs `type="number"`.
+   * @param valeur Valeur brute saisie dans le champ.
+   * @returns Nombre converti, ou la chaîne d'origine si elle est vide ou non numérique.
+   */
+  private versValeurNumerique(valeur: string): string | number {
+    if (valeur === '') return valeur;
+    const nombre = Number(valeur);
+    return Number.isNaN(nombre) ? valeur : nombre;
   }
 
   /** Notifie Angular Forms que le champ a été touché (perte de focus). */

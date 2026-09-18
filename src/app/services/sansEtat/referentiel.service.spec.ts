@@ -12,6 +12,7 @@ import {
   ConfigEmploiDuTemps,
 } from '../../modeles/referentiels.modele';
 import { DonneesMother } from '../../tests/donnees.mother';
+import { EdtCalculeMother } from '../../tests/emploi-du-temps-calcule.mother';
 import { EleveMother } from '../../tests/eleve.mother';
 import { EdtMother, CreneauMother } from '../../tests/emploi-du-temps.mother';
 
@@ -60,6 +61,17 @@ describe('ReferentielService', () => {
       );
       donneesService.charger(d);
       expect(service.estGroupeUtilise('C')).toBe(true);
+    });
+
+    it('retourne true si groupe utilisé dans un EDT calculé', () => {
+      const d = DonneesMother.base();
+      d.emploisDuTempsCalcules.push(
+        EdtCalculeMother.base({
+          elevesConcernes: { type: 'groupes', groupes: ['D'], elevesIds: [] },
+        }),
+      );
+      donneesService.charger(d);
+      expect(service.estGroupeUtilise('D')).toBe(true);
     });
 
     it('retourne true si groupe utilisé dans une séance', () => {

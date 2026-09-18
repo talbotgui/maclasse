@@ -27,6 +27,12 @@ export class DateUtils {
   /** Offset du jeudi dans l'algorithme ISO de calcul du numéro de semaine (lundi = 1). */
   private static readonly INDEX_JEUDI_ISO = 4;
 
+  /** Date ISO servant de borne basse lorsqu'une plage est sans début. */
+  private static readonly DATE_MIN = '0000-01-01';
+
+  /** Date ISO servant de borne haute lorsqu'une plage est sans fin. */
+  private static readonly DATE_MAX = '9999-12-31';
+
   /** Nombre de jours dans une semaine — également exposé pour les calculs hebdomadaires externes. */
   public static readonly JOURS_PAR_SEMAINE = 7;
 
@@ -116,6 +122,27 @@ export class DateUtils {
     fin2: string,
   ): boolean {
     return debut1 < fin2 && debut2 < fin1;
+  }
+
+  /**
+   * Détermine si deux plages de dates ISO se chevauchent. Une borne `null` signifie « sans limite ».
+   * Les bornes sont incluses : deux plages partageant un même jour se chevauchent.
+   * @param debut1 Début de la première plage, ou `null`.
+   * @param fin1 Fin de la première plage, ou `null`.
+   * @param debut2 Début de la seconde plage, ou `null`.
+   * @param fin2 Fin de la seconde plage, ou `null`.
+   * @returns `true` si les plages se chevauchent.
+   */
+  public static chevauchementPlages(
+    debut1: string | null,
+    fin1: string | null,
+    debut2: string | null,
+    fin2: string | null,
+  ): boolean {
+    return (
+      (debut1 ?? DateUtils.DATE_MIN) <= (fin2 ?? DateUtils.DATE_MAX) &&
+      (debut2 ?? DateUtils.DATE_MIN) <= (fin1 ?? DateUtils.DATE_MAX)
+    );
   }
 
   /**

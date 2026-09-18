@@ -144,3 +144,13 @@ La résolution `ElevesConcernes → Eleve[]` serait utilisée ici une **3ᵉ foi
 1. `ng test` — couverture ≥80% sur le nouveau service.
 2. `ng serve` : créer un EDT calculé combinant plusieurs sources et une cible (élève/groupe/classe), vérifier que les créneaux affichés correspondent bien aux récréations/temps de classe/absences régulières attendus, et qu'aucune modification n'est possible depuis cette vue (lecture seule).
 3. Contrôle AXE / focus visible sur le nouveau formulaire `edtc-formulaire` (RGAA : `mcAutoFocus` sur le premier champ).
+
+## Statut d'exécution
+
+**Implémenté le 2026-09-18.** Décisions validées : option A (grille existante en lecture seule), fréquence à 3 valeurs, « concernés » = intersection pour `tempsClasse` (aucun filtre si la définition vise toute la classe), « concernés » ignorés pour `recreation`, libellé « Temps de classe ». Livré : modèle `emploi-du-temps-calcule.modele.ts`, migration `2026.09.3`, `EmploiDuTempsCalculeService`, `EleveUtils.resoudreElevesConcernes`, `DateUtils.chevauchementPlages`, composant `edtc-formulaire`, seconde liste dans l'écran EDT, `estGroupeUtilise` étendu. `ng test` : 1120 tests verts, `ng build` OK.
+
+**Reste / limites connues (revue-increment) :**
+- Budget SCSS de l'écran EDT dépassé (5,58 kB pour 5 kB), avertissement `ng build`.
+- Suppression d'un élève : les `elevesIds` des EDT calculés (comme ceux des EDT) ne sont pas nettoyés.
+- Pas de dédoublonnage si plusieurs EDT sources se chevauchent.
+- Non vérifiés : rendu visuel, AXE, impression, E2E (aucun scénario ajouté dans [[plans-04-testsE2E]]).

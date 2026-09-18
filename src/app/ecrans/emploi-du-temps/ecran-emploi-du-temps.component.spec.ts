@@ -6,6 +6,7 @@ import { LIBELLES } from '../../libelles';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { EdtMother, CreneauMother } from '../../tests/emploi-du-temps.mother';
 import { EleveMother, AbsenceRecurrenteMother } from '../../tests/eleve.mother';
+import { EdtCalculeMother } from '../../tests/emploi-du-temps-calcule.mother';
 import type { EmploiDuTemps, CreneauEdt } from '../../modeles/emploi-du-temps.modele';
 
 describe('EcranEmploiDuTempsComponent', () => {
@@ -606,6 +607,127 @@ describe('EcranEmploiDuTempsComponent', () => {
       await new Promise((resolve) => setTimeout(resolve));
 
       expect((component as any).focusDemandeFormulaire()).toBe(true);
+    });
+  });
+
+  describe('EDT calculés', () => {
+    const edtCalcule = EdtCalculeMother.base({
+      id: 'edtc1',
+      nom: 'Vue A',
+      sources: ['tempsClasse'],
+    });
+
+    beforeEach(() => {
+      donneesService.charger(
+        DonneesMother.base({ emploisDuTemps: [edtBase], emploisDuTempsCalcules: [edtCalcule] }),
+      );
+      fixture.detectChanges();
+    });
+
+    it("affiche le titre de la seconde liste et l'EDT calculé", () => {
+      const titres = fixture.nativeElement.querySelectorAll('.edt__gauche .edt__titre-section');
+      expect(titres[1].textContent.trim()).toBe(LIBELLES.edt.titreListeEdtCalcules);
+      expect(fixture.nativeElement.querySelector('#btnSelectionnerEdtCalculeedtc1')).not.toBeNull();
+    });
+
+    it('affiche le message de liste vide sans EDT calculé', () => {
+      donneesService.charger(DonneesMother.base());
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.edt__gauche').textContent).toContain(
+        LIBELLES.edt.aucunEdtCalcule,
+      );
+    });
+
+    it("sélectionner un EDT calculé efface la sélection d'EDT et affiche sa grille en lecture seule", () => {
+      (component as any).selectionnerEdt(edtBase);
+      (component as any).selectionnerEdtCalcule(edtCalcule);
+      fixture.detectChanges();
+
+      expect((component as any).edtSelectionne()).toBeNull();
+      expect((component as any).formEdt()).toBeNull();
+      expect((component as any).formEdtCalcule()).toEqual(edtCalcule);
+      expect((component as any).nomGrille()).toBe('Vue A');
+      expect(fixture.nativeElement.querySelector('#btnNouveauCreneauJourlundi')).toBeNull();
+      expect(fixture.nativeElement.querySelector('.edt__creneau-calcule')).not.toBeNull();
+      expect(fixture.nativeElement.querySelector('#formProprietesEdtCalcule')).not.toBeNull();
+    });
+
+    it("calcule les créneaux de la grille depuis l'EDT source", () => {
+      (component as any).selectionnerEdtCalcule(edtCalcule);
+      expect((component as any).creneauxCalcules()).toHaveLength(1);
+      expect((component as any).lignesGrille()).toEqual([
+        { heureDebut: '09:00', heureFin: '10:00' },
+      ]);
+    });
+
+    it('affiche un message si le calcul ne produit aucun créneau', () => {
+      (component as any).selectionnerEdtCalcule(
+        EdtCalculeMother.base({ id: 'edtc2', sources: [] }),
+      );
+      fixture.detectChanges();
+      expect(fixture.nativeElement.textContent).toContain(LIBELLES.edt.aucunCreneauCalcule);
+    });
+
+    it("sélectionner un EDT efface la sélection d'EDT calculé", () => {
+      (component as any).selectionnerEdtCalcule(edtCalcule);
+      (component as any).selectionnerEdt(edtBase);
+      expect((component as any).edtCalculeSelectionne()).toBeNull();
+      expect((component as any).formEdtCalcule()).toBeNull();
+    });
+
+    it('créer un EDT calculé ouvre un formulaire vide sans grille', () => {
+      (component as any).creerEdtCalcule();
+      fixture.detectChanges();
+      expect((component as any).formEdtCalcule().nom).toBe('');
+      expect((component as any).edtCalculeSelectionne()).toBeNull();
+      expect((component as any).formEdtCalculeExistant()).toBe(false);
+    });
+
+    it('enregistre une nouvelle définition puis la sélectionne', () => {
+      const nouvelle = EdtCalculeMother.base({
+        id: 'edtc9',
+        nom: 'Nouvelle',
+        sources: ['recreation'],
+      });
+      (component as any).onEdtCalculeEnregistre(nouvelle);
+      expect(donneesService.donnees()?.emploisDuTempsCalcules).toHaveLength(2);
+      expect((component as any).edtCalculeSelectionne()?.id).toBe('edtc9');
+      expect((component as any).formEdtCalculeExistant()).toBe(true);
+    });
+
+    it('modifie une définition existante', () => {
+      (component as any).onEdtCalculeEnregistre({ ...edtCalcule, nom: 'Renommée' });
+      expect(donneesService.donnees()?.emploisDuTempsCalcules).toHaveLength(1);
+      expect((component as any).edtCalculeSelectionne()?.nom).toBe('Renommée');
+    });
+
+    it('supprime la définition affichée', () => {
+      (component as any).selectionnerEdtCalcule(edtCalcule);
+      (component as any).onEdtCalculeSupprime();
+      expect(donneesService.donnees()?.emploisDuTempsCalcules).toHaveLength(0);
+      expect((component as any).edtCalculeSelectionne()).toBeNull();
+      expect((component as any).formEdtCalcule()).toBeNull();
+    });
+
+    it('supprimer sans définition affichée est sans effet', () => {
+      (component as any).onEdtCalculeSupprime();
+      expect(donneesService.donnees()?.emploisDuTempsCalcules).toHaveLength(1);
+    });
+
+    it("annuler ferme le formulaire d'EDT calculé", () => {
+      (component as any).selectionnerEdtCalcule(edtCalcule);
+      (component as any).onAnnule();
+      expect((component as any).formEdtCalcule()).toBeNull();
+    });
+
+    it("la navigation est gardée si le formulaire d'EDT calculé est modifié", async () => {
+      (component as any).selectionnerEdtCalcule(edtCalcule);
+      fixture.detectChanges();
+      (component as any).formulaireEdtCalcule().basculerSource('recreation', true);
+      const promesse = component.confirmerNavigation();
+      expect((component as any).popinNavigationVisible()).toBe(true);
+      (component as any).confirmerAbandonNavigation();
+      expect(await promesse).toBe(true);
     });
   });
 });

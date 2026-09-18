@@ -47,7 +47,7 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [EDT — titre "Mes emplois du temps"](plans-09-edtTitreListeEdt.md) — Titre de section au-dessus de la liste EDT, classe réutilisable en prévision de la liste des EDT calculés
 - [EDT — absences régulières + icône conflit](plans-10-edtAbsencesRegulieres.md) — Bandeau d'absences pertinentes pour l'EDT sélectionné (jour+parité) + câblage de l'icône ⚠ par créneau déjà prévue mais jamais codée
 - [EDT — créneaux à temps multiples](plans-11-edtTempsMultiples.md) — 1 à 4 "temps" indépendants par créneau (horaire propre à chacun), refonte CreneauEdt, migration de données à concevoir
-- [EDT — emplois du temps calculés](plans-12-edtEmploisCalcules.md) — Nouvelle entité persistée en lecture seule, calcul à la volée depuis récréations/temps de classe/absences régulières
+- [EDT — emplois du temps calculés](plans-12-edtEmploisCalcules.md) — Nouvelle entité persistée en lecture seule, calcul à la volée depuis récréations/temps de classe/absences régulières — **implémenté le 2026-09-18** (limites dans le fichier)
 
 ## Plans de correction
 

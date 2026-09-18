@@ -1,0 +1,86 @@
+@if (edtCalcule()) {
+  <form
+    class="edtc-formulaire"
+    id="formProprietesEdtCalcule"
+    [formGroup]="form"
+    (ngSubmit)="onEnregistrer()"
+  >
+    <h2 class="edtc-formulaire__titre">{{ LIBELLES.edt.titreEdtCalcule }}</h2>
+
+    <mc-input
+      id="inputNomEdtCalcule"
+      [formControl]="form.controls.nom"
+      [label]="LIBELLES.edt.labelNom"
+      [required]="true"
+      [mcAutoFocus]="focusDemande()"
+    />
+
+    <mc-input
+      id="inputDateDebutEdtCalcule"
+      [formControl]="form.controls.dateDebut"
+      type="date"
+      [label]="LIBELLES.edt.labelDateDebut"
+    />
+
+    <mc-input
+      id="inputDateFinEdtCalcule"
+      [formControl]="form.controls.dateFin"
+      type="date"
+      [label]="LIBELLES.edt.labelDateFin"
+    />
+
+    <mc-select
+      id="selectFrequenceEdtCalcule"
+      [formControl]="form.controls.frequence"
+      [options]="optionsFrequence"
+      [label]="LIBELLES.edt.labelFrequence"
+    />
+
+    <fieldset class="edtc-formulaire__groupe mc-groupe-nu" aria-labelledby="labelSourcesEdtCalcule">
+      <p id="labelSourcesEdtCalcule" class="edtc-formulaire__label-groupe">
+        {{ LIBELLES.edt.labelSources }}
+      </p>
+      <div class="edtc-formulaire__chips">
+        @for (option of optionsSources; track option.valeur) {
+          <mc-chip-filtre
+            [id]="'chipSourceEdtCalcule' + option.valeur"
+            [libelle]="option.libelle"
+            [actif]="estSourceCochee(option.valeur)"
+            (selectionChange)="basculerSource(option.valeur, $event)"
+          />
+        }
+      </div>
+    </fieldset>
+
+    <div class="edtc-formulaire__groupe">
+      <p class="edtc-formulaire__label-groupe">{{ LIBELLES.edt.labelEleves }}</p>
+      <mc-eleves-concernes
+        id="elevesConcernesEdtCalcule"
+        [formControl]="form.controls.elevesConcernes"
+      />
+    </div>
+
+    @if (messageErreur(); as message) {
+      <p id="erreurFormulaireEdtCalcule" class="edtc-formulaire__erreur" role="alert">
+        {{ message }}
+      </p>
+    }
+
+    <div class="edtc-formulaire__actions">
+      <button id="btnEnregistrerEdtCalcule" type="submit" class="mc-btn-primaire">
+        {{ LIBELLES.commun.enregistrer }}
+      </button>
+      <button id="btnAnnulerEdtCalcule" type="button" class="mc-btn-fantome" (click)="onAnnuler()">
+        {{ LIBELLES.commun.annuler }}
+      </button>
+      @if (existant()) {
+        <mc-bouton-destruction
+          [idBase]="'btnSupprimerEdtCalcule'"
+          [petit]="true"
+          (confirme)="onSupprimer()"
+          >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction
+        >
+      }
+    </div>
+  </form>
+}

@@ -30,7 +30,7 @@ export class ReferentielService {
   private readonly donneesService = inject(DonneesService);
 
   /**
-   * Indique si un groupe est référencé par un élève, un créneau EDT ou une séance.
+   * Indique si un groupe est référencé par un élève, un créneau EDT, un EDT calculé ou une séance.
    * @param id Identifiant du groupe.
    */
   public estGroupeUtilise(id: string): boolean {
@@ -39,10 +39,9 @@ export class ReferentielService {
     return (
       d.classe.eleves.some((e) => e.groupes.includes(id)) ||
       d.emploisDuTemps.some((edt) =>
-        edt.creneaux.some((c) =>
-          c.temps.some((t) => t.elevesConcernes?.groupes.includes(id)),
-        ),
+        edt.creneaux.some((c) => c.temps.some((t) => t.elevesConcernes?.groupes.includes(id))),
       ) ||
+      d.emploisDuTempsCalcules.some((e) => e.elevesConcernes.groupes.includes(id)) ||
       d.cahierJournal.some((j) => j.seances.some((s) => s.elevesConcernes?.groupes.includes(id)))
     );
   }

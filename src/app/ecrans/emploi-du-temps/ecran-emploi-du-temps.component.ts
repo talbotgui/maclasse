@@ -17,7 +17,9 @@ import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { EmploiDuTempsService } from '../../services/sansEtat/emploi-du-temps.service';
 import { CompetenceService } from '../../services/sansEtat/competence.service';
+import { EmploiDuTempsCalculeService } from '../../services/sansEtat/emploi-du-temps-calcule.service';
 import { EdtFormulaireComponent } from './edt-formulaire/edt-formulaire.component';
+import { EdtcFormulaireComponent } from './edtc-formulaire/edtc-formulaire.component';
 import { McPastillesElevesConcernesComponent } from '../../composants/mc-pastilles-eleves-concernes/mc-pastilles-eleves-concernes.component';
 import { PopinAvertissementComponent } from '../../composants/popins/popin-avertissement/popin-avertissement.component';
 import { PopinWarningsAbsencesComponent } from '../../composants/popins/popin-warnings-absences/popin-warnings-absences.component';
@@ -31,18 +33,24 @@ import type {
   FrequenceSemaine,
 } from '../../modeles/emploi-du-temps.modele';
 import type { Competence } from '../../modeles/referentiels.modele';
+import type {
+  CreneauCalcule,
+  EmploiDuTempsCalcule,
+} from '../../modeles/emploi-du-temps-calcule.modele';
 
 /**
  * Écran emploi du temps.
  * Colonne gauche : liste des EDT avec indicateur de conflit.
  * Colonne centrale : grille hebdomadaire de l'EDT sélectionné.
- * Colonne droite : formulaire contextuel EDT ou créneau.
+ * Colonne droite : formulaire contextuel EDT, créneau ou EDT calculé.
+ * Un EDT calculé s'affiche dans la même grille, en lecture seule.
  */
 @Component({
   selector: 'ecran-emploi-du-temps',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     EdtFormulaireComponent,
+    EdtcFormulaireComponent,
     McPastillesElevesConcernesComponent,
     PopinAvertissementComponent,
     PopinWarningsAbsencesComponent,
@@ -72,6 +80,22 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
       dateFin: null,
       frequence: 'lesDeux' as FrequenceSemaine,
       creneaux: [],
+    };
+  }
+
+  /**
+   * Crée une définition d'EDT calculé vide prête pour la saisie.
+   * @returns Définition initialisée avec des valeurs par défaut (toute la classe, toutes semaines).
+   */
+  private static creerEdtCalculeVide(): EmploiDuTempsCalcule {
+    return {
+      id: crypto.randomUUID(),
+      nom: '',
+      dateDebut: null,
+      dateFin: null,
+      frequence: 'lesDeux',
+      sources: [],
+      elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
     };
   }
 
@@ -114,6 +138,9 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   /** Service métier emploi du temps. */
   private readonly emploiDuTempsService = inject(EmploiDuTempsService);
 
+  /** Service métier des emplois du temps calculés. */
+  private readonly emploiDuTempsCalculeService = inject(EmploiDuTempsCalculeService);
+
   /** Service des compétences pour charger les domaines racine. */
   private readonly competenceService = inject(CompetenceService);
 
@@ -122,6 +149,12 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
 
   /** EDT passé au formulaire propriétés (null quand le formulaire créneau est actif). */
   protected readonly formEdt = signal<EmploiDuTemps | null>(null);
+
+  /** EDT calculé affiché en lecture seule dans la grille (exclusif avec `edtSelectionne`). */
+  protected readonly edtCalculeSelectionne = signal<EmploiDuTempsCalcule | null>(null);
+
+  /** EDT calculé passé au formulaire de définition (null quand un autre formulaire est actif). */
+  protected readonly formEdtCalcule = signal<EmploiDuTempsCalcule | null>(null);
 
   /** Créneau passé au formulaire créneau (null quand le formulaire EDT est actif). */
   protected readonly creneauEdite = signal<CreneauEdt | null>(null);
@@ -161,6 +194,31 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   /** Référence au formulaire EDT/créneau actuellement affiché, s'il y en a un. */
   private readonly formulaireEdt = viewChild(EdtFormulaireComponent);
 
+  /** Référence au formulaire d'EDT calculé actuellement affiché, s'il y en a un. */
+  private readonly formulaireEdtCalcule = viewChild(EdtcFormulaireComponent);
+
+  /** Liste complète des EDT calculés depuis le store. */
+  protected readonly edtsCalcules = computed<EmploiDuTempsCalcule[]>(
+    () => this.donneesService.donnees()?.emploisDuTempsCalcules ?? [],
+  );
+
+  /** `true` si le formulaire d'EDT calculé affiche une définition déjà enregistrée. */
+  protected readonly formEdtCalculeExistant = computed<boolean>(() => {
+    const id = this.formEdtCalcule()?.id;
+    return id !== undefined && this.edtsCalcules().some((e) => e.id === id);
+  });
+
+  /** Créneaux de l'EDT calculé sélectionné, recalculés à chaque changement des données. */
+  protected readonly creneauxCalcules = computed<CreneauCalcule[]>(() => {
+    const edtCalcule = this.edtCalculeSelectionne();
+    return edtCalcule ? this.emploiDuTempsCalculeService.calculerCreneaux(edtCalcule) : [];
+  });
+
+  /** Nom affiché dans l'en-tête de la grille (EDT ou EDT calculé sélectionné). */
+  protected readonly nomGrille = computed<string>(
+    () => this.edtSelectionne()?.nom ?? this.edtCalculeSelectionne()?.nom ?? '',
+  );
+
   /** Liste complète des EDT depuis le store. */
   protected readonly edts = computed<EmploiDuTemps[]>(
     () => this.donneesService.donnees()?.emploisDuTemps ?? [],
@@ -179,17 +237,19 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
 
   /**
    * Lignes de la grille : plages horaires uniques triées par heureDebut,
-   * déduites de l'ensemble des temps de tous les créneaux de l'EDT sélectionné.
+   * déduites de l'ensemble des temps de tous les créneaux de l'EDT sélectionné,
+   * ou des créneaux de l'EDT calculé sélectionné.
    */
   protected readonly lignesGrille = computed<{ heureDebut: string; heureFin: string }[]>(() => {
     const edt = this.edtSelectionne();
-    if (!edt) return [];
     const vus = new Map<string, { heureDebut: string; heureFin: string }>();
-    for (const c of edt.creneaux) {
-      for (const t of c.temps) {
-        const cle = `${t.heureDebut}-${t.heureFin}`;
-        if (!vus.has(cle)) vus.set(cle, { heureDebut: t.heureDebut, heureFin: t.heureFin });
-      }
+    const horaires: { heureDebut: string; heureFin: string }[] = [
+      ...(edt?.creneaux.flatMap((c) => c.temps) ?? []),
+      ...this.creneauxCalcules(),
+    ];
+    for (const t of horaires) {
+      const cle = `${t.heureDebut}-${t.heureFin}`;
+      if (!vus.has(cle)) vus.set(cle, { heureDebut: t.heureDebut, heureFin: t.heureFin });
     }
     return [...vus.values()].sort((a, b) => a.heureDebut.localeCompare(b.heureDebut));
   });
@@ -212,6 +272,16 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
         entrees.push({ creneau: c, temps: t });
         map.set(cle, entrees);
       }
+    }
+    return map;
+  });
+
+  /** Index des créneaux calculés. Clé : `"jour-heureDebut-heureFin"`. */
+  protected readonly indexCreneauxCalcules = computed<Map<string, CreneauCalcule[]>>(() => {
+    const map = new Map<string, CreneauCalcule[]>();
+    for (const c of this.creneauxCalcules()) {
+      const cle = `${c.jour}-${c.heureDebut}-${c.heureFin}`;
+      map.set(cle, [...(map.get(cle) ?? []), c]);
     }
     return map;
   });
@@ -258,18 +328,62 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   }
 
   /**
+   * Retourne les créneaux calculés à l'intersection d'un jour et d'une plage horaire.
+   * @param jour Jour de la semaine.
+   * @param ligne Plage {heureDebut, heureFin}.
+   * @returns Liste des créneaux calculés de cette case, vide si aucun.
+   */
+  protected obtenirCreneauxCalculesDeGrille(
+    jour: JourSemaine,
+    ligne: { heureDebut: string; heureFin: string },
+  ): CreneauCalcule[] {
+    return this.indexCreneauxCalcules().get(`${jour}-${ligne.heureDebut}-${ligne.heureFin}`) ?? [];
+  }
+
+  /** Efface la sélection et le formulaire d'EDT calculé. */
+  private effacerEdtCalcule(): void {
+    this.edtCalculeSelectionne.set(null);
+    this.formEdtCalcule.set(null);
+  }
+
+  /**
    * Sélectionne un EDT existant : affiche sa grille et son formulaire propriétés.
    * @param edt Emploi du temps sélectionné.
    */
   protected selectionnerEdt(edt: EmploiDuTemps): void {
+    this.effacerEdtCalcule();
     this.edtSelectionne.set(edt);
     this.formEdt.set(edt);
     this.creneauEdite.set(null);
     this.redemanderFocusFormulaire();
   }
 
+  /**
+   * Sélectionne un EDT calculé : affiche sa grille en lecture seule et son formulaire de définition.
+   * @param edtCalcule EDT calculé sélectionné.
+   */
+  protected selectionnerEdtCalcule(edtCalcule: EmploiDuTempsCalcule): void {
+    this.edtSelectionne.set(null);
+    this.formEdt.set(null);
+    this.creneauEdite.set(null);
+    this.edtCalculeSelectionne.set(edtCalcule);
+    this.formEdtCalcule.set(edtCalcule);
+    this.redemanderFocusFormulaire();
+  }
+
+  /** Lance la création d'un nouvel EDT calculé (formulaire vide, grille vide). */
+  protected creerEdtCalcule(): void {
+    this.edtSelectionne.set(null);
+    this.formEdt.set(null);
+    this.creneauEdite.set(null);
+    this.edtCalculeSelectionne.set(null);
+    this.formEdtCalcule.set(EcranEmploiDuTempsComponent.creerEdtCalculeVide());
+    this.redemanderFocusFormulaire();
+  }
+
   /** Lance la création d'un nouvel EDT (formulaire vide, grille vide). */
   protected creerEdt(): void {
+    this.effacerEdtCalcule();
     this.edtSelectionne.set(null);
     this.formEdt.set(EcranEmploiDuTempsComponent.creerEdtVide());
     this.creneauEdite.set(null);
@@ -327,6 +441,28 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
     this.formEdt.set(sauvegarde);
   }
 
+  /**
+   * Enregistre un EDT calculé (création ou modification) et l'affiche dans la grille.
+   * @param edtCalcule Définition émise par le formulaire.
+   */
+  protected onEdtCalculeEnregistre(edtCalcule: EmploiDuTempsCalcule): void {
+    if (this.emploiDuTempsCalculeService.obtenirEdtCalcule(edtCalcule.id)) {
+      this.emploiDuTempsCalculeService.modifierEdtCalcule(edtCalcule);
+    } else {
+      this.emploiDuTempsCalculeService.creerEdtCalcule(edtCalcule);
+    }
+    const sauvegarde = this.emploiDuTempsCalculeService.obtenirEdtCalcule(edtCalcule.id) ?? null;
+    this.edtCalculeSelectionne.set(sauvegarde);
+    this.formEdtCalcule.set(sauvegarde);
+  }
+
+  /** Supprime l'EDT calculé affiché et réinitialise l'interface. */
+  protected onEdtCalculeSupprime(): void {
+    const id = this.formEdtCalcule()?.id;
+    if (id) this.emploiDuTempsCalculeService.supprimerEdtCalcule(id);
+    this.effacerEdtCalcule();
+  }
+
   /** Supprime l'EDT sélectionné et réinitialise l'interface. */
   protected onEdtSupprime(): void {
     const edt = this.edtSelectionne();
@@ -369,6 +505,7 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
 
   /** Annule l'édition en cours et réaffiche les propriétés de l'EDT sélectionné. */
   protected onAnnule(): void {
+    this.effacerEdtCalcule();
     this.edtSelectionne.set(null);
     this.creneauEdite.set(null);
     this.formEdt.set(null);
@@ -462,12 +599,13 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
 
   /**
    * Implémentation de `AvecNavigationGardee`.
-   * Retourne `true` immédiatement si aucun formulaire EDT/créneau n'est ouvert ou modifié,
+   * Retourne `true` immédiatement si aucun formulaire EDT/créneau/EDT calculé n'est ouvert ou modifié,
    * sinon ouvre la popin d'avertissement et attend la décision de l'utilisateur.
    * @returns Promesse résolue à `true` pour autoriser la navigation.
    */
   public confirmerNavigation(): Promise<boolean> {
-    if (!this.formulaireEdt()?.estModifie()) return Promise.resolve(true);
+    const modifie = this.formulaireEdt()?.estModifie() || this.formulaireEdtCalcule()?.estModifie();
+    if (!modifie) return Promise.resolve(true);
     return new Promise<boolean>((resolve) => {
       this.resolveGarde = resolve;
       this.popinNavigationVisible.set(true);

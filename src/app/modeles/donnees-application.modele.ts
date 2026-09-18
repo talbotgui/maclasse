@@ -5,6 +5,7 @@
 
 import { Eleve } from './eleve.modele';
 import { EmploiDuTemps } from './emploi-du-temps.modele';
+import { EmploiDuTempsCalcule } from './emploi-du-temps-calcule.modele';
 import { JourneeJournal } from './cahier-journal.modele';
 import { Projet } from './projet.modele';
 import { Referentiels } from './referentiels.modele';
@@ -64,6 +65,8 @@ export interface DonneesApplication {
   referentiels: Referentiels;
   /** Emplois du temps hebdomadaires ou bi-hebdomadaires. */
   emploisDuTemps: EmploiDuTemps[];
+  /** Définitions des emplois du temps calculés (lecture seule, créneaux non persistés). */
+  emploisDuTempsCalcules: EmploiDuTempsCalcule[];
   /** Projets pédagogiques. */
   projets: Projet[];
   /** Entrées du cahier journal, une par journée scolaire. */

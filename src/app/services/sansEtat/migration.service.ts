@@ -54,6 +54,10 @@ export class MigrationService {
       versionCible: '2026.09.2',
       appliquer: (donnees) => this.migrerCreneauxVersTemps(donnees),
     },
+    {
+      versionCible: '2026.09.3',
+      appliquer: (donnees) => this.ajouterEmploisDuTempsCalcules(donnees),
+    },
   ];
 
   /**
@@ -70,6 +74,14 @@ export class MigrationService {
       }
     }
     return donnees;
+  }
+
+  /**
+   * Ajoute le tableau `emploisDuTempsCalcules` s'il est absent. Idempotent.
+   * @param donnees Données à muter (déjà clonées par l'appelant).
+   */
+  private ajouterEmploisDuTempsCalcules(donnees: DonneesApplication): void {
+    donnees.emploisDuTempsCalcules ??= [];
   }
 
   /**

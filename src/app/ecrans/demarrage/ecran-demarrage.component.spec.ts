@@ -47,7 +47,7 @@ describe('EcranDemarrageComponent', () => {
 
       await (component as any).surCreationDemandee(donnees);
 
-      expect(donneesService.donnees()?.version).toBe('2026.09.2');
+      expect(donneesService.donnees()?.version).toBe('2026.09.3');
       spy.mockRestore();
     });
 
@@ -101,7 +101,7 @@ describe('EcranDemarrageComponent', () => {
 
       await (component as any).surDemarrageTermine(donnees);
 
-      expect(donneesService.donnees()?.version).toBe('2026.09.2');
+      expect(donneesService.donnees()?.version).toBe('2026.09.3');
       spy.mockRestore();
     });
 
@@ -155,7 +155,7 @@ describe('EcranDemarrageComponent', () => {
 
       await (component as any).surReferentielDemande(donnees);
 
-      expect(donneesService.donnees()?.version).toBe('2026.09.2');
+      expect(donneesService.donnees()?.version).toBe('2026.09.3');
       spy.mockRestore();
     });
 

@@ -148,6 +148,39 @@ describe('DateUtils', () => {
     });
   });
 
+  /** Les bornes `null` sont sans limite ; les bornes sont incluses. */
+  describe('chevauchementPlages', () => {
+    it('retourne true pour des plages qui se recouvrent', () => {
+      expect(
+        DateUtils.chevauchementPlages('2026-01-01', '2026-06-30', '2026-03-01', '2026-09-30'),
+      ).toBe(true);
+    });
+
+    it('retourne true si les plages partagent un seul jour', () => {
+      expect(
+        DateUtils.chevauchementPlages('2026-01-01', '2026-03-01', '2026-03-01', '2026-06-30'),
+      ).toBe(true);
+    });
+
+    it('retourne false pour des plages disjointes (première avant la seconde)', () => {
+      expect(
+        DateUtils.chevauchementPlages('2026-01-01', '2026-02-28', '2026-03-01', '2026-06-30'),
+      ).toBe(false);
+    });
+
+    it('retourne false pour des plages disjointes (seconde avant la première)', () => {
+      expect(
+        DateUtils.chevauchementPlages('2026-03-01', '2026-06-30', '2026-01-01', '2026-02-28'),
+      ).toBe(false);
+    });
+
+    it('traite les bornes null comme sans limite', () => {
+      expect(DateUtils.chevauchementPlages(null, null, '2026-03-01', '2026-06-30')).toBe(true);
+      expect(DateUtils.chevauchementPlages(null, '2026-01-31', '2026-03-01', null)).toBe(false);
+      expect(DateUtils.chevauchementPlages('2026-06-01', null, null, '2026-05-31')).toBe(false);
+    });
+  });
+
   /** Retourne toujours le lundi de la même semaine ISO, quel que soit le jour fourni. */
   describe('lundiDeLaSemaine', () => {
     it('retourne la date elle-même pour un lundi', () => {

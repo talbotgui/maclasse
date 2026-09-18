@@ -7,7 +7,6 @@ import { Injectable, inject } from '@angular/core';
 import {
   EmploiDuTemps,
   CreneauEdt,
-  ElevesConcernes,
   FrequenceSemaine,
   TempsCreneau,
 } from '../../modeles/emploi-du-temps.modele';
@@ -17,6 +16,7 @@ import { CommandeModification } from '../../commandes/commande-modification';
 import { CommandeSuppression } from '../../commandes/commande-suppression';
 import { DonneesService } from '../avecEtat/donnees.service';
 import { DateUtils } from '../../utilitaires/date.utils';
+import { EleveUtils } from '../../utilitaires/eleve.utils';
 import { LIBELLES } from '../../libelles';
 
 /**
@@ -199,11 +199,10 @@ export class EmploiDuTempsService {
     const conflits: EmploiDuTemps[] = [];
     for (const autre of autresEdts) {
       if (!this.verifierCompatibiliteFrequences(edt.frequence, autre.frequence)) continue;
-      const debut1 = edt.dateDebut ?? '0000-01-01';
-      const fin1 = edt.dateFin ?? '9999-12-31';
-      const debut2 = autre.dateDebut ?? '0000-01-01';
-      const fin2 = autre.dateFin ?? '9999-12-31';
-      if (debut1 > fin2 || debut2 > fin1) continue;
+      if (
+        !DateUtils.chevauchementPlages(edt.dateDebut, edt.dateFin, autre.dateDebut, autre.dateFin)
+      )
+        continue;
       if (this.verifierChevauchementCreneaux(edt.creneaux, autre.creneaux)) {
         conflits.push(autre);
       }
@@ -265,7 +264,7 @@ export class EmploiDuTempsService {
     const tousEleves = donnees.classe.eleves;
     const conflits: string[] = [];
     for (const temps of creneau.temps) {
-      const elevesIds = this.resoudreElevesConcernes(temps.elevesConcernes, tousEleves);
+      const elevesIds = EleveUtils.resoudreElevesConcernes(temps.elevesConcernes, tousEleves);
       for (const eleve of elevesIds
         .map((id) => tousEleves.find((e) => e.id === id))
         .filter((e) => e !== undefined)) {
@@ -286,27 +285,6 @@ export class EmploiDuTempsService {
       }
     }
     return conflits;
-  }
-
-  /**
-   * Résout le périmètre `elevesConcernes` d'un temps en liste d'identifiants d'élèves.
-   * `undefined` ou `type === 'classe'` retourne tous les élèves de la classe.
-   * @param elevesConcernes Périmètre à résoudre, éventuellement absent.
-   * @param tousEleves Élèves de la classe.
-   * @returns Identifiants des élèves concernés.
-   */
-  private resoudreElevesConcernes(
-    elevesConcernes: ElevesConcernes | undefined,
-    tousEleves: Eleve[],
-  ): string[] {
-    if (!elevesConcernes || elevesConcernes.type === 'classe') {
-      return tousEleves.map((e) => e.id);
-    }
-    if (elevesConcernes.type === 'groupes') {
-      const groupes = elevesConcernes.groupes;
-      return tousEleves.filter((e) => e.groupes.some((g) => groupes.includes(g))).map((e) => e.id);
-    }
-    return elevesConcernes.elevesIds;
   }
 
   /**
@@ -357,7 +335,7 @@ export class EmploiDuTempsService {
    * @param f2 Fréquence du second EDT.
    * @returns `true` si les deux fréquences peuvent coïncider sur une même semaine.
    */
-  private verifierCompatibiliteFrequences(f1: FrequenceSemaine, f2: FrequenceSemaine): boolean {
+  public verifierCompatibiliteFrequences(f1: FrequenceSemaine, f2: FrequenceSemaine): boolean {
     if (f1 === 'lesDeux' || f2 === 'lesDeux') return true;
     return f1 === f2;
   }

@@ -380,13 +380,16 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   }
 
   /**
-   * Affiche le détail des EDT en conflit avec l'EDT donné.
+   * Affiche le détail des conflits de l'EDT donné : chevauchement interne et EDT en conflit.
    * @param edt EDT dont l'icône de conflit a été activée.
    */
   protected afficherConflitsEdt(edt: EmploiDuTemps): void {
     const conflits = this.emploiDuTempsService
       .obtenirEdtsEnConflit(edt)
       .map((autre) => LIBELLES.edt.prefixeChevaucheEdt + autre.nom);
+    if (this.emploiDuTempsService.verifierChevauchementInterne(edt)) {
+      conflits.unshift(LIBELLES.edt.chevauchementInterne);
+    }
     this.conflitsEdt.set(conflits);
     this.popinConflitsEdtVisible.set(true);
   }

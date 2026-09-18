@@ -173,10 +173,11 @@ export class EmploiDuTempsService {
 
   /**
    * Détermine si deux créneaux distincts du même EDT se chevauchent (même jour, horaires qui se recouvrent).
+   * Les temps d'un même créneau ne sont pas comparés entre eux : ils sont parallèles ou décalés par conception.
    * @param edt EDT à vérifier.
    * @returns `true` dès qu'un chevauchement est trouvé entre deux créneaux différents.
    */
-  private verifierChevauchementInterne(edt: EmploiDuTemps): boolean {
+  public verifierChevauchementInterne(edt: EmploiDuTemps): boolean {
     return edt.creneaux.some((c1, i) =>
       this.verifierChevauchementCreneaux([c1], edt.creneaux.slice(i + 1)),
     );
@@ -222,7 +223,9 @@ export class EmploiDuTempsService {
         if (c1.jour !== c2.jour) continue;
         for (const t1 of c1.temps) {
           for (const t2 of c2.temps) {
-            if (DateUtils.chevauchementHoraire(t1.heureDebut, t1.heureFin, t2.heureDebut, t2.heureFin)) {
+            if (
+              DateUtils.chevauchementHoraire(t1.heureDebut, t1.heureFin, t2.heureDebut, t2.heureFin)
+            ) {
               return true;
             }
           }

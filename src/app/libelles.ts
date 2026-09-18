@@ -204,6 +204,7 @@ export const LIBELLES = {
     avertissementChevauchementEdt: 'Cet emploi du temps chevauche un autre emploi du temps.',
     ariaVoirConflitEdt: 'Voir les emplois du temps en conflit',
     prefixeChevaucheEdt: 'Chevauche : ',
+    chevauchementInterne: 'Deux créneaux de cet emploi du temps se chevauchent',
     titreAbsencesPertinentes: 'Absences régulières sur cette période',
     avertissementConflitAbsence: 'Ce créneau est en conflit avec une absence récurrente.',
     ariaVoirConflitAbsence: 'Voir les absences en conflit avec ce créneau',

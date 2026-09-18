@@ -119,6 +119,25 @@ describe('McSelectComponent', () => {
       expect(optionEls()).toHaveLength(3);
     });
 
+    it('valeur inconnue avec avecOptionVide=true → option vide + option inconnue sélectionnée', () => {
+      fixture.componentRef.setInput('avecOptionVide', true);
+      component.writeValue('INEXISTANT');
+      fixture.detectChanges();
+
+      expect(selectEl().value).toBe('INEXISTANT');
+      expect(optionEls()).toHaveLength(4);
+    });
+
+    it('passage d’une valeur inconnue à une valeur valide → l’option inconnue disparaît', () => {
+      component.writeValue('INEXISTANT');
+      fixture.detectChanges();
+      component.writeValue('CM2');
+      fixture.detectChanges();
+
+      expect(selectEl().value).toBe('CM2');
+      expect(optionEls()).toHaveLength(2);
+    });
+
     it('valeur vide sans option vide → première option affichée, pas d’option inconnue', () => {
       component.writeValue('');
       fixture.detectChanges();

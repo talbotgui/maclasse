@@ -54,6 +54,7 @@ export class CreneauMother {
    * @param heureDebut Heure de début du temps (`HH:MM`).
    * @param heureFin Heure de fin du temps (`HH:MM`).
    * @param surcharge Propriétés du créneau à surcharger (ex. `id`, `jour`, `type`).
+   * @returns Le créneau construit.
    */
   static avecHoraire(
     heureDebut: string,

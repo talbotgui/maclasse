@@ -205,6 +205,29 @@ describe('EmploiDuTempsService', () => {
       expect(service.validerChevauchement(edt)).toBe(false);
     });
 
+    it('conflit externe seul : les créneaux du même EDT ne se chevauchent pas', () => {
+      service.creerEdt(EdtMother.base({ id: 'edt1', creneaux: [CreneauMother.lundi9h10()] }));
+      const edt2 = EdtMother.base({
+        id: 'edt2',
+        creneaux: [
+          CreneauMother.lundi9h10({ id: 'c2' }),
+          CreneauMother.avecHoraire('14:00', '15:00', { id: 'c3' }),
+        ],
+      });
+      expect(service.verifierChevauchementInterne(edt2)).toBe(false);
+      expect(service.validerChevauchement(edt2)).toBe(true);
+    });
+
+    it('ne détecte pas de conflit interne pour des horaires disjoints non adjacents', () => {
+      const edt = EdtMother.base({
+        creneaux: [
+          CreneauMother.lundi9h10(),
+          CreneauMother.avecHoraire('14:00', '15:00', { id: 'c2' }),
+        ],
+      });
+      expect(service.verifierChevauchementInterne(edt)).toBe(false);
+    });
+
     it('ne détecte pas de conflit interne pour des jours différents', () => {
       const edt = EdtMother.base({
         creneaux: [CreneauMother.lundi9h10(), CreneauMother.lundi9h10({ id: 'c2', jour: 'mardi' })],

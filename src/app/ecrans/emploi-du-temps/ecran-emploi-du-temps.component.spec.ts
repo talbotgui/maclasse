@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, beforeAll, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { EcranEmploiDuTempsComponent } from './ecran-emploi-du-temps.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
+import { LIBELLES } from '../../libelles';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { EdtMother, CreneauMother } from '../../tests/emploi-du-temps.mother';
 import { EleveMother, AbsenceRecurrenteMother } from '../../tests/eleve.mother';
@@ -377,6 +378,19 @@ describe('EcranEmploiDuTempsComponent', () => {
 
       expect((component as any).popinConflitsEdtVisible()).toBe(true);
       expect((component as any).conflitsEdt()).toEqual(['Chevauche : EDT en conflit']);
+    });
+
+    it('affiche le libellé de chevauchement interne quand deux créneaux du même EDT se chevauchent', () => {
+      const edtInterne = EdtMother.base({
+        id: 'edt3',
+        creneaux: [CreneauMother.lundi9h10({ id: 'ca' }), CreneauMother.lundi9h10({ id: 'cb' })],
+      });
+      donneesService.charger(DonneesMother.base({ emploisDuTemps: [edtInterne] }));
+      fixture.detectChanges();
+
+      (component as any).afficherConflitsEdt(edtInterne);
+
+      expect((component as any).conflitsEdt()).toEqual([LIBELLES.edt.chevauchementInterne]);
     });
 
     it('fermerConflitsEdt masque la popin et vide les conflits', () => {

@@ -4,8 +4,13 @@
  */
 
 import { Injectable, inject } from '@angular/core';
-import { EmploiDuTemps, CreneauEdt, FrequenceSemaine } from '../../modeles/emploi-du-temps.modele';
-import { AbsencePertinente } from '../../modeles/eleve.modele';
+import {
+  EmploiDuTemps,
+  CreneauEdt,
+  ElevesConcernes,
+  FrequenceSemaine,
+} from '../../modeles/emploi-du-temps.modele';
+import { AbsencePertinente, Eleve } from '../../modeles/eleve.modele';
 import { CommandeCreation } from '../../commandes/commande-creation';
 import { CommandeModification } from '../../commandes/commande-modification';
 import { CommandeSuppression } from '../../commandes/commande-suppression';
@@ -19,6 +24,9 @@ import { LIBELLES } from '../../libelles';
  */
 @Injectable({ providedIn: 'root' })
 export class EmploiDuTempsService {
+  /** Nombre maximal de temps autorisés dans un créneau. */
+  private static readonly NOMBRE_TEMPS_MAX = 4;
+
   /** Accès aux données de l'application et soumission des commandes. */
   private readonly donneesService = inject(DonneesService);
 
@@ -88,6 +96,7 @@ export class EmploiDuTempsService {
    * @param creneau Créneau à ajouter.
    */
   public ajouterCreneau(edtId: string, creneau: CreneauEdt): void {
+    if (!this.verifierNombreTemps(creneau)) return;
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const ancien = donnees.emploisDuTemps.find((e) => e.id === edtId);
@@ -110,6 +119,7 @@ export class EmploiDuTempsService {
    * @param creneau Nouvelle valeur du créneau (même `id`).
    */
   public modifierCreneau(edtId: string, creneau: CreneauEdt): void {
+    if (!this.verifierNombreTemps(creneau)) return;
     const donnees = this.donneesService.donnees();
     if (!donnees) return;
     const ancien = donnees.emploisDuTemps.find((e) => e.id === edtId);
@@ -180,20 +190,34 @@ export class EmploiDuTempsService {
       const debut2 = autre.dateDebut ?? '0000-01-01';
       const fin2 = autre.dateFin ?? '9999-12-31';
       if (debut1 > fin2 || debut2 > fin1) continue;
-      for (const c1 of edt.creneaux) {
-        for (const c2 of autre.creneaux) {
-          if (
-            c1.jour === c2.jour &&
-            DateUtils.chevauchementHoraire(c1.heureDebut, c1.heureFin, c2.heureDebut, c2.heureFin)
-          ) {
-            conflits.push(autre);
-            break;
-          }
-        }
-        if (conflits.at(-1) === autre) break;
+      if (this.verifierChevauchementCreneaux(edt.creneaux, autre.creneaux)) {
+        conflits.push(autre);
       }
     }
     return conflits;
+  }
+
+  /**
+   * Détermine si au moins un temps de `creneaux1` chevauche un temps de `creneaux2`
+   * sur le même jour.
+   * @param creneaux1 Créneaux du premier EDT.
+   * @param creneaux2 Créneaux du second EDT.
+   * @returns `true` dès qu'un chevauchement horaire est trouvé sur un jour commun.
+   */
+  private verifierChevauchementCreneaux(creneaux1: CreneauEdt[], creneaux2: CreneauEdt[]): boolean {
+    for (const c1 of creneaux1) {
+      for (const c2 of creneaux2) {
+        if (c1.jour !== c2.jour) continue;
+        for (const t1 of c1.temps) {
+          for (const t2 of c2.temps) {
+            if (DateUtils.chevauchementHoraire(t1.heureDebut, t1.heureFin, t2.heureDebut, t2.heureFin)) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+    return false;
   }
 
   /**
@@ -219,40 +243,59 @@ export class EmploiDuTempsService {
     if (!creneau || !edtTrouve) return [];
 
     const creneauTrouve = creneau;
+    const edtTrouveNonNul = edtTrouve;
     const tousEleves = donnees.classe.eleves;
-    let elevesIds: string[];
-
-    if (!creneauTrouve.elevesConcernes || creneauTrouve.elevesConcernes.type === 'classe') {
-      elevesIds = tousEleves.map((e) => e.id);
-    } else if (creneauTrouve.elevesConcernes.type === 'groupes') {
-      const groupes = creneauTrouve.elevesConcernes.groupes;
-      elevesIds = tousEleves
-        .filter((e) => e.groupes.some((g) => groupes.includes(g)))
-        .map((e) => e.id);
-    } else {
-      elevesIds = creneauTrouve.elevesConcernes.elevesIds;
-    }
 
     const conflits: string[] = [];
-    for (const eleveId of elevesIds) {
-      const eleve = tousEleves.find((e) => e.id === eleveId);
-      if (!eleve) continue;
-      for (const abs of eleve.absencesRecurrentes) {
-        if (
-          abs.jour === creneauTrouve.jour &&
-          this.verifierCompatibiliteFrequences(edtTrouve.frequence, abs.paritesSemaine) &&
-          DateUtils.chevauchementHoraire(
-            abs.heureDebut,
-            abs.heureFin,
-            creneauTrouve.heureDebut,
-            creneauTrouve.heureFin,
-          )
-        ) {
-          conflits.push(`${eleve.nom} ${eleve.prenom} — ${abs.libelle}`);
+    for (const temps of creneauTrouve.temps) {
+      const elevesIds = this.resoudreElevesConcernes(temps.elevesConcernes, tousEleves);
+      for (const eleveId of elevesIds) {
+        const eleve = tousEleves.find((e) => e.id === eleveId);
+        if (!eleve) continue;
+        for (const abs of eleve.absencesRecurrentes) {
+          if (
+            abs.jour === creneauTrouve.jour &&
+            this.verifierCompatibiliteFrequences(edtTrouveNonNul.frequence, abs.paritesSemaine) &&
+            DateUtils.chevauchementHoraire(abs.heureDebut, abs.heureFin, temps.heureDebut, temps.heureFin)
+          ) {
+            conflits.push(`${eleve.nom} ${eleve.prenom} — ${abs.libelle}`);
+          }
         }
       }
     }
     return conflits;
+  }
+
+  /**
+   * Résout le périmètre `elevesConcernes` d'un temps en liste d'identifiants d'élèves.
+   * `undefined` ou `type === 'classe'` retourne tous les élèves de la classe.
+   * @param elevesConcernes Périmètre à résoudre, éventuellement absent.
+   * @param tousEleves Élèves de la classe.
+   * @returns Identifiants des élèves concernés.
+   */
+  private resoudreElevesConcernes(
+    elevesConcernes: ElevesConcernes | undefined,
+    tousEleves: Eleve[],
+  ): string[] {
+    if (!elevesConcernes || elevesConcernes.type === 'classe') {
+      return tousEleves.map((e) => e.id);
+    }
+    if (elevesConcernes.type === 'groupes') {
+      const groupes = elevesConcernes.groupes;
+      return tousEleves
+        .filter((e) => e.groupes.some((g) => groupes.includes(g)))
+        .map((e) => e.id);
+    }
+    return elevesConcernes.elevesIds;
+  }
+
+  /**
+   * Vérifie que le nombre de temps d'un créneau respecte la borne 1-4.
+   * @param creneau Créneau à vérifier.
+   * @returns `true` si `creneau.temps` contient entre 1 et 4 éléments.
+   */
+  private verifierNombreTemps(creneau: CreneauEdt): boolean {
+    return creneau.temps.length >= 1 && creneau.temps.length <= EmploiDuTempsService.NOMBRE_TEMPS_MAX;
   }
 
   /**

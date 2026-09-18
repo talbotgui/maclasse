@@ -220,6 +220,8 @@ export const LIBELLES = {
     labelDisciplines: 'Disciplines',
     labelTitreCreneau: 'Titre',
     labelEleves: 'Élèves concernés',
+    prefixeTemps: 'Temps',
+    boutonAjouterTemps: 'Ajouter un temps',
     typePedagogique: 'Pédagogique',
     typeRecreation: 'Récréation',
     typePauseDejeuner: 'Pause déjeuner',

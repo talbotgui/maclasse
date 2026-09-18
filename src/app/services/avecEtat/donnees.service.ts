@@ -3,10 +3,11 @@
  * Toute mutation des données doit transiter par `executer()`.
  */
 
-import { Injectable, Signal, WritableSignal, computed, signal } from '@angular/core';
+import { Injectable, Signal, WritableSignal, computed, inject, signal } from '@angular/core';
 import { Commande } from '../../modeles/commande.modele';
 import { DonneesApplication } from '../../modeles/donnees-application.modele';
 import { DateUtils } from '../../utilitaires/date.utils';
+import { MigrationService } from '../sansEtat/migration.service';
 
 /**
  * Service stateful singleton : contient les données de l'application
@@ -15,6 +16,9 @@ import { DateUtils } from '../../utilitaires/date.utils';
  */
 @Injectable({ providedIn: 'root' })
 export class DonneesService {
+  /** Service de migration des données vers le format de la version courante. */
+  private readonly migrationService = inject(MigrationService);
+
   /** Signal interne portant les données courantes (écriture réservée à ce service). */
   private readonly donneesModifiables: WritableSignal<DonneesApplication | null> = signal(null);
 
@@ -69,6 +73,7 @@ export class DonneesService {
     recentrerCahierJournalSurSemaineSuivante = false,
   ): void {
     const clone = structuredClone(donnees);
+    this.migrationService.migrer(clone);
     this.migrerIdentifiantsManquants(clone);
     if (recentrerCahierJournalSurSemaineSuivante) {
       this.decalerCahierJournalVersSemaineSuivante(clone);

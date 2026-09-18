@@ -12,11 +12,13 @@ import {
   inject,
   input,
   output,
+  signal,
 } from '@angular/core';
-import type { InputSignal, OutputEmitterRef } from '@angular/core';
+import type { InputSignal, OutputEmitterRef, WritableSignal } from '@angular/core';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { FormsModule } from '@angular/forms';
 import { LIBELLES } from '../../../libelles';
+import { DateUtils } from '../../../utilitaires/date.utils';
 import { McInputComponent } from '../../../composants/mc-input/mc-input.component';
 import { McSelectComponent } from '../../../composants/mc-select/mc-select.component';
 import { McChampHeureComponent } from '../../../composants/mc-champ-heure/mc-champ-heure.component';
@@ -26,6 +28,7 @@ import { McBoutonDestructionComponent } from '../../../composants/mc-bouton-dest
 import type {
   EmploiDuTemps,
   CreneauEdt,
+  TempsCreneau,
   ElevesConcernes,
   JourSemaine,
 } from '../../../modeles/emploi-du-temps.modele';
@@ -54,6 +57,9 @@ import type { OptionFormulaire } from '../../../modeles/composants.modele';
   styleUrl: './edt-formulaire.component.scss',
 })
 export class EdtFormulaireComponent {
+  /** Nombre maximal de temps autorisés dans un créneau. */
+  private static readonly NOMBRE_TEMPS_MAX = 4;
+
   /** Constante centralisée des libellés. */
   protected readonly LIBELLES = LIBELLES;
 
@@ -138,6 +144,17 @@ export class EdtFormulaireComponent {
     () => this.creneau() !== null && !!this.creneau()?.id,
   );
 
+  /** Index du bloc temps à focaliser à l'apparition (RGAA), `null` si aucun ajout récent. */
+  protected readonly indexAFocaliserTemps: WritableSignal<number | null> = signal(null);
+
+  /**
+   * Indique si le créneau en cours d'édition a atteint le nombre maximal de temps.
+   * @returns `true` si `formCreneau.temps` contient déjà le nombre maximal autorisé.
+   */
+  protected estNombreTempsMaxAtteint(): boolean {
+    return (this.formCreneau?.temps.length ?? 0) >= EdtFormulaireComponent.NOMBRE_TEMPS_MAX;
+  }
+
   /**
    * Charge les copies locales lors d'un changement réel d'EDT/créneau édité.
    * Ignore les changements de référence qui ne correspondent pas à un changement
@@ -177,20 +194,65 @@ export class EdtFormulaireComponent {
   }
 
   /**
-   * Bascule une discipline dans les disciplines du créneau.
+   * Bascule une discipline dans les disciplines du temps donné.
+   * @param indexTemps Index du temps dans `formCreneau.temps`.
    * @param id Identifiant du domaine.
    * @param actif Nouvel état.
    */
-  protected basculerDiscipline(id: string, actif: boolean): void {
+  protected basculerDiscipline(indexTemps: number, id: string, actif: boolean): void {
     if (!this.formCreneau) return;
-    const ids = this.formCreneau.disciplinesIds ?? [];
-    this.formCreneau.disciplinesIds = actif ? [...ids, id] : ids.filter((d) => d !== id);
+    const ids = this.formCreneau.temps[indexTemps].disciplinesIds ?? [];
+    const disciplinesIds = actif ? [...ids, id] : ids.filter((d) => d !== id);
+    this.formCreneau.temps = this.formCreneau.temps.map((t, i) =>
+      i === indexTemps ? { ...t, disciplinesIds } : t,
+    );
   }
 
-  /** Met à jour l'objet elevesConcernes du créneau. */
-  protected surElevesConcernesChange(val: ElevesConcernes): void {
+  /**
+   * Met à jour l'objet `elevesConcernes` du temps donné.
+   * @param indexTemps Index du temps dans `formCreneau.temps`.
+   * @param val Nouvelle valeur des élèves concernés.
+   */
+  protected surElevesConcernesChange(indexTemps: number, val: ElevesConcernes): void {
     if (!this.formCreneau) return;
-    this.formCreneau = { ...this.formCreneau, elevesConcernes: val };
+    this.formCreneau = {
+      ...this.formCreneau,
+      temps: this.formCreneau.temps.map((t, i) =>
+        i === indexTemps ? { ...t, elevesConcernes: val } : t,
+      ),
+    };
+  }
+
+  /** Ajoute un temps vide en fin de liste et demande le focus dessus. No-op au-delà de 4 temps. */
+  protected ajouterTemps(): void {
+    if (!this.formCreneau || this.estNombreTempsMaxAtteint()) return;
+    this.formCreneau.temps = [...this.formCreneau.temps, this.creerTempsVide()];
+    this.indexAFocaliserTemps.set(this.formCreneau.temps.length - 1);
+  }
+
+  /**
+   * Supprime le temps à l'index donné. No-op s'il ne reste plus qu'un seul temps.
+   * @param index Index du temps à supprimer.
+   */
+  protected supprimerTemps(index: number): void {
+    if (!this.formCreneau || this.formCreneau.temps.length <= 1) return;
+    this.formCreneau.temps = this.formCreneau.temps.filter((_, i) => i !== index);
+    this.indexAFocaliserTemps.set(null);
+  }
+
+  /**
+   * Crée un temps vide, avec un horaire par défaut enchaîné sur le dernier temps existant.
+   * @returns Nouveau temps initialisé.
+   */
+  private creerTempsVide(): TempsCreneau {
+    const heureDebut = this.formCreneau?.temps.at(-1)?.heureFin ?? '08:00';
+    return {
+      id: crypto.randomUUID(),
+      heureDebut,
+      heureFin: DateUtils.ajouterHeures(heureDebut, 1),
+      disciplinesIds: [],
+      elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
+    };
   }
 
   /** Enregistre les propriétés de l'EDT. */

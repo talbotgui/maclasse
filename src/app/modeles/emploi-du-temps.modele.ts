@@ -30,27 +30,40 @@ export interface ElevesConcernes {
 }
 
 /**
- * Créneau unitaire d'un emploi du temps.
+ * Contenu d'un groupe travaillant en parallèle (ou décalé) au sein d'un créneau.
+ * Porte son propre horaire, indépendant des autres temps du même créneau.
  * Les propriétés `disciplinesIds`, `titre` et `elevesConcernes` ne sont
- * pertinentes que si `type === 'pedagogique'`.
+ * pertinentes que si le créneau parent est `type === 'pedagogique'`.
+ */
+export interface TempsCreneau {
+  /** Identifiant unique du temps. */
+  id: string;
+  /** Heure de début au format `HH:MM`, propre à ce temps. */
+  heureDebut: string;
+  /** Heure de fin au format `HH:MM`, propre à ce temps. */
+  heureFin: string;
+  /** Identifiants des disciplines traitées (créneau pédagogique uniquement). */
+  disciplinesIds?: string[];
+  /** Titre libre du temps (créneau pédagogique uniquement). */
+  titre?: string;
+  /** Périmètre des élèves concernés (créneau pédagogique uniquement). */
+  elevesConcernes?: ElevesConcernes;
+}
+
+/**
+ * Créneau unitaire d'un emploi du temps.
+ * Conteneur logique (jour + type + regroupement d'édition) sans horaire propre :
+ * l'horaire est porté individuellement par chacun de ses `temps` (1 à 4).
  */
 export interface CreneauEdt {
   /** Identifiant unique du créneau. */
   id: string;
   /** Jour de la semaine auquel ce créneau a lieu. */
   jour: JourSemaine;
-  /** Heure de début au format `HH:MM`. */
-  heureDebut: string;
-  /** Heure de fin au format `HH:MM`. */
-  heureFin: string;
   /** Nature du créneau. */
   type: TypeCreneau;
-  /** Identifiants des disciplines traitées (type pédagogique uniquement). */
-  disciplinesIds?: string[];
-  /** Titre libre du créneau (type pédagogique uniquement). */
-  titre?: string;
-  /** Périmètre des élèves concernés (type pédagogique uniquement). */
-  elevesConcernes?: ElevesConcernes;
+  /** Temps composant ce créneau (1 à 4), chacun avec son propre horaire. */
+  temps: TempsCreneau[];
 }
 
 /**

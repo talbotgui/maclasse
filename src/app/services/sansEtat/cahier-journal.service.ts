@@ -82,23 +82,25 @@ export class CahierJournalService {
 
       for (const creneau of edt.creneaux) {
         if (creneau.jour !== jourSemaine) continue;
-        seances.push({
-          id: crypto.randomUUID(),
-          heureDebut: creneau.heureDebut,
-          heureFin: creneau.heureFin,
-          type: creneau.type,
-          ...(creneau.disciplinesIds ? { disciplinesIds: [...creneau.disciplinesIds] } : {}),
-          ...(creneau.titre !== undefined ? { titre: creneau.titre } : {}),
-          ...(creneau.elevesConcernes
-            ? {
-                elevesConcernes: {
-                  type: creneau.elevesConcernes.type,
-                  groupes: [...creneau.elevesConcernes.groupes],
-                  elevesIds: [...creneau.elevesConcernes.elevesIds],
-                },
-              }
-            : {}),
-        });
+        for (const temps of creneau.temps) {
+          seances.push({
+            id: crypto.randomUUID(),
+            heureDebut: temps.heureDebut,
+            heureFin: temps.heureFin,
+            type: creneau.type,
+            ...(temps.disciplinesIds ? { disciplinesIds: [...temps.disciplinesIds] } : {}),
+            ...(temps.titre !== undefined ? { titre: temps.titre } : {}),
+            ...(temps.elevesConcernes
+              ? {
+                  elevesConcernes: {
+                    type: temps.elevesConcernes.type,
+                    groupes: [...temps.elevesConcernes.groupes],
+                    elevesIds: [...temps.elevesConcernes.elevesIds],
+                  },
+                }
+              : {}),
+          });
+        }
       }
     }
     seances.sort((a, b) => a.heureDebut.localeCompare(b.heureDebut));

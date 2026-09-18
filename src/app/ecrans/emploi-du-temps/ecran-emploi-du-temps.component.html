@@ -98,50 +98,51 @@
               <tr>
                 <td class="edt__grille-heure">{{ ligne.heureDebut }}–{{ ligne.heureFin }}</td>
                 @for (jour of joursOuvres(); track jour) {
-                  @let creneau = obtenirCreneauDeGrille(jour, ligne);
-                  <td
-                    class="edt__grille-cellule"
-                    [class.edt__grille-cellule--pedagogique]="creneau?.type === 'pedagogique'"
-                    [class.edt__grille-cellule--recreation]="creneau?.type === 'recreation'"
-                    [class.edt__grille-cellule--pause]="creneau?.type === 'pauseDejeuner'"
-                    [class.edt__grille-cellule--vide]="!creneau"
-                  >
-                    @if (creneau) {
-                      <div class="edt__creneau-cellule">
-                        <button
-                          [id]="'btnCreneau' + creneau.id"
-                          class="edt__btn-creneau"
-                          (click)="selectionnerCreneau(creneau)"
+                  @let entrees = obtenirTempsDeGrille(jour, ligne);
+                  <td class="edt__grille-cellule" [class.edt__grille-cellule--vide]="entrees.length === 0">
+                    @if (entrees.length > 0) {
+                      @for (entree of entrees; track entree.temps.id) {
+                        <div
+                          class="edt__creneau-cellule"
+                          [class.edt__creneau-cellule--pedagogique]="entree.creneau.type === 'pedagogique'"
+                          [class.edt__creneau-cellule--recreation]="entree.creneau.type === 'recreation'"
+                          [class.edt__creneau-cellule--pause]="entree.creneau.type === 'pauseDejeuner'"
                         >
-                          <span class="edt__creneau-type">{{ creneau.type }}</span>
-                          @if (creneau.titre) {
-                            <span class="edt__creneau-titre">{{ creneau.titre }}</span>
-                          }
-                          <mc-pastilles-eleves-concernes
-                            [elevesConcernes]="creneau.elevesConcernes"
-                          />
-                        </button>
-                        @if (creneauxAvecConflits().has(creneau.id)) {
                           <button
-                            [id]="'btnConflitCreneau' + creneau.id"
-                            type="button"
-                            class="edt__btn-icone-conflit"
-                            [attr.aria-label]="
-                              LIBELLES.edt.ariaVoirConflitAbsence +
-                              ' : ' +
-                              LIBELLES.edt.joursLibelles[creneau.jour] +
-                              ' ' +
-                              creneau.heureDebut +
-                              '-' +
-                              creneau.heureFin
-                            "
-                            title="{{ LIBELLES.edt.avertissementConflitAbsence }}"
-                            (click)="afficherConflitsAbsences(creneau, $event)"
+                            [id]="'btnCreneau' + entree.creneau.id + entree.temps.id"
+                            class="edt__btn-creneau"
+                            (click)="selectionnerCreneau(entree.creneau)"
                           >
-                            ⚠
+                            <span class="edt__creneau-type">{{ entree.creneau.type }}</span>
+                            @if (entree.temps.titre) {
+                              <span class="edt__creneau-titre">{{ entree.temps.titre }}</span>
+                            }
+                            <mc-pastilles-eleves-concernes
+                              [elevesConcernes]="entree.temps.elevesConcernes"
+                            />
                           </button>
-                        }
-                      </div>
+                          @if (creneauxAvecConflits().has(entree.creneau.id)) {
+                            <button
+                              [id]="'btnConflitCreneau' + entree.creneau.id + entree.temps.id"
+                              type="button"
+                              class="edt__btn-icone-conflit"
+                              [attr.aria-label]="
+                                LIBELLES.edt.ariaVoirConflitAbsence +
+                                ' : ' +
+                                LIBELLES.edt.joursLibelles[entree.creneau.jour] +
+                                ' ' +
+                                entree.temps.heureDebut +
+                                '-' +
+                                entree.temps.heureFin
+                              "
+                              title="{{ LIBELLES.edt.avertissementConflitAbsence }}"
+                              (click)="afficherConflitsAbsences(entree.creneau, $event)"
+                            >
+                              ⚠
+                            </button>
+                          }
+                        </div>
+                      }
                     } @else {
                       <button
                         [id]="'btnAjouterCreneau' + jour + ligne.heureDebut"

@@ -26,6 +26,7 @@ import type { AvecNavigationGardee } from '../../gardes/modifications-non-enregi
 import type {
   EmploiDuTemps,
   CreneauEdt,
+  TempsCreneau,
   JourSemaine,
   FrequenceSemaine,
 } from '../../modeles/emploi-du-temps.modele';
@@ -75,30 +76,32 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   }
 
   /**
-   * Crée un créneau vide pour le jour donné.
-   * Si des créneaux existent déjà pour ce jour, `heureDebut` est initialisée à la
-   * `heureFin` la plus tardive parmi eux, et `heureFin` à `heureDebut + 1h`.
+   * Crée un créneau vide pour le jour donné, avec un premier temps par défaut.
+   * Si des temps existent déjà pour ce jour, l'`heureDebut` du nouveau temps est
+   * initialisée à la `heureFin` la plus tardive parmi eux, et `heureFin` à `heureDebut + 1h`.
    * @param jour Jour de la semaine du nouveau créneau.
-   * @param creneauxDuJour Créneaux existants pour ce jour dans l'EDT courant.
-   * @returns Créneau initialisé.
+   * @param tempsDuJour Temps déjà utilisés ce jour-là dans l'EDT courant, tous créneaux confondus.
+   * @returns Créneau initialisé avec un unique temps.
    */
-  private static creerCreneauVide(
-    jour: JourSemaine,
-    creneauxDuJour: CreneauEdt[] = [],
-  ): CreneauEdt {
-    const derniereHeureFin = creneauxDuJour
-      .map((c) => c.heureFin)
+  private static creerCreneauVide(jour: JourSemaine, tempsDuJour: TempsCreneau[] = []): CreneauEdt {
+    const derniereHeureFin = tempsDuJour
+      .map((t) => t.heureFin)
       .sort()
       .at(-1);
     const heureDebut = derniereHeureFin ?? '08:00';
     return {
       id: crypto.randomUUID(),
       jour,
-      heureDebut,
-      heureFin: DateUtils.ajouterHeures(heureDebut, 1),
       type: 'pedagogique',
-      disciplinesIds: [],
-      elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
+      temps: [
+        {
+          id: crypto.randomUUID(),
+          heureDebut,
+          heureFin: DateUtils.ajouterHeures(heureDebut, 1),
+          disciplinesIds: [],
+          elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
+        },
+      ],
     };
   }
 
@@ -175,33 +178,43 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   );
 
   /**
-   * Lignes de la grille : plages horaires uniques triées par heureDebut
-   * des créneaux de l'EDT sélectionné.
+   * Lignes de la grille : plages horaires uniques triées par heureDebut,
+   * déduites de l'ensemble des temps de tous les créneaux de l'EDT sélectionné.
    */
   protected readonly lignesGrille = computed<{ heureDebut: string; heureFin: string }[]>(() => {
     const edt = this.edtSelectionne();
     if (!edt) return [];
     const vus = new Map<string, { heureDebut: string; heureFin: string }>();
     for (const c of edt.creneaux) {
-      const cle = `${c.heureDebut}-${c.heureFin}`;
-      if (!vus.has(cle)) vus.set(cle, { heureDebut: c.heureDebut, heureFin: c.heureFin });
+      for (const t of c.temps) {
+        const cle = `${t.heureDebut}-${t.heureFin}`;
+        if (!vus.has(cle)) vus.set(cle, { heureDebut: t.heureDebut, heureFin: t.heureFin });
+      }
     }
     return [...vus.values()].sort((a, b) => a.heureDebut.localeCompare(b.heureDebut));
   });
 
   /**
-   * Index des créneaux pour un accès O(1) dans la grille.
-   * Clé : `"jour-heureDebut-heureFin"`.
+   * Index des temps pour un accès O(1) dans la grille.
+   * Clé : `"jour-heureDebut-heureFin"`. Une même case peut contenir plusieurs temps,
+   * qu'ils appartiennent au même créneau ou à des créneaux différents partageant l'horaire.
    */
-  protected readonly indexCreneaux = computed<Map<string, CreneauEdt>>(() => {
-    const edt = this.edtSelectionne();
-    if (!edt) return new Map();
-    const map = new Map<string, CreneauEdt>();
-    for (const c of edt.creneaux) {
-      map.set(`${c.jour}-${c.heureDebut}-${c.heureFin}`, c);
-    }
-    return map;
-  });
+  protected readonly indexCreneaux = computed<Map<string, { creneau: CreneauEdt; temps: TempsCreneau }[]>>(
+    () => {
+      const edt = this.edtSelectionne();
+      const map = new Map<string, { creneau: CreneauEdt; temps: TempsCreneau }[]>();
+      if (!edt) return map;
+      for (const c of edt.creneaux) {
+        for (const t of c.temps) {
+          const cle = `${c.jour}-${t.heureDebut}-${t.heureFin}`;
+          const entrees = map.get(cle) ?? [];
+          entrees.push({ creneau: c, temps: t });
+          map.set(cle, entrees);
+        }
+      }
+      return map;
+    },
+  );
 
   /** Identifiants des EDT présentant des chevauchements de créneaux. */
   protected readonly edtsAvecConflits = computed<Set<string>>(() => {
@@ -232,15 +245,16 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   });
 
   /**
-   * Retourne le créneau à l'intersection d'un jour et d'une plage horaire.
+   * Retourne les temps (avec leur créneau parent) à l'intersection d'un jour et d'une plage horaire.
    * @param jour Jour de la semaine.
    * @param ligne Plage {heureDebut, heureFin}.
+   * @returns Liste des temps de cette case, vide si aucun.
    */
-  protected obtenirCreneauDeGrille(
+  protected obtenirTempsDeGrille(
     jour: JourSemaine,
     ligne: { heureDebut: string; heureFin: string },
-  ): CreneauEdt | undefined {
-    return this.indexCreneaux().get(`${jour}-${ligne.heureDebut}-${ligne.heureFin}`);
+  ): { creneau: CreneauEdt; temps: TempsCreneau }[] {
+    return this.indexCreneaux().get(`${jour}-${ligne.heureDebut}-${ligne.heureFin}`) ?? [];
   }
 
   /**
@@ -273,14 +287,17 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   }
 
   /**
-   * Ouvre le formulaire créneau pour un nouveau créneau sur le jour donné.
-   * L'heure de début est initialisée à la fin du dernier créneau existant pour ce jour.
+   * Ouvre le formulaire créneau pour un nouveau créneau (avec un premier temps) sur le jour donné.
+   * L'heure de début du premier temps est initialisée à la fin du dernier temps existant ce jour-là.
    * @param jour Jour de la semaine du nouveau créneau.
    */
   protected ajouterCreneauPourJour(jour: JourSemaine): void {
     this.formEdt.set(null);
-    const creneauxDuJour = this.edtSelectionne()?.creneaux.filter((c) => c.jour === jour) ?? [];
-    this.creneauEdite.set(EcranEmploiDuTempsComponent.creerCreneauVide(jour, creneauxDuJour));
+    const tempsDuJour =
+      this.edtSelectionne()
+        ?.creneaux.filter((c) => c.jour === jour)
+        .flatMap((c) => c.temps) ?? [];
+    this.creneauEdite.set(EcranEmploiDuTempsComponent.creerCreneauVide(jour, tempsDuJour));
     this.redemanderFocusFormulaire();
   }
 

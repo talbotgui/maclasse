@@ -25,8 +25,8 @@ describe('McMiniCalendrierComponent', () => {
     it('juin 2026 : 0 cases vides et 30 boutons de jours', () => {
       const vides = fixture.nativeElement.querySelectorAll('.mc-mini-calendrier__vide');
       const jours = fixture.nativeElement.querySelectorAll('.mc-mini-calendrier__jour');
-      expect(vides.length).toBe(0);
-      expect(jours.length).toBe(30);
+      expect(vides).toHaveLength(0);
+      expect(jours).toHaveLength(30);
     });
 
     it('mars 2026 : 6 cases vides et 31 boutons de jours', () => {
@@ -35,8 +35,8 @@ describe('McMiniCalendrierComponent', () => {
       fixture.detectChanges();
       const vides = fixture.nativeElement.querySelectorAll('.mc-mini-calendrier__vide');
       const jours = fixture.nativeElement.querySelectorAll('.mc-mini-calendrier__jour');
-      expect(vides.length).toBe(6);
-      expect(jours.length).toBe(31);
+      expect(vides).toHaveLength(6);
+      expect(jours).toHaveLength(31);
     });
   });
 

@@ -98,16 +98,21 @@ export class FpFormulaireProjetComponent {
   }
 
   /**
-   * Bascule l'appartenance d'un élève pour le projet en cours d'édition.
+   * Ajoute un élève au projet en cours d'édition.
    * @param id UUID de l'élève.
-   * @param actif Nouvel état du chip.
    */
-  protected basculerEleve(id: string, actif: boolean): void {
-    if (actif && !this.formProjet.elevesIds.includes(id)) {
+  protected ajouterEleve(id: string): void {
+    if (!this.formProjet.elevesIds.includes(id)) {
       this.formProjet.elevesIds = [...this.formProjet.elevesIds, id];
-    } else if (!actif) {
-      this.formProjet.elevesIds = this.formProjet.elevesIds.filter((e) => e !== id);
     }
+  }
+
+  /**
+   * Retire un élève du projet.
+   * @param id UUID de l'élève.
+   */
+  protected retirerEleve(id: string): void {
+    this.formProjet.elevesIds = this.formProjet.elevesIds.filter((e) => e !== id);
   }
 
   /** Ajoute une période vide à la fin de la liste et demande le focus dessus. */

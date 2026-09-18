@@ -14,7 +14,6 @@ import { DateUtils } from '../../utilitaires/date.utils';
 import type { JourFerie } from '../../modeles/referentiels.modele';
 import type { JourSemaine } from '../../modeles/emploi-du-temps.modele';
 import type { CaseCalendrier } from '../../modeles/composants.modele';
-import { LIBELLES } from '../../libelles';
 
 /**
  * Calendrier mensuel miniature navigable.

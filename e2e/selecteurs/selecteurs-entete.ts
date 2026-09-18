@@ -15,19 +15,19 @@ export class SelecteursEntete extends SelecteursBase {
   constructor(page: Page) {
     super(page);
     this.typeDuPremierResultat = this.listeResultatsRecherche
-      .locator('[role="option"]')
+      .locator('button')
       .first()
       .locator('.mc-entete__resultat-type');
     this.titreDuPremierResultat = this.listeResultatsRecherche
-      .locator('[role="option"]')
+      .locator('button')
       .first()
       .locator('.mc-entete__resultat-titre');
     this.resultatPotager = this.listeResultatsRecherche
-      .locator('[role="option"]')
+      .locator('button')
       .filter({ hasText: 'Potager' })
       .first();
     this.typeDuResultatPotager = this.listeResultatsRecherche
-      .locator('[role="option"]')
+      .locator('button')
       .filter({ hasText: 'Potager' })
       .first()
       .locator('.mc-entete__resultat-type');

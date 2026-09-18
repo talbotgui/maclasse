@@ -86,7 +86,7 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   private static creerCreneauVide(jour: JourSemaine, tempsDuJour: TempsCreneau[] = []): CreneauEdt {
     const derniereHeureFin = tempsDuJour
       .map((t) => t.heureFin)
-      .sort()
+      .sort((a, b) => a.localeCompare(b))
       .at(-1);
     const heureDebut = derniereHeureFin ?? '08:00';
     return {
@@ -199,22 +199,22 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
    * Clé : `"jour-heureDebut-heureFin"`. Une même case peut contenir plusieurs temps,
    * qu'ils appartiennent au même créneau ou à des créneaux différents partageant l'horaire.
    */
-  protected readonly indexCreneaux = computed<Map<string, { creneau: CreneauEdt; temps: TempsCreneau }[]>>(
-    () => {
-      const edt = this.edtSelectionne();
-      const map = new Map<string, { creneau: CreneauEdt; temps: TempsCreneau }[]>();
-      if (!edt) return map;
-      for (const c of edt.creneaux) {
-        for (const t of c.temps) {
-          const cle = `${c.jour}-${t.heureDebut}-${t.heureFin}`;
-          const entrees = map.get(cle) ?? [];
-          entrees.push({ creneau: c, temps: t });
-          map.set(cle, entrees);
-        }
+  protected readonly indexCreneaux = computed<
+    Map<string, { creneau: CreneauEdt; temps: TempsCreneau }[]>
+  >(() => {
+    const edt = this.edtSelectionne();
+    const map = new Map<string, { creneau: CreneauEdt; temps: TempsCreneau }[]>();
+    if (!edt) return map;
+    for (const c of edt.creneaux) {
+      for (const t of c.temps) {
+        const cle = `${c.jour}-${t.heureDebut}-${t.heureFin}`;
+        const entrees = map.get(cle) ?? [];
+        entrees.push({ creneau: c, temps: t });
+        map.set(cle, entrees);
       }
-      return map;
-    },
-  );
+    }
+    return map;
+  });
 
   /** Identifiants des EDT présentant des chevauchements de créneaux. */
   protected readonly edtsAvecConflits = computed<Set<string>>(() => {
@@ -343,7 +343,7 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   protected onCreneauEnregistre(creneau: CreneauEdt): void {
     const edt = this.edtSelectionne();
     if (!edt) return;
-    const existant = edt.creneaux.find((c) => c.id === creneau.id);
+    const existant = edt.creneaux.some((c) => c.id === creneau.id);
     if (existant) {
       this.emploiDuTempsService.modifierCreneau(edt.id, creneau);
     } else {

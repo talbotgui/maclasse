@@ -17,16 +17,9 @@
     <input
       [id]="'rechercheCompetences' + contexteId()"
       type="text"
-      role="combobox"
-      aria-haspopup="listbox"
       class="mc-selecteur-competences__input"
       [attr.placeholder]="LIBELLES.selecteurCompetences.placeholder"
-      [attr.aria-expanded]="estOuvert()"
-      aria-autocomplete="list"
       [attr.aria-controls]="'listeSuggestionsCompetences' + contexteId()"
-      [attr.aria-activedescendant]="
-        idOptionFocalisee() ? 'optionComp_' + idOptionFocalisee() : null
-      "
       [value]="saisie()"
       (input)="surSaisie($event)"
       (focus)="surFocus()"
@@ -37,28 +30,30 @@
     @if (estOuvert() && suggestions().length > 0) {
       <ul
         [id]="'listeSuggestionsCompetences' + contexteId()"
-        role="listbox"
         class="mc-selecteur-competences__liste"
         [attr.aria-label]="LIBELLES.selecteurCompetences.ariaSuggestions"
       >
         @for (option of suggestions(); track option.id) {
-          <li
-            [id]="'optionComp_' + option.id"
-            role="option"
-            class="mc-selecteur-competences__option"
-            [class.mc-selecteur-competences__option--active]="option.id === idOptionFocalisee()"
-            [attr.aria-selected]="competencesSelectionnees().includes(option.id)"
-            (mousedown)="$event.preventDefault()"
-            (click)="selectionnerOption(option.id)"
-          >
-            {{ option.libelle }}
+          <li>
+            <button
+              [id]="'optionComp_' + option.id"
+              type="button"
+              tabindex="-1"
+              class="mc-selecteur-competences__option"
+              [class.mc-selecteur-competences__option--active]="option.id === idOptionFocalisee()"
+              [attr.aria-pressed]="competencesSelectionnees().includes(option.id)"
+              (mousedown)="$event.preventDefault()"
+              (click)="selectionnerOption(option.id)"
+            >
+              {{ option.libelle }}
+            </button>
           </li>
         }
       </ul>
     } @else if (estOuvert() && saisie().trim() && suggestions().length === 0) {
-      <div class="mc-selecteur-competences__aucun-resultat" role="status">
+      <output class="mc-selecteur-competences__aucun-resultat">
         {{ LIBELLES.commun.aucunResultat }}
-      </div>
+      </output>
     }
   </div>
 

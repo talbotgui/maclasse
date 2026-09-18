@@ -18,7 +18,9 @@
               [id]="'chipDomaine' + domaine.id"
               [libelle]="domaine.libelle"
               [actif]="domainesFiltres().includes(domaine.id)"
-              (selectionChange)="basculerFiltreDomaine(domaine.id, $event)"
+              (selectionChange)="
+                $event ? ajouterFiltreDomaine(domaine.id) : retirerFiltreDomaine(domaine.id)
+              "
             />
           }
         </div>

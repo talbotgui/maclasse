@@ -27,7 +27,6 @@ import type {
   Eleve,
   AbsenceRecurrente,
   AbsencePonctuelle,
-  Contact,
   CursusAnnee,
 } from '../../../modeles/eleve.modele';
 import type { Groupe, StatutEleve, TypeContact } from '../../../modeles/referentiels.modele';
@@ -160,16 +159,21 @@ export class FeFormulaireEleveComponent {
   }
 
   /**
-   * Bascule l'appartenance d'un groupe pour l'élève en cours d'édition.
+   * Ajoute l'élève en cours d'édition à un groupe.
    * @param id Identifiant du groupe.
-   * @param actif Nouvel état du chip.
    */
-  protected basculerGroupe(id: string, actif: boolean): void {
-    if (actif && !this.formEleve.groupes.includes(id)) {
+  protected ajouterGroupe(id: string): void {
+    if (!this.formEleve.groupes.includes(id)) {
       this.formEleve.groupes = [...this.formEleve.groupes, id];
-    } else if (!actif) {
-      this.formEleve.groupes = this.formEleve.groupes.filter((g) => g !== id);
     }
+  }
+
+  /**
+   * Retire l'élève d'un groupe.
+   * @param id Identifiant du groupe.
+   */
+  protected retirerGroupe(id: string): void {
+    this.formEleve.groupes = this.formEleve.groupes.filter((g) => g !== id);
   }
 
   /** Ajoute un contact vide à la fin de la liste et demande le focus dessus. */

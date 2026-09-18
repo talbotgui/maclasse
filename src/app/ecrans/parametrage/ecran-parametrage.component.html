@@ -45,9 +45,9 @@
               {{ LIBELLES.commun.annuler }}
             </button>
             @if (ecModifie) {
-              <span class="parametrage__pastille-modif" role="status">{{
+              <output class="parametrage__pastille-modif">{{
                 LIBELLES.parametrage.pastilleNonEnregistre
-              }}</span>
+              }}</output>
             }
           </div>
           <div class="parametrage__formulaire">
@@ -118,9 +118,9 @@
                     {{ periodeModifiee ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre }}
                   </button>
                   @if (periodeModifiee) {
-                    <span class="parametrage__pastille-modif" role="status">{{
+                    <output class="parametrage__pastille-modif">{{
                       LIBELLES.parametrage.pastilleNonEnregistre
-                    }}</span>
+                    }}</output>
                   }
                   <mc-bouton-destruction
                     [petit]="true"
@@ -161,9 +161,9 @@
               {{ LIBELLES.commun.annuler }}
             </button>
             @if (shModifie) {
-              <span class="parametrage__pastille-modif" role="status">{{
+              <output class="parametrage__pastille-modif">{{
                 LIBELLES.parametrage.pastilleNonEnregistre
-              }}</span>
+              }}</output>
             }
           </div>
           <div class="parametrage__formulaire">
@@ -175,7 +175,7 @@
                     [id]="'chipJour' + jour"
                     [libelle]="LIBELLES_JOURS[jour]"
                     [actif]="formSemaineHoraires.joursOuvres.includes(jour)"
-                    (selectionChange)="basculerJourOuvre(jour, $event)"
+                    (selectionChange)="$event ? ajouterJourOuvre(jour) : retirerJourOuvre(jour)"
                   />
                 }
               </div>
@@ -225,9 +225,9 @@
                     {{ groupeModifie ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre }}
                   </button>
                   @if (groupeModifie) {
-                    <span class="parametrage__pastille-modif" role="status">{{
+                    <output class="parametrage__pastille-modif">{{
                       LIBELLES.parametrage.pastilleNonEnregistre
-                    }}</span>
+                    }}</output>
                   }
                   <mc-bouton-destruction
                     [petit]="true"
@@ -306,9 +306,9 @@
                     {{ statutModifie ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre }}
                   </button>
                   @if (statutModifie) {
-                    <span class="parametrage__pastille-modif" role="status">{{
+                    <output class="parametrage__pastille-modif">{{
                       LIBELLES.parametrage.pastilleNonEnregistre
-                    }}</span>
+                    }}</output>
                   }
                   <mc-bouton-destruction
                     [petit]="true"
@@ -366,9 +366,9 @@
                     }}
                   </button>
                   @if (statutEleveModifie) {
-                    <span class="parametrage__pastille-modif" role="status">{{
+                    <output class="parametrage__pastille-modif">{{
                       LIBELLES.parametrage.pastilleNonEnregistre
-                    }}</span>
+                    }}</output>
                   }
                   <mc-bouton-destruction
                     [petit]="true"
@@ -426,9 +426,9 @@
                     }}
                   </button>
                   @if (typeContactModifie) {
-                    <span class="parametrage__pastille-modif" role="status">{{
+                    <output class="parametrage__pastille-modif">{{
                       LIBELLES.parametrage.pastilleNonEnregistre
-                    }}</span>
+                    }}</output>
                   }
                   <mc-bouton-destruction
                     [petit]="true"
@@ -483,9 +483,9 @@
                     }}
                   </button>
                   @if (jourFerieModifie) {
-                    <span class="parametrage__pastille-modif" role="status">{{
+                    <output class="parametrage__pastille-modif">{{
                       LIBELLES.parametrage.pastilleNonEnregistre
-                    }}</span>
+                    }}</output>
                   }
                   <mc-bouton-destruction
                     [petit]="true"
@@ -527,9 +527,9 @@
               {{ LIBELLES.commun.annuler }}
             </button>
             @if (prefModifie) {
-              <span class="parametrage__pastille-modif" role="status">{{
+              <output class="parametrage__pastille-modif">{{
                 LIBELLES.parametrage.pastilleNonEnregistre
-              }}</span>
+              }}</output>
             }
           </div>
           <div class="parametrage__formulaire">
@@ -575,9 +575,9 @@
               {{ LIBELLES.commun.annuler }}
             </button>
             @if (domModifie) {
-              <span class="parametrage__pastille-modif" role="status">{{
+              <output class="parametrage__pastille-modif">{{
                 LIBELLES.parametrage.pastilleNonEnregistre
-              }}</span>
+              }}</output>
             }
           </div>
           <p class="parametrage__domaines-info">{{ LIBELLES.parametrage.labelDomainesInfo }}</p>

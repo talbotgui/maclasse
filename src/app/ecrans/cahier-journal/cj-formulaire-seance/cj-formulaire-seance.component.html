@@ -31,9 +31,8 @@
     />
 
     @if (typeSelectionne() === 'pedagogique') {
-      <div
-        class="cj-formulaire-seance__groupe"
-        role="group"
+      <fieldset
+        class="cj-formulaire-seance__groupe mc-groupe-nu"
         aria-labelledby="labelDisciplinesSeance"
       >
         <p id="labelDisciplinesSeance" class="cj-formulaire-seance__label-groupe">
@@ -49,7 +48,7 @@
             />
           }
         </div>
-      </div>
+      </fieldset>
 
       <mc-input
         id="inputTitreSeance"

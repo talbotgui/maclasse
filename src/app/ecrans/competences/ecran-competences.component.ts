@@ -2,7 +2,7 @@
  * Écran de sélection et d'export de compétences.
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
@@ -12,7 +12,6 @@ import { CahierJournalService } from '../../services/sansEtat/cahier-journal.ser
 import { McArbreCompetencesComponent } from '../../composants/mc-arbre-competences/mc-arbre-competences.component';
 import { PopinExportCompetencesComponent } from '../../composants/popins/popin-export-competences/popin-export-competences.component';
 import type { ResultatExportCompetences } from '../../composants/popins/popin-export-competences/popin-export-competences.component';
-import { signal } from '@angular/core';
 
 /**
  * Écran de gestion du panier de compétences.
@@ -119,7 +118,7 @@ export class EcranCompetencesComponent {
 
     if (resultat.cibleType === 'projet') {
       const projet = this.donneesService.donnees()?.projets.find((p) => p.id === resultat.cibleId);
-      const periodeIndex = parseInt(resultat.secondaireId, 10);
+      const periodeIndex = Number.parseInt(resultat.secondaireId, 10);
       const periode = projet?.periodes[periodeIndex];
       if (projet && periode) {
         const nouvellePeriode = {

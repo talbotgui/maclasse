@@ -144,7 +144,7 @@ describe('McArbreCompetencesComponent', () => {
       appuyerTouche(indexFeuille, 'ArrowRight');
 
       expect(document.activeElement).toBe(boutons[indexFeuille]);
-      expect(boutonsLibelle().length).toBe(boutons.length);
+      expect(boutonsLibelle()).toHaveLength(boutons.length);
     });
   });
 

@@ -98,7 +98,7 @@ export class SauvegardeAutoService {
     lien.download = `maclasse_${new Date().toISOString().slice(0, 10)}.zip`;
     document.body.appendChild(lien);
     lien.click();
-    document.body.removeChild(lien);
+    lien.remove();
     URL.revokeObjectURL(url);
   }
 }

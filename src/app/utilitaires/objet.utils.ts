@@ -44,9 +44,7 @@ export class ObjetUtils {
     return (
       clesA.length === clesB.length &&
       clesA.every(
-        (cle) =>
-          Object.prototype.hasOwnProperty.call(objetB, cle) &&
-          ObjetUtils.sontEgaux(objetA[cle], objetB[cle]),
+        (cle) => Object.hasOwn(objetB, cle) && ObjetUtils.sontEgaux(objetA[cle], objetB[cle]),
       )
     );
   }

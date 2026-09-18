@@ -19,7 +19,7 @@ import type { OptionAutoComplete } from '../../modeles/composants.modele';
  * 2. Champ d'autocomplétion affichant le chemin complet de chaque option.
  * 3. CHIPs des compétences sélectionnées, chacun avec un bouton de suppression.
  *
- * Pattern ARIA combobox : l'input porte `role="combobox"` ; la liste `role="listbox"`.
+ * Suggestions : liste native `ul > li > button` pilotée au clavier depuis l'input (les boutons ne sont pas focusables au Tab).
  * La navigation clavier suit les recommandations WAI-ARIA 1.2 (↓/↑, Entrée, Échap).
  */
 @Component({

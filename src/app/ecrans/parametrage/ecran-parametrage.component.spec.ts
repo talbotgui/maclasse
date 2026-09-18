@@ -116,18 +116,18 @@ describe('EcranParametrageComponent', () => {
       expect(d?.referentiels.configEmploiDuTemps.joursOuvres).toEqual(['lundi', 'mardi']);
     });
 
-    it("basculerJourOuvre ajoute un jour dans l'ordre canonique", () => {
+    it("ajouterJourOuvre ajoute un jour dans l'ordre canonique", () => {
       (component as any).formSemaineHoraires.joursOuvres = ['lundi'];
 
-      (component as any).basculerJourOuvre('mercredi', true);
+      (component as any).ajouterJourOuvre('mercredi');
 
       expect((component as any).formSemaineHoraires.joursOuvres).toEqual(['lundi', 'mercredi']);
     });
 
-    it('basculerJourOuvre retire un jour', () => {
+    it('retirerJourOuvre retire un jour', () => {
       (component as any).formSemaineHoraires.joursOuvres = ['lundi', 'mercredi'];
 
-      (component as any).basculerJourOuvre('lundi', false);
+      (component as any).retirerJourOuvre('lundi');
 
       expect((component as any).formSemaineHoraires.joursOuvres).not.toContain('lundi');
     });
@@ -458,7 +458,7 @@ describe('EcranParametrageComponent', () => {
       });
 
       it('modifié quand la liste des jours ouvrés change', () => {
-        (component as any).basculerJourOuvre('jeudi', true);
+        (component as any).ajouterJourOuvre('jeudi');
 
         expect((component as any).estSemaineHorairesModifie()).toBe(true);
       });

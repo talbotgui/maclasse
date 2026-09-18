@@ -18,7 +18,9 @@
               [id]="'chipGroupe' + groupe.id"
               [libelle]="groupe.libelle"
               [actif]="groupesFiltres().includes(groupe.id)"
-              (selectionChange)="basculerFiltreGroupe(groupe.id, $event)"
+              (selectionChange)="
+                $event ? ajouterFiltreGroupe(groupe.id) : retirerFiltreGroupe(groupe.id)
+              "
             />
           }
         </div>

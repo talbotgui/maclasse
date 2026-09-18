@@ -331,22 +331,25 @@ export class EcranParametrageComponent {
   }
 
   /**
-   * Bascule un jour dans la liste des jours ouvrés.
-   * @param jour Jour à ajouter ou retirer.
-   * @param actif `true` si le chip est actif après le clic.
+   * Ajoute un jour aux jours ouvrés, en conservant l'ordre canonique.
+   * @param jour Jour à ajouter.
    */
-  protected basculerJourOuvre(jour: JourSemaine, actif: boolean): void {
-    if (actif) {
-      const joursOrdonnes = this.JOURS_SEMAINE.filter(
-        (j) => j === jour || this.formSemaineHoraires.joursOuvres.includes(j),
-      );
-      this.formSemaineHoraires = { ...this.formSemaineHoraires, joursOuvres: joursOrdonnes };
-    } else {
-      this.formSemaineHoraires = {
-        ...this.formSemaineHoraires,
-        joursOuvres: this.formSemaineHoraires.joursOuvres.filter((j) => j !== jour),
-      };
-    }
+  protected ajouterJourOuvre(jour: JourSemaine): void {
+    const joursOrdonnes = this.JOURS_SEMAINE.filter(
+      (j) => j === jour || this.formSemaineHoraires.joursOuvres.includes(j),
+    );
+    this.formSemaineHoraires = { ...this.formSemaineHoraires, joursOuvres: joursOrdonnes };
+  }
+
+  /**
+   * Retire un jour des jours ouvrés du formulaire.
+   * @param jour Jour à retirer.
+   */
+  protected retirerJourOuvre(jour: JourSemaine): void {
+    this.formSemaineHoraires = {
+      ...this.formSemaineHoraires,
+      joursOuvres: this.formSemaineHoraires.joursOuvres.filter((j) => j !== jour),
+    };
   }
 
   /** Enregistre les préférences. */
@@ -665,16 +668,14 @@ export class EcranParametrageComponent {
     const nouveauSet = new Set(this.copieDomainesActifs());
     if (actif) {
       nouveauSet.add(sousDomaine.id);
+    } else if (nouveauSet.has(domaine.id)) {
+      // Décomposer le domaine parent : activer tous les autres sous-domaines sauf celui-ci
+      nouveauSet.delete(domaine.id);
+      domaine.enfants?.forEach((ss) => {
+        if (ss.id !== sousDomaine.id) nouveauSet.add(ss.id);
+      });
     } else {
-      if (nouveauSet.has(domaine.id)) {
-        // Décomposer le domaine parent : activer tous les autres sous-domaines sauf celui-ci
-        nouveauSet.delete(domaine.id);
-        domaine.enfants?.forEach((ss) => {
-          if (ss.id !== sousDomaine.id) nouveauSet.add(ss.id);
-        });
-      } else {
-        nouveauSet.delete(sousDomaine.id);
-      }
+      nouveauSet.delete(sousDomaine.id);
     }
     this.copieDomainesActifs.set(nouveauSet);
   }
@@ -768,9 +769,9 @@ export class EcranParametrageComponent {
     return !ObjetUtils.sontEgaux(
       {
         ...this.formSemaineHoraires,
-        joursOuvres: [...this.formSemaineHoraires.joursOuvres].sort(),
+        joursOuvres: [...this.formSemaineHoraires.joursOuvres].sort((a, b) => a.localeCompare(b)),
       },
-      { ...store, joursOuvres: [...store.joursOuvres].sort() },
+      { ...store, joursOuvres: [...store.joursOuvres].sort((a, b) => a.localeCompare(b)) },
     );
   }
 
@@ -789,8 +790,10 @@ export class EcranParametrageComponent {
     if (!d) return false;
     const actifs = this.copieDomainesActifs();
     const toutActif = this.collecterIdsDomaines().every((id) => actifs.has(id));
-    const copieNormalisee = (toutActif ? [] : [...actifs]).sort();
-    const storeNormalise = [...(d.configuration.domainesActifs ?? [])].sort();
+    const copieNormalisee = (toutActif ? [] : [...actifs]).sort((a, b) => a.localeCompare(b));
+    const storeNormalise = [...(d.configuration.domainesActifs ?? [])].sort((a, b) =>
+      a.localeCompare(b),
+    );
     return !ObjetUtils.sontEgaux(copieNormalisee, storeNormalise);
   }
 

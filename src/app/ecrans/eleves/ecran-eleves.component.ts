@@ -191,16 +191,19 @@ export class EcranElevesComponent implements AvecNavigationGardee {
   }
 
   /**
-   * Bascule un groupe dans les filtres actifs.
+   * Ajoute un groupe aux filtres actifs.
    * @param id Identifiant du groupe.
-   * @param actif Nouvel état du chip.
    */
-  protected basculerFiltreGroupe(id: string, actif: boolean): void {
-    if (actif) {
-      this.groupesFiltres.update((ids) => [...ids, id]);
-    } else {
-      this.groupesFiltres.update((ids) => ids.filter((i) => i !== id));
-    }
+  protected ajouterFiltreGroupe(id: string): void {
+    this.groupesFiltres.update((ids) => [...ids, id]);
+  }
+
+  /**
+   * Retire un groupe des filtres actifs.
+   * @param id Identifiant du groupe.
+   */
+  protected retirerFiltreGroupe(id: string): void {
+    this.groupesFiltres.update((ids) => ids.filter((i) => i !== id));
   }
 
   /** Lance l'impression de la fiche. */

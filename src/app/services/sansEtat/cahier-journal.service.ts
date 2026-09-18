@@ -8,6 +8,7 @@ import { JourneeJournal, Seance } from '../../modeles/cahier-journal.modele';
 import { CommandeCreation } from '../../commandes/commande-creation';
 import { CommandeModification } from '../../commandes/commande-modification';
 import { CommandeSuppression } from '../../commandes/commande-suppression';
+import { EmploiDuTemps, TempsCreneau } from '../../modeles/emploi-du-temps.modele';
 import { DonneesService } from '../avecEtat/donnees.service';
 import { EleveService } from './eleve.service';
 import { DateUtils } from '../../utilitaires/date.utils';
@@ -73,36 +74,15 @@ export class CahierJournalService {
     if (jourSemaine === 'samedi' || jourSemaine === 'dimanche') return;
 
     const parite = DateUtils.calculerParite(date);
-    const seances: Seance[] = [];
-
-    for (const edt of donnees.emploisDuTemps) {
-      if (edt.dateDebut && date < edt.dateDebut) continue;
-      if (edt.dateFin && date > edt.dateFin) continue;
-      if (edt.frequence !== 'lesDeux' && edt.frequence !== parite) continue;
-
-      for (const creneau of edt.creneaux) {
-        if (creneau.jour !== jourSemaine) continue;
-        for (const temps of creneau.temps) {
-          seances.push({
-            id: crypto.randomUUID(),
-            heureDebut: temps.heureDebut,
-            heureFin: temps.heureFin,
-            type: creneau.type,
-            ...(temps.disciplinesIds ? { disciplinesIds: [...temps.disciplinesIds] } : {}),
-            ...(temps.titre !== undefined ? { titre: temps.titre } : {}),
-            ...(temps.elevesConcernes
-              ? {
-                  elevesConcernes: {
-                    type: temps.elevesConcernes.type,
-                    groupes: [...temps.elevesConcernes.groupes],
-                    elevesIds: [...temps.elevesConcernes.elevesIds],
-                  },
-                }
-              : {}),
-          });
-        }
-      }
-    }
+    const seances: Seance[] = donnees.emploisDuTemps
+      .filter((edt) => CahierJournalService.verifierEdtApplicable(edt, date, parite))
+      .flatMap((edt) => edt.creneaux)
+      .filter((creneau) => creneau.jour === jourSemaine)
+      .flatMap((creneau) =>
+        creneau.temps.map((temps) =>
+          CahierJournalService.creerSeanceDepuisTemps(creneau.type, temps),
+        ),
+      );
     seances.sort((a, b) => a.heureDebut.localeCompare(b.heureDebut));
     const notesInitiales = this.genererNotesInitiales(date);
     this.donneesService.executer(
@@ -117,6 +97,49 @@ export class CahierJournalService {
         LIBELLES.commandes.initialisationDepuisEdt,
       ),
     );
+  }
+
+  /**
+   * Détermine si un EDT s'applique à une date donnée (période de validité et parité de semaine).
+   * @param edt Emploi du temps à tester.
+   * @param date Date ISO de la journée.
+   * @param parite Parité de la semaine contenant la date.
+   * @returns `true` si l'EDT est applicable ce jour-là.
+   */
+  private static verifierEdtApplicable(
+    edt: EmploiDuTemps,
+    date: string,
+    parite: 'paire' | 'impaire',
+  ): boolean {
+    if (edt.dateDebut && date < edt.dateDebut) return false;
+    if (edt.dateFin && date > edt.dateFin) return false;
+    return edt.frequence === 'lesDeux' || edt.frequence === parite;
+  }
+
+  /**
+   * Crée une séance à partir d'un temps de créneau d'emploi du temps.
+   * @param type Type du créneau parent.
+   * @param temps Temps du créneau à convertir.
+   * @returns Nouvelle séance avec un identifiant généré.
+   */
+  private static creerSeanceDepuisTemps(type: Seance['type'], temps: TempsCreneau): Seance {
+    return {
+      id: crypto.randomUUID(),
+      heureDebut: temps.heureDebut,
+      heureFin: temps.heureFin,
+      type,
+      ...(temps.disciplinesIds ? { disciplinesIds: [...temps.disciplinesIds] } : {}),
+      ...(temps.titre !== undefined ? { titre: temps.titre } : {}),
+      ...(temps.elevesConcernes
+        ? {
+            elevesConcernes: {
+              type: temps.elevesConcernes.type,
+              groupes: [...temps.elevesConcernes.groupes],
+              elevesIds: [...temps.elevesConcernes.elevesIds],
+            },
+          }
+        : {}),
+    };
   }
 
   /**

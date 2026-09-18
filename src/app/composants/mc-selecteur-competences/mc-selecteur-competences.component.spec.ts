@@ -83,7 +83,7 @@ describe('McSelecteurCompetencesComponent', () => {
         By.css('.mc-selecteur-competences__domaines mc-chip-filtre'),
       );
 
-      expect(chips.length).toBe(2);
+      expect(chips).toHaveLength(2);
     });
 
     it('activer un filtre de domaine restreint les suggestions', () => {
@@ -105,7 +105,7 @@ describe('McSelecteurCompetencesComponent', () => {
       cliquerFiltreDomaine('MATH');
       saisir('a');
 
-      expect(suggestions().length).toBe(total);
+      expect(suggestions()).toHaveLength(total);
     });
   });
 

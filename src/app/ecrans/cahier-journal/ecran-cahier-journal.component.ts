@@ -171,14 +171,14 @@ export class EcranCahierJournalComponent implements AvecNavigationGardee {
   protected readonly dateMinCalendrier = computed<string | null>(() => {
     const periodes = this.donneesService.donnees()?.referentiels.periodes ?? [];
     if (periodes.length === 0) return null;
-    return periodes.reduce((min, p) => (p.debut < min ? p.debut : min), periodes[0].debut);
+    return periodes.map((p) => p.debut).sort((x, y) => x.localeCompare(y))[0];
   });
 
   /** Date ISO maximale de navigation du mini-calendrier (dernier jour de la dernière période). */
   protected readonly dateMaxCalendrier = computed<string | null>(() => {
     const periodes = this.donneesService.donnees()?.referentiels.periodes ?? [];
     if (periodes.length === 0) return null;
-    return periodes.reduce((max, p) => (p.fin > max ? p.fin : max), periodes[0].fin);
+    return periodes.map((p) => p.fin).sort((x, y) => y.localeCompare(x))[0];
   });
 
   /** Domaines de niveau 1 pour les chips de disciplines. */

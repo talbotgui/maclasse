@@ -75,14 +75,14 @@ describe('FeFormulaireEleveComponent', () => {
     });
   });
 
-  describe('basculerGroupe', () => {
+  describe('ajouterGroupe / retirerGroupe', () => {
     beforeEach(() => {
       fixture.componentRef.setInput('eleve', EleveMother.base('e1', 'M', 'A'));
       fixture.detectChanges();
     });
 
     it('ajoute un groupe absent de la sélection', () => {
-      (component as any).basculerGroupe('GA', true);
+      (component as any).ajouterGroupe('GA');
 
       expect((component as any).formEleve.groupes).toContain('GA');
     });
@@ -90,7 +90,7 @@ describe('FeFormulaireEleveComponent', () => {
     it('retire un groupe présent', () => {
       (component as any).formEleve.groupes = ['GA'];
 
-      (component as any).basculerGroupe('GA', false);
+      (component as any).retirerGroupe('GA');
 
       expect((component as any).formEleve.groupes).not.toContain('GA');
     });
@@ -98,7 +98,7 @@ describe('FeFormulaireEleveComponent', () => {
     it("n'ajoute pas un groupe déjà présent", () => {
       (component as any).formEleve.groupes = ['GA'];
 
-      (component as any).basculerGroupe('GA', true);
+      (component as any).ajouterGroupe('GA');
 
       expect((component as any).formEleve.groupes.filter((g: string) => g === 'GA')).toHaveLength(
         1,

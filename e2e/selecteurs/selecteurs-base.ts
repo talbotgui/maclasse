@@ -84,6 +84,6 @@ export class SelecteursBase {
 
   /** Retourne le premier résultat de la liste de recherche globale. */
   get premierResultatRecherche(): Locator {
-    return this.listeResultatsRecherche.locator('[role="option"]').first();
+    return this.listeResultatsRecherche.locator('button').first();
   }
 }

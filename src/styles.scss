@@ -737,3 +737,11 @@ button {
     display: none;
   }
 }
+
+/* Fieldset utilisé comme simple regroupement sémantique (sans bordure ni marge natives). */
+.mc-groupe-nu {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}

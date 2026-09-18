@@ -100,10 +100,10 @@
 
       <!-- Formulaire inline de duplication -->
       @if (popinDuplicationVisible()) {
-        <div
+        <form
           class="cj__duplication"
-          role="form"
           [attr.aria-label]="LIBELLES.cahierJournal.ariaDuplication"
+          (submit)="$event.preventDefault(); confirmerDuplication()"
         >
           <label for="inputDateDuplication" class="cj__duplication-label">
             {{ LIBELLES.cahierJournal.labelJourCible }}
@@ -118,6 +118,7 @@
           <div class="cj__duplication-actions">
             <button
               id="btnConfirmerDuplication"
+              type="button"
               class="mc-btn-primaire mc-btn-sm"
               [disabled]="!dateDuplication()"
               (click)="confirmerDuplication()"
@@ -126,13 +127,14 @@
             </button>
             <button
               id="btnAnnulerDuplication"
+              type="button"
               class="mc-btn-fantome mc-btn-sm"
               (click)="annulerDuplication()"
             >
               {{ LIBELLES.commun.annuler }}
             </button>
           </div>
-        </div>
+        </form>
       }
     </div>
   </div>

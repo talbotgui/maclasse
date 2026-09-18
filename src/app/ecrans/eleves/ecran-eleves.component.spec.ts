@@ -199,9 +199,9 @@ describe('EcranElevesComponent', () => {
     });
   });
 
-  describe('basculerFiltreGroupe', () => {
+  describe('ajouterFiltreGroupe / retirerFiltreGroupe', () => {
     it('ajoute un groupe aux filtres', () => {
-      (component as any).basculerFiltreGroupe('GA', true);
+      (component as any).ajouterFiltreGroupe('GA');
 
       expect((component as any).groupesFiltres()).toContain('GA');
     });
@@ -209,7 +209,7 @@ describe('EcranElevesComponent', () => {
     it('retire un groupe des filtres', () => {
       (component as any).groupesFiltres.set(['GA']);
 
-      (component as any).basculerFiltreGroupe('GA', false);
+      (component as any).retirerFiltreGroupe('GA');
 
       expect((component as any).groupesFiltres()).not.toContain('GA');
     });

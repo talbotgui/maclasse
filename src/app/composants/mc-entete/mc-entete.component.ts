@@ -58,8 +58,9 @@ export class McEnteteComponent extends ComposantBase {
   /** Contrôle la visibilité du panneau de résultats de recherche. */
   protected readonly listeResultatsVisible: WritableSignal<boolean> = signal(false);
 
-  /** Éléments `<li role="option">` de résultats actuellement rendus, pour le focus clavier. */
-  private readonly elementsResultats = viewChildren<ElementRef<HTMLLIElement>>('optionResultat');
+  /** Boutons de résultats actuellement rendus, pour le focus clavier. */
+  private readonly elementsResultats =
+    viewChildren<ElementRef<HTMLButtonElement>>('optionResultat');
 
   /** Index de l'option de résultat focalisée au clavier (-1 = aucune, roving tabindex). */
   protected readonly indexResultatFocalise: WritableSignal<number> = signal(-1);

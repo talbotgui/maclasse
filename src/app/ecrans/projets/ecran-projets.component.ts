@@ -181,16 +181,19 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
   }
 
   /**
-   * Bascule un domaine dans les filtres actifs.
+   * Ajoute un domaine aux filtres actifs.
    * @param id Identifiant du domaine.
-   * @param actif Nouvel état du chip.
    */
-  protected basculerFiltreDomaine(id: string, actif: boolean): void {
-    if (actif) {
-      this.domainesFiltres.update((ids) => [...ids, id]);
-    } else {
-      this.domainesFiltres.update((ids) => ids.filter((i) => i !== id));
-    }
+  protected ajouterFiltreDomaine(id: string): void {
+    this.domainesFiltres.update((ids) => [...ids, id]);
+  }
+
+  /**
+   * Retire un domaine des filtres actifs.
+   * @param id Identifiant du domaine.
+   */
+  protected retirerFiltreDomaine(id: string): void {
+    this.domainesFiltres.update((ids) => ids.filter((i) => i !== id));
   }
 
   /** Lance l'impression du projet. */

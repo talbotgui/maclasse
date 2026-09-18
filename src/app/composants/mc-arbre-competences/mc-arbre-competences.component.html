@@ -6,9 +6,8 @@
   />
 
   @if (domaines().length > 0) {
-    <div
-      class="mc-arbre-competences__domaines"
-      role="group"
+    <fieldset
+      class="mc-arbre-competences__domaines mc-groupe-nu"
       [attr.aria-label]="LIBELLES.selecteurCompetences.ariaFiltreDomaine"
     >
       @for (domaine of domaines(); track domaine.id) {
@@ -19,7 +18,7 @@
           (selectionChange)="basculerDomaine(domaine.id)"
         />
       }
-    </div>
+    </fieldset>
   }
 
   <div

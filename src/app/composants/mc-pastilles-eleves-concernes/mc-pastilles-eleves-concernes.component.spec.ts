@@ -41,7 +41,7 @@ describe('McPastillesElevesConcernesComponent', () => {
       fixture.detectChanges();
 
       expect((component as any).pastilles()).toEqual([]);
-      expect(fixture.nativeElement.querySelectorAll('.mc-disc-pill').length).toBe(0);
+      expect(fixture.nativeElement.querySelectorAll('.mc-disc-pill')).toHaveLength(0);
     });
 
     it('type "classe" → une pastille "Toute la classe"', () => {
@@ -53,7 +53,7 @@ describe('McPastillesElevesConcernesComponent', () => {
         { id: 'classe', libelle: 'Toute la classe' },
       ]);
       const pills = fixture.nativeElement.querySelectorAll('.mc-disc-pill');
-      expect(pills.length).toBe(1);
+      expect(pills).toHaveLength(1);
       expect(pills[0].textContent).toContain('Toute la classe');
     });
 
@@ -70,7 +70,7 @@ describe('McPastillesElevesConcernesComponent', () => {
         { id: 'GA', libelle: 'Groupe A' },
         { id: 'GB', libelle: 'Groupe B' },
       ]);
-      expect(fixture.nativeElement.querySelectorAll('.mc-disc-pill').length).toBe(2);
+      expect(fixture.nativeElement.querySelectorAll('.mc-disc-pill')).toHaveLength(2);
     });
 
     it('type "eleves" → une pastille par élève résolu au format NOM Prénom, triées, id inconnu ignoré', () => {
@@ -86,7 +86,7 @@ describe('McPastillesElevesConcernesComponent', () => {
         { id: 'e2', libelle: 'DUPONT Bob' },
         { id: 'e1', libelle: 'MARTIN Alice' },
       ]);
-      expect(fixture.nativeElement.querySelectorAll('.mc-disc-pill').length).toBe(2);
+      expect(fixture.nativeElement.querySelectorAll('.mc-disc-pill')).toHaveLength(2);
     });
   });
 });

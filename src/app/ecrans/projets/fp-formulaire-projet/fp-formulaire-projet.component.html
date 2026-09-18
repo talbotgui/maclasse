@@ -35,7 +35,7 @@
             [id]="'chipProjetEleve' + eleve.id"
             [libelle]="eleve.nom.toUpperCase() + ' ' + eleve.prenom"
             [actif]="formProjet.elevesIds.includes(eleve.id)"
-            (selectionChange)="basculerEleve(eleve.id, $event)"
+            (selectionChange)="$event ? ajouterEleve(eleve.id) : retirerEleve(eleve.id)"
           />
         }
       </div>

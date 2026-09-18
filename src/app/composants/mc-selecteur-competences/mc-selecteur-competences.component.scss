@@ -64,7 +64,13 @@
 }
 
 .mc-selecteur-competences__option {
+  display: block;
+  width: 100%;
   padding: 0.375rem 0.75rem;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
   font-size: 0.8125rem;
   color: var(--texte-principal);
   cursor: pointer;

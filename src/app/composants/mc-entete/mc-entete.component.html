@@ -114,27 +114,26 @@
           <ul
             id="listeResultatsRecherche"
             class="mc-entete__resultats"
-            role="listbox"
             [attr.aria-label]="LIBELLES.entete.rechercheAria"
             (keydown)="naviguerResultats($event)"
           >
             @for (res of resultatsRecherche(); track res.id; let i = $index) {
-              <li
-                #optionResultat
-                [id]="'resRecherche_' + res.id"
-                class="mc-entete__resultat-item"
-                role="option"
-                [attr.tabindex]="
-                  (indexResultatFocalise() === -1 ? i === 0 : i === indexResultatFocalise())
-                    ? 0
-                    : -1
-                "
-                (click)="surSelectionResultat(res)"
-                (keydown.enter)="surSelectionResultat(res)"
-                (keydown.space)="$event.preventDefault(); surSelectionResultat(res)"
-              >
-                <span class="mc-entete__resultat-type">{{ res.type }}</span>
-                <span class="mc-entete__resultat-titre">{{ res.titre }}</span>
+              <li>
+                <button
+                  #optionResultat
+                  [id]="'resRecherche_' + res.id"
+                  type="button"
+                  class="mc-entete__resultat-item"
+                  [attr.tabindex]="
+                    (indexResultatFocalise() === -1 ? i === 0 : i === indexResultatFocalise())
+                      ? 0
+                      : -1
+                  "
+                  (click)="surSelectionResultat(res)"
+                >
+                  <span class="mc-entete__resultat-type">{{ res.type }}</span>
+                  <span class="mc-entete__resultat-titre">{{ res.titre }}</span>
+                </button>
               </li>
             }
           </ul>
@@ -142,7 +141,10 @@
       </div>
 
       <!-- Actions SAUVEGARDER / ANNULER / REFAIRE -->
-      <div class="mc-entete__actions" role="group" [attr.aria-label]="LIBELLES.entete.sauvegarder">
+      <fieldset
+        class="mc-entete__actions mc-groupe-nu"
+        [attr.aria-label]="LIBELLES.entete.sauvegarder"
+      >
         <button
           id="btnSauvegarder"
           type="button"
@@ -179,7 +181,7 @@
         >
           ↷
         </button>
-      </div>
+      </fieldset>
     }
   }
 

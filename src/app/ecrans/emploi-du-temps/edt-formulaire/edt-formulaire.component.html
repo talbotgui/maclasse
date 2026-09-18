@@ -101,9 +101,8 @@
           />
 
           @if (formCreneau.type === 'pedagogique') {
-            <div
-              class="edt-formulaire__groupe"
-              role="group"
+            <fieldset
+              class="edt-formulaire__groupe mc-groupe-nu"
               [attr.aria-labelledby]="'labelDisciplinesTemps' + i"
             >
               <p [id]="'labelDisciplinesTemps' + i" class="edt-formulaire__label-groupe">
@@ -119,7 +118,7 @@
                   />
                 }
               </div>
-            </div>
+            </fieldset>
 
             <mc-input
               [id]="'inputTitreTemps' + i"
@@ -164,12 +163,7 @@
         <button id="btnEnregistrerCreneau" type="submit" class="mc-btn-primaire">
           {{ LIBELLES.commun.enregistrer }}
         </button>
-        <button
-          id="btnAnnulerCreneau"
-          type="button"
-          class="mc-btn-fantome"
-          (click)="onEdtAnnule()"
-        >
+        <button id="btnAnnulerCreneau" type="button" class="mc-btn-fantome" (click)="onEdtAnnule()">
           {{ LIBELLES.commun.annuler }}
         </button>
         @if (estEditionCreneau()) {

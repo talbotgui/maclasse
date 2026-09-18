@@ -65,7 +65,7 @@
             [id]="'chipFormGroupe' + groupe.id"
             [libelle]="groupe.libelle"
             [actif]="formEleve.groupes.includes(groupe.id)"
-            (selectionChange)="basculerGroupe(groupe.id, $event)"
+            (selectionChange)="$event ? ajouterGroupe(groupe.id) : retirerGroupe(groupe.id)"
           />
         }
       </div>

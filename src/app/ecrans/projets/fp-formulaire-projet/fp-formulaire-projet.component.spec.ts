@@ -79,14 +79,14 @@ describe('FpFormulaireProjetComponent', () => {
     });
   });
 
-  describe('basculerEleve', () => {
+  describe('ajouterEleve / retirerEleve', () => {
     beforeEach(() => {
       fixture.componentRef.setInput('projet', ProjetMother.base({ elevesIds: [] }));
       fixture.detectChanges();
     });
 
     it('ajoute un élève absent', () => {
-      (component as any).basculerEleve('e1', true);
+      (component as any).ajouterEleve('e1');
 
       expect((component as any).formProjet.elevesIds).toContain('e1');
     });
@@ -94,7 +94,7 @@ describe('FpFormulaireProjetComponent', () => {
     it('retire un élève présent', () => {
       (component as any).formProjet.elevesIds = ['e1'];
 
-      (component as any).basculerEleve('e1', false);
+      (component as any).retirerEleve('e1');
 
       expect((component as any).formProjet.elevesIds).not.toContain('e1');
     });
@@ -102,7 +102,7 @@ describe('FpFormulaireProjetComponent', () => {
     it("n'ajoute pas un élève déjà présent", () => {
       (component as any).formProjet.elevesIds = ['e1'];
 
-      (component as any).basculerEleve('e1', true);
+      (component as any).ajouterEleve('e1');
 
       expect(
         (component as any).formProjet.elevesIds.filter((id: string) => id === 'e1'),

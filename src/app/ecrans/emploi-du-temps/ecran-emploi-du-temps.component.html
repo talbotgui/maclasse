@@ -31,7 +31,6 @@
     } @else {
       <ul
         class="edt__liste"
-        role="listbox"
         [attr.aria-label]="LIBELLES.edt.ariaListeEdt"
         (keydown)="naviguerListeEdt($event)"
       >
@@ -42,9 +41,8 @@
               [id]="'btnSelectionnerEdt' + edt.id"
               class="edt__btn-edt"
               [class.edt__btn-edt--actif]="edtSelectionne()?.id === edt.id"
-              role="option"
               [attr.tabindex]="i === indexEdtFocalise() ? 0 : -1"
-              [attr.aria-selected]="edtSelectionne()?.id === edt.id"
+              [attr.aria-current]="edtSelectionne()?.id === edt.id ? 'true' : null"
               (click)="selectionnerEdt(edt)"
               (focus)="indexEdtFocalise.set(i)"
             >
@@ -99,14 +97,23 @@
                 <td class="edt__grille-heure">{{ ligne.heureDebut }}–{{ ligne.heureFin }}</td>
                 @for (jour of joursOuvres(); track jour) {
                   @let entrees = obtenirTempsDeGrille(jour, ligne);
-                  <td class="edt__grille-cellule" [class.edt__grille-cellule--vide]="entrees.length === 0">
+                  <td
+                    class="edt__grille-cellule"
+                    [class.edt__grille-cellule--vide]="entrees.length === 0"
+                  >
                     @if (entrees.length > 0) {
                       @for (entree of entrees; track entree.temps.id) {
                         <div
                           class="edt__creneau-cellule"
-                          [class.edt__creneau-cellule--pedagogique]="entree.creneau.type === 'pedagogique'"
-                          [class.edt__creneau-cellule--recreation]="entree.creneau.type === 'recreation'"
-                          [class.edt__creneau-cellule--pause]="entree.creneau.type === 'pauseDejeuner'"
+                          [class.edt__creneau-cellule--pedagogique]="
+                            entree.creneau.type === 'pedagogique'
+                          "
+                          [class.edt__creneau-cellule--recreation]="
+                            entree.creneau.type === 'recreation'
+                          "
+                          [class.edt__creneau-cellule--pause]="
+                            entree.creneau.type === 'pauseDejeuner'
+                          "
                         >
                           <button
                             [id]="'btnCreneau' + entree.creneau.id + entree.temps.id"

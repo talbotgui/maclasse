@@ -160,9 +160,9 @@ describe('EcranProjetsComponent', () => {
     });
   });
 
-  describe('basculerFiltreDomaine', () => {
+  describe('ajouterFiltreDomaine / retirerFiltreDomaine', () => {
     it('ajoute un domaine aux filtres', () => {
-      (component as any).basculerFiltreDomaine('d1', true);
+      (component as any).ajouterFiltreDomaine('d1');
 
       expect((component as any).domainesFiltres()).toContain('d1');
     });
@@ -170,7 +170,7 @@ describe('EcranProjetsComponent', () => {
     it('retire un domaine des filtres', () => {
       (component as any).domainesFiltres.set(['d1']);
 
-      (component as any).basculerFiltreDomaine('d1', false);
+      (component as any).retirerFiltreDomaine('d1');
 
       expect((component as any).domainesFiltres()).not.toContain('d1');
     });

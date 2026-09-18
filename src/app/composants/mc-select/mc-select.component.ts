@@ -52,6 +52,16 @@ export class McSelectComponent extends ComposantBase implements ControlValueAcce
   protected readonly valeur = signal('');
 
   /**
+   * Valeur courante non vide absente des options : elle est ajoutée en option désactivée
+   * pour que le select affiche la vraie valeur du `FormControl` plutôt qu'une autre option.
+   */
+  protected readonly optionInconnue: Signal<OptionFormulaire | null> = computed(() => {
+    const courante = this.valeur();
+    if (courante === '' || this.options().some((o) => o.valeur === courante)) return null;
+    return { valeur: courante, libelle: `${courante} (${this.LIBELLES.commun.valeurInconnue})` };
+  });
+
+  /**
    * Valeur effectivement affichée dans le `<select>` natif : la valeur courante si elle
    * correspond à une option, sinon la première option disponible (comportement du navigateur),
    * ou une chaîne vide sans option — évite toute désynchronisation entre l'option visuellement
@@ -59,6 +69,7 @@ export class McSelectComponent extends ComposantBase implements ControlValueAcce
    */
   protected readonly valeurAffichee: Signal<string> = computed(() => {
     const courante = this.valeur();
+    if (this.optionInconnue()) return courante;
     const valeursValides = this.avecOptionVide()
       ? ['', ...this.options().map((o) => o.valeur)]
       : this.options().map((o) => o.valeur);

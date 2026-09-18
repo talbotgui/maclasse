@@ -5,7 +5,7 @@ import { DonneesService } from '../avecEtat/donnees.service';
 import { EmploiDuTemps, CreneauEdt } from '../../modeles/emploi-du-temps.modele';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { EleveMother, AbsenceRecurrenteMother } from '../../tests/eleve.mother';
-import { EdtMother, CreneauMother } from '../../tests/emploi-du-temps.mother';
+import { EdtMother, CreneauMother, TempsCreneauMother } from '../../tests/emploi-du-temps.mother';
 
 describe('EmploiDuTempsService', () => {
   let service: EmploiDuTempsService;
@@ -136,15 +136,19 @@ describe('EmploiDuTempsService', () => {
     it('met à jour un créneau existant', () => {
       service.creerEdt(EdtMother.base());
       service.ajouterCreneau('edt1', CreneauMother.lundi9h10());
-      service.modifierCreneau('edt1', { ...CreneauMother.lundi9h10(), heureFin: '11:00' });
-      expect(donneesService.donnees()?.emploisDuTemps[0].creneaux[0].heureFin).toBe('11:00');
+      service.modifierCreneau('edt1', CreneauMother.avecHoraire('09:00', '11:00'));
+      expect(donneesService.donnees()?.emploisDuTemps[0].creneaux[0].temps[0].heureFin).toBe(
+        '11:00',
+      );
     });
 
     it('sans effet si EDT inexistant', () => {
       service.creerEdt(EdtMother.base());
       service.ajouterCreneau('edt1', CreneauMother.lundi9h10());
-      service.modifierCreneau('inconnu', { ...CreneauMother.lundi9h10(), heureFin: '11:00' });
-      expect(donneesService.donnees()?.emploisDuTemps[0].creneaux[0].heureFin).toBe('10:00');
+      service.modifierCreneau('inconnu', CreneauMother.avecHoraire('09:00', '11:00'));
+      expect(donneesService.donnees()?.emploisDuTemps[0].creneaux[0].temps[0].heureFin).toBe(
+        '10:00',
+      );
     });
 
     it('sans effet si aucune donnée chargée', () => {
@@ -181,6 +185,33 @@ describe('EmploiDuTempsService', () => {
 
   /** Détecte tout créneau en conflit horaire sur le même jour avec un autre EDT de fréquence compatible. */
   describe('validerChevauchement', () => {
+    it('détecte un chevauchement entre deux créneaux du même EDT (seule la branche interne)', () => {
+      const edt = EdtMother.base({
+        creneaux: [CreneauMother.lundi9h10(), CreneauMother.lundi9h10({ id: 'c2' })],
+      });
+      expect(service.validerChevauchement(edt)).toBe(true);
+    });
+
+    it('ne détecte pas de conflit interne pour des horaires adjacents', () => {
+      const edt = EdtMother.base({
+        creneaux: [
+          CreneauMother.lundi9h10(),
+          CreneauMother.lundi9h10({
+            id: 'c2',
+            temps: [TempsCreneauMother.base({ id: 't2', heureDebut: '10:00', heureFin: '11:00' })],
+          }),
+        ],
+      });
+      expect(service.validerChevauchement(edt)).toBe(false);
+    });
+
+    it('ne détecte pas de conflit interne pour des jours différents', () => {
+      const edt = EdtMother.base({
+        creneaux: [CreneauMother.lundi9h10(), CreneauMother.lundi9h10({ id: 'c2', jour: 'mardi' })],
+      });
+      expect(service.validerChevauchement(edt)).toBe(false);
+    });
+
     it("retourne false si aucun autre EDT n'existe", () => {
       const edt = { ...EdtMother.base(), creneaux: [CreneauMother.lundi9h10()] };
       expect(service.validerChevauchement(edt)).toBe(false);
@@ -277,9 +308,8 @@ describe('EmploiDuTempsService', () => {
       const CRENEAU_10_11: CreneauEdt = {
         id: 'c2',
         jour: 'lundi',
-        heureDebut: '10:00',
-        heureFin: '11:00',
         type: 'pedagogique',
+        temps: [{ id: 'c2-t1', heureDebut: '10:00', heureFin: '11:00' }],
       };
       const edt2: EmploiDuTemps = {
         id: 'edt2',
@@ -297,9 +327,8 @@ describe('EmploiDuTempsService', () => {
       const CRENEAU_MARDI: CreneauEdt = {
         id: 'c2',
         jour: 'mardi',
-        heureDebut: '09:00',
-        heureFin: '10:00',
         type: 'pedagogique',
+        temps: [{ id: 'c2-t1', heureDebut: '09:00', heureFin: '10:00' }],
       };
       const edt2: EmploiDuTemps = {
         id: 'edt2',
@@ -323,9 +352,8 @@ describe('EmploiDuTempsService', () => {
       const C_MARDI: CreneauEdt = {
         id: 'cm',
         jour: 'mardi',
-        heureDebut: '08:00',
-        heureFin: '09:00',
         type: 'recreation',
+        temps: [{ id: 'cm-t1', heureDebut: '08:00', heureFin: '09:00' }],
       };
       service.creerEdt({
         ...EdtMother.base(),
@@ -380,9 +408,9 @@ describe('EmploiDuTempsService', () => {
               id: 'a1',
               libelle: 'Orthophonie',
               jour: 'lundi',
+              paritesSemaine: 'lesDeux',
               heureDebut: '09:30',
               heureFin: '10:30',
-              paritesSemaine: 'lesDeux',
             },
           ],
         }),
@@ -403,9 +431,9 @@ describe('EmploiDuTempsService', () => {
               id: 'a1',
               libelle: 'Orthophonie',
               jour: 'mardi',
+              paritesSemaine: 'lesDeux',
               heureDebut: '09:00',
               heureFin: '10:00',
-              paritesSemaine: 'lesDeux',
             },
           ],
         }),
@@ -424,9 +452,9 @@ describe('EmploiDuTempsService', () => {
               id: 'a1',
               libelle: 'Orthophonie',
               jour: 'lundi',
+              paritesSemaine: 'lesDeux',
               heureDebut: '10:00',
               heureFin: '11:00',
-              paritesSemaine: 'lesDeux',
             },
           ],
         }),
@@ -446,9 +474,9 @@ describe('EmploiDuTempsService', () => {
               id: 'a1',
               libelle: 'Ortho',
               jour: 'lundi',
+              paritesSemaine: 'lesDeux',
               heureDebut: '09:00',
               heureFin: '10:00',
-              paritesSemaine: 'lesDeux',
             },
           ],
         }),
@@ -459,9 +487,9 @@ describe('EmploiDuTempsService', () => {
               id: 'a2',
               libelle: 'RASED',
               jour: 'lundi',
+              paritesSemaine: 'lesDeux',
               heureDebut: '09:00',
               heureFin: '10:00',
-              paritesSemaine: 'lesDeux',
             },
           ],
         }),
@@ -470,10 +498,15 @@ describe('EmploiDuTempsService', () => {
       const CRENEAU_GROUPE: CreneauEdt = {
         id: 'cg',
         jour: 'lundi',
-        heureDebut: '09:00',
-        heureFin: '10:00',
         type: 'pedagogique',
-        elevesConcernes: { type: 'groupes', groupes: ['GA'], elevesIds: [] },
+        temps: [
+          {
+            id: 'cg-t1',
+            heureDebut: '09:00',
+            heureFin: '10:00',
+            elevesConcernes: { type: 'groupes', groupes: ['GA'], elevesIds: [] },
+          },
+        ],
       };
       service.creerEdt({ ...EdtMother.base(), creneaux: [CRENEAU_GROUPE] });
       const conflits = service.calculerConflitsAbsences('cg');
@@ -490,9 +523,9 @@ describe('EmploiDuTempsService', () => {
               id: 'a1',
               libelle: 'Ortho',
               jour: 'lundi',
+              paritesSemaine: 'lesDeux',
               heureDebut: '09:00',
               heureFin: '10:00',
-              paritesSemaine: 'lesDeux',
             },
           ],
         }),
@@ -502,9 +535,9 @@ describe('EmploiDuTempsService', () => {
               id: 'a2',
               libelle: 'RASED',
               jour: 'lundi',
+              paritesSemaine: 'lesDeux',
               heureDebut: '09:00',
               heureFin: '10:00',
-              paritesSemaine: 'lesDeux',
             },
           ],
         }),
@@ -513,10 +546,15 @@ describe('EmploiDuTempsService', () => {
       const CRENEAU_ELEVES: CreneauEdt = {
         id: 'ce',
         jour: 'lundi',
-        heureDebut: '09:00',
-        heureFin: '10:00',
         type: 'pedagogique',
-        elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e2'] },
+        temps: [
+          {
+            id: 'ce-t1',
+            heureDebut: '09:00',
+            heureFin: '10:00',
+            elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e2'] },
+          },
+        ],
       };
       service.creerEdt({ ...EdtMother.base(), creneaux: [CRENEAU_ELEVES] });
       const conflits = service.calculerConflitsAbsences('ce');
@@ -533,9 +571,9 @@ describe('EmploiDuTempsService', () => {
               id: 'a1',
               libelle: 'Ortho',
               jour: 'lundi',
+              paritesSemaine: 'lesDeux',
               heureDebut: '09:00',
               heureFin: '10:00',
-              paritesSemaine: 'lesDeux',
             },
           ],
         }),
@@ -545,9 +583,9 @@ describe('EmploiDuTempsService', () => {
               id: 'a2',
               libelle: 'RASED',
               jour: 'lundi',
+              paritesSemaine: 'lesDeux',
               heureDebut: '09:00',
               heureFin: '10:00',
-              paritesSemaine: 'lesDeux',
             },
           ],
         }),
@@ -565,10 +603,15 @@ describe('EmploiDuTempsService', () => {
       const CRENEAU_INCONNU: CreneauEdt = {
         id: 'ci',
         jour: 'lundi',
-        heureDebut: '09:00',
-        heureFin: '10:00',
         type: 'pedagogique',
-        elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['inconnu'] },
+        temps: [
+          {
+            id: 'ci-t1',
+            heureDebut: '09:00',
+            heureFin: '10:00',
+            elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['inconnu'] },
+          },
+        ],
       };
       service.creerEdt({ ...EdtMother.base(), creneaux: [CRENEAU_INCONNU] });
       expect(service.calculerConflitsAbsences('ci')).toEqual([]);
@@ -635,7 +678,7 @@ describe('EmploiDuTempsService', () => {
       expect(serviceSansDonnees.obtenirAbsencesPertinentes(EdtMother.base())).toEqual([]);
     });
 
-    it("retourne [] pour un EDT sans créneau (aucun jour utilisé)", () => {
+    it('retourne [] pour un EDT sans créneau (aucun jour utilisé)', () => {
       const d = DonneesMother.base();
       d.classe.eleves = [
         EleveMother.base('e1', 'MARTIN', 'Paul', {

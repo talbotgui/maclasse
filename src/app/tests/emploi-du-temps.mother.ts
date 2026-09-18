@@ -48,4 +48,21 @@ export class CreneauMother {
       ...surcharge,
     };
   }
+
+  /**
+   * Retourne un créneau du lundi (un seul temps) sur l'horaire demandé, surchargé par {@link surcharge}.
+   * @param heureDebut Heure de début du temps (`HH:MM`).
+   * @param heureFin Heure de fin du temps (`HH:MM`).
+   * @param surcharge Propriétés du créneau à surcharger (ex. `id`, `jour`, `type`).
+   */
+  static avecHoraire(
+    heureDebut: string,
+    heureFin: string,
+    surcharge: Partial<CreneauEdt> = {},
+  ): CreneauEdt {
+    return CreneauMother.lundi9h10({
+      temps: [TempsCreneauMother.base({ heureDebut, heureFin })],
+      ...surcharge,
+    });
+  }
 }

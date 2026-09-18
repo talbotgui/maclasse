@@ -9181,3 +9181,16 @@ Not implemented: navigation to another Document
 2026-09-17 18:58:57 [Sans titre] Developpe le plan @.claude/memory/plans-05-cahierJournalAbsencesNotes.md
 ---
 2026-09-17 19:03:31 [Sans titre] Developpe le plan @.claude/memory/plans-11-edtTempsMultiples.md
+---
+2026-09-18 19:38:13 [Sans titre] 3 nouveaux points à traiter :
+- 1/ plusieurs (click)="edtAnnule.emit()" etc. dans le template appellent emit() directement au lieu de passer par une méthode onXxx(), ce qui contrevient à angular-typescript.md. Ces lignes ne sont pas touchées par ce changement.
+- 2/ Lacune fonctionnelle : validerChevauchement ne détecte les conflits qu'entre EDT différents, jamais entre deux créneaux du même EDT. Le nouveau sélecteur de jour facilite le scénario où on déplace un créneau vers un jour/horaire déjà occupé par un autre créneau du même EDT : la Map indexCreneaux écrase silencieusement l'un des deux sans avertissement, et aucun test ne couvre ce cas.
+- 3/ Comportement générique de mc-select — si un jour est retiré des jours ouvrés après coup, réouvrir un créneau qui utilisait ce jour affiche un select visuellement décalé (pas de perte de données, juste un affichage trompeur tant qu'on n'interagit pas avec le champ).
+---
+2026-09-18 19:41:30 [EDT chevauchement et anomalies select] - oublie le point 1
+- pour le point 2, le conflit interne s'affiche comme un conflit externe
+- pour le point 3, je retiens l'option A
+
+Démarre les développements
+---
+2026-09-18 19:51:12 [EDT chevauchement et anomalies select] répare d'abord les 45 erreurs du commit précédent. Je commiterais ensuite. Puis tu démarrera les développements

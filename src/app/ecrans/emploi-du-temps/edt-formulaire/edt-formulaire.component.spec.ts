@@ -75,36 +75,36 @@ describe('EdtFormulaireComponent', () => {
     });
 
     it('creneau fourni → formCreneau est un clone', () => {
-      const creneau = CreneauMother.lundi9h10({ heureDebut: '10:00' });
+      const creneau = CreneauMother.avecHoraire('10:00', '12:00');
       fixture.componentRef.setInput('creneau', creneau);
       fixture.detectChanges();
 
-      expect((component as any).formCreneau.heureDebut).toBe('10:00');
+      expect((component as any).formCreneau.temps[0].heureDebut).toBe('10:00');
       expect((component as any).formCreneau).not.toBe(creneau);
     });
 
     it('changement d’identité de créneau → formCreneau rechargé', () => {
-      const c1 = CreneauMother.lundi9h10({ id: 'c1', heureDebut: '09:00' });
-      const c2 = CreneauMother.lundi9h10({ id: 'c2', heureDebut: '11:00' });
+      const c1 = CreneauMother.avecHoraire('09:00', '12:00', { id: 'c1' });
+      const c2 = CreneauMother.avecHoraire('11:00', '12:00', { id: 'c2' });
       fixture.componentRef.setInput('creneau', c1);
       fixture.detectChanges();
       fixture.componentRef.setInput('creneau', c2);
       fixture.detectChanges();
 
-      expect((component as any).formCreneau.heureDebut).toBe('11:00');
+      expect((component as any).formCreneau.temps[0].heureDebut).toBe('11:00');
     });
 
     it('régression SOU-020 : même identité de créneau avec contenu différent → formCreneau non écrasé', () => {
-      const c1 = CreneauMother.lundi9h10({ id: 'c1', heureDebut: '09:00' });
+      const c1 = CreneauMother.avecHoraire('09:00', '12:00', { id: 'c1' });
       fixture.componentRef.setInput('creneau', c1);
       fixture.detectChanges();
-      (component as any).formCreneau.heureDebut = '07:30';
+      (component as any).formCreneau.temps[0].heureDebut = '07:30';
 
-      const c1Modifie = CreneauMother.lundi9h10({ id: 'c1', heureDebut: '11:00' });
+      const c1Modifie = CreneauMother.avecHoraire('11:00', '12:00', { id: 'c1' });
       fixture.componentRef.setInput('creneau', c1Modifie);
       fixture.detectChanges();
 
-      expect((component as any).formCreneau.heureDebut).toBe('07:30');
+      expect((component as any).formCreneau.temps[0].heureDebut).toBe('07:30');
     });
   });
 
@@ -133,10 +133,10 @@ describe('EdtFormulaireComponent', () => {
     });
 
     it('retourne true après modification locale du créneau', () => {
-      fixture.componentRef.setInput('creneau', CreneauMother.lundi9h10({ heureDebut: '09:00' }));
+      fixture.componentRef.setInput('creneau', CreneauMother.avecHoraire('09:00', '12:00'));
       fixture.detectChanges();
 
-      (component as any).formCreneau.heureDebut = '10:00';
+      (component as any).formCreneau.temps[0].heureDebut = '10:00';
 
       expect(component.estModifie()).toBe(true);
     });
@@ -203,24 +203,24 @@ describe('EdtFormulaireComponent', () => {
     });
 
     it('ajoute une discipline absente', () => {
-      (component as any).basculerDiscipline('d1', true);
+      (component as any).basculerDiscipline(0, 'd1', true);
 
-      expect((component as any).formCreneau.disciplinesIds).toContain('d1');
+      expect((component as any).formCreneau.temps[0].disciplinesIds).toContain('d1');
     });
 
     it('retire une discipline présente', () => {
-      (component as any).formCreneau.disciplinesIds = ['d1'];
+      (component as any).formCreneau.temps[0].disciplinesIds = ['d1'];
 
-      (component as any).basculerDiscipline('d1', false);
+      (component as any).basculerDiscipline(0, 'd1', false);
 
-      expect((component as any).formCreneau.disciplinesIds).not.toContain('d1');
+      expect((component as any).formCreneau.temps[0].disciplinesIds).not.toContain('d1');
     });
 
     it('ne fait rien si formCreneau=null', () => {
       fixture.componentRef.setInput('creneau', null);
       fixture.detectChanges();
 
-      expect(() => (component as any).basculerDiscipline('d1', true)).not.toThrow();
+      expect(() => (component as any).basculerDiscipline(0, 'd1', true)).not.toThrow();
     });
   });
 
@@ -230,9 +230,9 @@ describe('EdtFormulaireComponent', () => {
       fixture.detectChanges();
       const val: ElevesConcernes = { type: 'groupes', groupes: ['GA'], elevesIds: [] };
 
-      (component as any).surElevesConcernesChange(val);
+      (component as any).surElevesConcernesChange(0, val);
 
-      expect((component as any).formCreneau.elevesConcernes).toEqual(val);
+      expect((component as any).formCreneau.temps[0].elevesConcernes).toEqual(val);
     });
 
     it('ne fait rien si formCreneau=null', () => {
@@ -240,7 +240,11 @@ describe('EdtFormulaireComponent', () => {
       fixture.detectChanges();
 
       expect(() =>
-        (component as any).surElevesConcernesChange({ type: 'classe', groupes: [], elevesIds: [] }),
+        (component as any).surElevesConcernesChange(0, {
+          type: 'classe',
+          groupes: [],
+          elevesIds: [],
+        }),
       ).not.toThrow();
     });
   });
@@ -275,7 +279,7 @@ describe('EdtFormulaireComponent', () => {
 
   describe('onEnregistrerCreneau', () => {
     it('émet un clone de formCreneau', () => {
-      const creneau = CreneauMother.lundi9h10({ heureDebut: '09:00' });
+      const creneau = CreneauMother.avecHoraire('09:00', '12:00');
       fixture.componentRef.setInput('creneau', creneau);
       fixture.detectChanges();
 
@@ -285,7 +289,7 @@ describe('EdtFormulaireComponent', () => {
 
       expect(spy).toHaveBeenCalledTimes(1);
       const emis = spy.mock.calls[0][0] as CreneauEdt;
-      expect(emis.heureDebut).toBe('09:00');
+      expect(emis.temps[0].heureDebut).toBe('09:00');
       expect(emis).not.toBe((component as any).formCreneau);
     });
 
@@ -312,8 +316,8 @@ describe('EdtFormulaireComponent', () => {
 
       const emis = spy.mock.calls[0][0] as CreneauEdt;
       expect(emis.jour).toBe('jeudi');
-      expect(emis.heureDebut).toBe(creneau.heureDebut);
-      expect(emis.heureFin).toBe(creneau.heureFin);
+      expect(emis.temps[0].heureDebut).toBe(creneau.temps[0].heureDebut);
+      expect(emis.temps[0].heureFin).toBe(creneau.temps[0].heureFin);
     });
   });
 

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ReferentielService } from './referentiel.service';
+import { TempsCreneauMother } from '../../tests/emploi-du-temps.mother';
 import { DonneesService } from '../avecEtat/donnees.service';
 import {
   Groupe,
@@ -48,7 +49,11 @@ describe('ReferentielService', () => {
         EdtMother.base({
           creneaux: [
             CreneauMother.lundi9h10({
-              elevesConcernes: { type: 'groupes', groupes: ['C'], elevesIds: [] },
+              temps: [
+                TempsCreneauMother.base({
+                  elevesConcernes: { type: 'groupes', groupes: ['C'], elevesIds: [] },
+                }),
+              ],
             }),
           ],
         }),

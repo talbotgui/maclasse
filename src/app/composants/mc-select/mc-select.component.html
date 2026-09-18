@@ -15,6 +15,9 @@
     @if (avecOptionVide()) {
       <option value="">—</option>
     }
+    @if (optionInconnue(); as inconnue) {
+      <option [value]="inconnue.valeur" [selected]="true" disabled>{{ inconnue.libelle }}</option>
+    }
     @for (opt of options(); track opt.valeur) {
       <option [value]="opt.valeur" [selected]="opt.valeur === valeurAffichee()">
         {{ opt.libelle }}

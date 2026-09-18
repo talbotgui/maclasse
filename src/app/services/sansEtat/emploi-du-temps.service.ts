@@ -162,12 +162,24 @@ export class EmploiDuTempsService {
   }
 
   /**
-   * Retourne `true` si l'EDT fourni a au moins un créneau en conflit avec un autre EDT.
+   * Retourne `true` si l'EDT fourni a au moins un créneau en conflit avec un autre EDT
+   * ou avec un autre créneau du même EDT.
    * @param edt EDT à vérifier (peut ne pas encore être persisté).
-   * @returns `true` si un chevauchement est détecté avec un autre EDT.
+   * @returns `true` si un chevauchement est détecté.
    */
   public validerChevauchement(edt: EmploiDuTemps): boolean {
-    return this.obtenirEdtsEnConflit(edt).length > 0;
+    return this.verifierChevauchementInterne(edt) || this.obtenirEdtsEnConflit(edt).length > 0;
+  }
+
+  /**
+   * Détermine si deux créneaux distincts du même EDT se chevauchent (même jour, horaires qui se recouvrent).
+   * @param edt EDT à vérifier.
+   * @returns `true` dès qu'un chevauchement est trouvé entre deux créneaux différents.
+   */
+  private verifierChevauchementInterne(edt: EmploiDuTemps): boolean {
+    return edt.creneaux.some((c1, i) =>
+      this.verifierChevauchementCreneaux([c1], edt.creneaux.slice(i + 1)),
+    );
   }
 
   /**

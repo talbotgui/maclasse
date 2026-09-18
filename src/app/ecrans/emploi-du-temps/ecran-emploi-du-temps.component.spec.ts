@@ -94,8 +94,8 @@ describe('EcranEmploiDuTempsComponent', () => {
 
       const creneau = (component as any).creneauEdite() as CreneauEdt;
       expect(creneau.jour).toBe('mardi');
-      expect(creneau.heureDebut).toBe('08:00');
-      expect(creneau.heureFin).toBe('09:00');
+      expect(creneau.temps[0].heureDebut).toBe('08:00');
+      expect(creneau.temps[0].heureFin).toBe('09:00');
       expect((component as any).formEdt()).toBeNull();
     });
 
@@ -107,17 +107,17 @@ describe('EcranEmploiDuTempsComponent', () => {
 
       const creneau = (component as any).creneauEdite() as CreneauEdt;
       expect(creneau.jour).toBe('lundi');
-      expect(creneau.heureDebut).toBe('10:00');
-      expect(creneau.heureFin).toBe('11:00');
+      expect(creneau.temps[0].heureDebut).toBe('10:00');
+      expect(creneau.temps[0].heureFin).toBe('11:00');
     });
 
     it('prend la heureFin la plus tardive si plusieurs créneaux existent pour le jour', () => {
       const edt = EdtMother.base({
         id: 'edt2',
         creneaux: [
-          CreneauMother.lundi9h10({ id: 'ca', heureDebut: '08:00', heureFin: '09:00' }),
-          CreneauMother.lundi9h10({ id: 'cb', heureDebut: '11:00', heureFin: '12:30' }),
-          CreneauMother.lundi9h10({ id: 'cc', heureDebut: '09:30', heureFin: '10:30' }),
+          CreneauMother.avecHoraire('08:00', '09:00', { id: 'ca' }),
+          CreneauMother.avecHoraire('11:00', '12:30', { id: 'cb' }),
+          CreneauMother.avecHoraire('09:30', '10:30', { id: 'cc' }),
         ],
       });
       (component as any).edtSelectionne.set(edt);
@@ -126,8 +126,8 @@ describe('EcranEmploiDuTempsComponent', () => {
       (component as any).ajouterCreneauPourJour('lundi');
 
       const creneau = (component as any).creneauEdite() as CreneauEdt;
-      expect(creneau.heureDebut).toBe('12:30');
-      expect(creneau.heureFin).toBe('13:30');
+      expect(creneau.temps[0].heureDebut).toBe('12:30');
+      expect(creneau.temps[0].heureFin).toBe('13:30');
     });
   });
 
@@ -149,26 +149,27 @@ describe('EcranEmploiDuTempsComponent', () => {
     });
   });
 
-  describe('obtenirCreneauDeGrille', () => {
+  describe('obtenirTempsDeGrille', () => {
     beforeEach(() => {
       (component as any).edtSelectionne.set(edtBase);
       fixture.detectChanges();
     });
 
     it('retourne le créneau correspondant', () => {
-      const result = (component as any).obtenirCreneauDeGrille('lundi', {
+      const result = (component as any).obtenirTempsDeGrille('lundi', {
         heureDebut: '09:00',
         heureFin: '10:00',
       });
-      expect(result?.id).toBe('c1');
+      expect(result).toHaveLength(1);
+      expect(result[0].creneau.id).toBe('c1');
     });
 
-    it('retourne undefined pour une cellule vide', () => {
-      const result = (component as any).obtenirCreneauDeGrille('mardi', {
+    it('retourne [] pour une cellule vide', () => {
+      const result = (component as any).obtenirTempsDeGrille('mardi', {
         heureDebut: '09:00',
         heureFin: '10:00',
       });
-      expect(result).toBeUndefined();
+      expect(result).toEqual([]);
     });
   });
 
@@ -218,11 +219,7 @@ describe('EcranEmploiDuTempsComponent', () => {
     it("ajoute un créneau nouveau dans l'EDT sélectionné", () => {
       (component as any).edtSelectionne.set(edtBase);
       fixture.detectChanges();
-      const nouveauCreneau = CreneauMother.lundi9h10({
-        id: 'c99',
-        heureDebut: '11:00',
-        heureFin: '12:00',
-      });
+      const nouveauCreneau = CreneauMother.avecHoraire('11:00', '12:00', { id: 'c99' });
 
       (component as any).onCreneauEnregistre(nouveauCreneau);
 
@@ -239,17 +236,17 @@ describe('EcranEmploiDuTempsComponent', () => {
       fixture.detectChanges();
 
       expect(
-        (component as any).obtenirCreneauDeGrille('mardi', {
+        (component as any).obtenirTempsDeGrille('mardi', {
           heureDebut: '09:00',
           heureFin: '10:00',
-        })?.id,
+        })[0]?.creneau.id,
       ).toBe('c1');
       expect(
-        (component as any).obtenirCreneauDeGrille('lundi', {
+        (component as any).obtenirTempsDeGrille('lundi', {
           heureDebut: '09:00',
           heureFin: '10:00',
         }),
-      ).toBeUndefined();
+      ).toEqual([]);
     });
   });
 
@@ -373,9 +370,7 @@ describe('EcranEmploiDuTempsComponent', () => {
         nom: 'EDT en conflit',
         creneaux: [CreneauMother.lundi9h10({ id: 'c2' })],
       });
-      donneesService.charger(
-        DonneesMother.base({ emploisDuTemps: [edtBase, edtConflit] }),
-      );
+      donneesService.charger(DonneesMother.base({ emploisDuTemps: [edtBase, edtConflit] }));
       fixture.detectChanges();
 
       (component as any).afficherConflitsEdt(edtBase);
@@ -524,7 +519,7 @@ describe('EcranEmploiDuTempsComponent', () => {
       fixture.detectChanges();
 
       const boutonConflit = fixture.nativeElement.querySelector(
-        '#btnConflitCreneau' + creneauLundi.id,
+        '#btnConflitCreneau' + creneauLundi.id + creneauLundi.temps[0].id,
       ) as HTMLButtonElement;
       expect(boutonConflit).not.toBeNull();
 
@@ -538,7 +533,7 @@ describe('EcranEmploiDuTempsComponent', () => {
       fixture.detectChanges();
 
       const boutonConflit = fixture.nativeElement.querySelector(
-        '#btnConflitCreneau' + creneauLundi.id,
+        '#btnConflitCreneau' + creneauLundi.id + creneauLundi.temps[0].id,
       );
       expect(boutonConflit).toBeNull();
     });
@@ -552,9 +547,7 @@ describe('EcranEmploiDuTempsComponent', () => {
     });
 
     const boutonsEdt = () =>
-      Array.from(
-        fixture.nativeElement.querySelectorAll('.edt__btn-edt'),
-      ) as HTMLButtonElement[];
+      Array.from(fixture.nativeElement.querySelectorAll('.edt__btn-edt')) as HTMLButtonElement[];
 
     const liste = () => fixture.nativeElement.querySelector('.edt__liste') as HTMLUListElement;
 

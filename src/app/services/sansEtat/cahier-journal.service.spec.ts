@@ -83,12 +83,15 @@ describe('CahierJournalService', () => {
         {
           id: 'c1',
           jour: 'lundi',
-          heureDebut: '09:00',
-          heureFin: '10:00',
           type: 'pedagogique',
-          titre: 'Maths',
+          temps: [{ id: 'c1-t1', heureDebut: '09:00', heureFin: '10:00', titre: 'Maths' }],
         },
-        { id: 'c2', jour: 'lundi', heureDebut: '08:00', heureFin: '09:00', type: 'recreation' },
+        {
+          id: 'c2',
+          jour: 'lundi',
+          type: 'recreation',
+          temps: [{ id: 'c2-t1', heureDebut: '08:00', heureFin: '09:00' }],
+        },
       ],
     };
 
@@ -124,16 +127,14 @@ describe('CahierJournalService', () => {
             {
               id: 'c1',
               jour: 'lundi',
-              heureDebut: '09:00',
-              heureFin: '10:00',
               type: 'pedagogique',
+              temps: [{ id: 'c1-t1', heureDebut: '09:00', heureFin: '10:00' }],
             },
             {
               id: 'c2',
               jour: 'mardi',
-              heureDebut: '09:00',
-              heureFin: '10:00',
               type: 'pedagogique',
+              temps: [{ id: 'c2-t1', heureDebut: '09:00', heureFin: '10:00' }],
             },
           ],
         },
@@ -156,9 +157,8 @@ describe('CahierJournalService', () => {
             {
               id: 'c1',
               jour: 'lundi',
-              heureDebut: '09:00',
-              heureFin: '10:00',
               type: 'pedagogique',
+              temps: [{ id: 'c1-t1', heureDebut: '09:00', heureFin: '10:00' }],
             },
           ],
         },
@@ -172,9 +172,8 @@ describe('CahierJournalService', () => {
             {
               id: 'c2',
               jour: 'lundi',
-              heureDebut: '10:00',
-              heureFin: '11:00',
               type: 'pedagogique',
+              temps: [{ id: 'c2-t1', heureDebut: '10:00', heureFin: '11:00' }],
             },
           ],
         },
@@ -198,9 +197,8 @@ describe('CahierJournalService', () => {
             {
               id: 'c1',
               jour: 'lundi',
-              heureDebut: '09:00',
-              heureFin: '10:00',
               type: 'pedagogique',
+              temps: [{ id: 'c1-t1', heureDebut: '09:00', heureFin: '10:00' }],
             },
           ],
         },
@@ -214,9 +212,8 @@ describe('CahierJournalService', () => {
             {
               id: 'c2',
               jour: 'lundi',
-              heureDebut: '10:00',
-              heureFin: '11:00',
               type: 'pedagogique',
+              temps: [{ id: 'c2-t1', heureDebut: '10:00', heureFin: '11:00' }],
             },
           ],
         },
@@ -240,9 +237,8 @@ describe('CahierJournalService', () => {
             {
               id: 'c1',
               jour: 'lundi',
-              heureDebut: '09:00',
-              heureFin: '10:00',
               type: 'pedagogique',
+              temps: [{ id: 'c1-t1', heureDebut: '09:00', heureFin: '10:00' }],
             },
           ],
         },
@@ -869,9 +865,9 @@ describe('CahierJournalService', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({});
       const s = TestBed.inject(CahierJournalService);
-      expect(s.calculerConflitsPourSeance(DatesTest.lundiPaire, SeanceMother.pedagogique())).toEqual(
-        [],
-      );
+      expect(
+        s.calculerConflitsPourSeance(DatesTest.lundiPaire, SeanceMother.pedagogique()),
+      ).toEqual([]);
     });
 
     it('retourne tableau vide pour un samedi', () => {
@@ -881,7 +877,7 @@ describe('CahierJournalService', () => {
       ).toEqual([]);
     });
 
-    it("détecte un conflit sans que la séance soit déjà dans le cahier journal", () => {
+    it('détecte un conflit sans que la séance soit déjà dans le cahier journal', () => {
       const lundiTest = DateUtils.ajouterJours(
         DateUtils.lundiDeLaSemaine(DateUtils.dateAujourdhui()),
         7,

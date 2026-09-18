@@ -12,6 +12,7 @@ export const LIBELLES = {
 
   /** Libellés communs réutilisés dans plusieurs domaines. */
   commun: {
+    valeurInconnue: 'valeur inconnue',
     enregistrer: 'Enregistrer',
     enregistre: 'Enregistré',
     annuler: 'Annuler',

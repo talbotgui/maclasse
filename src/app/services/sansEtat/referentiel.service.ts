@@ -39,7 +39,9 @@ export class ReferentielService {
     return (
       d.classe.eleves.some((e) => e.groupes.includes(id)) ||
       d.emploisDuTemps.some((edt) =>
-        edt.creneaux.some((c) => c.elevesConcernes?.groupes.includes(id)),
+        edt.creneaux.some((c) =>
+          c.temps.some((t) => t.elevesConcernes?.groupes.includes(id)),
+        ),
       ) ||
       d.cahierJournal.some((j) => j.seances.some((s) => s.elevesConcernes?.groupes.includes(id)))
     );

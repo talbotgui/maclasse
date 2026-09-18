@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { LIBELLES } from '../../libelles';
 import { McSelectComponent } from './mc-select.component';
 
 const OPTIONS = [
@@ -106,17 +107,29 @@ describe('McSelectComponent', () => {
   });
 
   describe('valeurAffichee — cohérence quand la valeur ne correspond à aucune option', () => {
-    it("valeur absente des options → le DOM affiche la première option, cohérent avec l'état interne", () => {
+    it('valeur absente des options → option désactivée affichant la valeur inconnue', () => {
       component.writeValue('INEXISTANT');
       fixture.detectChanges();
 
-      expect(selectEl().value).toBe('CM1');
-      expect((component as any).valeurAffichee()).toBe('CM1');
+      expect(selectEl().value).toBe('INEXISTANT');
+      expect(selectEl().selectedOptions[0].disabled).toBe(true);
+      expect(selectEl().selectedOptions[0].textContent?.trim()).toBe(
+        `INEXISTANT (${LIBELLES.commun.valeurInconnue})`,
+      );
+      expect(optionEls()).toHaveLength(3);
     });
 
-    it('avecOptionVide=true et valeur absente → le DOM affiche l’option vide', () => {
+    it('valeur vide sans option vide → première option affichée, pas d’option inconnue', () => {
+      component.writeValue('');
+      fixture.detectChanges();
+
+      expect(selectEl().value).toBe('CM1');
+      expect(optionEls()).toHaveLength(2);
+    });
+
+    it('avecOptionVide=true et valeur vide → le DOM affiche l’option vide', () => {
       fixture.componentRef.setInput('avecOptionVide', true);
-      component.writeValue('INEXISTANT');
+      component.writeValue('');
       fixture.detectChanges();
 
       expect(selectEl().value).toBe('');

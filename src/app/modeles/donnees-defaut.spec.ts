@@ -17,6 +17,7 @@ import type { JourSemaine } from './emploi-du-temps.modele';
 import type { Bulletin, Ppi } from './ppi-bulletin.modele';
 import type { Projet } from './projet.modele';
 import type { Referentiels } from './referentiels.modele';
+import { MigrationService } from '../services/sansEtat/migration.service';
 
 // Si un champ requis est ajouté à DonneesApplication sans être répercuté dans le JSON,
 // la compilation échoue ici — avant même d'exécuter les tests.
@@ -144,11 +145,16 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
       }
     });
 
-    it('heures des créneaux EDT sont valides', () => {
-      for (const edt of donnees.emploisDuTemps) {
+    it('heures des temps de créneaux EDT sont valides (après migration)', () => {
+      const migrees = new MigrationService().migrer(
+        structuredClone(donnees) as unknown as DonneesApplication,
+      );
+      for (const edt of migrees.emploisDuTemps) {
         for (const creneau of edt.creneaux) {
-          expect(creneau.heureDebut, `heureDebut créneau ${creneau.id}`).toMatch(REGEX_HEURE);
-          expect(creneau.heureFin, `heureFin créneau ${creneau.id}`).toMatch(REGEX_HEURE);
+          for (const temps of creneau.temps) {
+            expect(temps.heureDebut, `heureDebut temps ${temps.id}`).toMatch(REGEX_HEURE);
+            expect(temps.heureFin, `heureFin temps ${temps.id}`).toMatch(REGEX_HEURE);
+          }
         }
       }
     });

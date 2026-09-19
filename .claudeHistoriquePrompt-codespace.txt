@@ -9570,5 +9570,34 @@ Crée un plan pour tout ça
 ---
 2026-09-19 20:26:14 [Couverture tests E2E] poursuit avec le viewport mobile et la navigation clavier de l'arbre
 ---
+2026-09-19 20:35:58 [Couverture tests E2E] poursuit
+---
+2026-09-19 20:39:38 [Sans titre] Je souhaite créer un site documentaire à publier à côté de l'application dans GithubPages. Plusieurs sujets sont à traiter :
+- comment publier le site à côté de l'application sans en changer le lien ni le bon fonctionnement ?
+- comment faire le lien entre le RADME du projet, le site documentaire et l'application ?
+- quel contenu mettre dans le site documentaire ?
+
+Mes exigences concernant le site documentaire sont :
+- un site très succinct car le choix d'un outil se fait toujours en quelques instants.
+- le site doit reprendre les couleurs de l'application
+- le site doit lister les fonctionnalités
+- le site doit mettre en avant les avantages / choix spécifiques de l'application comme 
+    - les données ne sont jamais sur Internet
+    - les données sont dans un coffre-fort sur le PC de l'utilisateur (compression+chiffrement)
+- le site doit aussi mettre en avant les fonctionnalités disponibles avec des screenshots
+
+Quels sont les sites/applications conccurente de la mienne et les arguments qu'ils mettent en avant ?
+
+Ne crée rien et discutons du sujet.
+---
+2026-09-19 20:41:08 [Analyse des dépendances du projet] rédige un nouveau plan avec ces éléments
+---
+2026-09-19 20:53:02 [Couverture tests E2E] Traite les points suivants :
+- "Titre du formulaire de créneau" => affiche "Créer créneau" ou "Modifier créneau" selon le cas d'usage
+- Aucune validation 
+- Annuler dans l'EDT ne doit pas le désélectionner 
+
+puis rend moi la main
+---
 2026-09-20 19:47:22 [Sans titre] <ide_opened_file>The user opened the file /workspaces/maclasse/src/app/composants/popins/popin-avertissement/popin-avertissement.component.ts in the IDE. This may or may not be related to the current task.</ide_opened_file>
 je viens de tenter de synchroniser pull/push vers le dépot distant et je dois gérer des conflits. Traite les

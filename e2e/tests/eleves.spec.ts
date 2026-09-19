@@ -37,6 +37,10 @@ testAvecDonnees('E2E-19 — Modifier un élève existant', async ({ appAvecDonne
 
   await expect(eleves.titreFiche).toContainText('Boule-Modifié');
   await expect(entete.btnAnnuler).toBeEnabled();
+  await entete.navAccueil.click();
+  await entete.navEleves.click();
+  await eleves.selectionnerMartinot();
+  await expect(eleves.titreFiche).toContainText('Boule-Modifié');
 });
 
 testAvecDonnees(
@@ -219,6 +223,10 @@ testAvecDonnees('E2E-27 — Ajouter un contact dans la fiche élève', async ({ 
 
   // En lecture seule, le contact apparaît
   await expect(eleves.listeResumeeContacts).toContainText('René Ducobu');
+  await entete.navAccueil.click();
+  await entete.navEleves.click();
+  await eleves.selectionnerDucobu();
+  await expect(eleves.listeResumeeContacts).toContainText('René Ducobu');
 });
 
 testAvecDonnees(
@@ -237,6 +245,10 @@ testAvecDonnees(
 
     await eleves.btnEnregistrer.click();
 
+    await expect(eleves.listeResumeeAbsencesRec).toContainText('Orthophonie');
+    await entete.navAccueil.click();
+    await entete.navEleves.click();
+    await eleves.selectionnerDucobu();
     await expect(eleves.listeResumeeAbsencesRec).toContainText('Orthophonie');
   },
 );
@@ -258,6 +270,10 @@ testAvecDonnees(
 
     await eleves.btnEnregistrer.click();
 
+    await expect(eleves.listeResumeeAbsencesPonct).toContainText('Maladie');
+    await entete.navAccueil.click();
+    await entete.navEleves.click();
+    await eleves.selectionnerDucobu();
     await expect(eleves.listeResumeeAbsencesPonct).toContainText('Maladie');
   },
 );
@@ -281,6 +297,10 @@ testAvecDonnees('E2E-31 — Ajouter un cursus dans la fiche élève', async ({ a
   // Le cursus apparaît en lecture seule dans la fiche
   await expect(eleves.listeResumeeCursus).toContainText('CM2');
   await expect(entete.btnAnnuler).toBeEnabled();
+  await entete.navAccueil.click();
+  await entete.navEleves.click();
+  await eleves.selectionnerMartinot();
+  await expect(eleves.listeResumeeCursus).toContainText('CM2');
 });
 
 testAvecDonnees("E2E-30 — Imprimer la fiche d'un élève", async ({ appAvecDonnees }) => {

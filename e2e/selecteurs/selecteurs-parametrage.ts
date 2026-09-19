@@ -211,6 +211,8 @@ export class SelecteursParametrage extends SelecteursBase {
   readonly btnEnregistrerPreferences: Locator;
   /** Bouton ANNULER les modifications de préférences. */
   readonly btnAnnulerPreferences: Locator;
+  /** Message d'erreur affiché quand le délai de sauvegarde est hors bornes. */
+  readonly erreurDelaiSauvegarde: Locator;
 
   // --- Section : Domaines de compétences (18 domaines, APS = index 0, actuellement inactif) ---
   /** Case à cocher du premier domaine de compétences (APS, index 0, [id] dynamique sur <input> natif). */
@@ -323,6 +325,7 @@ export class SelecteursParametrage extends SelecteursBase {
     this.champDelaiSauvegarde = page.locator('#champDelaiSauvegarde input');
     this.btnEnregistrerPreferences = page.locator('#btnEnregistrerPreferences');
     this.btnAnnulerPreferences = page.locator('#btnAnnulerPreferences');
+    this.erreurDelaiSauvegarde = page.locator('.parametrage__erreur');
 
     // [id] dynamique sur <input> natif → #id sélectionne directement le checkbox
     this.checkDomaine0 = page.locator('#checkDomaine0');

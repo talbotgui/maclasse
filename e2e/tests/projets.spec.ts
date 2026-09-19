@@ -7,7 +7,7 @@ import { SelecteursEntete } from '../selecteurs/selecteurs-entete';
 // - "Journal" a 5 périodes, "Potager" a 5 périodes, "Spectacle" a 2 périodes (Période 4, Période 5)
 // - 11 élèves disponibles pour les associer à un projet
 
-testAvecDonnees('E2E-31 — Créer un nouveau projet', async ({ appAvecDonnees }) => {
+testAvecDonnees('E2E-104 — Créer un nouveau projet', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);
   const projets = new SelecteursProjets(appAvecDonnees);
 
@@ -22,6 +22,9 @@ testAvecDonnees('E2E-31 — Créer un nouveau projet', async ({ appAvecDonnees }
   await expect(projets.titreFiche).toContainText('Potager solidaire');
   // UNDO disponible
   await expect(entete.btnAnnuler).toBeEnabled();
+  await entete.navAccueil.click();
+  await entete.navProjets.click();
+  await expect(projets.listeProjets).toContainText('Potager solidaire');
 });
 
 testAvecDonnees(
@@ -42,6 +45,10 @@ testAvecDonnees(
     // La description mise à jour est affichée en lecture seule
     await expect(projets.descriptionFiche).toContainText('Une nouvelle description de test');
     await expect(entete.btnAnnuler).toBeEnabled();
+    await entete.navAccueil.click();
+    await entete.navProjets.click();
+    await projets.btnProjetJournal.click();
+    await expect(projets.descriptionFiche).toContainText('Une nouvelle description de test');
   },
 );
 
@@ -61,6 +68,7 @@ testAvecDonnees("E2E-33 — Annuler la modification d'un projet", async ({ appAv
   await expect(projets.titreFiche).toContainText('Journal de la classe');
   // Aucune mutation → ANNULER entête inactif
   await expect(entete.btnAnnuler).toBeDisabled();
+  await expect(projets.titreFiche).not.toContainText('Nom modifié temporaire');
 });
 
 testAvecDonnees('E2E-34 — Ajouter une période à un projet', async ({ appAvecDonnees }) => {
@@ -79,6 +87,10 @@ testAvecDonnees('E2E-34 — Ajouter une période à un projet', async ({ appAvec
   // La nouvelle période apparaît dans la liste des périodes en lecture seule
   await expect(projets.listePeriodesFiche).toContainText('Période test');
   await expect(entete.btnAnnuler).toBeEnabled();
+  await entete.navAccueil.click();
+  await entete.navProjets.click();
+  await projets.btnProjetSpectacle.click();
+  await expect(projets.listePeriodesFiche).toContainText('Période test');
 });
 
 testAvecDonnees("E2E-35 — Supprimer une période d'un projet", async ({ appAvecDonnees }) => {

@@ -84,6 +84,7 @@ testAvecDonnees(
 
     // Aucune mutation → ANNULER entête inactif
     await expect(entete.btnAnnuler).toBeDisabled();
+    await expect(edt.listeEdts).not.toContainText('Nom modifié temporaire');
   },
 );
 
@@ -178,10 +179,15 @@ testAvecDonnees("E2E-59 — Annuler la modification d'un créneau", async ({ app
   await edt.inputTitreTemps0.fill('Modifié temporaire');
   await edt.btnAnnulerCreneau.click();
 
-  // Le titre d'origine est toujours dans la grille
-  await expect(edt.conteneurGrille).toContainText('Lecture – Compréhension de texte');
+  // ANNULER ferme le formulaire et désélectionne l'EDT (onAnnule)
+  await expect(edt.droiteVide).toBeVisible();
   // Aucune mutation → ANNULER entête inactif
   await expect(entete.btnAnnuler).toBeDisabled();
+
+  // En rouvrant l'EDT, le titre d'origine est toujours dans la grille et la saisie abandonnée est absente
+  await edt.btnEdtSemainePaire.click();
+  await expect(edt.conteneurGrille).toContainText('Lecture – Compréhension de texte');
+  await expect(edt.conteneurGrille).not.toContainText('Modifié temporaire');
 });
 
 testAvecDonnees('E2E-60 — Supprimer un créneau', async ({ appAvecDonnees }) => {

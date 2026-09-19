@@ -14,6 +14,8 @@ export class SelecteursProjets extends SelecteursBase {
   // --- Colonne gauche : liste ---
   /** Bouton CRÉER un nouveau projet. */
   readonly btnCreerProjet: Locator;
+  /** Liste des projets (colonne gauche). */
+  readonly listeProjets: Locator;
   /** Champ de recherche dans la liste des projets. */
   readonly champRechercheProjet: Locator;
 
@@ -94,6 +96,7 @@ export class SelecteursProjets extends SelecteursBase {
     this.chipDomaineFR = page.locator('#chipDomaineFR');
     this.chipDomaineMAT = page.locator('#chipDomaineMAT');
 
+    this.listeProjets = page.locator('.projets__liste');
     this.btnProjetJournal = page.locator('#btnProjet11111111-aaaa-bbbb-cccc-journal00001');
     this.btnProjetPotager = page.locator('#btnProjet22222222-aaaa-bbbb-cccc-potager00002');
     this.btnProjetSpectacle = page.locator('#btnProjet33333333-aaaa-bbbb-cccc-spectacle0003');

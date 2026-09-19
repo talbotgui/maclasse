@@ -21,7 +21,7 @@ Décisions : (1) numérotation refondue (voir Phase 0) ; (2) `@axe-core/playwrig
 
 ## Avancement (2026-09-19)
 
-**Numérotation décidée** : les tests d'accessibilité forment une série propre `RGAA-xx` (fichier `e2e/tests/accessibilite.spec.ts`), ce qui libère E2E-98 et suivants pour les scénarios fonctionnels. Les anciens E2E-99 à E2E-102 (focus, piège du focus, Échap) sont absorbés par RGAA-11 à RGAA-15. Le doublon E2E-31 (projet) reste à renuméroter.
+**Numérotation décidée** : les tests d'accessibilité forment une série propre `RGAA-xx` (fichier `e2e/tests/accessibilite.spec.ts`), ce qui libère E2E-98 et suivants pour les scénarios fonctionnels. Les anciens E2E-99 à E2E-102 (focus, piège du focus, Échap) sont absorbés par RGAA-11 à RGAA-15. Le doublon E2E-31 est levé (projet → E2E-104). Nouveaux scénarios fonctionnels à partir de E2E-105.
 
 **Fait**
 - Phase 0 : `@axe-core/playwright` installé ; `e2e/utilitaires/verificateur-accessibilite.ts` (AXE WCAG 2 A/AA + détection d'`id` dupliqués).
@@ -40,6 +40,18 @@ Décisions : (1) numérotation refondue (voir Phase 0) ; (2) `@axe-core/playwrig
 - Anomalie corrigée : l'entête débordait de 214 px en mobile (WCAG 1.4.10). `mc-entete.component.scss` passe en `flex-wrap` sous 768 px.
 - Navigation clavier de l'arbre des compétences (seul widget ARIA avec rôle de l'application : aucun `grid`, `listbox` ni `combobox`) : RGAA-19 (↑ ↓ Début Fin), RGAA-20 (→ ← déplier, replier, remonter), RGAA-21 (Entrée ajoute au panier).
 - Suite complète : 116 tests verts (chromium + mobile), 1122 tests unitaires verts.
+
+**Phase 1 — audit et compléments (2026-09-19)**
+
+Audit des 97 scénarios existants (mesure automatique du nombre d'actions et d'assertions par test, puis lecture des plus faibles). Faiblesses constatées :
+1. **Aucune persistance vérifiée** : les tests de création/modification contrôlent l'écran juste après ENREGISTRER, jamais après un aller-retour de navigation.
+2. **ANNULER/REFAIRE** : un seul test (E2E-14) portait sur l'état des boutons ; aucun ne vérifiait l'effet sur les données.
+3. **Tests d'annulation sans assertion négative** : E2E-33, 55, 59 ne vérifiaient pas que la saisie abandonnée était absente.
+4. **Test vacuous par course de timing** : E2E-59 passait parce que l'assertion s'exécutait avant le rendu ; l'application désélectionne l'EDT après ANNULER (`onAnnule`), la grille disparaît. Réécrit.
+5. **Cas d'erreur** : aucun. Les formulaires élève et projet n'ont aucune validation (ENREGISTRER accepte un nom vide) : constat applicatif, pas de test écrit sur un comportement non défini. Seul le paramétrage valide (délai de sauvegarde 1–60).
+6. ~70 tests ont une seule assertion « forte » (le reste est `toBeVisible`/`toBeEnabled`) : signalé, non renforcé en masse.
+
+Compléments faits : aller-retour de navigation ajouté à E2E-19, 27, 28, 29, 31 (cursus), 32, 34, 83, 87, 90 et à la création de projet ; assertions négatives dans E2E-33, 55, 59 ; nouveaux tests E2E-98 à 102 (ANNULER/REFAIRE : élève, projet, EDT, groupe du paramétrage, journée du cahier journal) et E2E-103 (délai hors bornes). Le doublon E2E-31 est levé : « Créer un nouveau projet » devient E2E-104. Nouveaux IDs fonctionnels à partir de E2E-105. Suite complète : 122 tests verts.
 
 **Reste à faire** : AXE des popins d'absences et d'export avec choix, Phase 1 (audit complet), Phase 2 (nouveaux scénarios EDT calculés / temps multiples / pastilles / sauvegarde auto), Phase 3 (migration, version incompatible), mise à jour de `plans-04-testsE2E.md`.
 

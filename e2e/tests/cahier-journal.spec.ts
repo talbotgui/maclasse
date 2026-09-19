@@ -433,3 +433,24 @@ testAvecDonnees('E2E-79 — Imprimer la journée du cahier journal', async ({ ap
   // vérifier que la journée reste accessible (non masquée par @media print)
   await expect(cj.btnSupprimerJournee).toBeVisible();
 });
+
+testAvecDonnees(
+  'E2E-102 — ANNULER / REFAIRE : initialisation d’une journée vide',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const cj = new SelecteursCahierJournal(appAvecDonnees);
+
+    await entete.navCahierJournal.click();
+    await naviguerVersDateCj(cj, appAvecDonnees, 7);
+    await cj.btnInitialiserVidePrincipal.click();
+    await expect(cj.btnSupprimerJournee).toBeVisible();
+
+    await entete.btnAnnuler.click();
+    await expect(cj.btnInitialiserVidePrincipal).toBeVisible();
+    await expect(cj.btnSupprimerJournee).not.toBeVisible();
+
+    await entete.btnRefaire.click();
+    await expect(cj.btnSupprimerJournee).toBeVisible();
+    await expect(cj.btnInitialiserVidePrincipal).not.toBeVisible();
+  },
+);

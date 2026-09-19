@@ -109,6 +109,10 @@ testAvecDonnees('E2E-83 — Ajouter une période scolaire', async ({ appAvecDonn
   // La nouvelle période est enregistrée
   await expect(param.champPeriodeNom5).toHaveValue('Trimestre test');
   await expect(entete.btnAnnuler).toBeEnabled();
+  await entete.navAccueil.click();
+  await entete.navParametrage.click();
+  await param.btnSectionPeriodes.click();
+  await expect(param.champPeriodeNom5).toHaveValue('Trimestre test');
 });
 
 testAvecDonnees(
@@ -187,6 +191,10 @@ testAvecDonnees('E2E-87 — Ajouter un groupe', async ({ appAvecDonnees }) => {
 
   await expect(param.champGroupeLibelle3).toHaveValue('Groupe D');
   await expect(entete.btnAnnuler).toBeEnabled();
+  await entete.navAccueil.click();
+  await entete.navParametrage.click();
+  await param.btnSectionGroupes.click();
+  await expect(param.champGroupeLibelle3).toHaveValue('Groupe D');
 });
 
 testAvecDonnees('E2E-88 — Supprimer un groupe non utilisé', async ({ appAvecDonnees }) => {
@@ -241,6 +249,10 @@ testAvecDonnees(
 
     await expect(param.champStatutLibelle4).toHaveValue('Test');
     await expect(entete.btnAnnuler).toBeEnabled();
+    await entete.navAccueil.click();
+    await entete.navParametrage.click();
+    await param.btnSectionBareme.click();
+    await expect(param.champStatutLibelle4).toHaveValue('Test');
   },
 );
 
@@ -340,5 +352,29 @@ testAvecDonnees(
     await param.checkDomaine0.click();
     await param.btnEnregistrerDomaines.click();
     await expect(param.checkDomaine0).not.toBeChecked();
+  },
+);
+
+testAvecDonnees(
+  'E2E-103 — Délai de sauvegarde automatique hors bornes : erreur et ENREGISTRER inactif',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const param = new SelecteursParametrage(appAvecDonnees);
+
+    await entete.navParametrage.click();
+    await param.btnSectionPreferences.click();
+    await expect(param.erreurDelaiSauvegarde).toHaveCount(0);
+
+    await param.champDelaiSauvegarde.fill('0');
+    await expect(param.erreurDelaiSauvegarde).toBeVisible();
+    await expect(param.btnEnregistrerPreferences).toBeDisabled();
+
+    await param.champDelaiSauvegarde.fill('61');
+    await expect(param.erreurDelaiSauvegarde).toBeVisible();
+    await expect(param.btnEnregistrerPreferences).toBeDisabled();
+
+    await param.champDelaiSauvegarde.fill('60');
+    await expect(param.erreurDelaiSauvegarde).toHaveCount(0);
+    await expect(param.btnEnregistrerPreferences).toBeEnabled();
   },
 );

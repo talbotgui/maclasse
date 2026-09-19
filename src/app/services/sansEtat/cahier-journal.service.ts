@@ -328,29 +328,12 @@ export class CahierJournalService {
     if (!seanceSource) return;
     const nouvelleSeance: Seance = { ...structuredClone(seanceSource), id: crypto.randomUUID() };
 
-    const journeeCible = donnees.cahierJournal.find((j) => j.date === dateCible);
-    if (!journeeCible) {
-      this.donneesService.executer(
-        new CommandeCreation<JourneeJournal>(
-          (d) => d.cahierJournal,
-          { id: crypto.randomUUID(), date: dateCible, seances: [nouvelleSeance] },
-          LIBELLES.commandes.duplicationSeance,
-        ),
-      );
-    } else {
-      const nouvelleJournee: JourneeJournal = {
-        ...journeeCible,
-        seances: [...journeeCible.seances, nouvelleSeance],
-      };
-      this.donneesService.executer(
-        new CommandeModification<JourneeJournal>(
-          (d) => d.cahierJournal,
-          journeeCible,
-          nouvelleJournee,
-          LIBELLES.commandes.duplicationSeance,
-        ),
-      );
-    }
+    this.executerSurJourneeCible(
+      dateCible,
+      LIBELLES.commandes.duplicationSeance,
+      () => ({ id: crypto.randomUUID(), date: dateCible, seances: [nouvelleSeance] }),
+      (journeeCible) => ({ ...journeeCible, seances: [...journeeCible.seances, nouvelleSeance] }),
+    );
   }
 
   /**
@@ -376,35 +359,21 @@ export class CahierJournalService {
     // sur la journée cible, qui reflète intégralement la source après duplication.
     const notesReportees = journeeSource.notes;
 
-    const journeeCible = donnees.cahierJournal.find((j) => j.date === dateCible);
-    if (!journeeCible) {
-      this.donneesService.executer(
-        new CommandeCreation<JourneeJournal>(
-          (d) => d.cahierJournal,
-          {
-            id: crypto.randomUUID(),
-            date: dateCible,
-            seances: seancesClonees,
-            ...(notesReportees !== undefined ? { notes: notesReportees } : {}),
-          },
-          LIBELLES.commandes.duplicationJournee,
-        ),
-      );
-    } else {
-      const nouvelleJournee: JourneeJournal = {
+    this.executerSurJourneeCible(
+      dateCible,
+      LIBELLES.commandes.duplicationJournee,
+      () => ({
+        id: crypto.randomUUID(),
+        date: dateCible,
+        seances: seancesClonees,
+        ...(notesReportees !== undefined ? { notes: notesReportees } : {}),
+      }),
+      (journeeCible) => ({
         ...journeeCible,
         seances: seancesClonees,
         ...(notesReportees !== undefined ? { notes: notesReportees } : { notes: undefined }),
-      };
-      this.donneesService.executer(
-        new CommandeModification<JourneeJournal>(
-          (d) => d.cahierJournal,
-          journeeCible,
-          nouvelleJournee,
-          LIBELLES.commandes.duplicationJournee,
-        ),
-      );
-    }
+      }),
+    );
   }
 
   /**
@@ -471,5 +440,34 @@ export class CahierJournalService {
       }
     }
     return conflits;
+  }
+
+  /**
+   * Crée la journée cible si elle n'existe pas, sinon la remplace par sa version modifiée,
+   * en une seule commande annulable.
+   * @param dateCible Date ISO de la journée cible.
+   * @param libelle Description courte de la commande (tooltip UNDO/REDO).
+   * @param creer Fabrique de la journée à créer quand la cible n'existe pas.
+   * @param modifier Fonction produisant la nouvelle version d'une journée cible existante.
+   */
+  private executerSurJourneeCible(
+    dateCible: string,
+    libelle: string,
+    creer: () => JourneeJournal,
+    modifier: (journeeCible: JourneeJournal) => JourneeJournal,
+  ): void {
+    const journeeCible = this.donneesService
+      .donnees()
+      ?.cahierJournal.find((j) => j.date === dateCible);
+    this.donneesService.executer(
+      journeeCible
+        ? new CommandeModification<JourneeJournal>(
+            (d) => d.cahierJournal,
+            journeeCible,
+            modifier(journeeCible),
+            libelle,
+          )
+        : new CommandeCreation<JourneeJournal>((d) => d.cahierJournal, creer(), libelle),
+    );
   }
 }

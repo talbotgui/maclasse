@@ -4,6 +4,7 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
+import { EcranEditionGardeeBase } from '../../ecran-edition-gardee-base';
 import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { EleveService } from '../../services/sansEtat/eleve.service';
@@ -13,7 +14,6 @@ import { McChipFiltreComponent } from '../../composants/mc-chip-filtre/mc-chip-f
 import { PopinAvertissementComponent } from '../../composants/popins/popin-avertissement/popin-avertissement.component';
 import { FeFicheEleveComponent } from './fe-fiche-eleve/fe-fiche-eleve.component';
 import { FeFormulaireEleveComponent } from './fe-formulaire-eleve/fe-formulaire-eleve.component';
-import type { AvecNavigationGardee } from '../../gardes/modifications-non-enregistrees.garde';
 import type { Eleve } from '../../modeles/eleve.modele';
 
 /**
@@ -35,7 +35,7 @@ import type { Eleve } from '../../modeles/eleve.modele';
   templateUrl: './ecran-eleves.component.html',
   styleUrl: './ecran-eleves.component.scss',
 })
-export class EcranElevesComponent implements AvecNavigationGardee {
+export class EcranElevesComponent extends EcranEditionGardeeBase {
   /** Constante centralisée des libellés. */
   protected readonly LIBELLES = LIBELLES;
 
@@ -54,20 +54,8 @@ export class EcranElevesComponent implements AvecNavigationGardee {
   /** Groupes filtrés actifs (IDs). */
   protected readonly groupesFiltres = signal<string[]>([]);
 
-  /** `true` si le formulaire est en mode édition ou création. */
-  protected readonly enModeEdition = signal(false);
-
   /** `true` si le focus doit se placer sur le bouton MODIFIER à la prochaine apparition de la fiche. */
   protected readonly focusModifierDemande = signal(false);
-
-  /** `true` si la popin d'avertissement est visible. */
-  protected readonly popinAvertissementVisible = signal(false);
-
-  /** Résolution de la promesse de navigation (garde CanDeactivate). */
-  private resolveGarde: ((result: boolean) => void) | null = null;
-
-  /** Action en attente de confirmation (sélection d'élève ou création). */
-  private actionEnAttente: (() => void) | null = null;
 
   /** Données de l'application. */
   private readonly donnees = computed(() => this.donneesService.donnees());
@@ -105,12 +93,7 @@ export class EcranElevesComponent implements AvecNavigationGardee {
    * @param eleve Élève à sélectionner.
    */
   protected selectionnerEleve(eleve: Eleve): void {
-    if (this.enModeEdition()) {
-      this.actionEnAttente = () => this.activerEleve(eleve);
-      this.popinAvertissementVisible.set(true);
-    } else {
-      this.activerEleve(eleve);
-    }
+    this.executerOuAvertir(() => this.activerEleve(eleve));
   }
 
   /**
@@ -118,42 +101,7 @@ export class EcranElevesComponent implements AvecNavigationGardee {
    * Affiche la popin si une édition est en cours.
    */
   protected creerEleve(): void {
-    if (this.enModeEdition()) {
-      this.actionEnAttente = () => this.activerCreation();
-      this.popinAvertissementVisible.set(true);
-    } else {
-      this.activerCreation();
-    }
-  }
-
-  /**
-   * Confirme l'avertissement et exécute l'action en attente.
-   */
-  protected confirmerAvertissement(): void {
-    this.popinAvertissementVisible.set(false);
-    if (this.resolveGarde) {
-      this.resolveGarde(true);
-      this.resolveGarde = null;
-    } else {
-      this.actionEnAttente?.();
-      this.actionEnAttente = null;
-    }
-    this.enModeEdition.set(false);
-  }
-
-  /** Annule l'avertissement et reste sur le formulaire. */
-  protected annulerAvertissement(): void {
-    this.popinAvertissementVisible.set(false);
-    if (this.resolveGarde) {
-      this.resolveGarde(false);
-      this.resolveGarde = null;
-    }
-    this.actionEnAttente = null;
-  }
-
-  /** Active le mode édition de l'élève sélectionné. */
-  protected activerEdition(): void {
-    this.enModeEdition.set(true);
+    this.executerOuAvertir(() => this.activerCreation());
   }
 
   /**
@@ -204,25 +152,6 @@ export class EcranElevesComponent implements AvecNavigationGardee {
    */
   protected retirerFiltreGroupe(id: string): void {
     this.groupesFiltres.update((ids) => ids.filter((i) => i !== id));
-  }
-
-  /** Lance l'impression de la fiche. */
-  protected imprimer(): void {
-    window.print();
-  }
-
-  /**
-   * Implémentation de `AvecNavigationGardee`.
-   * Retourne `true` immédiatement si aucune modification, sinon ouvre la popin
-   * et attend la décision de l'utilisateur.
-   * @returns Promesse résolue à `true` pour autoriser la navigation.
-   */
-  public confirmerNavigation(): Promise<boolean> {
-    if (!this.enModeEdition()) return Promise.resolve(true);
-    return new Promise<boolean>((resolve) => {
-      this.resolveGarde = resolve;
-      this.popinAvertissementVisible.set(true);
-    });
   }
 
   /** Active la sélection d'un élève et repasse en mode lecture. */

@@ -1,15 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  effect,
-  input,
-  output,
-  signal,
-  viewChild,
-} from '@angular/core';
-import type { InputSignal, OutputEmitterRef } from '@angular/core';
-import { ComposantBase } from '../../../composant-base';
+import { ChangeDetectionStrategy, Component, output, signal } from '@angular/core';
+import type { OutputEmitterRef } from '@angular/core';
+import { PopinBase } from '../../../popin-base';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 
 /**
@@ -23,34 +14,19 @@ import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directiv
   templateUrl: './popin-sauvegarde.component.html',
   styleUrl: './popin-sauvegarde.component.scss',
 })
-export class PopinSauvegardeComponent extends ComposantBase {
-  /** Contrôle la visibilité de la popin. */
-  public readonly visible: InputSignal<boolean> = input(false);
-
+export class PopinSauvegardeComponent extends PopinBase {
   /** Émis avec le mot de passe saisi quand l'utilisateur valide. */
   protected readonly confirme: OutputEmitterRef<string> = output<string>();
 
   /** Émis quand l'utilisateur annule la sauvegarde. */
   protected readonly annule: OutputEmitterRef<void> = output<void>();
 
-  /** Référence à l'élément `<dialog>` natif. */
-  private readonly dialogEl = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
-
   /** Valeur courante du champ mot de passe. */
   protected readonly motDePasse = signal('');
 
-  /** Ouvre ou ferme la dialog native en réaction au signal `visible`. */
-  public constructor() {
-    super();
-    effect(() => {
-      const el = this.dialogEl().nativeElement;
-      if (this.visible()) {
-        this.motDePasse.set('');
-        if (!el.open) el.showModal();
-      } else if (el.open) {
-        el.close();
-      }
-    });
+  /** Réinitialise les champs de saisie à chaque ouverture. */
+  protected override reinitialiserALOuverture(): void {
+    this.motDePasse.set('');
   }
 
   /** Valide la sauvegarde si le mot de passe est renseigné. */

@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, forwardRef, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/core';
 import type { InputSignal } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ComposantBase } from '../../composant-base';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChampBase } from '../../champ-base';
 import type { OptionFormulaire } from '../../modeles/composants.modele';
 
 /**
@@ -22,7 +22,7 @@ import type { OptionFormulaire } from '../../modeles/composants.modele';
   templateUrl: './mc-radio-group.component.html',
   styleUrl: './mc-radio-group.component.scss',
 })
-export class McRadioGroupComponent extends ComposantBase implements ControlValueAccessor {
+export class McRadioGroupComponent extends ChampBase {
   /**
    * Identifiant de base du groupe.
    * Sert de valeur `name` pour tous les radios et de préfixe pour leurs `id` individuels.
@@ -37,62 +37,4 @@ export class McRadioGroupComponent extends ComposantBase implements ControlValue
 
   /** Indique si une sélection est obligatoire. */
   public readonly required: InputSignal<boolean> = input(false);
-
-  /** Valeur de l'option sélectionnée. */
-  protected readonly valeur = signal('');
-
-  /** Indique si le groupe est désactivé par le FormControl parent. */
-  protected readonly estDesactive = signal(false);
-
-  /** Callback de notification des changements, fourni par Angular Forms. */
-  protected onChange: (valeur: string) => void = () => {};
-
-  /** Callback de notification du touché, fourni par Angular Forms. */
-  protected onTouched: () => void = () => {};
-
-  /**
-   * Reçoit la valeur depuis le FormControl et met à jour le signal interne.
-   * @param valeur Valeur fournie par Angular Forms (peut être `null`).
-   */
-  public writeValue(valeur: string | null | undefined): void {
-    this.valeur.set(valeur ?? '');
-  }
-
-  /**
-   * Enregistre le callback appelé lors de chaque changement de sélection.
-   * @param fn Fonction fournie par Angular Forms.
-   */
-  public registerOnChange(fn: (valeur: string) => void): void {
-    this.onChange = fn;
-  }
-
-  /**
-   * Enregistre le callback appelé lors de la perte de focus.
-   * @param fn Fonction fournie par Angular Forms.
-   */
-  public registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  /**
-   * Active ou désactive le groupe selon l'état du FormControl parent.
-   * @param estDesactive `true` pour désactiver tous les radios du groupe.
-   */
-  public setDisabledState(estDesactive: boolean): void {
-    this.estDesactive.set(estDesactive);
-  }
-
-  /**
-   * Notifie Angular Forms de l'option sélectionnée.
-   * @param valeur Valeur de l'option choisie.
-   */
-  protected surChangement(valeur: string): void {
-    this.valeur.set(valeur);
-    this.onChange(valeur);
-  }
-
-  /** Notifie Angular Forms que le groupe a été touché (perte de focus). */
-  protected surBlur(): void {
-    this.onTouched();
-  }
 }

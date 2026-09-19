@@ -1,14 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  effect,
-  input,
-  output,
-  viewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
-import { ComposantBase } from '../../../composant-base';
+import { PopinBase } from '../../../popin-base';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 
 /**
@@ -22,10 +14,7 @@ import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directiv
   templateUrl: './popin-warnings-absences.component.html',
   styleUrl: './popin-warnings-absences.component.scss',
 })
-export class PopinWarningsAbsencesComponent extends ComposantBase {
-  /** Contrôle la visibilité de la popin. */
-  public readonly visible: InputSignal<boolean> = input(false);
-
+export class PopinWarningsAbsencesComponent extends PopinBase {
   /** Liste des messages de conflit à afficher. */
   public readonly conflits: InputSignal<string[]> = input<string[]>([]);
 
@@ -38,22 +27,6 @@ export class PopinWarningsAbsencesComponent extends ComposantBase {
 
   /** Émis quand l'utilisateur ferme la popin (bouton FERMER ou Échap). */
   protected readonly annule: OutputEmitterRef<void> = output<void>();
-
-  /** Référence à l'élément `<dialog>` natif. */
-  private readonly dialogEl = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
-
-  /** Ouvre ou ferme la dialog native en réaction au signal `visible`. */
-  public constructor() {
-    super();
-    effect(() => {
-      const el = this.dialogEl().nativeElement;
-      if (this.visible()) {
-        if (!el.open) el.showModal();
-      } else if (el.open) {
-        el.close();
-      }
-    });
-  }
 
   /** Ferme la popin. */
   protected fermer(): void {

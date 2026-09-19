@@ -308,11 +308,12 @@ testAvecDonnees(
     await entete.navParametrage.click();
     await param.btnSectionPreferences.click();
 
-    // Valeur par défaut : 2 minutes
-    await param.champDelaiSauvegarde.fill('5');
+    // Valeur par défaut : 5 minutes → le bouton ENREGISTRER reste inactif tant que la valeur n'a pas changé
+    await expect(param.btnEnregistrerPreferences).toBeDisabled();
+    await param.champDelaiSauvegarde.fill('10');
     await param.btnEnregistrerPreferences.click();
 
-    await expect(param.champDelaiSauvegarde).toHaveValue('5');
+    await expect(param.champDelaiSauvegarde).toHaveValue('10');
     await expect(entete.btnAnnuler).toBeEnabled();
   },
 );

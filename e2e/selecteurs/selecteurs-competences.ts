@@ -59,6 +59,10 @@ export class SelecteursCompetences extends SelecteursBase {
   readonly btnEnvoyerSeance: Locator;
   /** Bouton ✕ "Retirer" du premier élément du panier. */
   readonly btnRetirerPremierePanier: Locator;
+  /** Boutons ✕ "Retirer" de tous les éléments du panier (un par compétence). */
+  readonly elementsPanier: Locator;
+  /** Nœud QLM (deuxième domaine) de l'arbre. */
+  readonly noeudSelQlm: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -88,5 +92,7 @@ export class SelecteursCompetences extends SelecteursBase {
     this.btnEnvoyerProjet = page.locator('#btnEnvoyerProjet');
     this.btnEnvoyerSeance = page.locator('#btnEnvoyerSeance');
     this.btnRetirerPremierePanier = page.locator('[id^="btnRetirerCompetence"]').first();
+    this.elementsPanier = page.locator('[id^="btnRetirerCompetence"]');
+    this.noeudSelQlm = page.locator('#noeudSel_QLM');
   }
 }

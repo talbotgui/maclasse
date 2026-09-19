@@ -49,6 +49,8 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [EDT — créneaux à temps multiples](plans-11-edtTempsMultiples.md) — 1 à 4 "temps" indépendants par créneau (horaire propre à chacun), refonte CreneauEdt, migration de données à concevoir
 - [EDT — emplois du temps calculés](plans-12-edtEmploisCalcules.md) — Nouvelle entité persistée en lecture seule, calcul à la volée depuis récréations/temps de classe/absences régulières — **implémenté le 2026-09-18** (limites dans le fichier)
 
+- [Compléter les tests E2E](plans-14-completerTestsE2E.md) — Compléter l'existant, créer les scénarios manquants (EDT calculés, temps multiples, pastilles, sauvegarde auto, migration) et ajouter AXE/RGAA — **validé, en cours**
+
 ## Plans de correction
 
 - [Conflit EDT — parité de semaine](plans-08-conflitEdtParite.md) — Bug confirmé : calculerConflitsAbsences ignore la parité paire/impaire, correctif via verifierCompatibiliteFrequences existante

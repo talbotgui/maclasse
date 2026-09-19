@@ -115,27 +115,25 @@ testAvecDonnees(
   },
 );
 
-testAvecDonnees(
-  'E2E-65 — Aucune mémorisation du dernier jour consulté',
-  async ({ appAvecDonnees }) => {
-    const entete = new SelecteursEntete(appAvecDonnees);
-    const cj = new SelecteursCahierJournal(appAvecDonnees);
+testAvecDonnees('E2E-65 — Mémorisation du dernier jour consulté', async ({ appAvecDonnees }) => {
+  const entete = new SelecteursEntete(appAvecDonnees);
+  const cj = new SelecteursCahierJournal(appAvecDonnees);
 
-    await entete.navCahierJournal.click();
+  await entete.navCahierJournal.click();
 
-    // Naviguer vers le lundi avec données
-    await naviguerVersDateCj(cj, appAvecDonnees, 1);
-    await expect(cj.btnSupprimerJournee).toBeVisible();
+  // Naviguer vers le lundi avec données
+  await naviguerVersDateCj(cj, appAvecDonnees, 1);
+  await expect(cj.btnSupprimerJournee).toBeVisible();
 
-    // Naviguer vers un autre écran puis revenir (SPA — données en mémoire conservées)
-    await entete.navEleves.click();
-    await expect(appAvecDonnees).toHaveURL(/\/eleves/);
-    await entete.navCahierJournal.click();
+  // Naviguer vers un autre écran puis revenir (SPA — données en mémoire conservées)
+  await entete.navEleves.click();
+  await expect(appAvecDonnees).toHaveURL(/\/eleves/);
+  await entete.navCahierJournal.click();
 
-    // La date n'est pas mémorisée et le bouton de création est disponible
-    await expect(cj.btnInitialiserVidePrincipal).toBeVisible();
-  },
-);
+  // Le dernier jour consulté est mémorisé (ContexteService) : la journée avec données est réaffichée
+  await expect(cj.btnSupprimerJournee).toBeVisible();
+  await expect(cj.btnInitialiserVidePrincipal).not.toBeVisible();
+});
 
 testAvecDonnees('E2E-66 — Initialiser une journée vide', async ({ appAvecDonnees }) => {
   const entete = new SelecteursEntete(appAvecDonnees);

@@ -71,8 +71,8 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
   readonly inputHeureFinCreneau: Locator;
   /** Select Type du créneau (pédagogique / récréation / pause). */
   readonly selectTypeCreneau: Locator;
-  /** Champ Titre du créneau (mc-input, visible pour le type pédagogique). */
-  readonly inputTitreCreneau: Locator;
+  /** Champ Titre du premier temps du créneau (input interne de mc-input, id suffixé `-input`, visible pour le type pédagogique). */
+  readonly inputTitreTemps0: Locator;
   /** Bouton ENREGISTRER le créneau. */
   readonly btnEnregistrerCreneau: Locator;
   /** Bouton ANNULER la saisie créneau. */
@@ -103,9 +103,9 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
     this.droiteVide = page.locator('.edt__droite-vide');
     this.btnImprimerEdt = page.locator('#btnImprimerEdt');
     this.premierCreneauGrille = page.locator('[id^="btnCreneau"]').first();
-    this.premierCreneauSemainePaire = page.locator(
-      '#btnCreneaucr000001-0000-4000-8000-000000000001',
-    );
+    this.premierCreneauSemainePaire = page
+      .locator('[id^="btnCreneaucr000001-0000-4000-8000-000000000001"]')
+      .first();
     this.btnAjouterCreneauCelluleVide = page.locator('[id^="btnAjouterCreneau"]').first();
     this.btnNouveauCreneauLigne = page.locator('[id^="btnNouveauCreneauJour"]').first();
 
@@ -121,7 +121,7 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
     this.inputHeureDebutCreneau = page.locator('#inputHeureDebutCreneau input');
     this.inputHeureFinCreneau = page.locator('#inputHeureFinCreneau input');
     this.selectTypeCreneau = page.locator('#selectTypeCreneau select');
-    this.inputTitreCreneau = page.locator('#inputTitreCreneau input');
+    this.inputTitreTemps0 = page.locator('#inputTitreTemps0-input');
     this.btnEnregistrerCreneau = page.locator('#btnEnregistrerCreneau');
     this.btnAnnulerCreneau = page.locator('#btnAnnulerCreneau');
     this.btnSupprimerCreneau = page.locator('#btnSupprimerCreneau');

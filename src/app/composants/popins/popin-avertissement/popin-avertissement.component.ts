@@ -16,6 +16,9 @@ import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directiv
   styleUrl: './popin-avertissement.component.scss',
 })
 export class PopinAvertissementComponent extends PopinBase {
+  /** Suffixe ajouté aux `id` internes quand plusieurs popins d'avertissement coexistent dans une page. */
+  public readonly contexteId: InputSignal<string> = input('');
+
   /** Message d'avertissement affiché dans le corps de la popin. */
   public readonly message: InputSignal<string> = input('');
 

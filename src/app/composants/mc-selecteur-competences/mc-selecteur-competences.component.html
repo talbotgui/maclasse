@@ -19,7 +19,11 @@
       type="text"
       class="mc-selecteur-competences__input"
       [attr.placeholder]="LIBELLES.selecteurCompetences.placeholder"
-      [attr.aria-controls]="'listeSuggestionsCompetences' + contexteId()"
+      [attr.aria-controls]="
+        estOuvert() && suggestions().length > 0
+          ? 'listeSuggestionsCompetences' + contexteId()
+          : null
+      "
       [value]="saisie()"
       (input)="surSaisie($event)"
       (focus)="surFocus()"

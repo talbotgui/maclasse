@@ -10,6 +10,8 @@ export class SelecteursBase {
   readonly btnRefaire: Locator;
   /** Bouton de changement de thème. */
   readonly btnTheme: Locator;
+  /** Boîte de dialogue modale actuellement ouverte. */
+  readonly dialogueOuvert: Locator;
 
   /** Lien de navigation vers l'accueil. */
   readonly navAccueil: Locator;
@@ -57,6 +59,7 @@ export class SelecteursBase {
     this.btnAnnuler = page.locator('#btnAnnuler');
     this.btnRefaire = page.locator('#btnRefaire');
     this.btnTheme = page.locator('#btnTheme');
+    this.dialogueOuvert = page.locator('dialog[open]');
 
     this.navAccueil = page.locator('#navAccueil');
     this.navEleves = page.locator('#navEleves');

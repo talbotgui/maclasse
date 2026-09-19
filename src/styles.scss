@@ -56,12 +56,12 @@ body {
   --couleur-focus: #f59e0b;
   --chip-actif: #bfdbfe;
   --avertissement: #f59e0b;
-  --erreur: #dc2626;
+  --erreur: #b91c1c;
 }
 
 :root[data-theme='foret'] {
-  --couleur-primaire: #16a34a;
-  --couleur-primaire-sombre: #15803d;
+  --couleur-primaire: #15803d;
+  --couleur-primaire-sombre: #166534;
   --fond-global: #f0fdf4;
   --fond-entete: #14532d;
   --fond-colonne: #dcfce7;
@@ -73,7 +73,7 @@ body {
   --couleur-focus: #f59e0b;
   --chip-actif: #86efac;
   --avertissement: #d97706;
-  --erreur: #dc2626;
+  --erreur: #b91c1c;
 }
 
 :root[data-theme='crepuscule'] {
@@ -90,7 +90,7 @@ body {
   --couleur-focus: #f59e0b;
   --chip-actif: #c4b5fd;
   --avertissement: #d97706;
-  --erreur: #dc2626;
+  --erreur: #b91c1c;
 }
 
 :root[data-theme='terre'] {
@@ -101,13 +101,13 @@ body {
   --fond-colonne: #fef3c7;
   --fond-section: #fffbf0;
   --texte-principal: #292524;
-  --texte-secondaire: #78716c;
+  --texte-secondaire: #675f5a;
   --texte-sur-primaire: #fffbeb;
   --bordure: #fde68a;
   --couleur-focus: #7c3aed;
   --chip-actif: #fcd34d;
   --avertissement: #d97706;
-  --erreur: #dc2626;
+  --erreur: #b91c1c;
 }
 
 :root[data-theme='contraste'] {
@@ -224,7 +224,7 @@ button {
 .mc-chip-actif {
   background-color: var(--chip-actif);
   border-color: var(--couleur-primaire);
-  color: var(--couleur-primaire);
+  color: var(--texte-principal);
 }
 
 // En thème contraste, chip-actif est noir (#000000) — texte sur primaire (blanc) requis pour la lisibilité

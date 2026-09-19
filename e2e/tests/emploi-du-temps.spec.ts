@@ -99,11 +99,11 @@ testAvecDonnees(
     // Cliquer le bouton AJOUTER en bas de la colonne lundi
     await edt.btnNouveauCreneauLigne.click();
 
-    // Le formulaire créneau s'ouvre (type pédagogique par défaut → inputTitreCreneau visible)
-    await expect(edt.inputTitreCreneau).toBeVisible();
+    // Le formulaire créneau s'ouvre (type pédagogique par défaut → inputTitreTemps0 visible)
+    await expect(edt.inputTitreTemps0).toBeVisible();
 
     // Saisir un titre reconnaissable
-    await edt.inputTitreCreneau.fill('Titre test E2E-56');
+    await edt.inputTitreTemps0.fill('Titre test E2E-56');
     await edt.btnEnregistrerCreneau.click();
 
     // Le créneau apparaît dans la grille
@@ -127,7 +127,7 @@ testAvecDonnees(
 
     // Ajouter un premier créneau sur lundi (heures par défaut 08:00-09:00)
     await edt.btnNouveauCreneauLigne.click();
-    await edt.inputTitreCreneau.fill('Premier créneau lundi');
+    await edt.inputTitreTemps0.fill('Premier créneau lundi');
     await edt.btnEnregistrerCreneau.click();
 
     // La grille a maintenant une ligne 08:00-09:00 avec lundi rempli et les autres jours vides
@@ -135,8 +135,8 @@ testAvecDonnees(
     await edt.btnAjouterCreneauCelluleVide.click();
 
     // Le formulaire créneau s'ouvre pour le deuxième jour
-    await expect(edt.inputTitreCreneau).toBeVisible();
-    await edt.inputTitreCreneau.fill('Test intercalaire mardi');
+    await expect(edt.inputTitreTemps0).toBeVisible();
+    await edt.inputTitreTemps0.fill('Test intercalaire mardi');
     await edt.btnEnregistrerCreneau.click();
 
     // Le créneau apparaît dans la grille
@@ -155,10 +155,10 @@ testAvecDonnees('E2E-58 — Modifier un créneau existant', async ({ appAvecDonn
   await edt.premierCreneauSemainePaire.click();
 
   // Le formulaire créneau s'ouvre avec le titre existant
-  await expect(edt.inputTitreCreneau).toBeVisible();
+  await expect(edt.inputTitreTemps0).toBeVisible();
 
   // Modifier le titre
-  await edt.inputTitreCreneau.fill('Titre modifié E2E-58');
+  await edt.inputTitreTemps0.fill('Titre modifié E2E-58');
   await edt.btnEnregistrerCreneau.click();
 
   // La grille reflète le nouveau titre
@@ -175,7 +175,7 @@ testAvecDonnees("E2E-59 — Annuler la modification d'un créneau", async ({ app
 
   // Cliquer sur le premier créneau et modifier le titre sans enregistrer
   await edt.premierCreneauSemainePaire.click();
-  await edt.inputTitreCreneau.fill('Modifié temporaire');
+  await edt.inputTitreTemps0.fill('Modifié temporaire');
   await edt.btnAnnulerCreneau.click();
 
   // Le titre d'origine est toujours dans la grille
@@ -193,7 +193,7 @@ testAvecDonnees('E2E-60 — Supprimer un créneau', async ({ appAvecDonnees }) =
 
   // Ouvrir le premier créneau (lundi 08:30 "Lecture – Compréhension de texte")
   await edt.premierCreneauSemainePaire.click();
-  await expect(edt.inputTitreCreneau).toBeVisible();
+  await expect(edt.inputTitreTemps0).toBeVisible();
 
   // Supprimer le créneau
   await edt.btnSupprimerCreneau.click();

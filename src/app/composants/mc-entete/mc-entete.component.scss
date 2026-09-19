@@ -235,6 +235,32 @@
   }
 }
 
+@media (max-width: 768px) {
+  .mc-entete {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 3rem;
+    padding-block: 0.5rem;
+
+    &__nav {
+      order: 1;
+      flex: 1 0 100%;
+      flex-wrap: wrap;
+      overflow: visible;
+      padding-left: 0;
+    }
+
+    &__zone-recherche {
+      flex: 1 1 8rem;
+      width: auto;
+    }
+
+    &__actions {
+      flex-wrap: wrap;
+    }
+  }
+}
+
 @media print {
   :host {
     display: none;

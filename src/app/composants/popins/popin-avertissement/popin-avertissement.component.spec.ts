@@ -21,6 +21,28 @@ describe('PopinAvertissementComponent', () => {
     fixture.detectChanges();
   });
 
+  describe('contexteId', () => {
+    it('sans contexteId → ids sans suffixe', () => {
+      expect(fixture.nativeElement.querySelector('#btnAvertissementConfirmer')).not.toBeNull();
+      expect(dialogEl().getAttribute('aria-labelledby')).toBe('titreAvertissement');
+    });
+
+    it('avec contexteId → ids et aria-labelledby suffixés', () => {
+      fixture.componentRef.setInput('contexteId', 'Navigation');
+      fixture.detectChanges();
+
+      expect(
+        fixture.nativeElement.querySelector('#btnAvertissementConfirmerNavigation'),
+      ).not.toBeNull();
+      expect(
+        fixture.nativeElement.querySelector('#btnAvertissementAnnulerNavigation'),
+      ).not.toBeNull();
+      expect(fixture.nativeElement.querySelector('#btnAvertissementConfirmer')).toBeNull();
+      expect(dialogEl().getAttribute('aria-labelledby')).toBe('titreAvertissementNavigation');
+      expect(fixture.nativeElement.querySelector('#titreAvertissementNavigation')).not.toBeNull();
+    });
+  });
+
   describe('ouverture/fermeture', () => {
     it('visible=false (défaut) → showModal non appelé', () => {
       expect(HTMLDialogElement.prototype.showModal).not.toHaveBeenCalled();

@@ -2,12 +2,12 @@
   #dialog
   class="mc-popin"
   aria-modal="true"
-  aria-labelledby="titreAvertissement"
+  [attr.aria-labelledby]="'titreAvertissement' + contexteId()"
   (cancel)="surCancel($event)"
 >
   <div class="mc-popover-carte">
     <div class="mc-popover-entete">
-      <span id="titreAvertissement" class="mc-popover-titre">{{
+      <span [id]="'titreAvertissement' + contexteId()" class="mc-popover-titre">{{
         LIBELLES.popins.avertissement.titre
       }}</span>
     </div>
@@ -18,7 +18,7 @@
 
     <div class="mc-popover-pied">
       <button
-        id="btnAvertissementAnnuler"
+        [id]="'btnAvertissementAnnuler' + contexteId()"
         type="button"
         class="mc-btn-fantome"
         [mcAutoFocus]="visible()"
@@ -27,7 +27,7 @@
         {{ LIBELLES.popins.avertissement.annuler }}
       </button>
       <button
-        id="btnAvertissementConfirmer"
+        [id]="'btnAvertissementConfirmer' + contexteId()"
         type="button"
         class="mc-btn-danger"
         (click)="surConfirmation()"

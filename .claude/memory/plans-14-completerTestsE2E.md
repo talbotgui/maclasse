@@ -57,7 +57,11 @@ Compléments faits : aller-retour de navigation ajouté à E2E-19, 27, 28, 29, 3
 
 **Numérotation** : les IDs E2E-98 et suivants de `plans-04-testsE2E.md` (mobile, focus, migration…) sont périmés ; les IDs réels sont ceux des fichiers `e2e/tests/*.spec.ts`. Prochains scénarios fonctionnels à partir de E2E-108.
 
-**Reste à faire** : AXE des popins d'absences et d'export avec choix, Phase 1 (audit complet), Phase 2 (nouveaux scénarios EDT calculés / temps multiples / pastilles / sauvegarde auto), Phase 3 (migration, version incompatible), mise à jour de `plans-04-testsE2E.md`.
+**Phase 2 — nouveaux scénarios fonctionnels (2026-09-19)** : E2E-108 (bandeau d'absences selon la parité), 109 (icône ⚠ et popin de conflit), 110 (parité respectée dans les conflits), 111 (créneau à temps multiples, jusqu'à 4, suppression), 112 à 116 (EDT calculés : création et lecture seule, validation, source absences, modifier/supprimer, annuler/refaire), 117 (pastilles du cahier journal), 118 (pastilles de l'EDT et renommage de groupe), 119 et 120 (sauvegarde automatique réelle avec `page.clock` : seulement si modifié, relance du timer par le délai), 121 (aller-retour d'un fichier sauvegardé), 122 (changer le jour d'un créneau le déplace), 123 (popin de navigation du cahier journal), 124 (notes pré-remplies avec les absences). Ajouts RGAA-22 à RGAA-24 (AXE : popin de conflits, popin d'export avec choix, EDT calculé). E2E-76 vérifie maintenant le contenu de la popin d'absences. Suite : 145 tests verts.
+Anomalies corrigées : contraste du texte d'avertissement (nouvelle variable `--avertissement-texte`, 5 thèmes) ; E2E-95 réécrit (il modifiait en réalité la ligne 0 « Toussaint » et était instable : le nouveau jour férié est créé à l'index 10).
+Limites connues : E2E-124 vise un vendredi à environ 2,5 semaines de la date d'exécution (pas de jour férié dans cette fenêtre tant que les données par défaut s'arrêtent en 2026) ; E2E-110 compare deux comptes de conflits sur les données par défaut.
+
+**Reste à faire** : Phase 3 (migration, version incompatible), mise à jour de `plans-04-testsE2E.md`.
 
 Note : `RGAA-xx` est réparti sur `accessibilite.spec.ts` (01-16, 19-21) et `responsive.spec.ts` (17-18).
 

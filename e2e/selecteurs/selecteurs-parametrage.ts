@@ -190,7 +190,7 @@ export class SelecteursParametrage extends SelecteursBase {
   /** Bouton ENREGISTRER le sixième type de contact (index 5). */
   readonly btnEnregistrerTypeContact5: Locator;
 
-  // --- Section : Jours fériés (0 dans le jeu de données — le premier créé = index 0) ---
+  // --- Section : Jours fériés (10 dans le jeu de données par défaut — le premier créé = index 10) ---
   /** Bouton AJOUTER un nouveau jour férié. */
   readonly btnAjouterJourFerie: Locator;
   /** Champ Nom du premier jour férié ([id] dynamique → pas de suffixe). */
@@ -199,6 +199,12 @@ export class SelecteursParametrage extends SelecteursBase {
   readonly champJourFerieDate0: Locator;
   /** Bouton ENREGISTRER le premier jour férié (index 0). */
   readonly btnEnregistrerJourFerie0: Locator;
+  /** Champ Nom du jour férié créé par AJOUTER (index 10, après les 10 jours fériés par défaut). */
+  readonly champJourFerieNom10: Locator;
+  /** Champ Date du jour férié créé par AJOUTER (index 10). */
+  readonly champJourFerieDate10: Locator;
+  /** Bouton ENREGISTRER le jour férié créé par AJOUTER (index 10). */
+  readonly btnEnregistrerJourFerie10: Locator;
   /** Bouton SUPPRIMER le premier jour férié (premier état, index 0). */
   readonly btnSupprimerJourFerie0: Locator;
   /** Bouton CONFIRMER la suppression du premier jour férié (index 0). */
@@ -267,7 +273,7 @@ export class SelecteursParametrage extends SelecteursBase {
     this.btnAnnulerSemaineHoraires = page.locator('#btnAnnulerSemaineHoraires');
 
     this.btnAjouterGroupe = page.locator('#btnAjouterGroupe');
-    this.champGroupeLibelle0 = page.locator('#champGroupeLibelle0');
+    this.champGroupeLibelle0 = page.locator('#champGroupeLibelle0-input');
     this.btnEnregistrerGroupe0 = page.locator('#btnEnregistrerGroupe0');
     this.btnSupprimerGroupe0 = page.locator('#btnSupprimerGroupe0');
     this.btnSupprimerGroupe0Confirmer = page.locator('#btnSupprimerGroupe0_confirmer');
@@ -318,6 +324,9 @@ export class SelecteursParametrage extends SelecteursBase {
     this.champJourFerieNom0 = page.locator('#champJourFerieNom0-input');
     this.champJourFerieDate0 = page.locator('#champJourFerieDate0-input');
     this.btnEnregistrerJourFerie0 = page.locator('#btnEnregistrerJourFerie0');
+    this.champJourFerieNom10 = page.locator('#champJourFerieNom10-input');
+    this.champJourFerieDate10 = page.locator('#champJourFerieDate10-input');
+    this.btnEnregistrerJourFerie10 = page.locator('#btnEnregistrerJourFerie10');
     this.btnSupprimerJourFerie0 = page.locator('#btnSupprimerJourFerie0');
     this.btnSupprimerJourFerie0Confirmer = page.locator('#btnSupprimerJourFerie0_confirmer');
 

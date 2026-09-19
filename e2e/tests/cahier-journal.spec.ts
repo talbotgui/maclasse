@@ -363,6 +363,7 @@ testAvecDonnees(
 
     // La popin d'avertissement s'affiche automatiquement (conflits détectés)
     await expect(cj.btnWarningsFermer).toBeVisible();
+    await expect(cj.listeConflitsAbsences).toContainText('Ducobu');
 
     // Fermer la popin
     await cj.btnWarningsFermer.click();
@@ -452,5 +453,75 @@ testAvecDonnees(
     await entete.btnRefaire.click();
     await expect(cj.btnSupprimerJournee).toBeVisible();
     await expect(cj.btnInitialiserVidePrincipal).not.toBeVisible();
+  },
+);
+
+testAvecDonnees(
+  'E2E-117 — Pastilles : une séance destinée à des groupes affiche leurs pastilles',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const cj = new SelecteursCahierJournal(appAvecDonnees);
+
+    await entete.navCahierJournal.click();
+    await naviguerVersDateCj(cj, appAvecDonnees, 0);
+    await cj.btnAjouterSeance.click();
+    await cj.champHeureDebutSeance.fill('09:00');
+    await cj.champHeureFinSeance.fill('10:00');
+    await cj.champTitreSeance.fill('Séance en groupes');
+    await cj.radioGroupesSeance.check();
+    await cj.chipGroupeASeance.click();
+    await cj.chipGroupeBSeance.click();
+    await cj.btnEnregistrerSeance.click();
+
+    await expect(cj.pastillesSeances.filter({ hasText: 'Groupe A' })).toHaveCount(1);
+    await expect(cj.pastillesSeances.filter({ hasText: 'Groupe B' })).toHaveCount(1);
+    await expect(cj.pastillesSeances.filter({ hasText: 'Groupe C' })).toHaveCount(0);
+  },
+);
+
+testAvecDonnees(
+  'E2E-123 — Quitter le cahier journal avec une séance en cours de saisie : popin d’avertissement',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const cj = new SelecteursCahierJournal(appAvecDonnees);
+
+    await entete.navCahierJournal.click();
+    await naviguerVersDateCj(cj, appAvecDonnees, 0);
+    await cj.btnAjouterSeance.click();
+    await cj.champHeureDebutSeance.fill('09:00');
+    await cj.champHeureFinSeance.fill('10:00');
+    await cj.champTitreSeance.fill('Séance abandonnée');
+
+    // ANNULER : on reste sur le cahier journal avec la saisie
+    await entete.navEleves.click();
+    await expect(cj.btnAvertissementNavigationConfirmer).toBeVisible();
+    await cj.btnAvertissementNavigationAnnuler.click();
+    await expect(cj.btnAvertissementNavigationConfirmer).not.toBeVisible();
+    await expect(appAvecDonnees).toHaveURL(/\/cahier-journal/);
+    await expect(cj.champTitreSeance).toHaveValue('Séance abandonnée');
+
+    // CONTINUER : la navigation a lieu et la saisie est abandonnée
+    await entete.navEleves.click();
+    await cj.btnAvertissementNavigationConfirmer.click();
+    await expect(appAvecDonnees).toHaveURL(/\/eleves/);
+    await expect(entete.btnAnnuler).toBeDisabled();
+  },
+);
+
+testAvecDonnees(
+  'E2E-124 — Initialiser une journée pré-remplit les notes avec les absences régulières du jour',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const cj = new SelecteursCahierJournal(appAvecDonnees);
+
+    await entete.navCahierJournal.click();
+
+    // Vendredi sans données (lundiCible + 11) : Jean Ducobu est absent tous les vendredis (08:30–10:00)
+    await naviguerVersDateCj(cj, appAvecDonnees, 11);
+    await cj.btnInitialiserVidePrincipal.click();
+
+    await expect(cj.champNotesJournee).toHaveValue(/Ducobu/);
+    await expect(cj.champNotesJournee).toHaveValue(/Orthophoniste/);
+    await expect(cj.champNotesJournee).not.toHaveValue(/Petit-Tonnerre/);
   },
 );

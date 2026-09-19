@@ -301,14 +301,15 @@ testAvecDonnees('E2E-95 — Ajouter un jour férié', async ({ appAvecDonnees })
   await entete.navParametrage.click();
   await param.btnSectionJoursFeries.click();
 
-  // 10 jours fériés existants, triés par date (le premier : Toussaint, 2025-11-01) :
-  // une date antérieure place le nouveau jour férié à l'index 0 après enregistrement.
+  // 10 jours fériés par défaut (index 0 à 9) : le nouveau est ajouté à l'index 10.
+  // La date postérieure à tous les jours existants le laisse à cet index après enregistrement.
   await param.btnAjouterJourFerie.click();
-  await param.champJourFerieNom0.fill('Armistice');
-  await param.champJourFerieDate0.fill('2025-10-11');
-  await param.btnEnregistrerJourFerie0.click();
+  await param.champJourFerieNom10.fill('Armistice');
+  await param.champJourFerieDate10.fill('2026-12-31');
+  await param.btnEnregistrerJourFerie10.click();
 
-  await expect(param.champJourFerieNom0).toHaveValue('Armistice');
+  await expect(param.champJourFerieNom10).toHaveValue('Armistice');
+  await expect(param.champJourFerieNom0).toHaveValue('Toussaint');
   await expect(entete.btnAnnuler).toBeEnabled();
 });
 

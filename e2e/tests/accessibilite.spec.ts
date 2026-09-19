@@ -345,3 +345,49 @@ testAvecDonnees(
     await expect(competences.elementsPanier).toHaveCount(1);
   },
 );
+
+testAvecDonnees(
+  'RGAA-22 — AXE : popin de conflits d’absences de l’EDT',
+  async ({ appAvecDonnees }) => {
+    const base = new SelecteursBase(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+    await base.navEmploiDuTemps.click();
+    await edt.btnEdtSemaineComplete.click();
+    await edt.iconesConflit.first().click();
+    await expect(base.dialogueOuvert).toBeVisible();
+    expect(await VerificateurAccessibilite.lister(appAvecDonnees)).toEqual([]);
+  },
+);
+
+testAvecDonnees(
+  'RGAA-23 — AXE : popin d’export avec une destination choisie',
+  async ({ appAvecDonnees }) => {
+    const base = new SelecteursBase(appAvecDonnees);
+    const competences = new SelecteursCompetences(appAvecDonnees);
+    await base.navCompetences.click();
+    await competences.btnAjouterAuPanierPremierNoeud.click();
+    await competences.btnEnvoyerProjet.click();
+    await base.exportSelectPrimaire.selectOption('11111111-aaaa-bbbb-cccc-journal00001');
+    await base.exportSelectSecondaire.selectOption('0');
+    expect(await VerificateurAccessibilite.lister(appAvecDonnees)).toEqual([]);
+  },
+);
+
+testAvecDonnees(
+  'RGAA-24 — AXE : EDT calculé (formulaire et grille)',
+  async ({ appAvecDonnees }) => {
+    const base = new SelecteursBase(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+    await base.navEmploiDuTemps.click();
+    await edt.btnCreerEdtCalcule.click();
+    expect(await VerificateurAccessibilite.lister(appAvecDonnees), 'formulaire').toEqual([]);
+
+    await edt.inputNomEdtCalcule.fill('Calcul AXE');
+    await edt.chipSourceRecreation.click();
+    await edt.chipSourceAbsencesRegulieres.click();
+    await edt.btnEnregistrerEdtCalcule.click();
+    await edt.btnPremierEdtCalcule.click();
+    await expect(edt.cellulesCalculees.first()).toBeVisible();
+    expect(await VerificateurAccessibilite.lister(appAvecDonnees), 'grille calculée').toEqual([]);
+  },
+);

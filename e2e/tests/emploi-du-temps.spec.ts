@@ -1,6 +1,7 @@
 import { testAvecDonnees, expect } from '../fixtures';
 import { SelecteursEmploiDuTemps } from '../selecteurs/selecteurs-emploi-du-temps';
 import { SelecteursEntete } from '../selecteurs/selecteurs-entete';
+import { SelecteursParametrage } from '../selecteurs/selecteurs-parametrage';
 
 // Données du jeu d'exemple :
 // - 3 EDT : "Semaine paire" (id et000001..., freq=paire), "Semaine impaire" (et000002..., freq=impaire),
@@ -268,5 +269,275 @@ testAvecDonnees(
     await edt.premierCreneauSemainePaire.click();
     await expect(edt.titreFormulaireCreneau).toContainText('Modifier');
     await expect(edt.btnSupprimerCreneau).toBeVisible();
+  },
+);
+
+testAvecDonnees(
+  'E2E-108 — Bandeau d’absences régulières : il suit la parité de l’EDT sélectionné',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    await expect(edt.bandeauAbsences).toHaveCount(0);
+
+    // Semaine paire : les absences « lesDeux » seulement (Ariol est en semaine impaire)
+    await edt.btnEdtSemainePaire.click();
+    await expect(edt.lignesBandeauAbsences).toHaveCount(2);
+    await expect(edt.bandeauAbsences).toContainText('Ducobu');
+    await expect(edt.bandeauAbsences).toContainText('Petit-Tonnerre');
+    await expect(edt.bandeauAbsences).not.toContainText('Blanche-Oreille');
+
+    // Semaine impaire : l'absence d'Ariol s'ajoute
+    await edt.btnEdtSemaineImpaire.click();
+    await expect(edt.lignesBandeauAbsences).toHaveCount(3);
+    await expect(edt.bandeauAbsences).toContainText('Blanche-Oreille');
+  },
+);
+
+testAvecDonnees(
+  'E2E-109 — Icône ⚠ de conflit : détail de l’absence dans la popin',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    await edt.btnEdtSemaineComplete.click();
+    await expect(edt.iconesConflit.first()).toBeVisible();
+
+    await edt.iconesConflit.first().click();
+    await expect(entete.dialogueOuvert).toBeVisible();
+    await expect(edt.listeConflitsPopin).toContainText(/Ducobu|Petit-Tonnerre|Blanche-Oreille/);
+
+    await edt.btnWarningsFermer.click();
+    await expect(entete.dialogueOuvert).toHaveCount(0);
+  },
+);
+
+testAvecDonnees(
+  'E2E-110 — Conflits d’absence : la parité de semaine est respectée',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    await edt.btnEdtSemainePaire.click();
+    // Le bandeau (2 absences en semaine paire) sert de point de synchronisation avec le rendu de l'EDT
+    await expect(edt.lignesBandeauAbsences).toHaveCount(2);
+    await expect(edt.iconesConflit.first()).toBeVisible();
+    const conflitsSemainePaire = await edt.iconesConflit.count();
+
+    // L'absence d'Ariol (semaine impaire) ne génère de conflit qu'en semaine impaire
+    await edt.btnEdtSemaineImpaire.click();
+    await expect(edt.lignesBandeauAbsences).toHaveCount(3);
+    await expect(edt.iconesConflit.first()).toBeVisible();
+    const conflitsSemaineImpaire = await edt.iconesConflit.count();
+
+    expect(conflitsSemaineImpaire).toBeGreaterThan(conflitsSemainePaire);
+  },
+);
+
+testAvecDonnees(
+  'E2E-111 — Créneau à temps multiples : ajout jusqu’à 4 temps, suppression d’un temps',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    await edt.btnCreerEdt.click();
+    await edt.inputNomEdt.fill('EDT temps multiples');
+    await edt.btnEnregistrerEdt.click();
+    await edt.btnNouveauCreneauLigne.click();
+    await expect(edt.blocsTemps).toHaveCount(1);
+
+    await edt.inputTitreTemps0.fill('Premier temps');
+    await edt.btnAjouterTemps.click();
+    await expect(edt.blocsTemps).toHaveCount(2);
+    await edt.inputTitreTemps1.fill('Deuxième temps');
+
+    await edt.btnAjouterTemps.click();
+    await edt.btnAjouterTemps.click();
+    await expect(edt.blocsTemps).toHaveCount(4);
+    await expect(edt.btnAjouterTemps).toBeDisabled();
+
+    await edt.btnSupprimerTemps3.click();
+    await edt.btnSupprimerTemps3Confirmer.click();
+    await expect(edt.blocsTemps).toHaveCount(3);
+    await expect(edt.btnAjouterTemps).toBeEnabled();
+
+    await edt.btnEnregistrerCreneau.click();
+    await expect(edt.conteneurGrille).toContainText('Premier temps');
+    await expect(edt.conteneurGrille).toContainText('Deuxième temps');
+  },
+);
+
+testAvecDonnees(
+  'E2E-112 — EDT calculé : créer une définition et afficher la grille en lecture seule',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    // Contrôle : sur un EDT ordinaire, les boutons d'édition existent
+    await edt.btnEdtSemainePaire.click();
+    await expect(edt.boutonsCreneauEditable.first()).toBeVisible();
+    await expect(edt.boutonsAjoutCreneau.first()).toBeVisible();
+
+    await edt.btnCreerEdtCalcule.click();
+    await edt.inputNomEdtCalcule.fill('Récréations et classe');
+    await edt.chipSourceRecreation.click();
+    await edt.chipSourceTempsClasse.click();
+    await edt.btnEnregistrerEdtCalcule.click();
+
+    await expect(edt.listeEdtsCalcules).toContainText('Récréations et classe');
+    await edt.btnPremierEdtCalcule.click();
+    await expect(edt.cellulesCalculees.first()).toBeVisible();
+    await expect(edt.boutonsCreneauEditable).toHaveCount(0);
+    await expect(edt.boutonsAjoutCreneau).toHaveCount(0);
+    await expect(entete.btnAnnuler).toBeEnabled();
+  },
+);
+
+testAvecDonnees(
+  'E2E-113 — EDT calculé : nom et source obligatoires',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    await edt.btnCreerEdtCalcule.click();
+    await expect(edt.erreurEdtCalcule).toHaveCount(0);
+
+    await edt.btnEnregistrerEdtCalcule.click();
+    await expect(edt.erreurEdtCalcule).toBeVisible();
+
+    await edt.inputNomEdtCalcule.fill('Sans source');
+    await edt.btnEnregistrerEdtCalcule.click();
+    await expect(edt.erreurEdtCalcule).toBeVisible();
+
+    await edt.chipSourceRecreation.click();
+    await edt.btnEnregistrerEdtCalcule.click();
+    await expect(edt.listeEdtsCalcules).toContainText('Sans source');
+  },
+);
+
+testAvecDonnees(
+  'E2E-114 — EDT calculé : la source « absences régulières » affiche les absences des élèves',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    await edt.btnCreerEdtCalcule.click();
+    await edt.inputNomEdtCalcule.fill('Absences');
+    await edt.chipSourceAbsencesRegulieres.click();
+    await edt.btnEnregistrerEdtCalcule.click();
+    await edt.btnPremierEdtCalcule.click();
+
+    await expect(edt.cellulesCalculees.filter({ hasText: 'Inclusion' })).not.toHaveCount(0);
+    await expect(edt.cellulesCalculees.filter({ hasText: 'Orthophoniste' })).not.toHaveCount(0);
+  },
+);
+
+testAvecDonnees('E2E-115 — EDT calculé : modifier puis supprimer', async ({ appAvecDonnees }) => {
+  const entete = new SelecteursEntete(appAvecDonnees);
+  const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+  await entete.navEmploiDuTemps.click();
+  await edt.btnCreerEdtCalcule.click();
+  await edt.inputNomEdtCalcule.fill('Calcul initial');
+  await edt.chipSourceRecreation.click();
+  await edt.btnEnregistrerEdtCalcule.click();
+
+  await edt.btnPremierEdtCalcule.click();
+  await edt.inputNomEdtCalcule.fill('Calcul renommé');
+  await edt.btnEnregistrerEdtCalcule.click();
+  await expect(edt.listeEdtsCalcules).toContainText('Calcul renommé');
+  await expect(edt.listeEdtsCalcules).not.toContainText('Calcul initial');
+
+  await edt.btnPremierEdtCalcule.click();
+  await edt.btnSupprimerEdtCalcule.click();
+  await edt.btnSupprimerEdtCalculeConfirmer.click();
+  await expect(edt.listeEdtsCalcules).toHaveCount(0);
+});
+
+testAvecDonnees(
+  'E2E-116 — EDT calculé : ANNULER, ANNULER/REFAIRE de l’entête',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    await edt.btnCreerEdtCalcule.click();
+    await edt.inputNomEdtCalcule.fill('Abandonné');
+    await edt.btnAnnulerEdtCalcule.click();
+    await expect(edt.listeEdtsCalcules).toHaveCount(0);
+    await expect(entete.btnAnnuler).toBeDisabled();
+
+    await edt.btnCreerEdtCalcule.click();
+    await edt.inputNomEdtCalcule.fill('Conservé');
+    await edt.chipSourceRecreation.click();
+    await edt.btnEnregistrerEdtCalcule.click();
+    await expect(edt.listeEdtsCalcules).toContainText('Conservé');
+
+    await entete.btnAnnuler.click();
+    await expect(edt.listeEdtsCalcules).toHaveCount(0);
+    await entete.btnRefaire.click();
+    await expect(edt.listeEdtsCalcules).toContainText('Conservé');
+  },
+);
+
+testAvecDonnees(
+  'E2E-118 — Pastilles : un temps destiné à un groupe l’affiche dans la grille, et le libellé suit le renommage du groupe',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+    const param = new SelecteursParametrage(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    await edt.btnCreerEdt.click();
+    await edt.inputNomEdt.fill('EDT pastilles');
+    await edt.btnEnregistrerEdt.click();
+    await edt.btnNouveauCreneauLigne.click();
+    await edt.inputTitreTemps0.fill('Atelier');
+    await edt.radioGroupesTemps0.check();
+    await edt.chipGroupeATemps0.click();
+    await edt.btnEnregistrerCreneau.click();
+    await expect(edt.pastillesGrille.filter({ hasText: 'Groupe A' })).toHaveCount(1);
+
+    await entete.navParametrage.click();
+    await param.btnSectionGroupes.click();
+    await param.champGroupeLibelle0.fill('Groupe Alpha');
+    await param.btnEnregistrerGroupe0.click();
+
+    await entete.navEmploiDuTemps.click();
+    await edt.btnEdtPastilles.click();
+    await expect(edt.pastillesGrille.filter({ hasText: 'Groupe Alpha' })).toHaveCount(1);
+    await expect(edt.pastillesGrille.filter({ hasText: /^Groupe A$/ })).toHaveCount(0);
+  },
+);
+
+testAvecDonnees(
+  'E2E-122 — Créneau : changer le jour déplace le créneau dans la grille',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    await edt.btnCreerEdt.click();
+    await edt.inputNomEdt.fill('EDT déplacement');
+    await edt.btnEnregistrerEdt.click();
+    await edt.btnNouveauCreneauLigne.click();
+    await edt.inputTitreTemps0.fill('Créneau mobile');
+    await edt.btnEnregistrerCreneau.click();
+    await expect(edt.celluleLundiPremiereLigne).toContainText('Créneau mobile');
+    await expect(edt.celluleMardiPremiereLigne).not.toContainText('Créneau mobile');
+
+    await edt.premierCreneauGrille.click();
+    await edt.selectJourCreneau.selectOption('mardi');
+    await edt.btnEnregistrerCreneau.click();
+
+    await expect(edt.celluleMardiPremiereLigne).toContainText('Créneau mobile');
+    await expect(edt.celluleLundiPremiereLigne).not.toContainText('Créneau mobile');
   },
 );

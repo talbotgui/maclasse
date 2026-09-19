@@ -56,6 +56,22 @@ export class SelecteursCahierJournal extends SelecteursBase {
   // --- Bouton d'ajout ---
   /** Bouton AJOUTER UNE SÉANCE dans la journée courante. */
   readonly btnAjouterSeance: Locator;
+  /** Zone de notes de la journée (textarea interne de mc-textarea). */
+  readonly champNotesJournee: Locator;
+  /** Bouton CONTINUER de la popin d'avertissement de navigation (modifications non enregistrées). */
+  readonly btnAvertissementNavigationConfirmer: Locator;
+  /** Bouton ANNULER de la popin d'avertissement de navigation. */
+  readonly btnAvertissementNavigationAnnuler: Locator;
+  /** Liste des conflits d'absences affichée à l'enregistrement d'une séance. */
+  readonly listeConflitsAbsences: Locator;
+  /** Pastilles d'élèves concernés affichées dans la liste des séances. */
+  readonly pastillesSeances: Locator;
+  /** Bouton radio « Groupes » du périmètre de la séance en cours d'édition. */
+  readonly radioGroupesSeance: Locator;
+  /** Chip du groupe A dans le périmètre de la séance en cours d'édition. */
+  readonly chipGroupeASeance: Locator;
+  /** Chip du groupe B dans le périmètre de la séance en cours d'édition. */
+  readonly chipGroupeBSeance: Locator;
 
   // --- Formulaire de séance ---
   /** Champ Heure de début de séance (mc-champ-heure). */
@@ -112,6 +128,14 @@ export class SelecteursCahierJournal extends SelecteursBase {
     this.btnSupprimerPremierSeance = page.locator('[id^="btnSupprimerSeance"]').first();
 
     this.btnAjouterSeance = page.locator('#btnAjouterSeance');
+    this.champNotesJournee = page.locator('#champNotesJournee textarea');
+    this.btnAvertissementNavigationConfirmer = page.locator('#btnAvertissementConfirmerNavigation');
+    this.btnAvertissementNavigationAnnuler = page.locator('#btnAvertissementAnnulerNavigation');
+    this.listeConflitsAbsences = page.locator('.mc-popin__liste-conflits');
+    this.pastillesSeances = page.locator('.mc-pastilles-eleves-concernes .mc-disc-pill');
+    this.radioGroupesSeance = page.locator('#elevesConcernesSeance_groupes');
+    this.chipGroupeASeance = page.locator('#elevesConcernesSeance_groupe_A');
+    this.chipGroupeBSeance = page.locator('#elevesConcernesSeance_groupe_B');
 
     this.champHeureDebutSeance = page.locator('[id*="HeureDebut"] input').first();
     this.champHeureFinSeance = page.locator('[id*="HeureFin"] input').first();

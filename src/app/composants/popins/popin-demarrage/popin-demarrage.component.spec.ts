@@ -141,6 +141,23 @@ describe('PopinDemarrageComponent', () => {
       expect(spy).toHaveBeenCalledTimes(1);
     });
 
+    it('version plus récente que l’application → erreur bloquante, aucune donnée émise', async () => {
+      const donnees = DonneesMother.base({ version: '2099.01.1' });
+      const { ChiffrementService } = await import('../../../services/sansEtat/chiffrement.service');
+      const chiffrementService = TestBed.inject(ChiffrementService);
+      vi.spyOn(chiffrementService, 'dechiffrer').mockResolvedValue(donnees);
+
+      (component as any).fichierSelectionne.set(fichierZip);
+      (component as any).motDePasse.set('secret');
+      const spy = vi.spyOn((component as any).demarrageTermine, 'emit');
+
+      await component['charger']();
+
+      expect((component as any).erreur()).toBe(LIBELLES.demarrage.erreurVersionIncompatible);
+      expect(spy).not.toHaveBeenCalled();
+      expect((component as any).enChargement()).toBe(false);
+    });
+
     it('DOMException → affiche erreur mot de passe', async () => {
       const { ChiffrementService } = await import('../../../services/sansEtat/chiffrement.service');
       const chiffrementService = TestBed.inject(ChiffrementService);

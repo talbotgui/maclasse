@@ -7,6 +7,57 @@ import { EdtCalculeMother } from '../../tests/emploi-du-temps-calcule.mother';
 describe('MigrationService', () => {
   const service = new MigrationService();
 
+  describe('version supportée', () => {
+    it('la version courante est celle de la dernière étape de migration', () => {
+      expect(service.obtenirVersionCourante()).toBe('2026.09.3');
+    });
+
+    it('accepte la version courante et les versions antérieures', () => {
+      expect(service.estVersionSupportee('2026.09.3')).toBe(true);
+      expect(service.estVersionSupportee('2026.09.1')).toBe(true);
+      expect(service.estVersionSupportee('2025.12.9')).toBe(true);
+    });
+
+    it('refuse une version plus récente', () => {
+      expect(service.estVersionSupportee('2026.09.4')).toBe(false);
+      expect(service.estVersionSupportee('2026.10.1')).toBe(false);
+      expect(service.estVersionSupportee('2027.01.1')).toBe(false);
+    });
+
+    it('compare les segments numériquement et non comme du texte', () => {
+      expect(service.estVersionSupportee('2026.09.10')).toBe(false);
+      expect(service.estVersionSupportee('2026.09.03')).toBe(true);
+    });
+
+    it('ne prend pas une version illisible pour une version future', () => {
+      expect(service.estVersionSupportee('abc')).toBe(true);
+      expect(service.estVersionSupportee('2026.09.x')).toBe(true);
+    });
+
+    it('tolère un nombre de segments différent', () => {
+      expect(service.estVersionSupportee('2026.09')).toBe(true);
+      expect(service.estVersionSupportee('2026.09.3.1')).toBe(false);
+    });
+  });
+
+  describe('ordre des étapes', () => {
+    it('migre un fichier en version 2026.09.2 même si la comparaison de chaînes le placerait après', () => {
+      const anciennes = DonneesMother.base({ version: '2026.09.2' }) as Partial<DonneesApplication>;
+      delete anciennes.emploisDuTempsCalcules;
+
+      expect(service.migrer(anciennes as DonneesApplication).emploisDuTempsCalcules).toEqual([]);
+    });
+
+    it('ne rejoue pas une étape déjà appliquée', () => {
+      const donnees = DonneesMother.base({
+        version: '2026.09.3',
+        emploisDuTempsCalcules: [EdtCalculeMother.base()],
+      });
+
+      expect(service.migrer(donnees).emploisDuTempsCalcules).toHaveLength(1);
+    });
+  });
+
   describe('ajout des emplois du temps calculés', () => {
     it('crée le tableau absent et passe à la dernière version', () => {
       const anciennes = DonneesMother.base({ version: '2026.09.2' }) as Partial<DonneesApplication>;

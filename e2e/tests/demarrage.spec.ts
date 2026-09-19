@@ -1,5 +1,6 @@
 import { test, expect, testAvecZip, testAvecDonnees } from '../fixtures';
 import { SelecteursDemarrage } from '../selecteurs/selecteurs-demarrage';
+import { SelecteursEmploiDuTemps } from '../selecteurs/selecteurs-emploi-du-temps';
 
 test('E2E-01 — Accès direct à un écran sans données redirige vers /demarrage', async ({ page }) => {
   const demarrage = new SelecteursDemarrage(page);
@@ -94,5 +95,60 @@ testAvecDonnees(
     // Après rechargement, le thème est conservé via localStorage
     await appAvecDonnees.reload();
     await expect(appAvecDonnees.locator('html')).toHaveAttribute('data-theme', themeApres ?? '');
+  },
+);
+
+testAvecZip(
+  'E2E-125 — Fichier d’une version antérieure : migration vers les temps multiples sans perte',
+  async ({ appVersDemanrage, cheminZip, motDePasseTest }) => {
+    const demarrage = new SelecteursDemarrage(appVersDemanrage);
+    const edt = new SelecteursEmploiDuTemps(appVersDemanrage);
+
+    // Le ZIP de test est au format 2026.09.1 : créneaux à plat (heureDebut/heureFin au niveau du créneau)
+    // et aucun emploi du temps calculé.
+    await demarrage.chargerZip(cheminZip, motDePasseTest);
+    await appVersDemanrage.waitForURL('**/accueil', { timeout: 15_000 });
+    await demarrage.navEmploiDuTemps.click();
+
+    await edt.btnEdtSemainePaire.click();
+    await expect(edt.conteneurGrille).toContainText('Lecture – Compréhension de texte');
+    await expect(edt.lignesBandeauAbsences).toHaveCount(2);
+
+    // Chaque ancien créneau est devenu un créneau à un seul temps, avec son horaire d'origine
+    await edt.premierCreneauSemainePaire.click();
+    await expect(edt.blocsTemps).toHaveCount(1);
+    await expect(edt.inputTitreTemps0).toHaveValue('Lecture – Compréhension de texte');
+    await expect(edt.inputHeureDebutTemps0).toHaveValue('08:30');
+    await expect(edt.inputHeureFinTemps0).toHaveValue('09:15');
+
+    // Le tableau des EDT calculés, absent des anciens fichiers, existe et est vide
+    await edt.btnAnnulerCreneau.click();
+    await expect(edt.listeEdtsCalcules).toHaveCount(0);
+    await edt.btnCreerEdtCalcule.click();
+    await edt.inputNomEdtCalcule.fill('Calcul après migration');
+    await edt.chipSourceRecreation.click();
+    await edt.btnEnregistrerEdtCalcule.click();
+    await expect(edt.listeEdtsCalcules).toContainText('Calcul après migration');
+  },
+);
+
+testAvecZip(
+  'E2E-126 — Fichier d’une version plus récente : erreur bloquante, puis chargement d’un fichier valide',
+  async ({ appVersDemanrage, cheminZip, cheminZipVersionFuture, motDePasseTest }) => {
+    const demarrage = new SelecteursDemarrage(appVersDemanrage);
+
+    await demarrage.chargerZip(cheminZipVersionFuture, motDePasseTest);
+
+    await expect(demarrage.messageErreur).toContainText('version plus récente');
+    await expect(demarrage.btnCharger).toBeEnabled();
+    await expect(appVersDemanrage).toHaveURL(/\/demarrage/);
+    await expect(demarrage.navAccueil).not.toBeVisible();
+    await expect(demarrage.btnSauvegarder).not.toBeVisible();
+
+    // Le mot de passe du fichier refusé n'est pas retenu : un fichier valide se charge normalement
+    await demarrage.chargerZip(cheminZip, motDePasseTest);
+    await appVersDemanrage.waitForURL('**/accueil', { timeout: 15_000 });
+    await expect(demarrage.navAccueil).toBeVisible();
+    await expect(demarrage.messageErreur).not.toBeVisible();
   },
 );

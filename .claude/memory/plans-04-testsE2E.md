@@ -18,6 +18,8 @@ related:
 
 # Scénarios de tests End to End — MaClasse
 
+> **Note du 2026-09-19 (plan 14)** : la numérotation ci-dessous n'est plus celle des tests. Les identifiants réels sont ceux de `e2e/tests/*.spec.ts` : E2E-01 à 97 (fonctionnels d'origine, 93/94 supprimés), E2E-98 à 126 (compléments du plan 14 : annuler/refaire, validation, EDT, pastilles, sauvegarde auto, migration), série `RGAA-01` à `RGAA-24` (accessibilité AXE, focus, clavier, mobile) dans `accessibilite.spec.ts` et `responsive.spec.ts`. Les anciens E2E-98 à 104 (mobile, focus, migration, version incompatible) sont couverts par RGAA-11 à 21 et E2E-125/126. Voir `plans-14-completerTestsE2E.md`.
+
 ## Principes de lecture
 
 - **Prérequis** : état de l'application au début du scénario.

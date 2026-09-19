@@ -61,7 +61,12 @@ Compléments faits : aller-retour de navigation ajouté à E2E-19, 27, 28, 29, 3
 Anomalies corrigées : contraste du texte d'avertissement (nouvelle variable `--avertissement-texte`, 5 thèmes) ; E2E-95 réécrit (il modifiait en réalité la ligne 0 « Toussaint » et était instable : le nouveau jour férié est créé à l'index 10).
 Limites connues : E2E-124 vise un vendredi à environ 2,5 semaines de la date d'exécution (pas de jour férié dans cette fenêtre tant que les données par défaut s'arrêtent en 2026) ; E2E-110 compare deux comptes de conflits sur les données par défaut.
 
-**Reste à faire** : Phase 3 (migration, version incompatible), mise à jour de `plans-04-testsE2E.md`.
+**Phase 3 — migration et version (2026-09-19)**
+- Constat : le libellé `erreurVersionIncompatible` existait mais n'était utilisé nulle part : un fichier créé par une version plus récente se chargeait sans erreur. Garde ajoutée : `MigrationService.estVersionSupportee()` (version courante = dernière étape de migration, comparaison numérique par segments, version illisible ni refusée ni migrée), utilisée par `PopinDemarrageComponent.charger()`. `migrer` utilise la même comparaison (l'ancienne comparaison de chaînes aurait mal ordonné `2026.09.10` et `2026.09.3`).
+- `global-setup` factorisé (`ecrireZipChiffre`) : génère aussi `.e2e/donnees/maclasse-version-future.zip` (version 2099.01.1) ; fixture `cheminZipVersionFuture`.
+- E2E-125 : le ZIP de test est au format 2026.09.1 (créneaux à plat) ; après chargement, chaque ancien créneau est un créneau à un temps avec son horaire, et les EDT calculés sont créables. E2E-126 : fichier de version future refusé avec message bloquant, puis chargement d'un fichier valide (contrôle négatif fait : il échoue sans la garde). Tests unitaires : 1144 verts ; E2E : 147 verts.
+
+**Plan 14 terminé.** Reste à documenter : `plans-04-testsE2E.md` est périmé (voir la note de numérotation ci-dessus).
 
 Note : `RGAA-xx` est réparti sur `accessibilite.spec.ts` (01-16, 19-21) et `responsive.spec.ts` (17-18).
 

@@ -12,6 +12,7 @@ import {
 import type { OutputEmitterRef } from '@angular/core';
 import { ComposantBase } from '../../../composant-base';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
+import { MigrationService } from '../../../services/sansEtat/migration.service';
 import { ChiffrementService } from '../../../services/sansEtat/chiffrement.service';
 import { ContexteService } from '../../../services/avecEtat/contexte.service';
 import type { DonneesApplication } from '../../../modeles/donnees-application.modele';
@@ -64,6 +65,9 @@ export class PopinDemarrageComponent extends ComposantBase {
 
   /** Service de déchiffrement du fichier ZIP. */
   private readonly chiffrementService = inject(ChiffrementService);
+
+  /** Service de migration, utilisé pour refuser les fichiers d'une version plus récente. */
+  private readonly migrationService = inject(MigrationService);
 
   /** Service de contexte — mémorise le mot de passe pour les sauvegardes ultérieures. */
   private readonly contexteService = inject(ContexteService);
@@ -152,6 +156,10 @@ export class PopinDemarrageComponent extends ComposantBase {
     try {
       const mdp = this.motDePasse().trim();
       const donnees = await this.chiffrementService.dechiffrer(fichier, mdp);
+      if (!this.migrationService.estVersionSupportee(donnees.version)) {
+        this.erreur.set(this.LIBELLES.demarrage.erreurVersionIncompatible);
+        return;
+      }
       this.contexteService.motDePasse = mdp;
       this.onDemarrageTermine(donnees);
     } catch (e) {

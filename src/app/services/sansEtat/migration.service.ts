@@ -61,6 +61,45 @@ export class MigrationService {
   ];
 
   /**
+   * Version la plus récente du format de données que cette application sait lire.
+   * @returns Version cible de la dernière étape de migration.
+   */
+  public obtenirVersionCourante(): string {
+    return this.etapes[this.etapes.length - 1].versionCible;
+  }
+
+  /**
+   * Indique si un fichier de données peut être lu par cette version de l'application :
+   * un fichier créé par une version plus récente du format est refusé.
+   * @param version Version du format de données du fichier (ex. `"2026.09.1"`).
+   * @returns `true` si la version est inférieure ou égale à la version courante.
+   */
+  public estVersionSupportee(version: string): boolean {
+    return MigrationService.comparerVersions(version, this.obtenirVersionCourante()) <= 0;
+  }
+
+  /**
+   * Compare deux versions `AAAA.MM.N` segment par segment, numériquement
+   * (`2026.09.10` est postérieure à `2026.09.3`, ce qu'une comparaison de chaînes inverserait).
+   * Si l'une des versions n'est pas numérique, elles sont considérées comme égales.
+   * @param a Première version.
+   * @param b Seconde version.
+   * @returns Un nombre négatif si `a` < `b`, positif si `a` > `b`, `0` si égales ou incomparables.
+   */
+  private static comparerVersions(a: string, b: string): number {
+    const segmentsA = a.split('.').map(Number);
+    const segmentsB = b.split('.').map(Number);
+    // Une version illisible n'est comparable à aucune autre : ni migrée, ni prise pour une version future
+    if ([...segmentsA, ...segmentsB].some(Number.isNaN)) return 0;
+    const longueur = Math.max(segmentsA.length, segmentsB.length);
+    for (let i = 0; i < longueur; i++) {
+      const ecart = (segmentsA[i] ?? 0) - (segmentsB[i] ?? 0);
+      if (ecart !== 0) return ecart;
+    }
+    return 0;
+  }
+
+  /**
    * Applique en place toutes les étapes de migration dont la version cible est
    * postérieure à `donnees.version`, et met à jour `donnees.version` au fil de la chaîne.
    * @param donnees Données à faire évoluer (mutées en place).
@@ -68,7 +107,7 @@ export class MigrationService {
    */
   public migrer(donnees: DonneesApplication): DonneesApplication {
     for (const etape of this.etapes) {
-      if (donnees.version < etape.versionCible) {
+      if (MigrationService.comparerVersions(donnees.version, etape.versionCible) < 0) {
         etape.appliquer(donnees);
         donnees.version = etape.versionCible;
       }

@@ -49,7 +49,7 @@ Index de toutes les notes mémorisées. Chaque entrée pointe vers un fichier d�
 - [EDT — créneaux à temps multiples](plans-11-edtTempsMultiples.md) — 1 à 4 "temps" indépendants par créneau (horaire propre à chacun), refonte CreneauEdt, migration de données à concevoir
 - [EDT — emplois du temps calculés](plans-12-edtEmploisCalcules.md) — Nouvelle entité persistée en lecture seule, calcul à la volée depuis récréations/temps de classe/absences régulières — **implémenté le 2026-09-18** (limites dans le fichier)
 
-- [Compléter les tests E2E](plans-14-completerTestsE2E.md) — Compléter l'existant, créer les scénarios manquants (EDT calculés, temps multiples, pastilles, sauvegarde auto, migration) et ajouter AXE/RGAA — **validé, en cours**
+- [Compléter les tests E2E](plans-14-completerTestsE2E.md) — Compléter l'existant, créer les scénarios manquants (EDT calculés, temps multiples, pastilles, sauvegarde auto, migration) et ajouter AXE/RGAA — **terminé le 2026-09-19** (3 phases)
 - [Montées de version](plans-15-montesDeVersion.md) — Correctifs mineurs, jsdom 30, Angular 22 + TS 6.0 ; Vitest 5 et TS 7 reportés (peers de @angular/build@22) — **proposé, à valider**
 - [Site documentaire /maclasse/doc/](plans-16-siteDocumentaire.md) — Vitrine d'une page sans jargon, pied de page dans l'app, captures Playwright, Claude Design, workflow Actions — **proposé, en attente de validation**
 

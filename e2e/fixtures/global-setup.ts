@@ -8,6 +8,12 @@ export const MOT_DE_PASSE_TEST = 'testmdp';
 /** Chemin du ZIP de test généré. */
 export const CHEMIN_ZIP_TEST = resolve('./e2e/donnees/maclasse-test.zip');
 
+/** Version du format de données utilisée pour le ZIP simulant un fichier créé par une version plus récente. */
+export const VERSION_FUTURE = '2099.01.1';
+
+/** Chemin du ZIP de test dont la version du format est plus récente que celle de l'application. */
+export const CHEMIN_ZIP_VERSION_FUTURE = resolve('./.e2e/donnees/maclasse-version-future.zip');
+
 async function deriverCle(
   motDePasse: string,
   salt: Uint8Array<ArrayBuffer>,
@@ -29,8 +35,13 @@ async function deriverCle(
   );
 }
 
-export default async function globalSetup(): Promise<void> {
-  const donnees = JSON.parse(readFileSync(resolve('./public/donnees-defaut.json'), 'utf-8'));
+/**
+ * Chiffre des données et les écrit dans un ZIP au format attendu par l'application :
+ * JSON compressé, chiffré AES-GCM (clé dérivée PBKDF2), dans l'entrée `donnees.json.enc`.
+ * @param donnees Données applicatives à écrire.
+ * @param cheminZip Chemin du fichier ZIP à créer (répertoire parent créé si besoin).
+ */
+async function ecrireZipChiffre(donnees: unknown, cheminZip: string): Promise<void> {
   const octetsJson = new TextEncoder().encode(JSON.stringify(donnees));
   const compresse = deflateSync(octetsJson);
 
@@ -47,6 +58,12 @@ export default async function globalSetup(): Promise<void> {
   payload.set(ciphertext, 28);
 
   const zip = zipSync({ 'donnees.json.enc': payload });
-  mkdirSync(dirname(CHEMIN_ZIP_TEST), { recursive: true });
-  writeFileSync(CHEMIN_ZIP_TEST, zip);
+  mkdirSync(dirname(cheminZip), { recursive: true });
+  writeFileSync(cheminZip, zip);
+}
+
+export default async function globalSetup(): Promise<void> {
+  const donnees = JSON.parse(readFileSync(resolve('./public/donnees-defaut.json'), 'utf-8'));
+  await ecrireZipChiffre(donnees, CHEMIN_ZIP_TEST);
+  await ecrireZipChiffre({ ...donnees, version: VERSION_FUTURE }, CHEMIN_ZIP_VERSION_FUTURE);
 }

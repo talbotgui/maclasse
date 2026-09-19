@@ -313,7 +313,7 @@ describe('EcranEmploiDuTempsComponent', () => {
   });
 
   describe('onAnnule', () => {
-    it('ferme le formulaire créneau et réaffiche formEdt', () => {
+    it('ferme le formulaire créneau sans désélectionner l’EDT', () => {
       (component as any).edtSelectionne.set(edtBase);
       (component as any).creneauEdite.set(creneauLundi);
       (component as any).formEdt.set(null);
@@ -322,6 +322,36 @@ describe('EcranEmploiDuTempsComponent', () => {
 
       expect((component as any).creneauEdite()).toBeNull();
       expect((component as any).formEdt()).toBeNull();
+      expect((component as any).edtSelectionne()).toBe(edtBase);
+    });
+
+    it('ferme le formulaire de propriétés sans désélectionner l’EDT', () => {
+      (component as any).selectionnerEdt(edtBase);
+
+      (component as any).onAnnule();
+
+      expect((component as any).formEdt()).toBeNull();
+      expect((component as any).edtSelectionne()).toBe(edtBase);
+    });
+  });
+
+  describe('creneauEditeExistant', () => {
+    it('vrai pour un créneau présent dans l’EDT sélectionné', () => {
+      (component as any).selectionnerEdt(edtBase);
+      (component as any).selectionnerCreneau(creneauLundi);
+
+      expect((component as any).creneauEditeExistant()).toBe(true);
+    });
+
+    it('faux pour un nouveau créneau du jour', () => {
+      (component as any).selectionnerEdt(edtBase);
+      (component as any).ajouterCreneauPourJour('lundi');
+
+      expect((component as any).creneauEditeExistant()).toBe(false);
+    });
+
+    it('faux quand aucun créneau n’est édité', () => {
+      expect((component as any).creneauEditeExistant()).toBe(false);
     });
   });
 

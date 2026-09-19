@@ -53,6 +53,10 @@ Audit des 97 scénarios existants (mesure automatique du nombre d'actions et d'a
 
 Compléments faits : aller-retour de navigation ajouté à E2E-19, 27, 28, 29, 31 (cursus), 32, 34, 83, 87, 90 et à la création de projet ; assertions négatives dans E2E-33, 55, 59 ; nouveaux tests E2E-98 à 102 (ANNULER/REFAIRE : élève, projet, EDT, groupe du paramétrage, journée du cahier journal) et E2E-103 (délai hors bornes). Le doublon E2E-31 est levé : « Créer un nouveau projet » devient E2E-104. Nouveaux IDs fonctionnels à partir de E2E-105. Suite complète : 122 tests verts.
 
+**Correctifs applicatifs suite à l'audit (2026-09-19, validés par l'utilisateur)** : (1) le formulaire de créneau affiche « Créer » ou « Modifier » selon le cas (`creneauExistant`) ; (2) ANNULER dans l'EDT ne désélectionne plus l'EDT (`onAnnule`), le panneau de droite reste alors vide jusqu'à un clic sur l'EDT ; (3) validation : prénom et nom obligatoires (élève), nom obligatoire (projet), ENREGISTRER désactivé. Tests : E2E-105 (titre du créneau), E2E-106 (élève), E2E-107 (projet) ; suite E2E : 125 tests verts. Constat non traité : ENREGISTRER grisé sans message d'aide (RGAA) et un élève/projet déjà enregistré avec un nom vide devient non modifiable ; E2E-95 (jour férié) était instable (données par défaut avec 10 jours fériés), corrigé.
+
+**Numérotation** : les IDs E2E-98 et suivants de `plans-04-testsE2E.md` (mobile, focus, migration…) sont périmés ; les IDs réels sont ceux des fichiers `e2e/tests/*.spec.ts`. Prochains scénarios fonctionnels à partir de E2E-108.
+
 **Reste à faire** : AXE des popins d'absences et d'export avec choix, Phase 1 (audit complet), Phase 2 (nouveaux scénarios EDT calculés / temps multiples / pastilles / sauvegarde auto), Phase 3 (migration, version incompatible), mise à jour de `plans-04-testsE2E.md`.
 
 Note : `RGAA-xx` est réparti sur `accessibilite.spec.ts` (01-16, 19-21) et `responsive.spec.ts` (17-18).

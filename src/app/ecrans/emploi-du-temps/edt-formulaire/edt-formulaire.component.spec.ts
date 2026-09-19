@@ -1,3 +1,4 @@
+import { LIBELLES } from '../../../libelles';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { EdtFormulaireComponent } from './edt-formulaire.component';
@@ -181,15 +182,37 @@ describe('EdtFormulaireComponent', () => {
       expect((component as any).estEditionCreneau()).toBe(false);
     });
 
-    it('true si creneau a un id', () => {
+    it('true si creneau existant dans l’EDT', () => {
       fixture.componentRef.setInput('creneau', CreneauMother.lundi9h10({ id: 'c1' }));
+      fixture.componentRef.setInput('creneauExistant', true);
       fixture.detectChanges();
 
       expect((component as any).estEditionCreneau()).toBe(true);
     });
 
-    it('false si creneau sans id', () => {
-      fixture.componentRef.setInput('creneau', CreneauMother.lundi9h10({ id: '' }));
+    it('affiche « Créer » et pas SUPPRIMER pour un nouveau créneau', () => {
+      fixture.componentRef.setInput('creneau', CreneauMother.lundi9h10({ id: 'c1' }));
+      fixture.componentRef.setInput('creneauExistant', false);
+      fixture.detectChanges();
+
+      const titre = fixture.nativeElement.querySelector('#formCreneau h2') as HTMLElement;
+      expect(titre.textContent).toContain(LIBELLES.commun.creer);
+      expect(fixture.nativeElement.querySelector('#btnSupprimerCreneau')).toBeNull();
+    });
+
+    it('affiche « Modifier » et SUPPRIMER pour un créneau existant', () => {
+      fixture.componentRef.setInput('creneau', CreneauMother.lundi9h10({ id: 'c1' }));
+      fixture.componentRef.setInput('creneauExistant', true);
+      fixture.detectChanges();
+
+      const titre = fixture.nativeElement.querySelector('#formCreneau h2') as HTMLElement;
+      expect(titre.textContent).toContain(LIBELLES.commun.modifier);
+      expect(fixture.nativeElement.querySelector('#btnSupprimerCreneau')).not.toBeNull();
+    });
+
+    it('false pour un nouveau créneau, même s’il porte déjà un id', () => {
+      fixture.componentRef.setInput('creneau', CreneauMother.lundi9h10({ id: 'c1' }));
+      fixture.componentRef.setInput('creneauExistant', false);
       fixture.detectChanges();
 
       expect((component as any).estEditionCreneau()).toBe(false);

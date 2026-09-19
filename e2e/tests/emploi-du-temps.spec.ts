@@ -85,6 +85,7 @@ testAvecDonnees(
     // Aucune mutation → ANNULER entête inactif
     await expect(entete.btnAnnuler).toBeDisabled();
     await expect(edt.listeEdts).not.toContainText('Nom modifié temporaire');
+    await expect(edt.conteneurGrille).toBeVisible();
   },
 );
 
@@ -179,15 +180,14 @@ testAvecDonnees("E2E-59 — Annuler la modification d'un créneau", async ({ app
   await edt.inputTitreTemps0.fill('Modifié temporaire');
   await edt.btnAnnulerCreneau.click();
 
-  // ANNULER ferme le formulaire et désélectionne l'EDT (onAnnule)
-  await expect(edt.droiteVide).toBeVisible();
+  // ANNULER ferme le formulaire mais l'EDT reste sélectionné et sa grille affichée
+  await expect(edt.inputTitreTemps0).toHaveCount(0);
+  await expect(edt.droiteVide).toHaveCount(0);
+  await expect(edt.conteneurGrille).toContainText('Lecture – Compréhension de texte');
+  // La saisie abandonnée n'a pas modifié le créneau
+  await expect(edt.conteneurGrille).not.toContainText('Modifié temporaire');
   // Aucune mutation → ANNULER entête inactif
   await expect(entete.btnAnnuler).toBeDisabled();
-
-  // En rouvrant l'EDT, le titre d'origine est toujours dans la grille et la saisie abandonnée est absente
-  await edt.btnEdtSemainePaire.click();
-  await expect(edt.conteneurGrille).toContainText('Lecture – Compréhension de texte');
-  await expect(edt.conteneurGrille).not.toContainText('Modifié temporaire');
 });
 
 testAvecDonnees('E2E-60 — Supprimer un créneau', async ({ appAvecDonnees }) => {
@@ -250,3 +250,23 @@ testAvecDonnees("E2E-62 — Imprimer la grille de l'EDT", async ({ appAvecDonnee
   // On vérifie que la zone de la grille reste visible (masquée uniquement en @media print).
   await expect(edt.conteneurGrille).toBeVisible();
 });
+
+testAvecDonnees(
+  'E2E-105 — Titre du formulaire de créneau : « Créer » pour un nouveau, « Modifier » pour un existant',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    await edt.btnEdtSemainePaire.click();
+
+    await edt.btnNouveauCreneauLigne.click();
+    await expect(edt.titreFormulaireCreneau).toContainText('Créer');
+    await expect(edt.btnSupprimerCreneau).toHaveCount(0);
+
+    await edt.btnAnnulerCreneau.click();
+    await edt.premierCreneauSemainePaire.click();
+    await expect(edt.titreFormulaireCreneau).toContainText('Modifier');
+    await expect(edt.btnSupprimerCreneau).toBeVisible();
+  },
+);

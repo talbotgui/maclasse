@@ -270,6 +270,7 @@
         [focusDemande]="focusDemandeFormulaire()"
         [edt]="formEdt()"
         [creneau]="creneauEdite()"
+        [creneauExistant]="creneauEditeExistant()"
         [domaines]="domaines()"
         [joursOuvres]="joursOuvres()"
         (edtEnregistre)="onEdtEnregistre($event)"
@@ -278,7 +279,7 @@
         (creneauSupprime)="onCreneauSupprime($event)"
         (edtAnnule)="onAnnule()"
       />
-    } @else {
+    } @else if (edtSelectionne() === null) {
       <p class="edt__droite-vide">{{ LIBELLES.edt.aucunEdtSelectionne }}</p>
     }
   </div>

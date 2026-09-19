@@ -319,3 +319,24 @@ testAvecDonnees("E2E-30 — Imprimer la fiche d'un élève", async ({ appAvecDon
   // via l'attribut aria / classe qui sera masqué en @media print
   await expect(eleves.colonneGauche).toBeVisible();
 });
+
+testAvecDonnees(
+  'E2E-106 — ENREGISTRER inactif tant que le prénom et le nom ne sont pas renseignés',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
+
+    await entete.navEleves.click();
+    await eleves.btnCreerEleve.click();
+    await expect(eleves.btnEnregistrer).toBeDisabled();
+
+    await eleves.champPrenom.fill('Alice');
+    await expect(eleves.btnEnregistrer).toBeDisabled();
+
+    await eleves.champNom.fill('   ');
+    await expect(eleves.btnEnregistrer).toBeDisabled();
+
+    await eleves.champNom.fill('ZEBULON');
+    await expect(eleves.btnEnregistrer).toBeEnabled();
+  },
+);

@@ -149,8 +149,17 @@ export class FpFormulaireProjetComponent {
     );
   }
 
+  /**
+   * Indique si le formulaire peut être enregistré : le nom du projet est obligatoire.
+   * @returns `true` si le nom contient au moins un caractère non blanc.
+   */
+  protected estFormulaireValide(): boolean {
+    return this.formProjet.nom.trim() !== '';
+  }
+
   /** Émet le projet modifié au parent pour persistence. */
   protected onEnregistrer(): void {
+    if (!this.estFormulaireValide()) return;
     this.enregistrer.emit(structuredClone(this.formProjet));
   }
 

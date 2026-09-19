@@ -263,8 +263,17 @@ export class FeFormulaireEleveComponent {
     this.indexAFocaliserCursus.set(null);
   }
 
+  /**
+   * Indique si le formulaire peut être enregistré : le prénom et le nom sont obligatoires.
+   * @returns `true` si le prénom et le nom contiennent au moins un caractère non blanc.
+   */
+  protected estFormulaireValide(): boolean {
+    return this.formEleve.prenom.trim() !== '' && this.formEleve.nom.trim() !== '';
+  }
+
   /** Émet l'élève modifié au parent pour persistence. */
   protected onEnregistrer(): void {
+    if (!this.estFormulaireValide()) return;
     this.enregistrer.emit(structuredClone(this.formEleve));
   }
 

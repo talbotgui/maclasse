@@ -5,10 +5,16 @@
       id="champFormNomProjet"
       [label]="LIBELLES.projet.labelNom"
       [(ngModel)]="formProjet.nom"
+      [required]="true"
       [mcAutoFocus]="focusDemande()"
     />
     <div class="form-projet__bandeau-actions">
-      <button id="btnEnregistrerProjet" class="mc-btn-primaire" (click)="onEnregistrer()">
+      <button
+        id="btnEnregistrerProjet"
+        class="mc-btn-primaire"
+        [disabled]="!estFormulaireValide()"
+        (click)="onEnregistrer()"
+      >
         {{ LIBELLES.commun.enregistrer }}
       </button>
       <button id="btnAnnulerProjet" class="mc-btn-fantome" (click)="onAnnuler()">

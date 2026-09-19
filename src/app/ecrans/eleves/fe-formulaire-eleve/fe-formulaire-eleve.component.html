@@ -6,12 +6,23 @@
         id="champFormPrenom"
         [label]="LIBELLES.eleve.labelPrenom"
         [(ngModel)]="formEleve.prenom"
+        [required]="true"
         [mcAutoFocus]="focusDemande()"
       />
-      <mc-input id="champFormNom" [label]="LIBELLES.eleve.labelNom" [(ngModel)]="formEleve.nom" />
+      <mc-input
+        id="champFormNom"
+        [label]="LIBELLES.eleve.labelNom"
+        [(ngModel)]="formEleve.nom"
+        [required]="true"
+      />
     </div>
     <div class="form-eleve__bandeau-actions">
-      <button id="btnEnregistrerEleve" class="mc-btn-primaire" (click)="onEnregistrer()">
+      <button
+        id="btnEnregistrerEleve"
+        class="mc-btn-primaire"
+        [disabled]="!estFormulaireValide()"
+        (click)="onEnregistrer()"
+      >
         {{ LIBELLES.commun.enregistrer }}
       </button>
       <button id="btnAnnulerEleve" class="mc-btn-fantome" (click)="onAnnuler()">

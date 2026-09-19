@@ -73,6 +73,8 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
   readonly selectTypeCreneau: Locator;
   /** Champ Titre du premier temps du créneau (input interne de mc-input, id suffixé `-input`, visible pour le type pédagogique). */
   readonly inputTitreTemps0: Locator;
+  /** Titre (h2) du formulaire de créneau : « Créer créneau » ou « Modifier créneau ». */
+  readonly titreFormulaireCreneau: Locator;
   /** Bouton ENREGISTRER le créneau. */
   readonly btnEnregistrerCreneau: Locator;
   /** Bouton ANNULER la saisie créneau. */
@@ -122,6 +124,7 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
     this.inputHeureFinCreneau = page.locator('#inputHeureFinCreneau input');
     this.selectTypeCreneau = page.locator('#selectTypeCreneau select');
     this.inputTitreTemps0 = page.locator('#inputTitreTemps0-input');
+    this.titreFormulaireCreneau = page.locator('#formCreneau h2');
     this.btnEnregistrerCreneau = page.locator('#btnEnregistrerCreneau');
     this.btnAnnulerCreneau = page.locator('#btnAnnulerCreneau');
     this.btnSupprimerCreneau = page.locator('#btnSupprimerCreneau');

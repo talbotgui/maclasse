@@ -196,3 +196,21 @@ testAvecDonnees("E2E-39 — Imprimer la fiche d'un projet", async ({ appAvecDonn
   // On vérifie que la colonne gauche est visible (masquée en @media print).
   await expect(appAvecDonnees.locator('.projets__gauche')).toBeVisible();
 });
+
+testAvecDonnees(
+  'E2E-107 — ENREGISTRER inactif tant que le nom du projet n’est pas renseigné',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const projets = new SelecteursProjets(appAvecDonnees);
+
+    await entete.navProjets.click();
+    await projets.btnCreerProjet.click();
+    await expect(projets.btnEnregistrerProjet).toBeDisabled();
+
+    await projets.champFormNomProjet.fill('   ');
+    await expect(projets.btnEnregistrerProjet).toBeDisabled();
+
+    await projets.champFormNomProjet.fill('Potager');
+    await expect(projets.btnEnregistrerProjet).toBeEnabled();
+  },
+);

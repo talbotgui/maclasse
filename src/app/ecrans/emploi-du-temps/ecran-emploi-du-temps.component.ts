@@ -159,6 +159,15 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   /** Créneau passé au formulaire créneau (null quand le formulaire EDT est actif). */
   protected readonly creneauEdite = signal<CreneauEdt | null>(null);
 
+  /** `true` si le créneau édité existe déjà dans l'EDT sélectionné, `false` pour une création. */
+  protected readonly creneauEditeExistant = computed(() => {
+    const creneau = this.creneauEdite();
+    return (
+      creneau !== null &&
+      (this.edtSelectionne()?.creneaux.some((c) => c.id === creneau.id) ?? false)
+    );
+  });
+
   /** Contrôle la visibilité de la popin d'avertissement de navigation (modifications non enregistrées). */
   protected readonly popinNavigationVisible = signal(false);
 
@@ -503,10 +512,9 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
     this.formEdt.set(this.edtSelectionne());
   }
 
-  /** Annule l'édition en cours et réaffiche les propriétés de l'EDT sélectionné. */
+  /** Ferme le formulaire en cours (EDT, créneau ou EDT calculé) sans désélectionner l'EDT affiché. */
   protected onAnnule(): void {
     this.effacerEdtCalcule();
-    this.edtSelectionne.set(null);
     this.creneauEdite.set(null);
     this.formEdt.set(null);
   }

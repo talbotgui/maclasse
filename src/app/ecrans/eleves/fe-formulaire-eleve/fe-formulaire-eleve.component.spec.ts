@@ -195,6 +195,46 @@ describe('FeFormulaireEleveComponent', () => {
       expect(emis.nom).toBe('MARTIN');
       expect(emis).not.toBe((component as any).formEleve);
     });
+
+    it('n’émet rien si le prénom est vide ou blanc', () => {
+      fixture.componentRef.setInput('eleve', EleveMother.base('e1', 'MARTIN', '  '));
+      fixture.detectChanges();
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
+
+      (component as any).onEnregistrer();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('n’émet rien si le nom est vide', () => {
+      fixture.componentRef.setInput('eleve', EleveMother.base('e1', '', 'Alice'));
+      fixture.detectChanges();
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
+
+      (component as any).onEnregistrer();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('estFormulaireValide', () => {
+    it('vrai avec un prénom et un nom renseignés', () => {
+      fixture.componentRef.setInput('eleve', EleveMother.base('e1', 'MARTIN', 'Alice'));
+      fixture.detectChanges();
+
+      expect((component as any).estFormulaireValide()).toBe(true);
+    });
+
+    it('faux pour une création vide et bouton ENREGISTRER désactivé', () => {
+      fixture.componentRef.setInput('eleve', null);
+      fixture.detectChanges();
+
+      expect((component as any).estFormulaireValide()).toBe(false);
+      const bouton = fixture.nativeElement.querySelector(
+        '#btnEnregistrerEleve',
+      ) as HTMLButtonElement;
+      expect(bouton.disabled).toBe(true);
+    });
   });
 
   describe('annuler', () => {

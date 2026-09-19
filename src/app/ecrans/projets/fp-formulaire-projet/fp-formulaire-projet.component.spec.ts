@@ -155,6 +155,36 @@ describe('FpFormulaireProjetComponent', () => {
       expect(emis.nom).toBe('Sciences');
       expect(emis).not.toBe((component as any).formProjet);
     });
+
+    it('n’émet rien si le nom est vide ou blanc', () => {
+      fixture.componentRef.setInput('projet', ProjetMother.base({ id: 'p1', nom: '   ' }));
+      fixture.detectChanges();
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
+
+      (component as any).onEnregistrer();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('estFormulaireValide', () => {
+    it('vrai avec un nom renseigné', () => {
+      fixture.componentRef.setInput('projet', ProjetMother.base({ id: 'p1', nom: 'Sciences' }));
+      fixture.detectChanges();
+
+      expect((component as any).estFormulaireValide()).toBe(true);
+    });
+
+    it('faux pour une création vide et bouton ENREGISTRER désactivé', () => {
+      fixture.componentRef.setInput('projet', null);
+      fixture.detectChanges();
+
+      expect((component as any).estFormulaireValide()).toBe(false);
+      const bouton = fixture.nativeElement.querySelector(
+        '#btnEnregistrerProjet',
+      ) as HTMLButtonElement;
+      expect(bouton.disabled).toBe(true);
+    });
   });
 
   describe('onAnnuler', () => {

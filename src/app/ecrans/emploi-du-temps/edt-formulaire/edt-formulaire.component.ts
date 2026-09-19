@@ -75,6 +75,9 @@ export class EdtFormulaireComponent {
   /** Créneau à éditer (null = afficher les propriétés EDT). */
   public readonly creneau: InputSignal<CreneauEdt | null> = input<CreneauEdt | null>(null);
 
+  /** `true` si le créneau édité existe déjà dans l'EDT (modification), `false` pour une création. */
+  public readonly creneauExistant: InputSignal<boolean> = input(false);
+
   /** Domaines de niveau 1 pour les chips de disciplines. */
   public readonly domaines: InputSignal<Competence[]> = input<Competence[]>([]);
 
@@ -139,9 +142,9 @@ export class EdtFormulaireComponent {
    */
   private idCreneauCharge: string | null | undefined = undefined;
 
-  /** `true` si un créneau existant est en cours d'édition (pour afficher SUPPRIMER). */
+  /** `true` si un créneau existant est en cours d'édition (titre « Modifier » et bouton SUPPRIMER). */
   protected readonly estEditionCreneau = computed(
-    () => this.creneau() !== null && !!this.creneau()?.id,
+    () => this.creneau() !== null && this.creneauExistant(),
   );
 
   /** Index du bloc temps à focaliser à l'apparition (RGAA), `null` si aucun ajout récent. */

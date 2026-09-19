@@ -103,19 +103,10 @@ export class ProjetService {
    * @param periode Période à ajouter.
    */
   public ajouterPeriode(projetId: string, periode: ProjetPeriode): void {
-    const donnees = this.donneesService.donnees();
-    if (!donnees) return;
-    const ancien = donnees.projets.find((p) => p.id === projetId);
-    if (!ancien) return;
-    const nouveau: Projet = { ...ancien, periodes: [...ancien.periodes, periode] };
-    this.donneesService.executer(
-      new CommandeModification(
-        (d) => d.projets,
-        ancien,
-        nouveau,
-        LIBELLES.commandes.ajoutPeriodeProjet,
-      ),
-    );
+    this.modifierProjetExistant(projetId, LIBELLES.commandes.ajoutPeriodeProjet, (projet) => ({
+      ...projet,
+      periodes: [...projet.periodes, periode],
+    }));
   }
 
   /**
@@ -130,21 +121,15 @@ export class ProjetService {
     anciennePeriode: ProjetPeriode,
     nouvellePeriode: ProjetPeriode,
   ): void {
-    const donnees = this.donneesService.donnees();
-    if (!donnees) return;
-    const ancien = donnees.projets.find((p) => p.id === projetId);
-    if (!ancien) return;
-    const periodes = ancien.periodes.map((pp) =>
-      pp.id === anciennePeriode.id ? nouvellePeriode : pp,
-    );
-    const nouveau: Projet = { ...ancien, periodes };
-    this.donneesService.executer(
-      new CommandeModification(
-        (d) => d.projets,
-        ancien,
-        nouveau,
-        LIBELLES.commandes.modificationPeriodeProjet,
-      ),
+    this.modifierProjetExistant(
+      projetId,
+      LIBELLES.commandes.modificationPeriodeProjet,
+      (projet) => ({
+        ...projet,
+        periodes: projet.periodes.map((pp) =>
+          pp.id === anciennePeriode.id ? nouvellePeriode : pp,
+        ),
+      }),
     );
   }
 
@@ -155,21 +140,32 @@ export class ProjetService {
    * @param periodeId UUID de la période à supprimer.
    */
   public supprimerPeriode(projetId: string, periodeId: string): void {
-    const donnees = this.donneesService.donnees();
-    if (!donnees) return;
-    const ancien = donnees.projets.find((p) => p.id === projetId);
+    this.modifierProjetExistant(
+      projetId,
+      LIBELLES.commandes.suppressionPeriodeProjet,
+      (projet) => ({
+        ...projet,
+        periodes: projet.periodes.filter((pp) => pp.id !== periodeId),
+      }),
+    );
+  }
+
+  /**
+   * Remplace un projet existant par sa version transformée, en une commande annulable.
+   * Sans effet si le projet n'existe pas ou si aucune donnée n'est chargée.
+   * @param projetId UUID du projet.
+   * @param libelle Description courte de la commande (tooltip UNDO/REDO).
+   * @param transformer Fonction produisant la nouvelle version du projet.
+   */
+  private modifierProjetExistant(
+    projetId: string,
+    libelle: string,
+    transformer: (projet: Projet) => Projet,
+  ): void {
+    const ancien = this.donneesService.donnees()?.projets.find((p) => p.id === projetId);
     if (!ancien) return;
-    const nouveau: Projet = {
-      ...ancien,
-      periodes: ancien.periodes.filter((pp) => pp.id !== periodeId),
-    };
     this.donneesService.executer(
-      new CommandeModification(
-        (d) => d.projets,
-        ancien,
-        nouveau,
-        LIBELLES.commandes.suppressionPeriodeProjet,
-      ),
+      new CommandeModification((d) => d.projets, ancien, transformer(ancien), libelle),
     );
   }
 }

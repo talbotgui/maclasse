@@ -9,7 +9,7 @@ import {
   signal,
   viewChildren,
 } from '@angular/core';
-import type { InputSignal, OutputEmitterRef } from '@angular/core';
+import type { InputSignal, OutputEmitterRef, WritableSignal } from '@angular/core';
 import { ComposantBase } from '../../composant-base';
 import { McChampRechercheComponent } from '../mc-champ-recherche/mc-champ-recherche.component';
 import { McChipFiltreComponent } from '../mc-chip-filtre/mc-chip-filtre.component';
@@ -160,15 +160,7 @@ export class McArbreCompetencesComponent extends ComposantBase {
    * @param id Identifiant du nœud.
    */
   protected basculerNoeud(id: string): void {
-    this.noeudsDepliés.update((set) => {
-      const nouvel = new Set(set);
-      if (nouvel.has(id)) {
-        nouvel.delete(id);
-      } else {
-        nouvel.add(id);
-      }
-      return nouvel;
-    });
+    this.basculerDansEnsemble(this.noeudsDepliés, id);
   }
 
   /**
@@ -268,15 +260,7 @@ export class McArbreCompetencesComponent extends ComposantBase {
    * @param id Identifiant du domaine.
    */
   protected basculerDomaine(id: string): void {
-    this.domainesActifs.update((set) => {
-      const nouvel = new Set(set);
-      if (nouvel.has(id)) {
-        nouvel.delete(id);
-      } else {
-        nouvel.add(id);
-      }
-      return nouvel;
-    });
+    this.basculerDansEnsemble(this.domainesActifs, id);
   }
 
   /**
@@ -285,5 +269,18 @@ export class McArbreCompetencesComponent extends ComposantBase {
    */
   protected estDomaineActif(id: string): boolean {
     return this.domainesActifs().has(id);
+  }
+
+  /**
+   * Ajoute l'identifiant à l'ensemble s'il est absent, le retire sinon.
+   * @param ensemble Signal portant l'ensemble d'identifiants à basculer.
+   * @param id Identifiant à ajouter ou retirer.
+   */
+  private basculerDansEnsemble(ensemble: WritableSignal<Set<string>>, id: string): void {
+    ensemble.update((courant) => {
+      const nouvel = new Set(courant);
+      if (!nouvel.delete(id)) nouvel.add(id);
+      return nouvel;
+    });
   }
 }

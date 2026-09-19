@@ -1,14 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  forwardRef,
-  input,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, forwardRef, input } from '@angular/core';
 import type { InputSignal, Signal } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ComposantBase } from '../../composant-base';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChampBase } from '../../champ-base';
 import type { OptionFormulaire } from '../../modeles/composants.modele';
 
 /**
@@ -29,7 +22,7 @@ import type { OptionFormulaire } from '../../modeles/composants.modele';
   templateUrl: './mc-select.component.html',
   styleUrl: './mc-select.component.scss',
 })
-export class McSelectComponent extends ComposantBase implements ControlValueAccessor {
+export class McSelectComponent extends ChampBase {
   /** Identifiant HTML du champ — lie le `<label>` au `<select>`. */
   public readonly id: InputSignal<string> = input.required<string>();
 
@@ -47,9 +40,6 @@ export class McSelectComponent extends ComposantBase implements ControlValueAcce
    * À utiliser pour les champs non obligatoires pour permettre la désélection.
    */
   public readonly avecOptionVide: InputSignal<boolean> = input(false);
-
-  /** Valeur sélectionnée courante, telle que reçue du `FormControl` (peut ne correspondre à aucune option). */
-  protected readonly valeur = signal('');
 
   /**
    * Valeur courante non vide absente des options : elle est ajoutée en option désactivée
@@ -76,59 +66,4 @@ export class McSelectComponent extends ComposantBase implements ControlValueAcce
     if (valeursValides.length === 0) return courante;
     return valeursValides.includes(courante) ? courante : valeursValides[0];
   });
-
-  /** Indique si le sélecteur est désactivé par le FormControl parent. */
-  protected readonly estDesactive = signal(false);
-
-  /** Callback de notification des changements, fourni par Angular Forms. */
-  protected onChange: (valeur: string) => void = () => {};
-
-  /** Callback de notification du touché, fourni par Angular Forms. */
-  protected onTouched: () => void = () => {};
-
-  /**
-   * Reçoit la valeur depuis le FormControl et met à jour le signal interne.
-   * @param valeur Valeur fournie par Angular Forms (peut être `null`).
-   */
-  public writeValue(valeur: string | null | undefined): void {
-    this.valeur.set(valeur ?? '');
-  }
-
-  /**
-   * Enregistre le callback appelé lors de chaque changement de sélection.
-   * @param fn Fonction fournie par Angular Forms.
-   */
-  public registerOnChange(fn: (valeur: string) => void): void {
-    this.onChange = fn;
-  }
-
-  /**
-   * Enregistre le callback appelé lors de la perte de focus.
-   * @param fn Fonction fournie par Angular Forms.
-   */
-  public registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  /**
-   * Active ou désactive le sélecteur selon l'état du FormControl parent.
-   * @param estDesactive `true` pour désactiver le sélecteur.
-   */
-  public setDisabledState(estDesactive: boolean): void {
-    this.estDesactive.set(estDesactive);
-  }
-
-  /**
-   * Notifie Angular Forms de la nouvelle option sélectionnée.
-   * @param valeur Valeur de l'option sélectionnée.
-   */
-  protected surChangement(valeur: string): void {
-    this.valeur.set(valeur);
-    this.onChange(valeur);
-  }
-
-  /** Notifie Angular Forms que le sélecteur a été touché (perte de focus). */
-  protected surBlur(): void {
-    this.onTouched();
-  }
 }

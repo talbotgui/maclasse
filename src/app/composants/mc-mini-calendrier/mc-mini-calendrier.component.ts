@@ -96,7 +96,7 @@ export class McMiniCalendrierComponent extends ComposantBase {
     const feries = new Set(this.joursFeries().map((f) => f.date));
     const joursOuvresSet = new Set<string>(this.joursOuvres());
     const selectionne = this.jourSelectionne();
-    const aujourdhui = McMiniCalendrierComponent.versDateIso(new Date());
+    const aujourdhui = DateUtils.formaterDateIso(new Date());
 
     const annee = mois.getFullYear();
     const moisNum = mois.getMonth();
@@ -118,7 +118,7 @@ export class McMiniCalendrierComponent extends ComposantBase {
 
     for (let j = 1; j <= nJours; j++) {
       const d = new Date(annee, moisNum, j);
-      const iso = McMiniCalendrierComponent.versDateIso(d);
+      const iso = DateUtils.formaterDateIso(d);
       const nomJour = this.LIBELLES.dates.nomsJours[d.getDay()];
       const estWeekend = d.getDay() === 0 || d.getDay() === 6;
       const grise = estWeekend || feries.has(iso) || (!estWeekend && !joursOuvresSet.has(nomJour));
@@ -187,16 +187,5 @@ export class McMiniCalendrierComponent extends ComposantBase {
     if (caseCalendrier.estAujourdhui) libelle += this.LIBELLES.aria.calendrierAujourdhui;
     if (caseCalendrier.avecEntree) libelle += this.LIBELLES.aria.calendrierAvecEntree;
     return libelle;
-  }
-
-  /**
-   * Retourne la date locale au format ISO (YYYY-MM-DD) sans conversion UTC.
-   * @param date Objet Date local.
-   */
-  private static versDateIso(date: Date): string {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
   }
 }

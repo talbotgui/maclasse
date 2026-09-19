@@ -31,13 +31,7 @@ export class CommandeModification<T extends { id: string }> implements Commande 
    * @returns Nouvel état avec l'élément modifié.
    */
   public executer(donnees: DonneesApplication): DonneesApplication {
-    const clone = structuredClone(donnees);
-    const tableau = this.accesseur(clone);
-    const index = tableau.findIndex((e) => e.id === this.ancienneValeur.id);
-    if (index !== -1) {
-      tableau[index] = structuredClone(this.nouvelleValeur);
-    }
-    return clone;
+    return this.remplacer(donnees, this.nouvelleValeur);
   }
 
   /**
@@ -46,11 +40,21 @@ export class CommandeModification<T extends { id: string }> implements Commande 
    * @returns Nouvel état avec l'élément restauré.
    */
   public annuler(donnees: DonneesApplication): DonneesApplication {
+    return this.remplacer(donnees, this.ancienneValeur);
+  }
+
+  /**
+   * Clone les données et remplace, dans le tableau cible, l'élément portant l'identifiant commun.
+   * @param donnees État courant des données.
+   * @param valeur Valeur à placer dans le tableau — clonée avant insertion.
+   * @returns Nouvel état avec l'élément remplacé.
+   */
+  private remplacer(donnees: DonneesApplication, valeur: T): DonneesApplication {
     const clone = structuredClone(donnees);
     const tableau = this.accesseur(clone);
     const index = tableau.findIndex((e) => e.id === this.ancienneValeur.id);
     if (index !== -1) {
-      tableau[index] = structuredClone(this.ancienneValeur);
+      tableau[index] = structuredClone(valeur);
     }
     return clone;
   }

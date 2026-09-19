@@ -2,6 +2,16 @@ import { describe, it, expect } from 'vitest';
 import { DateUtils } from './date.utils';
 
 describe('DateUtils', () => {
+  describe('formaterDateIso', () => {
+    it('formate en heure locale avec zéros initiaux', () => {
+      expect(DateUtils.formaterDateIso(new Date(2026, 0, 5))).toBe('2026-01-05');
+    });
+
+    it("formate une date de fin d'année", () => {
+      expect(DateUtils.formaterDateIso(new Date(2026, 11, 31))).toBe('2026-12-31');
+    });
+  });
+
   /** Calcule correctement les dates en tenant compte des passages de mois et d'année. */
   describe('ajouterJours', () => {
     it('ajoute des jours positifs', () => {

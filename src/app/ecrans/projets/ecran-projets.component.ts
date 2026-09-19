@@ -3,6 +3,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { EcranEditionGardeeBase } from '../../ecran-edition-gardee-base';
 import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
@@ -13,7 +14,6 @@ import { McChipFiltreComponent } from '../../composants/mc-chip-filtre/mc-chip-f
 import { PopinAvertissementComponent } from '../../composants/popins/popin-avertissement/popin-avertissement.component';
 import { FpFicheProjetComponent } from './fp-fiche-projet/fp-fiche-projet.component';
 import { FpFormulaireProjetComponent } from './fp-formulaire-projet/fp-formulaire-projet.component';
-import type { AvecNavigationGardee } from '../../gardes/modifications-non-enregistrees.garde';
 import type { Projet } from '../../modeles/projet.modele';
 
 /**
@@ -33,7 +33,7 @@ import type { Projet } from '../../modeles/projet.modele';
   templateUrl: './ecran-projets.component.html',
   styleUrl: './ecran-projets.component.scss',
 })
-export class EcranProjetsComponent implements AvecNavigationGardee {
+export class EcranProjetsComponent extends EcranEditionGardeeBase {
   /** Constante centralisée des libellés. */
   protected readonly LIBELLES = LIBELLES;
 
@@ -62,20 +62,8 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
     return this.donneesService.donnees()?.projets.find((p) => p.id === id) ?? null;
   });
 
-  /** `true` si le formulaire est en mode édition ou création. */
-  protected readonly enModeEdition = signal(false);
-
   /** `true` si le focus doit se placer sur le bouton MODIFIER à la prochaine apparition de la fiche. */
   protected readonly focusModifierDemande = signal(false);
-
-  /** `true` si la popin d'avertissement est visible. */
-  protected readonly popinAvertissementVisible = signal(false);
-
-  /** Résolution de la promesse de navigation (garde CanDeactivate). */
-  private resolveGarde: ((result: boolean) => void) | null = null;
-
-  /** Action en attente de confirmation. */
-  private actionEnAttente: (() => void) | null = null;
 
   /** Domaines du premier niveau de l'arbre des compétences. */
   protected readonly domaines = computed(() => this.competenceService.obtenirDomaines());
@@ -103,50 +91,12 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
    * @param projet Projet à sélectionner.
    */
   protected selectionnerProjet(projet: Projet): void {
-    if (this.enModeEdition()) {
-      this.actionEnAttente = () => this.activerProjet(projet);
-      this.popinAvertissementVisible.set(true);
-    } else {
-      this.activerProjet(projet);
-    }
+    this.executerOuAvertir(() => this.activerProjet(projet));
   }
 
   /** Tente d'ouvrir le formulaire de création. */
   protected creerProjet(): void {
-    if (this.enModeEdition()) {
-      this.actionEnAttente = () => this.activerCreation();
-      this.popinAvertissementVisible.set(true);
-    } else {
-      this.activerCreation();
-    }
-  }
-
-  /** Confirme l'avertissement et exécute l'action en attente. */
-  protected confirmerAvertissement(): void {
-    this.popinAvertissementVisible.set(false);
-    if (this.resolveGarde) {
-      this.resolveGarde(true);
-      this.resolveGarde = null;
-    } else {
-      this.actionEnAttente?.();
-      this.actionEnAttente = null;
-    }
-    this.enModeEdition.set(false);
-  }
-
-  /** Annule l'avertissement et reste sur le formulaire. */
-  protected annulerAvertissement(): void {
-    this.popinAvertissementVisible.set(false);
-    if (this.resolveGarde) {
-      this.resolveGarde(false);
-      this.resolveGarde = null;
-    }
-    this.actionEnAttente = null;
-  }
-
-  /** Active le mode édition du projet sélectionné. */
-  protected activerEdition(): void {
-    this.enModeEdition.set(true);
+    this.executerOuAvertir(() => this.activerCreation());
   }
 
   /**
@@ -194,20 +144,6 @@ export class EcranProjetsComponent implements AvecNavigationGardee {
    */
   protected retirerFiltreDomaine(id: string): void {
     this.domainesFiltres.update((ids) => ids.filter((i) => i !== id));
-  }
-
-  /** Lance l'impression du projet. */
-  protected imprimer(): void {
-    window.print();
-  }
-
-  /** Implémentation de `AvecNavigationGardee`. */
-  public confirmerNavigation(): Promise<boolean> {
-    if (!this.enModeEdition()) return Promise.resolve(true);
-    return new Promise<boolean>((resolve) => {
-      this.resolveGarde = resolve;
-      this.popinAvertissementVisible.set(true);
-    });
   }
 
   /** Active un projet et repasse en mode lecture. */

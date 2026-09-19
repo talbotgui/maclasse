@@ -46,11 +46,7 @@ export class DateUtils {
     const [annee, mois, jour] = date.split('-').map(Number);
     const d = new Date(annee, mois - 1, jour);
     d.setDate(d.getDate() + jours);
-    return [
-      String(d.getFullYear()),
-      String(d.getMonth() + 1).padStart(2, '0'),
-      String(d.getDate()).padStart(2, '0'),
-    ].join('-');
+    return DateUtils.formaterDateIso(d);
   }
 
   /**
@@ -182,16 +178,24 @@ export class DateUtils {
   }
 
   /**
-   * Retourne la date du jour au format ISO `YYYY-MM-DD` en heure locale.
-   * @returns Date du jour sans décalage UTC.
+   * Formate un objet `Date` en date ISO `YYYY-MM-DD` (heure locale, sans décalage UTC).
+   * @param d Objet `Date` à formater.
+   * @returns Date au format `YYYY-MM-DD`.
    */
-  public static dateAujourdhui(): string {
-    const d = new Date();
+  public static formaterDateIso(d: Date): string {
     return [
       String(d.getFullYear()),
       String(d.getMonth() + 1).padStart(2, '0'),
       String(d.getDate()).padStart(2, '0'),
     ].join('-');
+  }
+
+  /**
+   * Retourne la date du jour au format ISO `YYYY-MM-DD` en heure locale.
+   * @returns Date du jour sans décalage UTC.
+   */
+  public static dateAujourdhui(): string {
+    return DateUtils.formaterDateIso(new Date());
   }
 
   /**

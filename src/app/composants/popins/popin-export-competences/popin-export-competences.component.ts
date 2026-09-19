@@ -1,17 +1,14 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
   computed,
-  effect,
   inject,
   input,
   output,
   signal,
-  viewChild,
 } from '@angular/core';
 import type { InputSignal, OutputEmitterRef } from '@angular/core';
-import { ComposantBase } from '../../../composant-base';
+import { PopinBase } from '../../../popin-base';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
 import type {
@@ -32,10 +29,7 @@ export type { ResultatExportCompetences };
   templateUrl: './popin-export-competences.component.html',
   styleUrl: './popin-export-competences.component.scss',
 })
-export class PopinExportCompetencesComponent extends ComposantBase {
-  /** Contrôle la visibilité de la popin. */
-  public readonly visible: InputSignal<boolean> = input(false);
-
+export class PopinExportCompetencesComponent extends PopinBase {
   /** Identifiants des compétences à exporter. */
   public readonly competencesIds: InputSignal<string[]> = input<string[]>([]);
 
@@ -48,9 +42,6 @@ export class PopinExportCompetencesComponent extends ComposantBase {
 
   /** Émis quand l'utilisateur annule. */
   protected readonly annule: OutputEmitterRef<void> = output<void>();
-
-  /** Référence à l'élément `<dialog>` natif. */
-  private readonly dialogEl = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
 
   /** Accès aux données de l'application pour construire les listes. */
   private readonly donneesService = inject(DonneesService);
@@ -102,19 +93,10 @@ export class PopinExportCompetencesComponent extends ComposantBase {
     );
   });
 
-  /** Ouvre ou ferme la dialog native en réaction au signal `visible`. */
-  public constructor() {
-    super();
-    effect(() => {
-      const el = this.dialogEl().nativeElement;
-      if (this.visible()) {
-        this.selectionPrimaire.set('');
-        this.selectionSecondaire.set('');
-        if (!el.open) el.showModal();
-      } else if (el.open) {
-        el.close();
-      }
-    });
+  /** Réinitialise les champs de saisie à chaque ouverture. */
+  protected override reinitialiserALOuverture(): void {
+    this.selectionPrimaire.set('');
+    this.selectionSecondaire.set('');
   }
 
   /**

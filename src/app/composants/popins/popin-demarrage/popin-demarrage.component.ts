@@ -137,19 +137,7 @@ export class PopinDemarrageComponent extends ComposantBase {
    * Émet `creationDemandee` en cas de succès, affiche une erreur sinon.
    */
   protected async creer(): Promise<void> {
-    if (this.enChargement()) return;
-    this.enChargement.set(true);
-    this.erreur.set(null);
-    try {
-      const reponse = await fetch('/maclasse/donnees-defaut.json');
-      if (!reponse.ok) throw new Error('Fichier introuvable');
-      const donnees = (await reponse.json()) as DonneesApplication;
-      this.onCreationDemandee(donnees);
-    } catch {
-      this.erreur.set(this.LIBELLES.demarrage.erreurFichier);
-    } finally {
-      this.enChargement.set(false);
-    }
+    await this.chargerDonneesExemple((donnees) => this.onCreationDemandee(donnees));
   }
 
   /**
@@ -188,14 +176,24 @@ export class PopinDemarrageComponent extends ComposantBase {
    * affiche une erreur sinon.
    */
   protected async accederReferentiel(): Promise<void> {
+    await this.chargerDonneesExemple((donnees) => this.onReferentielDemande(donnees));
+  }
+
+  /**
+   * Charge `donnees-defaut.json` en gérant l'état de chargement et l'erreur d'affichage.
+   * Sans effet si un chargement est déjà en cours.
+   * @param surSucces Callback appelé avec les données d'exemple une fois chargées.
+   */
+  private async chargerDonneesExemple(
+    surSucces: (donnees: DonneesApplication) => void,
+  ): Promise<void> {
     if (this.enChargement()) return;
     this.enChargement.set(true);
     this.erreur.set(null);
     try {
       const reponse = await fetch('/maclasse/donnees-defaut.json');
       if (!reponse.ok) throw new Error('Fichier introuvable');
-      const donnees = (await reponse.json()) as DonneesApplication;
-      this.onReferentielDemande(donnees);
+      surSucces((await reponse.json()) as DonneesApplication);
     } catch {
       this.erreur.set(this.LIBELLES.demarrage.erreurFichier);
     } finally {

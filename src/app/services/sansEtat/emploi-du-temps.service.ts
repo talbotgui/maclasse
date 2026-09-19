@@ -98,19 +98,10 @@ export class EmploiDuTempsService {
    */
   public ajouterCreneau(edtId: string, creneau: CreneauEdt): void {
     if (!this.verifierNombreTemps(creneau)) return;
-    const donnees = this.donneesService.donnees();
-    if (!donnees) return;
-    const ancien = donnees.emploisDuTemps.find((e) => e.id === edtId);
-    if (!ancien) return;
-    const nouveau: EmploiDuTemps = { ...ancien, creneaux: [...ancien.creneaux, creneau] };
-    this.donneesService.executer(
-      new CommandeModification(
-        (d) => d.emploisDuTemps,
-        ancien,
-        nouveau,
-        LIBELLES.commandes.ajoutCreneau,
-      ),
-    );
+    this.modifierEdtExistant(edtId, LIBELLES.commandes.ajoutCreneau, (edt) => ({
+      ...edt,
+      creneaux: [...edt.creneaux, creneau],
+    }));
   }
 
   /**
@@ -121,20 +112,10 @@ export class EmploiDuTempsService {
    */
   public modifierCreneau(edtId: string, creneau: CreneauEdt): void {
     if (!this.verifierNombreTemps(creneau)) return;
-    const donnees = this.donneesService.donnees();
-    if (!donnees) return;
-    const ancien = donnees.emploisDuTemps.find((e) => e.id === edtId);
-    if (!ancien) return;
-    const creneaux = ancien.creneaux.map((c) => (c.id === creneau.id ? creneau : c));
-    const nouveau: EmploiDuTemps = { ...ancien, creneaux };
-    this.donneesService.executer(
-      new CommandeModification(
-        (d) => d.emploisDuTemps,
-        ancien,
-        nouveau,
-        LIBELLES.commandes.modificationCreneau,
-      ),
-    );
+    this.modifierEdtExistant(edtId, LIBELLES.commandes.modificationCreneau, (edt) => ({
+      ...edt,
+      creneaux: edt.creneaux.map((c) => (c.id === creneau.id ? creneau : c)),
+    }));
   }
 
   /**
@@ -144,22 +125,10 @@ export class EmploiDuTempsService {
    * @param creneauId UUID du créneau à supprimer.
    */
   public supprimerCreneau(edtId: string, creneauId: string): void {
-    const donnees = this.donneesService.donnees();
-    if (!donnees) return;
-    const ancien = donnees.emploisDuTemps.find((e) => e.id === edtId);
-    if (!ancien) return;
-    const nouveau: EmploiDuTemps = {
-      ...ancien,
-      creneaux: ancien.creneaux.filter((c) => c.id !== creneauId),
-    };
-    this.donneesService.executer(
-      new CommandeModification(
-        (d) => d.emploisDuTemps,
-        ancien,
-        nouveau,
-        LIBELLES.commandes.suppressionCreneau,
-      ),
-    );
+    this.modifierEdtExistant(edtId, LIBELLES.commandes.suppressionCreneau, (edt) => ({
+      ...edt,
+      creneaux: edt.creneaux.filter((c) => c.id !== creneauId),
+    }));
   }
 
   /**
@@ -338,5 +307,24 @@ export class EmploiDuTempsService {
   public verifierCompatibiliteFrequences(f1: FrequenceSemaine, f2: FrequenceSemaine): boolean {
     if (f1 === 'lesDeux' || f2 === 'lesDeux') return true;
     return f1 === f2;
+  }
+
+  /**
+   * Remplace un EDT existant par sa version transformée, en une commande annulable.
+   * Sans effet si l'EDT n'existe pas ou si aucune donnée n'est chargée.
+   * @param edtId UUID de l'EDT.
+   * @param libelle Description courte de la commande (tooltip UNDO/REDO).
+   * @param transformer Fonction produisant la nouvelle version de l'EDT.
+   */
+  private modifierEdtExistant(
+    edtId: string,
+    libelle: string,
+    transformer: (edt: EmploiDuTemps) => EmploiDuTemps,
+  ): void {
+    const ancien = this.donneesService.donnees()?.emploisDuTemps.find((e) => e.id === edtId);
+    if (!ancien) return;
+    this.donneesService.executer(
+      new CommandeModification((d) => d.emploisDuTemps, ancien, transformer(ancien), libelle),
+    );
   }
 }

@@ -1,3 +1,5 @@
+@use '../mixins' as *;
+
 :host {
   display: flex;
   flex-direction: column;
@@ -79,24 +81,7 @@
     align-items: center;
     flex: 1;
     min-width: 0;
-    padding: 0.5rem 1rem;
-    text-align: left;
-    background: none;
-    border: none;
-    border-left: 3px solid transparent;
-    cursor: pointer;
-    font-size: 0.875rem;
-    color: var(--texte-principal);
-
-    &:hover {
-      background-color: var(--fond-survol);
-    }
-
-    &--actif {
-      border-left-color: var(--accent);
-      background-color: var(--fond-actif);
-      font-weight: 600;
-    }
+    @include bouton-liste;
   }
 
   &__btn-edt-nom {
@@ -107,25 +92,9 @@
   }
 
   &__icone-conflit {
-    flex-shrink: 0;
     margin-right: 0.375rem;
     margin-left: 0.25rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--avertissement);
-    font-size: 0.875rem;
-    border-radius: 4px;
-    padding: 0.125rem 0.25rem;
-
-    &:hover {
-      background-color: var(--fond-survol);
-    }
-
-    &:focus-visible {
-      outline: 3px solid var(--couleur-focus);
-      outline-offset: 2px;
-    }
+    @include icone-conflit;
   }
 
   &__grille-conteneur {

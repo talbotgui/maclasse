@@ -44,10 +44,7 @@ export class EcranAccueilComponent {
   private readonly competenceService = inject(CompetenceService);
 
   /** Date ISO locale du jour (format `YYYY-MM-DD`). */
-  private readonly dateIsoAujourdhui: string = (() => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  })();
+  private readonly dateIsoAujourdhui: string = DateUtils.dateAujourdhui();
 
   /** Date du jour formatée en toutes lettres (ex. `"lundi 9 juin 2026"`). */
   protected readonly dateFormatee: string = DateUtils.formaterDateLong(this.dateIsoAujourdhui);

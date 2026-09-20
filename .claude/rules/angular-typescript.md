@@ -13,7 +13,7 @@ globs: "**/*.ts"
 
 ## Architecture Angular
 
-- Angular 21 : composants standalone uniquement, ne PAS écrire `standalone: true` (défaut depuis v20)
+- Angular 22 : composants standalone uniquement, ne PAS écrire `standalone: true` (défaut depuis v20) ; `OnPush` est devenu le défaut en v22 mais reste déclaré explicitement
 - Lazy loading obligatoire pour toutes les routes
 - `providedIn: 'root'` pour les services singleton
 - `inject()` à la place de l'injection constructeur

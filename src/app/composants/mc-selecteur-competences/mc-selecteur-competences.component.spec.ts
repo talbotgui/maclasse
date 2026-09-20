@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { McSelecteurCompetencesComponent } from './mc-selecteur-competences.component';
@@ -19,6 +19,7 @@ import { CompetenceMother } from '../../tests/competence.mother';
       (selectionChange)="selectionnes = $event"
     />
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [McSelecteurCompetencesComponent],
 })
 class ComposantHote {

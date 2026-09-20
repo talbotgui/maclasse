@@ -149,6 +149,10 @@ const spyDemarrer = vi.spyOn(sauvegardeAutoService, 'demarrer').mockImplementati
 const spyDemarrer = vi.spyOn(sauvegardeAutoService, 'demarrer');
 ```
 
+## Composants hôtes de test
+
+Depuis Angular 22, `OnPush` est le défaut. Un composant hôte ou stub déclaré dans un spec (jamais dans le code applicatif) qui modifie ses propriétés après le premier rendu peut déclarer `changeDetection: ChangeDetectionStrategy.Eager` pour conserver le comportement historique. La règle « OnPush dans chaque `@Component` » de `angular-typescript.md` vise le code applicatif.
+
 ## Composants avec `<dialog>`
 
 Tout spec d'un composant contenant un `<dialog>` — directement ou via un composant enfant (`popin-*`) — doit déclarer en `beforeAll` :

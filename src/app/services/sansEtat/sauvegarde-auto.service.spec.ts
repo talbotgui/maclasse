@@ -10,11 +10,10 @@ import { CommandeRemplacement } from '../../commandes/commande-par-index';
 const setTimeoutReel = globalThis.setTimeout;
 
 beforeAll(() => {
-  // Polyfill pour les environnements de test sans URL.createObjectURL (jsdom).
-  if (typeof URL.createObjectURL !== 'function') {
-    URL.createObjectURL = (_blob: Blob) => 'blob:fake-url-for-tests';
-    URL.revokeObjectURL = (_url: string) => {};
-  }
+  // Remplacement systématique : le URL.createObjectURL fourni par Vitest sous jsdom 30 échoue
+  // (il lit des internes du Blob jsdom qui n'existent plus).
+  URL.createObjectURL = (_blob: Blob) => 'blob:fake-url-for-tests';
+  URL.revokeObjectURL = (_url: string) => {};
 });
 
 describe('SauvegardeAutoService', () => {

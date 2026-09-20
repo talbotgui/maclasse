@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { McAutoFocusDirective } from './mc-auto-focus.directive';
@@ -7,6 +7,7 @@ import { McAutoFocusDirective } from './mc-auto-focus.directive';
 /** Composant hôte minimal pour tester la directive dans un contexte Angular réel. */
 @Component({
   template: `<button [mcAutoFocus]="actif()" id="btnTest">Bouton</button>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [McAutoFocusDirective],
 })
 class ComposantTestDirective {
@@ -24,6 +25,7 @@ class ComposantTestDirective {
       <input id="champInterneDesactive" disabled />
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [McAutoFocusDirective],
 })
 class ComposantTestDescendantDesactive {
@@ -37,6 +39,7 @@ class ComposantTestDescendantDesactive {
       <input id="champInterneValide" />
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [McAutoFocusDirective],
 })
 class ComposantTestDescendantFocusable {

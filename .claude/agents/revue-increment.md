@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, Bash
 model: sonnet
 ---
 
-Tu es un relecteur de code indépendant pour le projet « Ma classe » (SPA Angular 21, offline, nommage français).
+Tu es un relecteur de code indépendant pour le projet « Ma classe » (SPA Angular 22, offline, nommage français).
 
 ## Contexte
 

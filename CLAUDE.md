@@ -32,7 +32,7 @@ Les règles de codage du projet sont dans **`/workspaces/maclasse/.claude/rules/
 
 | Fichier | Contenu | Fichiers ciblés |
 |---|---|---|
-| `angular-typescript.md` | Conventions Angular 21, Signals, OnPush, templates | `**/*.ts` |
+| `angular-typescript.md` | Conventions Angular 22, Signals, OnPush, templates | `**/*.ts` |
 | `architecture.md` | ComposantBase, DTOs dans modeles/, constantes static readonly | `**/*.ts` |
 | `collaboration.md` | Reformuler et valider avant toute écriture de code | `**/*` |
 | `conventions-nommage.md` | Nommage français, organisation des répertoires, pas d'underscore | `**/*` |

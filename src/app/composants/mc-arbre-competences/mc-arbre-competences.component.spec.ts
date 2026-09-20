@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { McArbreCompetencesComponent } from './mc-arbre-competences.component';
@@ -14,6 +14,7 @@ import { LIBELLES } from '../../libelles';
     [competencesSelectionnees]="[]"
     (selectionChange)="derniereSelection = $event"
   />`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [McArbreCompetencesComponent],
 })
 class ComposantHote {

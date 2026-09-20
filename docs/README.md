@@ -48,7 +48,7 @@ Un plan par évolution ou chantier. La numérotation est historique ; le 13 est 
 | [11](plans/11-edt-temps-multiples.md) | EDT : créneaux à temps multiples | voir le fichier |
 | [12](plans/12-edt-emplois-calcules.md) | EDT : emplois du temps calculés | implémenté le 2026-09-18 |
 | [14](plans/14-completer-tests-e2e.md) | Compléter les tests E2E | terminé le 2026-09-19 |
-| [15](plans/15-montees-de-version.md) | Montées de version (jsdom 30, Angular 22, TS 6.0) | validé le 2026-09-20, en cours |
+| [15](plans/15-montees-de-version.md) | Montées de version (jsdom 30, Angular 22, TS 6.0) | terminé le 2026-09-20 |
 | [16](plans/16-site-documentaire.md) | Site documentaire `/maclasse/doc/` | proposé, en attente de validation |
 
 ## Audits

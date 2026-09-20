@@ -37,7 +37,7 @@ ClaudeCode est à installer aussi sur le poste de développement
 
 *Dans Github CodeSpace, les actions ci-dessous sont réalisées automatiquement.*
 
-La mémoire de Claude (contexte projet, conventions, règles) est versionnée dans git sous `.claude/memory/`.
+La mémoire de Claude (profil, commandes de développement) est versionnée dans git sous `.claude/memory/`.
 Après le premier `git clone`, une seule commande suffit pour que Claude y accède automatiquement :
 
 ```bash
@@ -51,7 +51,7 @@ ln -s /workspaces/maclasse/.claude/memory ~/.claude/projects/-workspaces-maclass
 
 > **Pourquoi ?** Claude Code stocke sa mémoire dans `~/.claude/projects/<chemin-projet>/memory/` (local à la machine).
 > Le lien symbolique redirige ce chemin vers `.claude/memory/` dans le dépôt,
-> ce qui garantit que toutes les conventions, règles et le contexte projet sont partagés entre postes et persistent dans git.
+> ce qui garantit que le profil et les références sont partagés entre postes et persistent dans git.
 
 ### 1.4/ Déploiement sur GitHub Pages
 
@@ -74,9 +74,11 @@ Points de configuration, dans `angular.json` (cible `deploy`) :
 
 Pour initialiser le projet :
 * initialiser le répertoire .claude avec son contenu
-  * .claude/memory avec les règles de conception du projet et les premiers éléments décrivant le projet (les fichiers feedback capitalisés)
-  * .claude/settings.json avec le hook de sauvegarde des prompts
+  * .claude/memory avec le profil de l'utilisateur et les commandes de développement
+  * .claude/rules avec les règles de codage, .claude/agents avec l'agent de relecture
+  * .claude/settings.json avec le hook de sauvegarde des prompts (dans .claude/historique/)
   * .claude/settings.local.json avec les permissions et interdictions
+* initialiser le répertoire docs avec la spécification, les plans et les audits
 * initialiser le répertoire .devcontainer avec les configurations simplifiant l'initialisation du codespace
 * initialiser la configuration SonarQube dans sonar-project.properties
 

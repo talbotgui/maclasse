@@ -10,6 +10,22 @@ Le répertoire de mémoire persistante de ce projet est **`/workspaces/maclasse/
 - Ne **jamais** écrire dans `~/.claude/projects/` ou tout autre chemin hors du répertoire de travail
 - Mettre à jour `/workspaces/maclasse/.claude/memory/MEMORY.md` à chaque ajout ou modification de mémoire
 
+## Documentation
+
+La documentation du projet est dans **`/workspaces/maclasse/docs/`** (versionnée dans git). Sommaire : `docs/README.md`.
+
+| Répertoire | Contenu |
+|---|---|
+| `docs/specification/` | Description de l'application : modèles de données, services, thèmes, libellés, un fichier par écran dans `ecrans/` |
+| `docs/plans/` | Un plan par évolution ou chantier, numéroté (`NN-sujet.md`) |
+| `docs/audits/` | Audits et inventaires de constats, préfixés par la date |
+
+**Règles impératives :**
+- Lire la spécification concernée (`docs/specification/`) avant de modifier un écran, un modèle ou un service
+- Écrire tout nouveau plan dans `docs/plans/` et tout audit dans `docs/audits/`, **jamais** dans la mémoire
+- Mettre à jour la spécification quand une évolution change le comportement décrit, et `docs/README.md` à chaque ajout ou changement de statut d'un plan
+- La mémoire (`.claude/memory/`) est réservée au profil de l'utilisateur, aux retours de collaboration et aux références (commandes, liens)
+
 ## Règles de code
 
 Les règles de codage du projet sont dans **`/workspaces/maclasse/.claude/rules/`** (versionné dans git). Elles sont injectées automatiquement par Claude Code selon le type de fichier traité (via le frontmatter `globs:`).

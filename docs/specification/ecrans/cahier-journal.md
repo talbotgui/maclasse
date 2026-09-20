@@ -1,0 +1,170 @@
+---
+name: cahier-journal
+description: Spécification détaillée de l'écran Cahier journal — navigation par date, liste de séances, formulaire contextuel
+metadata:
+  type: project
+  updated: 2026-06-09
+related:
+  - specification/ecrans/vue-ensemble
+  - specification/modeles-donnees
+  - specification/services
+  - specification/composants-partages
+  - specification/ecrans/emploi-du-temps
+---
+
+## Maquette
+
+![08-cahier-journal](../../../.maquettes/08-cahier-journal.png)
+
+**Cohérence globale** : mini-calendrier à gauche avec navigation J-7/J-1/J+1/J+7, liste de séances au centre avec intercalaires "+", récréation visible dans la liste sans champs pédagogiques, formulaire contextuel à droite (Début, Fin, Titre, Disciplines, Objectifs…), deux boutons "Initialiser vide" / "Initialiser depuis l'EDT" sur journée vide, warning triangle orange — tout correspond.
+
+---
+
+## Layout général
+
+Trois zones :
+- **Colonne gauche** : navigation temporelle
+- **Zone centrale** : contenu de la journée sélectionnée (lecture seule)
+- **Colonne droite** : formulaire d'édition d'une séance (contextuel, vide par défaut)
+
+---
+
+## Colonne gauche — Navigation
+
+| Élément | Détail |
+|---|---|
+| `mc-mini-calendrier` | Calendrier mensuel miniature ; met en évidence les jours ayant une entrée ; clic sur un jour le charge dans la zone centrale |
+| Bouton **J−7** | Recule d'une semaine |
+| Bouton **J−1** | Recule d'un jour |
+| Bouton **J+1** | Avance d'un jour |
+| Bouton **J+7** | Avance d'une semaine |
+
+- Le dernier jour consulté est mémorisé dans `ContextService.jourCourantCahierJournal`
+- À l'ouverture de l'écran, le dernier jour consulté est rechargé automatiquement
+
+---
+
+## Zone centrale — Journée sélectionnée
+
+### En-tête
+
+- **Date du jour** affiché en titre (ex. "Lundi 9 juin 2026")
+- Dans la **colonne de droite**, un `<h2 class="cj__titre-journee">` reprend la date formatée dès qu'une journée existe (même sans séance) — nécessaire à l'impression, la colonne gauche étant masquée en `@media print`
+
+### Notes de la journée
+
+- Champ `notes?: string` sur `JourneeJournal` (mémo libre : rappels, événements, effectif…), indépendant des séances
+- `mc-textarea` en haut de la colonne de droite, **au-dessus de la liste des séances**, visible dès qu'une séance existe **ou** que des notes sont déjà enregistrées (`@if (seances().length > 0 || notesJournee())`)
+- Enregistrement **au blur** (`(focusout)` sur le `mc-textarea`) via `CahierJournalService.modifierNotesJournee(date, notes)` → `CommandeModification` (UNDO/REDO) ; le service **trim** la valeur (vide → `undefined`) et ignore l'appel si elle est inchangée
+- Champ réactif `notesControl = new FormControl('', { nonNullable: true })` (Reactive Forms — pas de `ngModel`), resynchronisé par un `effect` (`setValue(..., { emitEvent: false })` + `cdr.markForCheck()`) sur `notesJournee()` — jamais pendant la frappe
+- `notesJournee = computed(() => journeeSelectionnee()?.notes ?? '')` : version persistée, utilisée pour le `<p>` d'impression et la condition d'affichage
+- Impression : un `<p class="cj__notes-impression">` (masqué à l'écran) remplace le textarea ; bascule gérée dans le `@media print` de `styles.scss` (`.cj__notes-saisie` masquée, `.cj__notes-impression` affichée `white-space: pre-wrap`)
+- `dupliquerJournee` reporte les notes de la source vers la cible (création **et** remplacement) ; `dupliquerSeance` ne les touche pas (notes = niveau journée)
+- Libellés : `cahierJournal.labelNotes`, `cahierJournal.placeholderNotes`, `commandes.modificationNotesJournee`
+
+### Cas 1 — Aucune entrée pour ce jour
+
+| Élément | Détail |
+|---|---|
+| Bouton **INITIALISER VIDE** | Crée une entrée vide pour ce jour via `CahierJournalService` |
+| Bouton **INITIALISER DEPUIS L'EDT** | Pré-remplit la journée avec les créneaux de l'EDT correspondant au jour de la semaine et à la parité |
+
+- Ces deux boutons sont **inactifs** si une entrée existe déjà pour ce jour
+
+### Cas 2 — Journée existante
+
+Liste ordonnée des séances, séparées par des boutons intercalaires **+**.
+
+#### Bouton intercalaire "+"
+
+- Visible en permanence entre chaque séance (RGAA : toujours visible)
+- Au clic : crée une séance vide insérée à cette position, l'ouvre dans la colonne droite
+
+#### Séance en lecture seule (dans la liste)
+
+| Élément | Condition |
+|---|---|
+| Heure début – heure fin | Toujours |
+| Type | Toujours (pédagogique / récréation / pause déjeuner) |
+| Titre | Type pédagogique |
+| Disciplines | Type pédagogique |
+| Nombre d'élèves concernés | Type pédagogique |
+| Flèche ↑ (monter) | Toujours visible ; désactivée sur la première séance |
+| Flèche ↓ (descendre) | Toujours visible ; désactivée sur la dernière séance |
+| Icône warning ⚠ | Si conflit avec une absence récurrente d'un élève concerné |
+
+#### Icône warning (triangle orange)
+
+- Tabulable et cliquable (RGAA)
+- Au clic : ouvre `popin-warnings-absences` listant les conflits
+- Calculé à l'**ENREGISTRER** d'une séance (warning non bloquant, affiché après enregistrement)
+
+---
+
+## Colonne droite — Formulaire de séance
+
+Affiché au clic sur une séance ou sur un bouton intercalaire "+". Vide à l'ouverture de l'écran.
+
+### Boutons d'action
+
+| Bouton | Comportement |
+|---|---|
+| **ENREGISTRER** | Soumet la commande à `DonneesService`, ferme le formulaire ; déclenche le contrôle des absences récurrentes (warning non bloquant) |
+| **ANNULER** | Abandonne les saisies, ferme le formulaire |
+| **SUPPRIMER** | `mc-bouton-destruction` : supprime la séance, ferme le formulaire |
+
+### Champs
+
+| Champ | Composant | Condition |
+|---|---|---|
+| Heure de début | `mc-champ-heure` | Toujours |
+| Heure de fin | `mc-champ-heure` | Toujours |
+| Type | `mc-select` (pédagogique / récréation / pause déjeuner) | Toujours |
+| Disciplines | Chips sélectionnables (un chip par domaine de niveau 1) — sélection multiple | Type pédagogique |
+| Titre | `mc-input` | Type pédagogique |
+| Description | `mc-textarea` | Type pédagogique |
+| Objectifs | `mc-textarea` | Type pédagogique |
+| Déroulement | `mc-textarea` | Type pédagogique |
+| Ressources | `mc-textarea` | Type pédagogique |
+| Compétences | `mc-selecteur-competences` | Type pédagogique |
+| Élèves concernés | `mc-eleves-concernes` — en mode élèves, le chip d'un élève ayant une `AbsencePonctuelle` pour ce jour est **désactivé** | Type pédagogique |
+
+### Duplication de séance
+
+Dans la colonne droite, sous le formulaire de séance :
+- Bouton **DUPLIQUER VERS UN AUTRE JOUR**
+- Affiche un `mc-input` type date pour choisir le jour cible
+- Au clic sur **CONFIRMER DUPLICATION** : copie la séance courante (telle qu'enregistrée) vers le jour sélectionné via `CahierJournalService`
+- Si aucune journée n'existe pour le jour cible, elle est créée automatiquement
+
+---
+
+## Bas de la zone centrale — Actions globales de journée
+
+### Bouton SUPPRIMER LA JOURNÉE
+
+- Positionné en bas de la liste des séances (zone centrale)
+- `mc-bouton-destruction` : supprime l'intégralité de la journée (toutes les séances)
+- Uniquement visible si une journée existe pour le jour courant
+
+### Duplication de journée
+
+- Bouton **DUPLIQUER LA JOURNÉE VERS UN AUTRE JOUR** en bas de la zone centrale
+- Affiche un `mc-input` type date pour choisir le jour cible
+- Copie l'intégralité des séances de la journée courante vers le jour sélectionné via `CahierJournalService`
+- Si une journée existe déjà pour le jour cible, elle est remplacée (après confirmation `mc-bouton-destruction`)
+
+---
+
+## Bouton IMPRIMER
+
+- Positionné en haut ou bas de la zone centrale
+- Déclenche l'impression via le navigateur (`window.print()`)
+- **La colonne gauche n'est pas imprimée** (masquée via `@media print`)
+
+---
+
+## Contrainte métier
+
+- Un élève ne peut pas être affecté à plus d'une séance simultanée (même plage horaire)
+- Validation dans `CahierJournalService` à l'ENREGISTRER

@@ -9970,7 +9970,7 @@
     }
   ],
   "configuration": {
-    "delaiSauvegardeAutoMinutes": 2,
+    "delaiSauvegardeAutoMinutes": 5,
     "domainesActifs": [
       "EMC-C2",
       "EMC-CM1",
@@ -9984,6 +9984,7 @@
       "MAT-CM2"
     ]
   },
+  "emploisDuTempsCalcules": [],
   "emploisDuTemps": [
     {
       "id": "et000001-0000-4000-8000-000000000001",

@@ -453,6 +453,33 @@ button {
   color: var(--texte-principal);
 }
 
+/* Icône d'avertissement de conflit (EDT, cahier journal). */
+.mc-icone-conflit {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--avertissement-texte);
+  font-size: 0.875rem;
+  border-radius: 4px;
+  padding: 0.125rem 0.25rem;
+
+  &:hover {
+    background-color: var(--fond-survol);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--couleur-focus);
+    outline-offset: 2px;
+  }
+}
+
+.mc-icone-conflit-xs {
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0.0625rem 0.1875rem;
+}
+
 .mc-btn-ajouter {
   display: inline-flex;
   align-items: center;

@@ -9940,5 +9940,13 @@ Ne modifie toujours rien sur le dépot
 ---
 2026-09-20 10:23:34 [Développements plan montes de version] - 1&2&3/ oui
 ---
+2026-09-20 19:09:31 [Sans titre] plusieurs développements ont été faits sur des branches différentes. rebase et merge les tous les uns après les autres. Traite les éventuels conflits
+---
+2026-09-20 19:14:38 [Rebase et merge de branches] traite le pb de budget
+---
+2026-09-20 19:15:32 [Rebase et merge de branches] option 2
+---
+2026-09-20 19:15:39 [Rebase et merge de branches] sur dévelop
+---
 2026-09-20 19:47:22 [Sans titre] <ide_opened_file>The user opened the file /workspaces/maclasse/src/app/composants/popins/popin-avertissement/popin-avertissement.component.ts in the IDE. This may or may not be related to the current task.</ide_opened_file>
 je viens de tenter de synchroniser pull/push vers le dépot distant et je dois gérer des conflits. Traite les

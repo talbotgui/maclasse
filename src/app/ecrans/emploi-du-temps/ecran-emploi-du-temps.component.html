@@ -52,7 +52,7 @@
               <button
                 [id]="'btnConflitEdt' + edt.id"
                 type="button"
-                class="edt__icone-conflit"
+                class="mc-icone-conflit edt__icone-conflit"
                 [attr.aria-label]="LIBELLES.edt.ariaVoirConflitEdt + ' : ' + edt.nom"
                 title="{{ LIBELLES.edt.avertissementChevauchementEdt }}"
                 (click)="afficherConflitsEdt(edt)"
@@ -186,7 +186,7 @@
                               <button
                                 [id]="'btnConflitCreneau' + entree.creneau.id + entree.temps.id"
                                 type="button"
-                                class="edt__btn-icone-conflit"
+                                class="mc-icone-conflit mc-icone-conflit-xs edt__btn-icone-conflit"
                                 [attr.aria-label]="
                                   LIBELLES.edt.ariaVoirConflitAbsence +
                                   ' : ' +

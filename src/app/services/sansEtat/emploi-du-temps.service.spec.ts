@@ -445,6 +445,21 @@ describe('EmploiDuTempsService', () => {
       expect(conflits[0]).toBe('MARTIN Paul — Orthophonie');
     });
 
+    it.each(['recreation', 'pauseDejeuner'] as const)(
+      'ne détecte pas de conflit sur un créneau hors classe de type %s',
+      (type) => {
+        const d = DonneesMother.base();
+        d.classe.eleves = [
+          EleveMother.base('e1', 'MARTIN', 'Paul', {
+            absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+          }),
+        ];
+        donneesService.charger(d);
+        service.creerEdt({ ...EdtMother.base(), creneaux: [CreneauMother.lundi9h10({ type })] });
+        expect(service.calculerConflitsAbsences('c1')).toEqual([]);
+      },
+    );
+
     it("ne détecte pas de conflit si l'absence est sur un autre jour", () => {
       const d = DonneesMother.base();
       d.classe.eleves = [

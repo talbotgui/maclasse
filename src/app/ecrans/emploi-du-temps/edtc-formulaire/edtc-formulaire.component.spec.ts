@@ -31,11 +31,11 @@ describe('EdtcFormulaireComponent', () => {
     });
 
     it('charge les valeurs de la définition', () => {
-      charger({ nom: 'Ma vue', dateDebut: '2026-01-01', sources: ['recreation'] });
+      charger({ nom: 'Ma vue', dateDebut: '2026-01-01', sources: ['tempsHorsClasse'] });
       expect((component as any).form.controls.nom.value).toBe('Ma vue');
       expect((component as any).form.controls.dateDebut.value).toBe('2026-01-01');
       expect((component as any).form.controls.dateFin.value).toBe('');
-      expect((component as any).sourcesCochees()).toEqual(['recreation']);
+      expect((component as any).sourcesCochees()).toEqual(['tempsHorsClasse']);
       expect(fixture.nativeElement.querySelector('#formProprietesEdtCalcule')).not.toBeNull();
     });
 
@@ -67,10 +67,10 @@ describe('EdtcFormulaireComponent', () => {
     it('coche et décoche une source', () => {
       charger();
       (component as any).basculerSource('tempsClasse', true);
-      (component as any).basculerSource('recreation', true);
+      (component as any).basculerSource('tempsHorsClasse', true);
       (component as any).basculerSource('tempsClasse', false);
-      expect((component as any).sourcesCochees()).toEqual(['recreation']);
-      expect((component as any).estSourceCochee('recreation')).toBe(true);
+      expect((component as any).sourcesCochees()).toEqual(['tempsHorsClasse']);
+      expect((component as any).estSourceCochee('tempsHorsClasse')).toBe(true);
       expect((component as any).estSourceCochee('tempsClasse')).toBe(false);
     });
 
@@ -95,14 +95,14 @@ describe('EdtcFormulaireComponent', () => {
 
     it('est vrai après modification des sources', () => {
       charger();
-      (component as any).basculerSource('recreation', true);
+      (component as any).basculerSource('tempsHorsClasse', true);
       expect(component.estModifie()).toBe(true);
     });
   });
 
   describe('enregistrement', () => {
     it('émet la définition saisie avec des dates vides converties en null', () => {
-      charger({ id: 'x', nom: 'Vue', sources: ['recreation', 'absencesRegulieres'] });
+      charger({ id: 'x', nom: 'Vue', sources: ['tempsHorsClasse', 'absencesRegulieres'] });
       const spy = vi.spyOn((component as any).enregistrer, 'emit');
       (component as any).onEnregistrer();
       expect(spy).toHaveBeenCalledTimes(1);
@@ -111,14 +111,14 @@ describe('EdtcFormulaireComponent', () => {
       expect(emis.nom).toBe('Vue');
       expect(emis.dateDebut).toBeNull();
       expect(emis.dateFin).toBeNull();
-      expect(emis.sources).toEqual(['recreation', 'absencesRegulieres']);
+      expect(emis.sources).toEqual(['tempsHorsClasse', 'absencesRegulieres']);
       expect(component.estModifie()).toBe(false);
     });
 
     it('émet les dates saisies', () => {
       charger({
         nom: 'Vue',
-        sources: ['recreation'],
+        sources: ['tempsHorsClasse'],
         dateDebut: '2026-01-01',
         dateFin: '2026-02-01',
       });
@@ -129,7 +129,7 @@ describe('EdtcFormulaireComponent', () => {
     });
 
     it("n'émet pas et affiche l'erreur si le nom est vide", () => {
-      charger({ nom: '', sources: ['recreation'] });
+      charger({ nom: '', sources: ['tempsHorsClasse'] });
       const spy = vi.spyOn((component as any).enregistrer, 'emit');
       (component as any).onEnregistrer();
       fixture.detectChanges();

@@ -108,9 +108,9 @@ export class EdtFormulaireComponent {
 
   /** Options de type de créneau. */
   protected readonly optionsTypeCreneau = [
-    { valeur: 'pedagogique', libelle: LIBELLES.edt.typePedagogique },
-    { valeur: 'recreation', libelle: LIBELLES.edt.typeRecreation },
-    { valeur: 'pauseDejeuner', libelle: LIBELLES.edt.typePauseDejeuner },
+    { valeur: 'pedagogique', libelle: LIBELLES.edt.typesCreneau.pedagogique },
+    { valeur: 'recreation', libelle: LIBELLES.edt.typesCreneau.recreation },
+    { valeur: 'pauseDejeuner', libelle: LIBELLES.edt.typesCreneau.pauseDejeuner },
   ];
 
   /** Options de jour proposées pour le créneau, limitées aux jours ouvrés configurés. */
@@ -263,9 +263,21 @@ export class EdtFormulaireComponent {
     if (this.formEdt) this.edtEnregistre.emit(structuredClone(this.formEdt));
   }
 
-  /** Enregistre le créneau. */
+  /**
+   * Enregistre le créneau. Un créneau hors classe (récréation, pause déjeuner) est émis sans
+   * les champs pédagogiques de ses temps ; le formulaire, lui, conserve les saisies.
+   */
   protected onEnregistrerCreneau(): void {
-    if (this.formCreneau) this.creneauEnregistre.emit(structuredClone(this.formCreneau));
+    if (!this.formCreneau) return;
+    const creneau = structuredClone(this.formCreneau);
+    if (creneau.type !== 'pedagogique') {
+      creneau.temps = creneau.temps.map(({ id, heureDebut, heureFin }) => ({
+        id,
+        heureDebut,
+        heureFin,
+      }));
+    }
+    this.creneauEnregistre.emit(creneau);
   }
 
   /** Délègue l'annulation de la saisie (EDT ou créneau) au parent. */

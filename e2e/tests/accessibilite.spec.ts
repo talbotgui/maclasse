@@ -391,7 +391,7 @@ testAvecDonnees(
     expect(await VerificateurAccessibilite.lister(appAvecDonnees), 'formulaire').toEqual([]);
 
     await edt.inputNomEdtCalcule.fill('Calcul AXE');
-    await edt.chipSourceRecreation.click();
+    await edt.chipSourceTempsHorsClasse.click();
     await edt.chipSourceAbsencesRegulieres.click();
     await edt.btnEnregistrerEdtCalcule.click();
     await edt.btnPremierEdtCalcule.click();

@@ -4,7 +4,11 @@ import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { EdtFormulaireComponent } from './edt-formulaire.component';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
 import { DonneesMother } from '../../../tests/donnees.mother';
-import { EdtMother, CreneauMother } from '../../../tests/emploi-du-temps.mother';
+import {
+  EdtMother,
+  CreneauMother,
+  TempsCreneauMother,
+} from '../../../tests/emploi-du-temps.mother';
 import type {
   EmploiDuTemps,
   CreneauEdt,
@@ -341,6 +345,38 @@ describe('EdtFormulaireComponent', () => {
       expect(emis.jour).toBe('jeudi');
       expect(emis.temps[0].heureDebut).toBe(creneau.temps[0].heureDebut);
       expect(emis.temps[0].heureFin).toBe(creneau.temps[0].heureFin);
+    });
+
+    it('émet une pause déjeuner sans les champs pédagogiques, en conservant le formulaire', () => {
+      const tempsComplet = TempsCreneauMother.base({
+        titre: 'Maths',
+        disciplinesIds: ['d1'],
+        elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
+      });
+      fixture.componentRef.setInput('creneau', CreneauMother.lundi9h10({ temps: [tempsComplet] }));
+      fixture.detectChanges();
+      (component as any).formCreneau.type = 'pauseDejeuner';
+
+      const spy = vi.spyOn((component as any).creneauEnregistre, 'emit');
+
+      (component as any).onEnregistrerCreneau();
+
+      const emis = spy.mock.calls[0][0] as CreneauEdt;
+      expect(emis.type).toBe('pauseDejeuner');
+      expect(emis.temps).toEqual([TempsCreneauMother.base()]);
+      expect((component as any).formCreneau.temps[0].titre).toBe('Maths');
+    });
+
+    it('émet un créneau pédagogique avec ses champs pédagogiques', () => {
+      const tempsComplet = TempsCreneauMother.base({ titre: 'Maths', disciplinesIds: ['d1'] });
+      fixture.componentRef.setInput('creneau', CreneauMother.lundi9h10({ temps: [tempsComplet] }));
+      fixture.detectChanges();
+
+      const spy = vi.spyOn((component as any).creneauEnregistre, 'emit');
+
+      (component as any).onEnregistrerCreneau();
+
+      expect((spy.mock.calls[0][0] as CreneauEdt).temps).toEqual([tempsComplet]);
     });
   });
 

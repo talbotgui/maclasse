@@ -6,6 +6,7 @@
 import { Injectable } from '@angular/core';
 import { DonneesApplication } from '../../modeles/donnees-application.modele';
 import { CreneauEdt, ElevesConcernes, TypeCreneau } from '../../modeles/emploi-du-temps.modele';
+import { SourceEdtCalcule } from '../../modeles/emploi-du-temps-calcule.modele';
 
 /**
  * Forme d'un créneau EDT antérieure à l'introduction des temps multiples (`temps[]`) :
@@ -57,6 +58,10 @@ export class MigrationService {
     {
       versionCible: '2026.09.3',
       appliquer: (donnees) => this.ajouterEmploisDuTempsCalcules(donnees),
+    },
+    {
+      versionCible: '2026.09.4',
+      appliquer: (donnees) => this.regrouperTempsHorsClasse(donnees),
     },
   ];
 
@@ -113,6 +118,32 @@ export class MigrationService {
       }
     }
     return donnees;
+  }
+
+  /**
+   * Regroupe les récréations et pauses déjeuner sous la notion de temps hors classe :
+   * la source `recreation` des EDT calculés devient `tempsHorsClasse` (sans doublon), et les
+   * temps des créneaux non pédagogiques perdent leurs champs pédagogiques. Idempotent.
+   * @param donnees Données à muter (déjà clonées par l'appelant).
+   */
+  private regrouperTempsHorsClasse(donnees: DonneesApplication): void {
+    for (const edtCalcule of donnees.emploisDuTempsCalcules) {
+      const sources = edtCalcule.sources as string[];
+      if (!sources.includes('recreation')) continue;
+      edtCalcule.sources = [
+        ...new Set(sources.map((s) => (s === 'recreation' ? 'tempsHorsClasse' : s))),
+      ] as SourceEdtCalcule[];
+    }
+    for (const edt of donnees.emploisDuTemps) {
+      for (const creneau of edt.creneaux) {
+        if (creneau.type === 'pedagogique') continue;
+        creneau.temps = creneau.temps.map(({ id, heureDebut, heureFin }) => ({
+          id,
+          heureDebut,
+          heureFin,
+        }));
+      }
+    }
   }
 
   /**

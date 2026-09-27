@@ -93,8 +93,8 @@ describe('EmploiDuTempsCalculeService', () => {
     });
   });
 
-  describe('calculerCreneaux — source recreation', () => {
-    it('produit un créneau par temps de récréation, en ignorant les concernés', () => {
+  describe('calculerCreneaux — source tempsHorsClasse', () => {
+    it('produit un créneau par temps de récréation et de pause déjeuner, en ignorant les concernés', () => {
       donneesService.charger(
         DonneesMother.avecEleves([EleveMother.base('e1', 'MARTIN', 'Alice')], {
           emploisDuTemps: [
@@ -102,6 +102,7 @@ describe('EmploiDuTempsCalculeService', () => {
               creneaux: [
                 CreneauMother.avecHoraire('10:00', '10:15', { id: 'r1', type: 'recreation' }),
                 CreneauMother.avecHoraire('11:00', '12:00', { id: 'p1' }),
+                CreneauMother.avecHoraire('12:00', '13:30', { id: 'd1', type: 'pauseDejeuner' }),
               ],
             }),
           ],
@@ -109,7 +110,7 @@ describe('EmploiDuTempsCalculeService', () => {
       );
       const resultat = service.calculerCreneaux(
         EdtCalculeMother.base({
-          sources: ['recreation'],
+          sources: ['tempsHorsClasse'],
           elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e1'] },
         }),
       );
@@ -119,9 +120,33 @@ describe('EmploiDuTempsCalculeService', () => {
           heureDebut: '10:00',
           heureFin: '10:15',
           source: 'recreation',
-          libelle: LIBELLES.edt.libelleRecreation,
+          libelle: LIBELLES.edt.typesCreneau.recreation,
+        },
+        {
+          jour: 'lundi',
+          heureDebut: '12:00',
+          heureFin: '13:30',
+          source: 'pauseDejeuner',
+          libelle: LIBELLES.edt.typesCreneau.pauseDejeuner,
         },
       ]);
+    });
+
+    it("n'inclut pas les temps hors classe si seule la source tempsClasse est cochée", () => {
+      donneesService.charger(
+        DonneesMother.base({
+          emploisDuTemps: [
+            EdtMother.base({
+              creneaux: [
+                CreneauMother.avecHoraire('12:00', '13:30', { id: 'd1', type: 'pauseDejeuner' }),
+              ],
+            }),
+          ],
+        }),
+      );
+      expect(service.calculerCreneaux(EdtCalculeMother.base({ sources: ['tempsClasse'] }))).toEqual(
+        [],
+      );
     });
   });
 
@@ -313,7 +338,9 @@ describe('EmploiDuTempsCalculeService', () => {
         ),
       );
       const resultat = service.calculerCreneaux(
-        EdtCalculeMother.base({ sources: ['recreation', 'tempsClasse', 'absencesRegulieres'] }),
+        EdtCalculeMother.base({
+          sources: ['tempsHorsClasse', 'tempsClasse', 'absencesRegulieres'],
+        }),
       );
       expect(resultat.map((c) => c.source)).toEqual([
         'absenceReguliere',

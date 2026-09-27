@@ -3,7 +3,7 @@ name: elements-techniques
 description: Éléments purement techniques de MaClasse — gardes, directives, utilitaires, pipes, pattern commande, persistance
 metadata:
   type: project
-  updated: 2026-06-09
+  updated: 2026-09-27
 related:
   - specification/services
 ---
@@ -102,16 +102,13 @@ La version est stockée à la racine du JSON : `donnees.version`.
 
 ### Migrations
 
-```typescript
-// Table de migrations (à compléter au fil des versions)
-const MIGRATIONS: Array<{
-  de: string;
-  vers: string;
-  migrer: (donnees: DonneesApplication) => DonneesApplication;
-}> = [
-  // { de: '2026.09.1', vers: '2026.09.2', migrer: ... }
-];
-```
+Chaîne ordonnée d'étapes dans `MigrationService` ; chaque étape est idempotente et amène les données à sa version cible.
+
+| Version cible | Transformation |
+|---|---|
+| `2026.09.2` | Créneaux EDT à plat convertis en un `TempsCreneau` unique (`creneau.temps`) |
+| `2026.09.3` | Ajout du tableau `emploisDuTempsCalcules` |
+| `2026.09.4` | Source `recreation` des EDT calculés renommée `tempsHorsClasse` (sans doublon) ; champs pédagogiques retirés des temps des créneaux récréation et pause déjeuner |
 
 Les migrations sont appliquées dans l'ordre jusqu'à atteindre la version courante de l'application.
 

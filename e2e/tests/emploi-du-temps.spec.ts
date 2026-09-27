@@ -420,7 +420,7 @@ testAvecDonnees(
 
     await edt.btnCreerEdtCalcule.click();
     await edt.inputNomEdtCalcule.fill('Récréations et classe');
-    await edt.chipSourceRecreation.click();
+    await edt.chipSourceTempsHorsClasse.click();
     await edt.chipSourceTempsClasse.click();
     await edt.btnEnregistrerEdtCalcule.click();
 
@@ -450,7 +450,7 @@ testAvecDonnees(
     await edt.btnEnregistrerEdtCalcule.click();
     await expect(edt.erreurEdtCalcule).toBeVisible();
 
-    await edt.chipSourceRecreation.click();
+    await edt.chipSourceTempsHorsClasse.click();
     await edt.btnEnregistrerEdtCalcule.click();
     await expect(edt.listeEdtsCalcules).toContainText('Sans source');
   },
@@ -481,7 +481,7 @@ testAvecDonnees('E2E-115 — EDT calculé : modifier puis supprimer', async ({ a
   await entete.navEmploiDuTemps.click();
   await edt.btnCreerEdtCalcule.click();
   await edt.inputNomEdtCalcule.fill('Calcul initial');
-  await edt.chipSourceRecreation.click();
+  await edt.chipSourceTempsHorsClasse.click();
   await edt.btnEnregistrerEdtCalcule.click();
 
   await edt.btnPremierEdtCalcule.click();
@@ -511,7 +511,7 @@ testAvecDonnees(
 
     await edt.btnCreerEdtCalcule.click();
     await edt.inputNomEdtCalcule.fill('Conservé');
-    await edt.chipSourceRecreation.click();
+    await edt.chipSourceTempsHorsClasse.click();
     await edt.btnEnregistrerEdtCalcule.click();
     await expect(edt.listeEdtsCalcules).toContainText('Conservé');
 
@@ -574,5 +574,30 @@ testAvecDonnees(
 
     await expect(edt.celluleMardiPremiereLigne).toContainText('Créneau mobile');
     await expect(edt.celluleLundiPremiereLigne).not.toContainText('Créneau mobile');
+  },
+);
+
+testAvecDonnees(
+  'E2E-132 — Pause déjeuner : libellé dans la grille et source « Temps hors classe » des EDT calculés',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    await edt.btnCreerEdt.click();
+    await edt.inputNomEdt.fill('EDT pause');
+    await edt.btnEnregistrerEdt.click();
+    await edt.btnNouveauCreneauLigne.click();
+    await edt.selectTypeCreneau.selectOption('pauseDejeuner');
+    await expect(edt.inputTitreTemps0).toHaveCount(0);
+    await edt.btnEnregistrerCreneau.click();
+    await expect(edt.typesCreneauGrille).toHaveText(['Pause déjeuner']);
+
+    await edt.btnCreerEdtCalcule.click();
+    await edt.inputNomEdtCalcule.fill('Hors classe');
+    await edt.chipSourceTempsHorsClasse.click();
+    await edt.btnEnregistrerEdtCalcule.click();
+    await edt.btnPremierEdtCalcule.click();
+    await expect(edt.cellulesCalculees.filter({ hasText: 'Pause déjeuner' })).not.toHaveCount(0);
   },
 );

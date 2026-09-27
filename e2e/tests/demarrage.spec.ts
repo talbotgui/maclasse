@@ -126,7 +126,7 @@ testAvecZip(
     await expect(edt.listeEdtsCalcules).toHaveCount(0);
     await edt.btnCreerEdtCalcule.click();
     await edt.inputNomEdtCalcule.fill('Calcul après migration');
-    await edt.chipSourceRecreation.click();
+    await edt.chipSourceTempsHorsClasse.click();
     await edt.btnEnregistrerEdtCalcule.click();
     await expect(edt.listeEdtsCalcules).toContainText('Calcul après migration');
   },

@@ -3,23 +3,25 @@ import { MigrationService } from './migration.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { DonneesApplication } from '../../modeles/donnees-application.modele';
 import { EdtCalculeMother } from '../../tests/emploi-du-temps-calcule.mother';
+import { CreneauMother, EdtMother, TempsCreneauMother } from '../../tests/emploi-du-temps.mother';
+import { SourceEdtCalcule } from '../../modeles/emploi-du-temps-calcule.modele';
 
 describe('MigrationService', () => {
   const service = new MigrationService();
 
   describe('version supportée', () => {
     it('la version courante est celle de la dernière étape de migration', () => {
-      expect(service.obtenirVersionCourante()).toBe('2026.09.3');
+      expect(service.obtenirVersionCourante()).toBe('2026.09.4');
     });
 
     it('accepte la version courante et les versions antérieures', () => {
-      expect(service.estVersionSupportee('2026.09.3')).toBe(true);
+      expect(service.estVersionSupportee('2026.09.4')).toBe(true);
       expect(service.estVersionSupportee('2026.09.1')).toBe(true);
       expect(service.estVersionSupportee('2025.12.9')).toBe(true);
     });
 
     it('refuse une version plus récente', () => {
-      expect(service.estVersionSupportee('2026.09.4')).toBe(false);
+      expect(service.estVersionSupportee('2026.09.5')).toBe(false);
       expect(service.estVersionSupportee('2026.10.1')).toBe(false);
       expect(service.estVersionSupportee('2027.01.1')).toBe(false);
     });
@@ -36,7 +38,7 @@ describe('MigrationService', () => {
 
     it('tolère un nombre de segments différent', () => {
       expect(service.estVersionSupportee('2026.09')).toBe(true);
-      expect(service.estVersionSupportee('2026.09.3.1')).toBe(false);
+      expect(service.estVersionSupportee('2026.09.4.1')).toBe(false);
     });
   });
 
@@ -64,7 +66,7 @@ describe('MigrationService', () => {
       delete anciennes.emploisDuTempsCalcules;
       const migrees = service.migrer(anciennes as DonneesApplication);
       expect(migrees.emploisDuTempsCalcules).toEqual([]);
-      expect(migrees.version).toBe('2026.09.3');
+      expect(migrees.version).toBe('2026.09.4');
     });
 
     it('conserve un tableau existant', () => {
@@ -104,6 +106,79 @@ describe('MigrationService', () => {
       expect(temps).toHaveLength(1);
       expect(temps[0].heureDebut).toBe('09:00');
       expect(temps[0].titre).toBe('Maths');
+    });
+  });
+
+  describe('regroupement des temps hors classe', () => {
+    it('remplace la source recreation par tempsHorsClasse', () => {
+      const donnees = DonneesMother.base({
+        version: '2026.09.3',
+        emploisDuTempsCalcules: [
+          EdtCalculeMother.base({
+            sources: ['recreation', 'absencesRegulieres'] as unknown as SourceEdtCalcule[],
+          }),
+        ],
+      });
+      const migrees = service.migrer(donnees);
+      expect(migrees.emploisDuTempsCalcules[0].sources).toEqual([
+        'tempsHorsClasse',
+        'absencesRegulieres',
+      ]);
+      expect(migrees.version).toBe('2026.09.4');
+    });
+
+    it('ne crée pas de doublon si tempsHorsClasse est déjà présent', () => {
+      const donnees = DonneesMother.base({
+        version: '2026.09.3',
+        emploisDuTempsCalcules: [
+          EdtCalculeMother.base({
+            sources: ['tempsHorsClasse', 'recreation'] as unknown as SourceEdtCalcule[],
+          }),
+        ],
+      });
+      expect(service.migrer(donnees).emploisDuTempsCalcules[0].sources).toEqual([
+        'tempsHorsClasse',
+      ]);
+    });
+
+    it('laisse inchangées les sources sans recreation', () => {
+      const donnees = DonneesMother.base({
+        version: '2026.09.3',
+        emploisDuTempsCalcules: [EdtCalculeMother.base({ sources: ['tempsClasse'] })],
+      });
+      expect(service.migrer(donnees).emploisDuTempsCalcules[0].sources).toEqual(['tempsClasse']);
+    });
+
+    it('retire les champs pédagogiques des temps hors classe et les conserve ailleurs', () => {
+      const tempsComplet = TempsCreneauMother.base({
+        titre: 'Maths',
+        disciplinesIds: ['d1'],
+        elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
+      });
+      const donnees = DonneesMother.base({
+        version: '2026.09.3',
+        emploisDuTemps: [
+          EdtMother.base({
+            creneaux: [
+              CreneauMother.lundi9h10({ id: 'p1', temps: [structuredClone(tempsComplet)] }),
+              CreneauMother.lundi9h10({
+                id: 'r1',
+                type: 'recreation',
+                temps: [structuredClone(tempsComplet)],
+              }),
+              CreneauMother.lundi9h10({
+                id: 'd1',
+                type: 'pauseDejeuner',
+                temps: [structuredClone(tempsComplet)],
+              }),
+            ],
+          }),
+        ],
+      });
+      const [pedagogique, recreation, pause] = service.migrer(donnees).emploisDuTemps[0].creneaux;
+      expect(pedagogique.temps[0]).toEqual(tempsComplet);
+      expect(recreation.temps[0]).toEqual(TempsCreneauMother.base());
+      expect(pause.temps[0]).toEqual(TempsCreneauMother.base());
     });
   });
 });

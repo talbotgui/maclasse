@@ -77,6 +77,8 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
   readonly selectTypeCreneau: Locator;
   /** Champ Titre du premier temps du créneau (input interne de mc-input, id suffixé `-input`, visible pour le type pédagogique). */
   readonly inputTitreTemps0: Locator;
+  /** Libellés du type de créneau affichés dans les cellules de la grille. */
+  readonly typesCreneauGrille: Locator;
   /** Titre (h2) du formulaire de créneau : « Créer créneau » ou « Modifier créneau ». */
   readonly titreFormulaireCreneau: Locator;
   /** Bouton de la liste sélectionnant l'EDT nommé « EDT pastilles » (créé par les tests). */
@@ -127,8 +129,8 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
   readonly btnPremierEdtCalcule: Locator;
   /** Champ Nom du formulaire d'EDT calculé (input interne de mc-input). */
   readonly inputNomEdtCalcule: Locator;
-  /** Chip source « Récréations ». */
-  readonly chipSourceRecreation: Locator;
+  /** Chip source « Temps hors classe » (récréations et pauses déjeuner). */
+  readonly chipSourceTempsHorsClasse: Locator;
   /** Chip source « Temps de classe ». */
   readonly chipSourceTempsClasse: Locator;
   /** Chip source « Absences régulières ». */
@@ -200,6 +202,7 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
     this.inputHeureDebutTemps0 = page.locator('#inputHeureDebutTemps0');
     this.inputHeureFinTemps0 = page.locator('#inputHeureFinTemps0');
     this.selectTypeCreneau = page.locator('#selectTypeCreneau select');
+    this.typesCreneauGrille = page.locator('.edt__creneau-type');
     this.inputTitreTemps0 = page.locator('#inputTitreTemps0-input');
     this.btnEdtPastilles = this.listeEdts.getByRole('button', {
       name: 'EDT pastilles',
@@ -231,7 +234,7 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
     );
     this.btnPremierEdtCalcule = page.locator('[id^="btnSelectionnerEdtCalcule"]').first();
     this.inputNomEdtCalcule = page.locator('#inputNomEdtCalcule-input');
-    this.chipSourceRecreation = page.locator('#chipSourceEdtCalculerecreation');
+    this.chipSourceTempsHorsClasse = page.locator('#chipSourceEdtCalculetempsHorsClasse');
     this.chipSourceTempsClasse = page.locator('#chipSourceEdtCalculetempsClasse');
     this.chipSourceAbsencesRegulieres = page.locator('#chipSourceEdtCalculeabsencesRegulieres');
     this.erreurEdtCalcule = page.locator('#erreurFormulaireEdtCalcule');

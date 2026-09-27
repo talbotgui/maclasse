@@ -6,11 +6,18 @@
 
 import { ElevesConcernes, FrequenceSemaine, JourSemaine } from './emploi-du-temps.modele';
 
-/** Source de données pouvant alimenter un emploi du temps calculé. */
-export type SourceEdtCalcule = 'recreation' | 'tempsClasse' | 'absencesRegulieres';
+/**
+ * Source de données pouvant alimenter un emploi du temps calculé.
+ * `tempsHorsClasse` regroupe les créneaux de type récréation et pause déjeuner.
+ */
+export type SourceEdtCalcule = 'tempsHorsClasse' | 'tempsClasse' | 'absencesRegulieres';
 
-/** Nature d'un créneau calculé, selon la source dont il provient. */
-export type TypeSourceCalculee = 'recreation' | 'tempsClasse' | 'absenceReguliere';
+/**
+ * Nature d'un créneau calculé, selon la source dont il provient.
+ * La source `tempsHorsClasse` produit des créneaux `recreation` ou `pauseDejeuner`.
+ */
+export type TypeSourceCalculee =
+  'recreation' | 'pauseDejeuner' | 'tempsClasse' | 'absenceReguliere';
 
 /**
  * Définition persistée d'un emploi du temps calculé (lecture seule).
@@ -44,7 +51,7 @@ export interface CreneauCalcule {
   heureFin: string;
   /** Source dont provient ce créneau. */
   source: TypeSourceCalculee;
-  /** Titre du temps source, libellé de l'absence ou libellé de la récréation. */
+  /** Titre du temps source, libellé de l'absence ou libellé du type de créneau hors classe. */
   libelle: string;
   /** Élève concerné (uniquement pour `source === 'absenceReguliere'`). */
   eleveConcerneId?: string;

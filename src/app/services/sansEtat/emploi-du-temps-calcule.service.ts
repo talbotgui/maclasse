@@ -92,7 +92,8 @@ export class EmploiDuTempsCalculeService {
    *
    * Les EDT sources retenus sont ceux dont la plage de dates chevauche celle de la définition
    * et dont la fréquence est compatible. Selon les sources cochées :
-   * - `recreation` : un créneau par temps des créneaux de type récréation (« concernés » ignorés) ;
+   * - `tempsHorsClasse` : un créneau par temps des créneaux de type récréation ou pause déjeuner
+   *   (« concernés » ignorés) ;
    * - `tempsClasse` : un créneau par temps des créneaux pédagogiques concernant au moins un des
    *   élèves choisis (aucun filtre si la définition concerne toute la classe) ;
    * - `absencesRegulieres` : une entrée par absence récurrente des élèves choisis, de parité compatible.
@@ -109,8 +110,8 @@ export class EmploiDuTempsCalculeService {
       this.verifierEdtSourceRetenu(edtCalcule, edt),
     );
 
-    if (edtCalcule.sources.includes('recreation')) {
-      creneaux.push(...this.calculerRecreations(edtsRetenus));
+    if (edtCalcule.sources.includes('tempsHorsClasse')) {
+      creneaux.push(...this.calculerTempsHorsClasse(edtsRetenus));
     }
     if (edtCalcule.sources.includes('tempsClasse')) {
       creneaux.push(...this.calculerTempsClasse(edtCalcule, edtsRetenus, eleves));
@@ -141,23 +142,24 @@ export class EmploiDuTempsCalculeService {
   }
 
   /**
-   * Produit un créneau calculé par temps des créneaux de type récréation.
+   * Produit un créneau calculé par temps des créneaux hors classe (récréation et pause déjeuner).
+   * La source du créneau calculé reprend le type du créneau d'origine.
    * @param edts EDT sources retenus.
-   * @returns Créneaux calculés de source `recreation`.
+   * @returns Créneaux calculés de source `recreation` ou `pauseDejeuner`.
    */
-  private calculerRecreations(edts: EmploiDuTemps[]): CreneauCalcule[] {
+  private calculerTempsHorsClasse(edts: EmploiDuTemps[]): CreneauCalcule[] {
     return edts.flatMap((edt) =>
-      edt.creneaux
-        .filter((c) => c.type === 'recreation')
-        .flatMap((c) =>
-          c.temps.map((t) => ({
-            jour: c.jour,
-            heureDebut: t.heureDebut,
-            heureFin: t.heureFin,
-            source: 'recreation' as const,
-            libelle: LIBELLES.edt.libelleRecreation,
-          })),
-        ),
+      edt.creneaux.flatMap((c) => {
+        const type = c.type;
+        if (type === 'pedagogique') return [];
+        return c.temps.map((t) => ({
+          jour: c.jour,
+          heureDebut: t.heureDebut,
+          heureFin: t.heureFin,
+          source: type,
+          libelle: LIBELLES.edt.typesCreneau[type],
+        }));
+      }),
     );
   }
 

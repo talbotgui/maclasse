@@ -216,7 +216,8 @@ export class EmploiDuTempsService {
   /**
    * Calcule les conflits entre un créneau et les absences récurrentes des élèves concernés.
    * Un conflit n'est retenu que si la parité de semaine de l'EDT et celle de l'absence
-   * sont compatibles (`verifierCompatibiliteFrequences`).
+   * sont compatibles (`verifierCompatibiliteFrequences`). Seuls les créneaux pédagogiques
+   * sont analysés : une absence pendant une récréation ou une pause déjeuner n'est pas un conflit.
    * @param creneauId UUID du créneau à analyser (cherché dans tous les EDTs).
    * @returns Liste de libellés au format `"NOM Prénom — libellé d'absence"`.
    */
@@ -228,7 +229,7 @@ export class EmploiDuTempsService {
       e.creneaux.some((c) => c.id === creneauId),
     );
     const creneau = edtTrouve?.creneaux.find((c) => c.id === creneauId);
-    if (!creneau || !edtTrouve) return [];
+    if (!creneau || !edtTrouve || creneau.type !== 'pedagogique') return [];
 
     const tousEleves = donnees.classe.eleves;
     const conflits: string[] = [];

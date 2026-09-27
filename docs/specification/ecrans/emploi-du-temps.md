@@ -89,16 +89,20 @@ Affichée uniquement quand un EDT est sélectionné dans la colonne gauche.
 | Élément | Condition |
 |---|---|
 | Heure début – heure fin | Toujours |
-| Type | Toujours (pédagogique / récréation / pause déjeuner) |
+| Type | Toujours : libellé du type (`LIBELLES.edt.typesCreneau`) — « Pédagogique », « Récréation », « Pause déjeuner » |
 | Titre | Type pédagogique |
 | Disciplines | Type pédagogique |
-| Icône warning ⚠ | Si conflit avec une absence récurrente d'un élève |
+| Pastilles des élèves concernés | Type pédagogique |
+| Icône warning ⚠ | Type pédagogique, si conflit avec une absence récurrente d'un élève |
+
+Couleur de fond selon le type : pédagogique, récréation, pause déjeuner (`--texte-secondaire` à 16 %).
 
 #### Icône warning créneau (triangle orange)
 
 - Tabulable et cliquable (RGAA)
 - Au clic : ouvre `popin-warnings-absences` listant les conflits du créneau
 - Calculé à l'**ouverture** de l'écran et au **chargement d'un EDT** dans la grille
+- **Créneaux pédagogiques uniquement** : une absence pendant une récréation ou une pause déjeuner (ex. élève qui déjeune chez lui) n'est pas un conflit
 
 ---
 
@@ -137,7 +141,7 @@ Affiché au clic sur une cellule ou sur un bouton AJOUTER / intercalaire "+".
 
 | Bouton | Comportement |
 |---|---|
-| **ENREGISTRER** | Soumet la commande à `DonneesService`, revient à l'état 1 (propriétés EDT) |
+| **ENREGISTRER** | Soumet la commande à `DonneesService`, revient à l'état 1 (propriétés EDT). Un créneau récréation ou pause déjeuner est enregistré sans titre, disciplines ni élèves concernés |
 | **ANNULER** | Abandonne les saisies, revient à l'état 1 |
 | **SUPPRIMER** | `mc-bouton-destruction` : supprime le créneau, revient à l'état 1 |
 
@@ -151,6 +155,20 @@ Affiché au clic sur une cellule ou sur un bouton AJOUTER / intercalaire "+".
 | Disciplines | Chips sélectionnables (un chip par domaine de niveau 1) — sélection multiple | Type pédagogique |
 | Titre | `mc-input` | Type pédagogique |
 | Élèves concernés | `mc-eleves-concernes` | Type pédagogique |
+
+---
+
+## Emplois du temps calculés
+
+Seconde liste de la colonne gauche : vues en lecture seule recalculées à partir des EDT et des absences. Définition : nom, dates, fréquence, élèves concernés et **sources** (chips, sélection multiple, au moins une) :
+
+| Source | Créneaux produits |
+|---|---|
+| Temps hors classe | Un par temps des créneaux récréation et pause déjeuner des EDT retenus, libellé et couleur de leur type ; « élèves concernés » ignoré |
+| Temps de classe | Un par temps pédagogique concernant au moins un des élèves choisis, libellé = titre du temps |
+| Absences régulières | Une par absence récurrente des élèves choisis, de parité compatible |
+
+EDT retenus : plage de dates qui chevauche celle de la définition et fréquence compatible.
 
 ---
 

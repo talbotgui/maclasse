@@ -159,6 +159,7 @@
                             calcule.source === 'tempsClasse'
                           "
                           [class.edt__creneau-cellule--recreation]="calcule.source === 'recreation'"
+                          [class.edt__creneau-cellule--pause]="calcule.source === 'pauseDejeuner'"
                           [class.edt__creneau-cellule--absence]="
                             calcule.source === 'absenceReguliere'
                           "
@@ -192,7 +193,9 @@
                               class="edt__btn-creneau"
                               (click)="selectionnerCreneau(entree.creneau)"
                             >
-                              <span class="edt__creneau-type">{{ entree.creneau.type }}</span>
+                              <span class="edt__creneau-type">{{
+                                LIBELLES.edt.typesCreneau[entree.creneau.type]
+                              }}</span>
                               @if (entree.temps.titre) {
                                 <span class="edt__creneau-titre">{{ entree.temps.titre }}</span>
                               }

@@ -3,7 +3,7 @@ name: modeles-donnees
 description: Modèles de données de l'application MaClasse — structure du fichier JSON, entités et leurs propriétés
 metadata:
   type: project
-  updated: 2026-06-09
+  updated: 2026-09-27
 related:
   - specification/description-generale
 ---
@@ -18,6 +18,7 @@ related:
   classe: Classe,
   referentiels: Referentiels,
   emploisDuTemps: EmploiDuTemps[],
+  emploisDuTempsCalcules: EmploiDuTempsCalcule[],
   projets: Projet[],
   cahierJournal: JourneeJournal[],
   ppi: Ppi[],           // à construire
@@ -206,12 +207,23 @@ related:
 {
   id: string,
   jour: JourSemaine,        // ex: 'lundi', 'mardi'...
+  type: 'pedagogique' | 'recreation' | 'pauseDejeuner',
+  temps: TempsCreneau[]     // 1 à 4, chacun avec son horaire
+}
+```
+
+Récréations et pauses déjeuner forment les **temps hors classe**.
+
+### TempsCreneau (dans CreneauEdt)
+
+```
+{
+  id: string,
   heureDebut: string,       // "HH:MM"
   heureFin: string,         // "HH:MM"
-  type: 'pedagogique' | 'recreation' | 'pauseDejeuner',
-  disciplinesIds?: string[], // si type pédagogique — plusieurs disciplines possibles
-  titre?: string,           // si type pédagogique
-  elevesConcernes?: {       // si type pédagogique
+  disciplinesIds?: string[], // si créneau pédagogique — plusieurs disciplines possibles
+  titre?: string,           // si créneau pédagogique
+  elevesConcernes?: {       // si créneau pédagogique
     type: 'classe' | 'groupes' | 'eleves',
     groupes: string[],
     elevesIds: string[]
@@ -219,7 +231,25 @@ related:
 }
 ```
 
+Les champs pédagogiques sont absents des temps d'un créneau récréation ou pause déjeuner.
+
 > `emploisDuTemps: EmploiDuTemps[]` est dans la structure racine du JSON (voir plus haut).
+
+### EmploiDuTempsCalcule
+
+Définition persistée d'une vue en lecture seule ; ses créneaux sont recalculés à chaque affichage (voir l'écran Emploi du temps).
+
+```
+{
+  id: string,
+  nom: string,              // obligatoire
+  dateDebut: string | null, // ISO date
+  dateFin: string | null,   // ISO date
+  frequence: 'paire' | 'impaire' | 'lesDeux',
+  sources: ('tempsHorsClasse' | 'tempsClasse' | 'absencesRegulieres')[], // au moins une
+  elevesConcernes: ElevesConcernes
+}
+```
 
 ---
 

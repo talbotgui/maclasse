@@ -224,7 +224,7 @@
       background-color: color-mix(in srgb, var(--succes, #27ae60) 12%, transparent);
     }
     &--pause {
-      background-color: color-mix(in srgb, var(--texte-secondaire) 8%, transparent);
+      background-color: color-mix(in srgb, var(--texte-secondaire) 16%, transparent);
     }
     &--absence {
       background-color: color-mix(in srgb, var(--avertissement) 12%, transparent);

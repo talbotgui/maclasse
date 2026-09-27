@@ -105,7 +105,7 @@ export class EdtcFormulaireComponent {
 
   /** Sources proposées sous forme de chips à sélection multiple. */
   protected readonly optionsSources: { valeur: SourceEdtCalcule; libelle: string }[] = [
-    { valeur: 'recreation', libelle: LIBELLES.edt.sourceRecreation },
+    { valeur: 'tempsHorsClasse', libelle: LIBELLES.edt.sourceTempsHorsClasse },
     { valeur: 'tempsClasse', libelle: LIBELLES.edt.sourceTempsClasse },
     { valeur: 'absencesRegulieres', libelle: LIBELLES.edt.sourceAbsencesRegulieres },
   ];

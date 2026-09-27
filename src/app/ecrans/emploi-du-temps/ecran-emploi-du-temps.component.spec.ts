@@ -151,6 +151,40 @@ describe('EcranEmploiDuTempsComponent', () => {
     });
   });
 
+  describe('temps hors classe', () => {
+    const edtAvecPause = EdtMother.base({
+      id: 'edt2',
+      creneaux: [
+        CreneauMother.avecHoraire('12:00', '13:30', { id: 'd1', type: 'pauseDejeuner' }),
+      ],
+    });
+
+    beforeEach(() => {
+      donneesService.charger(DonneesMother.base({ emploisDuTemps: [edtAvecPause] }));
+      fixture.detectChanges();
+    });
+
+    it('affiche le libellé du type de créneau dans la cellule', () => {
+      (component as any).selectionnerEdt(edtAvecPause);
+      fixture.detectChanges();
+      const cellule = fixture.nativeElement.querySelector('.edt__creneau-cellule--pause');
+      expect(cellule.querySelector('.edt__creneau-type').textContent.trim()).toBe(
+        LIBELLES.edt.typesCreneau.pauseDejeuner,
+      );
+    });
+
+    it("affiche une pause déjeuner d'un EDT calculé avec la couleur de la pause", () => {
+      (component as any).selectionnerEdtCalcule(
+        EdtCalculeMother.base({ sources: ['tempsHorsClasse'] }),
+      );
+      fixture.detectChanges();
+      const cellule = fixture.nativeElement.querySelector(
+        '.edt__creneau-calcule.edt__creneau-cellule--pause',
+      );
+      expect(cellule.textContent.trim()).toBe(LIBELLES.edt.typesCreneau.pauseDejeuner);
+    });
+  });
+
   describe('obtenirTempsDeGrille', () => {
     beforeEach(() => {
       (component as any).edtSelectionne.set(edtBase);
@@ -764,7 +798,7 @@ describe('EcranEmploiDuTempsComponent', () => {
       const nouvelle = EdtCalculeMother.base({
         id: 'edtc9',
         nom: 'Nouvelle',
-        sources: ['recreation'],
+        sources: ['tempsHorsClasse'],
       });
       (component as any).onEdtCalculeEnregistre(nouvelle);
       expect(donneesService.donnees()?.emploisDuTempsCalcules).toHaveLength(2);
@@ -800,7 +834,7 @@ describe('EcranEmploiDuTempsComponent', () => {
     it("la navigation est gardée si le formulaire d'EDT calculé est modifié", async () => {
       (component as any).selectionnerEdtCalcule(edtCalcule);
       fixture.detectChanges();
-      (component as any).formulaireEdtCalcule().basculerSource('recreation', true);
+      (component as any).formulaireEdtCalcule().basculerSource('tempsHorsClasse', true);
       const promesse = component.confirmerNavigation();
       expect((component as any).popinNavigationVisible()).toBe(true);
       (component as any).confirmerAbandonNavigation();

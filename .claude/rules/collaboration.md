@@ -26,3 +26,15 @@ Pour les questions d'analyse ou d'exploration, répondre directement sans attend
 **Quand ne pas l'invoquer :**
 - En cours d'implémentation, entre deux étapes d'un même incrément.
 - Pour une modification triviale ne constituant pas un incrément en soi (typo, renommage isolé).
+
+## Commit de l'incrément
+
+`.claude/settings.json` autorise Claude à exécuter `git commit`. Une fois un incrément validé par l'utilisateur (conception validée + relecture `revue-increment` sans anomalie bloquante), committer soi-même les modifications de cet incrément, sans attendre une demande explicite pour ce commit précis.
+
+**Portée stricte du commit :**
+- Ne committer **que** les fichiers appartenant à l'incrément qui vient d'être réalisé dans cette session — jamais l'ensemble du `git status` par réflexe.
+- Plusieurs sessions Claude Code peuvent travailler en parallèle sur ce dépôt : un fichier modifié par une autre session (ou par l'utilisateur) ne fait pas partie de l'incrément, même s'il apparaît modifié dans l'arbre de travail au moment du commit.
+- Si un fichier contient à la fois des changements de l'incrément et des changements étrangers (ex. `libelles.ts`, `docs/README.md` partagés entre plusieurs chantiers), ne stager que les hunks de l'incrément (`git add -p` ou équivalent) — jamais `git add` du fichier entier dans ce cas.
+- Avant de committer, vérifier avec `git diff --cached` que seuls les changements de l'incrément sont stagés.
+
+**Ce que ce paragraphe n'autorise pas :** `git push` reste soumis à la règle générale (uniquement sur demande explicite de l'utilisateur) — l'autorisation ici ne couvre que le commit local.

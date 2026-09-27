@@ -301,7 +301,7 @@ describe('EleveService', () => {
       expect(service.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([]);
     });
 
-    it('inclut une absence ponctuelle à la date exacte', () => {
+    it('inclut une absence ponctuelle à la date exacte, en MAJUSCULES', () => {
       service.creerEleve(
         EleveMother.base('e1', 'DUPONT', 'Marie', {
           absencesPonctuelles: [
@@ -313,7 +313,7 @@ describe('EleveService', () => {
         }),
       );
       expect(service.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([
-        '- DUPONT Marie : Rendez-vous médical',
+        '- DUPONT Marie : RENDEZ-VOUS MÉDICAL',
       ]);
     });
 
@@ -343,21 +343,56 @@ describe('EleveService', () => {
       ]);
     });
 
-    it('combine absence récurrente et ponctuelle pour un même élève', () => {
+    it('regroupe absence récurrente et ponctuelle du même élève sur une seule ligne, ponctuelle en dernier', () => {
       service.creerEleve(
         EleveMother.base('e1', 'MARTIN', 'Paul', {
-          absencesRecurrentes: [AbsenceRecurrenteMother.base()],
           absencesPonctuelles: [
             AbsencePonctuelleMother.base({
               date: DatesTest.lundiPaire,
               justification: 'Sortie scolaire',
             }),
           ],
+          absencesRecurrentes: [AbsenceRecurrenteMother.base()],
         }),
       );
       expect(service.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([
+        '- MARTIN Paul : Orthophonie (09:00-10:00) ; SORTIE SCOLAIRE',
+      ]);
+    });
+
+    it('trie les absences récurrentes du même élève par heure de début croissante', () => {
+      service.creerEleve(
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [
+            AbsenceRecurrenteMother.base({
+              id: 'ar1',
+              libelle: 'RASED',
+              heureDebut: '14:00',
+              heureFin: '15:00',
+            }),
+            AbsenceRecurrenteMother.base({
+              id: 'ar2',
+              libelle: 'Orthophonie',
+              heureDebut: '09:00',
+              heureFin: '10:00',
+            }),
+          ],
+        }),
+      );
+      expect(service.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([
+        '- MARTIN Paul : Orthophonie (09:00-10:00) ; RASED (14:00-15:00)',
+      ]);
+    });
+
+    it("ne produit qu'une ligne par élève concerné, aucune pour un élève sans absence retenue", () => {
+      service.creerEleve(
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+        }),
+      );
+      service.creerEleve(EleveMother.base('e2', 'DUPONT', 'Marie'));
+      expect(service.genererLibellesAbsencesDuJour(DatesTest.lundiPaire)).toEqual([
         '- MARTIN Paul : Orthophonie (09:00-10:00)',
-        '- MARTIN Paul : Sortie scolaire',
       ]);
     });
   });

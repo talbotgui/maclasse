@@ -130,12 +130,15 @@ export class EleveService {
   }
 
   /**
-   * Génère les libellés des absences (récurrentes et ponctuelles) du jour donné.
-   * Une absence récurrente est retenue si son jour correspond ET si sa parité de semaine
-   * est `"lesDeux"` ou coïncide avec la parité de la date. Une absence ponctuelle est
-   * retenue si sa date correspond exactement.
+   * Génère les libellés des absences (récurrentes et ponctuelles) du jour donné, regroupées
+   * en une ligne par élève concerné. Une absence récurrente est retenue si son jour correspond
+   * ET si sa parité de semaine est `"lesDeux"` ou coïncide avec la parité de la date. Une
+   * absence ponctuelle est retenue si sa date correspond exactement.
+   * Pour un même élève, les absences récurrentes retenues sont triées par heure de début
+   * croissante et libellées avec leur plage horaire ; les absences ponctuelles retenues
+   * suivent, leur justification étant mise en MAJUSCULES pour les distinguer dans le texte brut.
    * @param date Date ISO du jour à analyser.
-   * @returns Une ligne par absence retenue, triées par élève (NOM Prénom), ou `[]` si aucune.
+   * @returns Une ligne par élève concerné, triées par élève (NOM Prénom), ou `[]` si aucune.
    */
   public genererLibellesAbsencesDuJour(date: string): string[] {
     const donnees = this.donneesService.donnees();
@@ -145,20 +148,20 @@ export class EleveService {
     const eleves = this.trierElevesParNomPrenom(donnees.classe.eleves);
     const lignes: string[] = [];
     for (const eleve of eleves) {
-      for (const abs of eleve.absencesRecurrentes) {
-        if (
-          abs.jour === jourSemaine &&
-          (abs.paritesSemaine === 'lesDeux' || abs.paritesSemaine === parite)
-        ) {
-          lignes.push(
-            `- ${eleve.nom} ${eleve.prenom} : ${abs.libelle} (${abs.heureDebut}-${abs.heureFin})`,
-          );
-        }
-      }
-      for (const abs of eleve.absencesPonctuelles) {
-        if (abs.date === date) {
-          lignes.push(`- ${eleve.nom} ${eleve.prenom} : ${abs.justification}`);
-        }
+      const recurrentes = eleve.absencesRecurrentes
+        .filter(
+          (abs) =>
+            abs.jour === jourSemaine &&
+            (abs.paritesSemaine === 'lesDeux' || abs.paritesSemaine === parite),
+        )
+        .sort((a, b) => a.heureDebut.localeCompare(b.heureDebut))
+        .map((abs) => `${abs.libelle} (${abs.heureDebut}-${abs.heureFin})`);
+      const ponctuelles = eleve.absencesPonctuelles
+        .filter((abs) => abs.date === date)
+        .map((abs) => abs.justification.toUpperCase());
+      const absences = [...recurrentes, ...ponctuelles];
+      if (absences.length > 0) {
+        lignes.push(`- ${eleve.nom} ${eleve.prenom} : ${absences.join(' ; ')}`);
       }
     }
     return lignes;

@@ -277,7 +277,8 @@ export const LIBELLES = {
     labelType: 'Type',
     labelNotes: 'Notes de la journée',
     placeholderNotes: 'Rappels, événements, absents, matériel à prévoir…',
-    enteteAbsencesJour: 'Absences du jour :',
+    enteteAbsencesJour:
+      'Absences du jour (horaire entre parenthèses = récurrente, MAJUSCULES = ponctuelle) :',
     labelDisciplines: 'Disciplines',
     labelTitre: 'Titre',
     labelDescription: 'Description',

@@ -12,6 +12,7 @@ import {
 } from '../../tests/eleve.mother';
 import { DatesTest, SeanceMother } from '../../tests/cahier-journal.mother';
 import { DateUtils } from '../../utilitaires/date.utils';
+import { LIBELLES } from '../../libelles';
 
 describe('CahierJournalService', () => {
   let service: CahierJournalService;
@@ -61,7 +62,7 @@ describe('CahierJournalService', () => {
       donneesService.charger(d);
       service.initialiserJourneeVide(DatesTest.lundiPaire);
       expect(donneesService.donnees()?.cahierJournal[0].notes).toBe(
-        'Absences du jour :\n- MARTIN Paul : Orthophonie (09:00-10:00)',
+        `${LIBELLES.cahierJournal.enteteAbsencesJour}\n- MARTIN Paul : Orthophonie (09:00-10:00)`,
       );
     });
 
@@ -289,7 +290,7 @@ describe('CahierJournalService', () => {
       donneesService.charger(d);
       service.initialiserDepuisEdt(DatesTest.lundiPaire);
       expect(donneesService.donnees()?.cahierJournal[0].notes).toBe(
-        'Absences du jour :\n- MARTIN Paul : Orthophonie (09:00-10:00)',
+        `${LIBELLES.cahierJournal.enteteAbsencesJour}\n- MARTIN Paul : Orthophonie (09:00-10:00)`,
       );
     });
 
@@ -305,7 +306,7 @@ describe('CahierJournalService', () => {
       expect(donneesService.donnees()?.cahierJournal[0].notes).toBeUndefined();
     });
 
-    it('inclut une absence ponctuelle dans le pré-remplissage des notes', () => {
+    it('inclut une absence ponctuelle, en MAJUSCULES, dans le pré-remplissage des notes', () => {
       const d = DonneesMother.base();
       d.classe.eleves = [
         EleveMother.base('e1', 'DUPONT', 'Marie', {
@@ -320,7 +321,7 @@ describe('CahierJournalService', () => {
       donneesService.charger(d);
       service.initialiserDepuisEdt(DatesTest.lundiPaire);
       expect(donneesService.donnees()?.cahierJournal[0].notes).toBe(
-        'Absences du jour :\n- DUPONT Marie : Rendez-vous médical',
+        `${LIBELLES.cahierJournal.enteteAbsencesJour}\n- DUPONT Marie : RENDEZ-VOUS MÉDICAL`,
       );
     });
   });

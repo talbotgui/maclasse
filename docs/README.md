@@ -39,7 +39,7 @@ Un plan par évolution ou chantier. La numérotation est historique ; le 13 est 
 | [02](plans/02-tests-de-composants.md) | Tests des 31 composants | voir le fichier |
 | [03](plans/03-problemes-tests.md) | Problèmes relevés dans les tests | voir le fichier |
 | [04](plans/04-tests-e2e.md) | 104 scénarios E2E | périmé, remplacé par le plan 14 |
-| [05](plans/05-cahier-journal-absences-notes.md) | Cahier journal : absences dans la note | voir le fichier |
+| [05](plans/05-cahier-journal-absences-notes.md) | Cahier journal : absences dans la note | affiné par le plan 17 |
 | [06](plans/06-cahier-journal-pastilles-eleves.md) | Cahier journal : pastilles élèves/groupes | voir le fichier |
 | [07](plans/07-sauvegarde-automatique.md) | Sauvegarde automatique | voir le fichier |
 | [08](plans/08-conflit-edt-parite.md) | Correctif : conflit EDT et parité de semaine | voir le fichier |
@@ -50,6 +50,7 @@ Un plan par évolution ou chantier. La numérotation est historique ; le 13 est 
 | [14](plans/14-completer-tests-e2e.md) | Compléter les tests E2E | terminé le 2026-09-19 |
 | [15](plans/15-montees-de-version.md) | Montées de version (jsdom 30, Angular 22, TS 6.0) | terminé le 2026-09-20 |
 | [16](plans/16-site-documentaire.md) | Site documentaire `/maclasse/doc/` | proposé, en attente de validation |
+| [17](plans/17-cahier-journal-regroupement-absences.md) | Cahier journal : regroupement des absences par élève | terminé le 2026-09-27 |
 
 ## Audits
 

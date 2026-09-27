@@ -380,3 +380,27 @@ testAvecDonnees(
     await expect(param.btnEnregistrerPreferences).toBeEnabled();
   },
 );
+
+testAvecDonnees(
+  'E2E-135 — Identifiant saisi au clavier dans une nouvelle ligne : aucune perte de focus',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const param = new SelecteursParametrage(appAvecDonnees);
+
+    await entete.navParametrage.click();
+
+    // Barème : 4 statuts existants → nouvelle ligne à l'index 4
+    await param.btnSectionBareme.click();
+    await param.btnAjouterStatut.click();
+    await param.champStatutId4.pressSequentially('ABCD');
+    await expect(param.champStatutId4).toHaveValue('ABCD');
+    await expect(param.champStatutId4).toBeFocused();
+
+    // Types de contact : 5 types existants → nouvelle ligne à l'index 5
+    await param.btnSectionTypesContact.click();
+    await param.btnAjouterTypeContact.click();
+    await param.champTypeContactId5.pressSequentially('TUT');
+    await expect(param.champTypeContactId5).toHaveValue('TUT');
+    await expect(param.champTypeContactId5).toBeFocused();
+  },
+);

@@ -14,7 +14,11 @@ related:
 
 # Plan 22 — Formulaires Élèves, Projets et Paramétrage en Reactive Forms
 
-**Statut : proposé le 2026-09-27, en attente de validation.** Aucune modification de code effectuée.
+**Statut : terminé le 2026-09-27.** Notes de réalisation :
+- liaisons par `[formControl]="groupe.controls.xxx"` (comme au plan 21) plutôt que `formControlName` / `formArrayName` ; dans le Paramétrage, chaque ligne est un `FormGroup` `{ idOrigine, valeur }` ;
+- `CursusAnnee.annee` (décision 6) : ENREGISTRER reste actif ; un champ année vidé émet l'année enregistrée de l'entrée (ou l'année de création d'une entrée nouvelle) ;
+- ENREGISTRER d'une ligne du Paramétrage fixe son `idOrigine` à l'identifiant enregistré, pour que la réconciliation qui suit réutilise la même instance de ligne ;
+- la perte de focus à la frappe dans l'« Identifiant » (contexte, 2e défaut) **ne se reproduisait pas** : le `@for` n'est réévalué que lorsque la référence du tableau change, ce que la saisie ne faisait pas. Le suivi par instance supprime ce risque latent (réévaluation après ajout, suppression ou rechargement) ; les tests unitaires et l'E2E-135 servent de non-régression mais passent aussi sur l'ancien code.
 
 ## Contexte
 

@@ -11,7 +11,9 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import type { WritableSignal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ReferentielService } from '../../services/sansEtat/referentiel.service';
@@ -33,7 +35,6 @@ import type {
   StatutAcquisition,
   StatutEleve,
   TypeContact,
-  ConfigEmploiDuTemps,
 } from '../../modeles/referentiels.modele';
 import type { JourSemaine } from '../../modeles/emploi-du-temps.modele';
 
@@ -58,6 +59,48 @@ interface EntreeSection {
   libelle: string;
 }
 
+/** Contrôles d'un formulaire dont chaque champ de `T` est un `FormControl` non nul. */
+type ControlesDe<T> = { [K in keyof T]: FormControl<T[K]> };
+
+/**
+ * Ligne d'une section liste : valeur éditée de l'entrée et identifiant de l'entrée chargée.
+ * Le suivi des lignes se fait par l'instance du `FormGroup`, stable d'un rechargement à l'autre.
+ */
+interface LigneFormulaire<T> {
+  /** Identifiant de l'entrée enregistrée représentée par la ligne (`null` si jamais enregistrée). */
+  idOrigine: FormControl<string | null>;
+  /** Valeur éditée de l'entrée. */
+  valeur: FormGroup<ControlesDe<T>>;
+}
+
+/** Structure typée du formulaire Enseignant & Classe. */
+interface FormulaireEnseignantClasse {
+  /** Prénom de l'enseignant. */
+  prenom: FormControl<string>;
+  /** Nom de l'enseignant. */
+  nom: FormControl<string>;
+  /** Année scolaire. */
+  annee: FormControl<string>;
+  /** Niveau de la classe. */
+  niveauClasse: FormControl<string>;
+}
+
+/** Structure typée du formulaire Semaine & Horaires. */
+interface FormulaireSemaineHoraires {
+  /** Jours ouvrés, pilotés par les chips, dans l'ordre de la semaine. */
+  joursOuvres: FormControl<JourSemaine[]>;
+  /** Heure de début de journée `HH:MM`. */
+  heureDebutJournee: FormControl<string>;
+  /** Heure de fin de journée `HH:MM`. */
+  heureFinJournee: FormControl<string>;
+}
+
+/** Structure typée du formulaire Préférences. */
+interface FormulairePreferences {
+  /** Délai de sauvegarde automatique en minutes ; chaîne vide si le champ est vidé. */
+  delaiSauvegardeAutoMinutes: FormControl<number | string>;
+}
+
 /**
  * Écran de paramétrage de l'application.
  * Deux colonnes : navigation par section à gauche, formulaire à droite.
@@ -66,7 +109,7 @@ interface EntreeSection {
   selector: 'ecran-parametrage',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
+    ReactiveFormsModule,
     McAutoFocusDirective,
     McInputComponent,
     McChampHeureComponent,
@@ -128,24 +171,6 @@ export class EcranParametrageComponent {
   /** Section actuellement affichée. */
   protected readonly sectionActive = signal<SectionId>('enseignantClasse');
 
-  /** Copie locale du formulaire Enseignant & Classe. */
-  protected formEnseignantClasse = {
-    prenom: '',
-    nom: '',
-    annee: '',
-    niveauClasse: '',
-  };
-
-  /** Copie locale du formulaire Semaine & Horaires. */
-  protected formSemaineHoraires: ConfigEmploiDuTemps = {
-    joursOuvres: [],
-    heureDebutJournee: '',
-    heureFinJournee: '',
-  };
-
-  /** Copie locale du formulaire Préférences. */
-  protected formPreferences = { delaiSauvegardeAutoMinutes: 5 };
-
   /** Borne minimale acceptée pour le délai de sauvegarde automatique, en minutes. */
   private static readonly DELAI_SAUVEGARDE_MIN = 1;
 
@@ -158,18 +183,60 @@ export class EcranParametrageComponent {
   /** Borne maximale exposée au template pour l'attribut natif `max` du champ délai. */
   protected readonly delaiSauvegardeMax = EcranParametrageComponent.DELAI_SAUVEGARDE_MAX;
 
-  /** Copies locales des listes éditables inline. */
-  protected readonly copiePeriodes = signal<Periode[]>([]);
-  /** Copies locales des groupes. */
-  protected readonly copieGroupes = signal<Groupe[]>([]);
-  /** Copies locales du barème. */
-  protected readonly copieBareme = signal<StatutAcquisition[]>([]);
-  /** Copies locales des statuts élève. */
-  protected readonly copieStatutsEleve = signal<StatutEleve[]>([]);
-  /** Copies locales des types de contact. */
-  protected readonly copieTypesContact = signal<TypeContact[]>([]);
-  /** Copies locales des jours fériés. */
-  protected readonly copieJoursFeries = signal<JourFerie[]>([]);
+  /** Formulaire réactif Enseignant & Classe. */
+  protected readonly formEnseignantClasse: FormGroup<FormulaireEnseignantClasse> =
+    new FormGroup<FormulaireEnseignantClasse>({
+      prenom: new FormControl('', { nonNullable: true }),
+      nom: new FormControl('', { nonNullable: true }),
+      annee: new FormControl('', { nonNullable: true }),
+      niveauClasse: new FormControl('', { nonNullable: true }),
+    });
+
+  /** Formulaire réactif Semaine & Horaires. */
+  protected readonly formSemaineHoraires: FormGroup<FormulaireSemaineHoraires> =
+    new FormGroup<FormulaireSemaineHoraires>({
+      joursOuvres: new FormControl<JourSemaine[]>([], { nonNullable: true }),
+      heureDebutJournee: new FormControl('', { nonNullable: true }),
+      heureFinJournee: new FormControl('', { nonNullable: true }),
+    });
+
+  /** Formulaire réactif Préférences (délai borné). */
+  protected readonly formPreferences: FormGroup<FormulairePreferences> =
+    new FormGroup<FormulairePreferences>({
+      delaiSauvegardeAutoMinutes: new FormControl<number | string>(5, {
+        nonNullable: true,
+        validators: [
+          Validators.required,
+          Validators.min(EcranParametrageComponent.DELAI_SAUVEGARDE_MIN),
+          Validators.max(EcranParametrageComponent.DELAI_SAUVEGARDE_MAX),
+        ],
+      }),
+    });
+
+  /**
+   * Statut du formulaire Préférences, suivi via `statusChanges` et resynchronisé après chaque
+   * chargement (un `reset` sans émission ne déclenche pas `statusChanges`).
+   */
+  private readonly statutPreferences: WritableSignal<string> = signal(this.formPreferences.status);
+
+  /** Lignes éditables des périodes scolaires. */
+  protected readonly lignesPeriodes = new FormArray<FormGroup<LigneFormulaire<Periode>>>([]);
+  /** Lignes éditables des groupes. */
+  protected readonly lignesGroupes = new FormArray<FormGroup<LigneFormulaire<Groupe>>>([]);
+  /** Lignes éditables du barème. */
+  protected readonly lignesBareme = new FormArray<FormGroup<LigneFormulaire<StatutAcquisition>>>(
+    [],
+  );
+  /** Lignes éditables des statuts élève. */
+  protected readonly lignesStatutsEleve = new FormArray<FormGroup<LigneFormulaire<StatutEleve>>>(
+    [],
+  );
+  /** Lignes éditables des types de contact. */
+  protected readonly lignesTypesContact = new FormArray<FormGroup<LigneFormulaire<TypeContact>>>(
+    [],
+  );
+  /** Lignes éditables des jours fériés. */
+  protected readonly lignesJoursFeries = new FormArray<FormGroup<LigneFormulaire<JourFerie>>>([]);
 
   /** Index de la ligne venant d'être ajoutée à focaliser, par section (`null` si aucune). */
   protected readonly indexAFocaliserPeriode = signal<number | null>(null);
@@ -195,8 +262,15 @@ export class EcranParametrageComponent {
     () => this.donneesService.donnees()?.referentiels.competences ?? [],
   );
 
-  /** Réinitialise les copies locales à chaque changement de section ou de données. */
+  /**
+   * Recharge la section active à chaque changement de section ou de données. Les sections
+   * liste sont réconciliées ligne par ligne : les instances de `FormGroup` des entrées
+   * toujours présentes sont conservées.
+   */
   public constructor() {
+    this.formPreferences.statusChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((statut) => this.statutPreferences.set(statut));
     effect(() => {
       const section = this.sectionActive();
       const d = this.donneesService.donnees();
@@ -204,55 +278,53 @@ export class EcranParametrageComponent {
 
       switch (section) {
         case 'enseignantClasse':
-          this.formEnseignantClasse = {
-            prenom: d.enseignant.prenom,
-            nom: d.enseignant.nom,
-            annee: d.enseignant.annee,
-            niveauClasse: d.classe.niveau,
-          };
+          this.chargerEnseignantClasse();
           break;
         case 'periodes':
-          this.copiePeriodes.set(structuredClone(d.referentiels.periodes));
+          EcranParametrageComponent.reconcilierLignes(this.lignesPeriodes, d.referentiels.periodes);
           this.indexAFocaliserPeriode.set(null);
           break;
         case 'semaineHoraires':
-          this.formSemaineHoraires = structuredClone(d.referentiels.configEmploiDuTemps);
+          this.chargerSemaineHoraires();
           break;
         case 'groupes':
-          this.copieGroupes.set(structuredClone(d.referentiels.groupes));
+          EcranParametrageComponent.reconcilierLignes(this.lignesGroupes, d.referentiels.groupes);
           this.indexAFocaliserGroupe.set(null);
           break;
         case 'bareme':
-          this.copieBareme.set(structuredClone(d.referentiels.statutsAcquisition));
+          EcranParametrageComponent.reconcilierLignes(
+            this.lignesBareme,
+            d.referentiels.statutsAcquisition,
+          );
           this.indexAFocaliserBareme.set(null);
           break;
         case 'statutsEleve':
-          this.copieStatutsEleve.set(structuredClone(d.referentiels.statutsEleve));
+          EcranParametrageComponent.reconcilierLignes(
+            this.lignesStatutsEleve,
+            d.referentiels.statutsEleve,
+          );
           this.indexAFocaliserStatutEleve.set(null);
           break;
         case 'typesContact':
-          this.copieTypesContact.set(structuredClone(d.referentiels.typesContact));
+          EcranParametrageComponent.reconcilierLignes(
+            this.lignesTypesContact,
+            d.referentiels.typesContact,
+          );
           this.indexAFocaliserTypeContact.set(null);
           break;
         case 'joursFeries':
-          this.copieJoursFeries.set(structuredClone(d.referentiels.joursFeries));
+          EcranParametrageComponent.reconcilierLignes(
+            this.lignesJoursFeries,
+            d.referentiels.joursFeries,
+          );
           this.indexAFocaliserJourFerie.set(null);
           break;
         case 'preferences':
-          this.formPreferences = {
-            delaiSauvegardeAutoMinutes: d.configuration.delaiSauvegardeAutoMinutes,
-          };
+          this.chargerPreferences();
           break;
-        case 'domainesCompetences': {
-          const actifs = d.configuration.domainesActifs;
-          if (!actifs || actifs.length === 0) {
-            // Rien de configuré → tout cocher
-            this.copieDomainesActifs.set(new Set(this.collecterIdsDomaines()));
-          } else {
-            this.copieDomainesActifs.set(new Set(actifs));
-          }
+        case 'domainesCompetences':
+          this.chargerDomainesCompetences();
           break;
-        }
       }
       this.cdr.markForCheck();
     });
@@ -270,11 +342,12 @@ export class EcranParametrageComponent {
   protected enregistrerEnseignantClasse(): void {
     const d = this.donneesService.donnees();
     if (!d) return;
+    const valeurs = this.formEnseignantClasse.getRawValue();
     const ancienEnseignant = d.enseignant;
     const nouvelEnseignant: Enseignant = {
-      prenom: this.formEnseignantClasse.prenom,
-      nom: this.formEnseignantClasse.nom,
-      annee: this.formEnseignantClasse.annee,
+      prenom: valeurs.prenom,
+      nom: valeurs.nom,
+      annee: valeurs.annee,
     };
     this.donneesService.executer(
       new CommandeRemplacement<Enseignant>(
@@ -293,7 +366,7 @@ export class EcranParametrageComponent {
           data.classe.niveau = v;
         },
         ancienneClasse.niveau,
-        this.formEnseignantClasse.niveauClasse,
+        valeurs.niveauClasse,
         LIBELLES.commandes.modificationNiveauClasse,
       ),
     );
@@ -301,14 +374,7 @@ export class EcranParametrageComponent {
 
   /** Réinitialise le formulaire Enseignant & Classe depuis le store. */
   protected annulerEnseignantClasse(): void {
-    const d = this.donneesService.donnees();
-    if (!d) return;
-    this.formEnseignantClasse = {
-      prenom: d.enseignant.prenom,
-      nom: d.enseignant.nom,
-      annee: d.enseignant.annee,
-      niveauClasse: d.classe.niveau,
-    };
+    this.chargerEnseignantClasse();
     this.cdr.markForCheck();
   }
 
@@ -316,18 +382,26 @@ export class EcranParametrageComponent {
   protected enregistrerSemaineHoraires(): void {
     const d = this.donneesService.donnees();
     if (!d) return;
-    this.referentielService.modifierConfigEmploiDuTemps(
-      d.referentiels.configEmploiDuTemps,
-      structuredClone(this.formSemaineHoraires),
-    );
+    const valeurs = this.formSemaineHoraires.getRawValue();
+    this.referentielService.modifierConfigEmploiDuTemps(d.referentiels.configEmploiDuTemps, {
+      ...valeurs,
+      joursOuvres: [...valeurs.joursOuvres],
+    });
   }
 
   /** Réinitialise le formulaire Semaine & Horaires depuis le store. */
   protected annulerSemaineHoraires(): void {
-    const d = this.donneesService.donnees();
-    if (!d) return;
-    this.formSemaineHoraires = structuredClone(d.referentiels.configEmploiDuTemps);
+    this.chargerSemaineHoraires();
     this.cdr.markForCheck();
+  }
+
+  /**
+   * Indique si un jour est coché parmi les jours ouvrés du formulaire.
+   * @param jour Jour à tester.
+   * @returns `true` si le jour est ouvré dans le formulaire.
+   */
+  protected estJourOuvre(jour: JourSemaine): boolean {
+    return this.formSemaineHoraires.controls.joursOuvres.value.includes(jour);
   }
 
   /**
@@ -335,10 +409,8 @@ export class EcranParametrageComponent {
    * @param jour Jour à ajouter.
    */
   protected ajouterJourOuvre(jour: JourSemaine): void {
-    const joursOrdonnes = this.JOURS_SEMAINE.filter(
-      (j) => j === jour || this.formSemaineHoraires.joursOuvres.includes(j),
-    );
-    this.formSemaineHoraires = { ...this.formSemaineHoraires, joursOuvres: joursOrdonnes };
+    const controle = this.formSemaineHoraires.controls.joursOuvres;
+    controle.setValue(this.JOURS_SEMAINE.filter((j) => j === jour || controle.value.includes(j)));
   }
 
   /**
@@ -346,23 +418,21 @@ export class EcranParametrageComponent {
    * @param jour Jour à retirer.
    */
   protected retirerJourOuvre(jour: JourSemaine): void {
-    this.formSemaineHoraires = {
-      ...this.formSemaineHoraires,
-      joursOuvres: this.formSemaineHoraires.joursOuvres.filter((j) => j !== jour),
-    };
+    const controle = this.formSemaineHoraires.controls.joursOuvres;
+    controle.setValue(controle.value.filter((j) => j !== jour));
   }
 
-  /** Enregistre les préférences. */
+  /** Enregistre les préférences si le délai saisi est valide. */
   protected enregistrerPreferences(): void {
     const d = this.donneesService.donnees();
-    if (!d || !this.preferencesValides()) return;
+    if (!d || this.formPreferences.invalid) return;
     this.donneesService.executer(
       new CommandeRemplacement<number>(
         (data, v) => {
           data.configuration.delaiSauvegardeAutoMinutes = v;
         },
         d.configuration.delaiSauvegardeAutoMinutes,
-        this.formPreferences.delaiSauvegardeAutoMinutes,
+        Number(this.formPreferences.controls.delaiSauvegardeAutoMinutes.value),
         LIBELLES.commandes.modificationPreferences,
       ),
     );
@@ -371,42 +441,37 @@ export class EcranParametrageComponent {
     }
   }
 
-  /** @returns `true` si le délai de sauvegarde automatique saisi est compris dans les bornes autorisées. */
+  /** @returns `true` si le délai de sauvegarde automatique saisi est renseigné et compris dans les bornes autorisées. */
   protected preferencesValides(): boolean {
-    const delai = this.formPreferences.delaiSauvegardeAutoMinutes;
-    return (
-      delai >= EcranParametrageComponent.DELAI_SAUVEGARDE_MIN &&
-      delai <= EcranParametrageComponent.DELAI_SAUVEGARDE_MAX
-    );
+    return this.statutPreferences() === 'VALID';
   }
 
   /** Réinitialise les préférences depuis le store. */
   protected annulerPreferences(): void {
-    const d = this.donneesService.donnees();
-    if (!d) return;
-    this.formPreferences = {
-      delaiSauvegardeAutoMinutes: d.configuration.delaiSauvegardeAutoMinutes,
-    };
+    this.chargerPreferences();
     this.cdr.markForCheck();
   }
 
   /** Ajoute une période vide en bas de la liste et demande le focus dessus. */
   protected ajouterPeriode(): void {
-    this.copiePeriodes.update((liste) => [
-      ...liste,
-      { id: crypto.randomUUID(), nom: '', debut: '', fin: '' },
-    ]);
-    this.indexAFocaliserPeriode.set(this.copiePeriodes().length - 1);
+    this.lignesPeriodes.push(
+      EcranParametrageComponent.creerLigne<Periode>(
+        { id: crypto.randomUUID(), nom: '', debut: '', fin: '' },
+        null,
+      ),
+    );
+    this.indexAFocaliserPeriode.set(this.lignesPeriodes.length - 1);
   }
 
   /**
    * Enregistre la période à l'index donné (création ou modification).
-   * @param index Index dans la copie locale.
+   * @param index Index de la ligne.
    */
   protected enregistrerPeriode(index: number): void {
     const d = this.donneesService.donnees();
-    if (!d) return;
-    const periode = this.copiePeriodes()[index];
+    const ligne = this.lignesPeriodes.at(index);
+    if (!d || !ligne) return;
+    const periode = EcranParametrageComponent.marquerLigneEnregistree(ligne);
     const existante = d.referentiels.periodes.find((p) => p.id === periode.id);
     if (existante) {
       this.referentielService.modifierPeriode(existante, periode);
@@ -416,34 +481,43 @@ export class EcranParametrageComponent {
   }
 
   /**
-   * Supprime une période.
-   * @param periode Période à supprimer.
+   * Supprime la période de la ligne donnée.
+   * @param index Index de la ligne.
    */
-  protected supprimerPeriode(periode: Periode): void {
-    this.referentielService.supprimerPeriode(periode);
-    this.copiePeriodes.update((liste) => liste.filter((p) => p.id !== periode.id));
+  protected supprimerPeriode(index: number): void {
+    const ligne = this.lignesPeriodes.at(index);
+    if (!ligne) return;
+    this.referentielService.supprimerPeriode(ligne.controls.valeur.getRawValue());
+    this.lignesPeriodes.removeAt(index);
     this.indexAFocaliserPeriode.set(null);
   }
 
-  /** @returns `true` si la période est utilisée et ne peut être supprimée. */
+  /**
+   * Indique si une période est utilisée et ne peut être supprimée.
+   * @param periode Période à tester.
+   * @returns `true` si la période est utilisée.
+   */
   protected estPeriodeUtilisee(periode: Periode): boolean {
     return this.referentielService.estPeriodeUtilisee(periode.nom);
   }
 
   /** Ajoute un groupe vide et demande le focus dessus. */
   protected ajouterGroupe(): void {
-    this.copieGroupes.update((liste) => [...liste, { id: crypto.randomUUID(), libelle: '' }]);
-    this.indexAFocaliserGroupe.set(this.copieGroupes().length - 1);
+    this.lignesGroupes.push(
+      EcranParametrageComponent.creerLigne<Groupe>({ id: crypto.randomUUID(), libelle: '' }, null),
+    );
+    this.indexAFocaliserGroupe.set(this.lignesGroupes.length - 1);
   }
 
   /**
    * Enregistre un groupe.
-   * @param index Index dans la copie locale.
+   * @param index Index de la ligne.
    */
   protected enregistrerGroupe(index: number): void {
     const d = this.donneesService.donnees();
-    if (!d) return;
-    const groupe = this.copieGroupes()[index];
+    const ligne = this.lignesGroupes.at(index);
+    if (!d || !ligne) return;
+    const groupe = EcranParametrageComponent.marquerLigneEnregistree(ligne);
     const existant = d.referentiels.groupes.find((g) => g.id === groupe.id);
     if (existant) {
       this.referentielService.modifierGroupe(existant, groupe);
@@ -453,37 +527,46 @@ export class EcranParametrageComponent {
   }
 
   /**
-   * Supprime un groupe.
-   * @param groupe Groupe à supprimer.
+   * Supprime le groupe de la ligne donnée.
+   * @param index Index de la ligne.
    */
-  protected supprimerGroupe(groupe: Groupe): void {
-    this.referentielService.supprimerGroupe(groupe);
-    this.copieGroupes.update((liste) => liste.filter((g) => g.id !== groupe.id));
+  protected supprimerGroupe(index: number): void {
+    const ligne = this.lignesGroupes.at(index);
+    if (!ligne) return;
+    this.referentielService.supprimerGroupe(ligne.controls.valeur.getRawValue());
+    this.lignesGroupes.removeAt(index);
     this.indexAFocaliserGroupe.set(null);
   }
 
-  /** @returns `true` si le groupe est utilisé. */
+  /**
+   * Indique si un groupe est utilisé.
+   * @param groupe Groupe à tester.
+   * @returns `true` si le groupe est utilisé.
+   */
   protected estGroupeUtilise(groupe: Groupe): boolean {
     return this.referentielService.estGroupeUtilise(groupe.id);
   }
 
   /** Ajoute un statut d'acquisition vide et demande le focus dessus. */
   protected ajouterStatutAcquisition(): void {
-    this.copieBareme.update((liste) => [
-      ...liste,
-      { id: '', glyphe: '', libelle: '', couleur: '#000000', fond: '#ffffff' },
-    ]);
-    this.indexAFocaliserBareme.set(this.copieBareme().length - 1);
+    this.lignesBareme.push(
+      EcranParametrageComponent.creerLigne<StatutAcquisition>(
+        { id: '', glyphe: '', libelle: '', couleur: '#000000', fond: '#ffffff' },
+        null,
+      ),
+    );
+    this.indexAFocaliserBareme.set(this.lignesBareme.length - 1);
   }
 
   /**
    * Enregistre un statut d'acquisition.
-   * @param index Index dans la copie locale.
+   * @param index Index de la ligne.
    */
   protected enregistrerStatutAcquisition(index: number): void {
     const d = this.donneesService.donnees();
-    if (!d) return;
-    const statut = this.copieBareme()[index];
+    const ligne = this.lignesBareme.at(index);
+    if (!d || !ligne) return;
+    const statut = EcranParametrageComponent.marquerLigneEnregistree(ligne);
     const existant = d.referentiels.statutsAcquisition.find((s) => s.id === statut.id);
     if (existant) {
       this.referentielService.modifierStatutAcquisition(existant, statut);
@@ -493,34 +576,43 @@ export class EcranParametrageComponent {
   }
 
   /**
-   * Supprime un statut d'acquisition.
-   * @param statut Statut à supprimer.
+   * Supprime le statut d'acquisition de la ligne donnée.
+   * @param index Index de la ligne.
    */
-  protected supprimerStatutAcquisition(statut: StatutAcquisition): void {
-    this.referentielService.supprimerStatutAcquisition(statut);
-    this.copieBareme.update((liste) => liste.filter((s) => s.id !== statut.id));
+  protected supprimerStatutAcquisition(index: number): void {
+    const ligne = this.lignesBareme.at(index);
+    if (!ligne) return;
+    this.referentielService.supprimerStatutAcquisition(ligne.controls.valeur.getRawValue());
+    this.lignesBareme.removeAt(index);
     this.indexAFocaliserBareme.set(null);
   }
 
-  /** @returns `true` si le statut d'acquisition est utilisé. */
+  /**
+   * Indique si un statut d'acquisition est utilisé.
+   * @param statut Statut à tester.
+   * @returns `true` si le statut d'acquisition est utilisé.
+   */
   protected estStatutAcquisitionUtilise(statut: StatutAcquisition): boolean {
     return this.referentielService.estStatutAcquisitionUtilise(statut.id);
   }
 
   /** Ajoute un statut élève vide et demande le focus dessus. */
   protected ajouterStatutEleve(): void {
-    this.copieStatutsEleve.update((liste) => [...liste, { id: '', libelle: '' }]);
-    this.indexAFocaliserStatutEleve.set(this.copieStatutsEleve().length - 1);
+    this.lignesStatutsEleve.push(
+      EcranParametrageComponent.creerLigne<StatutEleve>({ id: '', libelle: '' }, null),
+    );
+    this.indexAFocaliserStatutEleve.set(this.lignesStatutsEleve.length - 1);
   }
 
   /**
    * Enregistre un statut élève.
-   * @param index Index dans la copie locale.
+   * @param index Index de la ligne.
    */
   protected enregistrerStatutEleve(index: number): void {
     const d = this.donneesService.donnees();
-    if (!d) return;
-    const statut = this.copieStatutsEleve()[index];
+    const ligne = this.lignesStatutsEleve.at(index);
+    if (!d || !ligne) return;
+    const statut = EcranParametrageComponent.marquerLigneEnregistree(ligne);
     const existant = d.referentiels.statutsEleve.find((s) => s.id === statut.id);
     if (existant) {
       this.referentielService.modifierStatutEleve(existant, statut);
@@ -530,34 +622,43 @@ export class EcranParametrageComponent {
   }
 
   /**
-   * Supprime un statut élève.
-   * @param statut Statut à supprimer.
+   * Supprime le statut élève de la ligne donnée.
+   * @param index Index de la ligne.
    */
-  protected supprimerStatutEleve(statut: StatutEleve): void {
-    this.referentielService.supprimerStatutEleve(statut);
-    this.copieStatutsEleve.update((liste) => liste.filter((s) => s.id !== statut.id));
+  protected supprimerStatutEleve(index: number): void {
+    const ligne = this.lignesStatutsEleve.at(index);
+    if (!ligne) return;
+    this.referentielService.supprimerStatutEleve(ligne.controls.valeur.getRawValue());
+    this.lignesStatutsEleve.removeAt(index);
     this.indexAFocaliserStatutEleve.set(null);
   }
 
-  /** @returns `true` si le statut élève est utilisé. */
+  /**
+   * Indique si un statut élève est utilisé.
+   * @param statut Statut à tester.
+   * @returns `true` si le statut élève est utilisé.
+   */
   protected estStatutEleveUtilise(statut: StatutEleve): boolean {
     return this.referentielService.estStatutEleveUtilise(statut.id);
   }
 
   /** Ajoute un type de contact vide et demande le focus dessus. */
   protected ajouterTypeContact(): void {
-    this.copieTypesContact.update((liste) => [...liste, { id: '', libelle: '' }]);
-    this.indexAFocaliserTypeContact.set(this.copieTypesContact().length - 1);
+    this.lignesTypesContact.push(
+      EcranParametrageComponent.creerLigne<TypeContact>({ id: '', libelle: '' }, null),
+    );
+    this.indexAFocaliserTypeContact.set(this.lignesTypesContact.length - 1);
   }
 
   /**
    * Enregistre un type de contact.
-   * @param index Index dans la copie locale.
+   * @param index Index de la ligne.
    */
   protected enregistrerTypeContact(index: number): void {
     const d = this.donneesService.donnees();
-    if (!d) return;
-    const type = this.copieTypesContact()[index];
+    const ligne = this.lignesTypesContact.at(index);
+    if (!d || !ligne) return;
+    const type = EcranParametrageComponent.marquerLigneEnregistree(ligne);
     const existant = d.referentiels.typesContact.find((t) => t.id === type.id);
     if (existant) {
       this.referentielService.modifierTypeContact(existant, type);
@@ -567,37 +668,46 @@ export class EcranParametrageComponent {
   }
 
   /**
-   * Supprime un type de contact.
-   * @param type Type à supprimer.
+   * Supprime le type de contact de la ligne donnée.
+   * @param index Index de la ligne.
    */
-  protected supprimerTypeContact(type: TypeContact): void {
-    this.referentielService.supprimerTypeContact(type);
-    this.copieTypesContact.update((liste) => liste.filter((t) => t.id !== type.id));
+  protected supprimerTypeContact(index: number): void {
+    const ligne = this.lignesTypesContact.at(index);
+    if (!ligne) return;
+    this.referentielService.supprimerTypeContact(ligne.controls.valeur.getRawValue());
+    this.lignesTypesContact.removeAt(index);
     this.indexAFocaliserTypeContact.set(null);
   }
 
-  /** @returns `true` si le type de contact est utilisé. */
+  /**
+   * Indique si un type de contact est utilisé.
+   * @param type Type à tester.
+   * @returns `true` si le type de contact est utilisé.
+   */
   protected estTypeContactUtilise(type: TypeContact): boolean {
     return this.referentielService.estTypeContactUtilise(type.id);
   }
 
   /** Ajoute un jour férié vide et demande le focus dessus. */
   protected ajouterJourFerie(): void {
-    this.copieJoursFeries.update((liste) => [
-      ...liste,
-      { id: crypto.randomUUID(), nom: '', date: '' },
-    ]);
-    this.indexAFocaliserJourFerie.set(this.copieJoursFeries().length - 1);
+    this.lignesJoursFeries.push(
+      EcranParametrageComponent.creerLigne<JourFerie>(
+        { id: crypto.randomUUID(), nom: '', date: '' },
+        null,
+      ),
+    );
+    this.indexAFocaliserJourFerie.set(this.lignesJoursFeries.length - 1);
   }
 
   /**
    * Enregistre un jour férié.
-   * @param index Index dans la copie locale.
+   * @param index Index de la ligne.
    */
   protected enregistrerJourFerie(index: number): void {
     const d = this.donneesService.donnees();
-    if (!d) return;
-    const jourFerie = this.copieJoursFeries()[index];
+    const ligne = this.lignesJoursFeries.at(index);
+    if (!d || !ligne) return;
+    const jourFerie = EcranParametrageComponent.marquerLigneEnregistree(ligne);
     const existant = d.referentiels.joursFeries.find((j) => j.id === jourFerie.id);
     if (existant) {
       this.referentielService.modifierJourFerie(existant, jourFerie);
@@ -607,13 +717,26 @@ export class EcranParametrageComponent {
   }
 
   /**
-   * Supprime un jour férié.
-   * @param jourFerie Jour férié à supprimer.
+   * Supprime le jour férié de la ligne donnée.
+   * @param index Index de la ligne.
    */
-  protected supprimerJourFerie(jourFerie: JourFerie): void {
-    this.referentielService.supprimerJourFerie(jourFerie);
-    this.copieJoursFeries.update((liste) => liste.filter((j) => j.id !== jourFerie.id));
+  protected supprimerJourFerie(index: number): void {
+    const ligne = this.lignesJoursFeries.at(index);
+    if (!ligne) return;
+    this.referentielService.supprimerJourFerie(ligne.controls.valeur.getRawValue());
+    this.lignesJoursFeries.removeAt(index);
     this.indexAFocaliserJourFerie.set(null);
+  }
+
+  /**
+   * Valeur courante d'une ligne, pour les liaisons du template. Référence stable tant que la
+   * ligne n'est pas modifiée (contrairement à `getRawValue()`, qui crée un nouvel objet à
+   * chaque appel) ; tous les contrôles étant actifs, elle contient tous les champs.
+   * @param ligne Ligne d'une section liste.
+   * @returns Valeur de l'entrée éditée.
+   */
+  protected obtenirValeurLigne<T>(ligne: FormGroup<LigneFormulaire<T>>): T {
+    return ligne.controls.valeur.value as T;
   }
 
   /**
@@ -703,6 +826,49 @@ export class EcranParametrageComponent {
 
   /** Réinitialise la sélection des domaines depuis le store. */
   protected annulerDomainesCompetences(): void {
+    this.chargerDomainesCompetences();
+    this.cdr.markForCheck();
+  }
+
+  /** Charge le formulaire Enseignant & Classe depuis le store. */
+  private chargerEnseignantClasse(): void {
+    const d = this.donneesService.donnees();
+    if (!d) return;
+    this.formEnseignantClasse.reset(
+      {
+        prenom: d.enseignant.prenom,
+        nom: d.enseignant.nom,
+        annee: d.enseignant.annee,
+        niveauClasse: d.classe.niveau,
+      },
+      { emitEvent: false },
+    );
+  }
+
+  /** Charge le formulaire Semaine & Horaires depuis le store. */
+  private chargerSemaineHoraires(): void {
+    const d = this.donneesService.donnees();
+    if (!d) return;
+    const config = d.referentiels.configEmploiDuTemps;
+    this.formSemaineHoraires.reset(
+      { ...config, joursOuvres: [...config.joursOuvres] },
+      { emitEvent: false },
+    );
+  }
+
+  /** Charge le formulaire Préférences depuis le store et resynchronise son statut. */
+  private chargerPreferences(): void {
+    const d = this.donneesService.donnees();
+    if (!d) return;
+    this.formPreferences.reset(
+      { delaiSauvegardeAutoMinutes: d.configuration.delaiSauvegardeAutoMinutes },
+      { emitEvent: false },
+    );
+    this.statutPreferences.set(this.formPreferences.status);
+  }
+
+  /** Charge la sélection des domaines actifs depuis le store (rien de configuré = tout coché). */
+  private chargerDomainesCompetences(): void {
     const d = this.donneesService.donnees();
     if (!d) return;
     const actifs = d.configuration.domainesActifs;
@@ -711,7 +877,71 @@ export class EcranParametrageComponent {
     } else {
       this.copieDomainesActifs.set(new Set(actifs));
     }
-    this.cdr.markForCheck();
+  }
+
+  /**
+   * Crée la ligne d'une section liste.
+   * @param entree Valeur initiale de la ligne.
+   * @param idOrigine Identifiant de l'entrée enregistrée représentée, `null` pour une nouvelle ligne.
+   * @returns Groupe de contrôles de la ligne.
+   */
+  private static creerLigne<T extends object>(
+    entree: T,
+    idOrigine: string | null,
+  ): FormGroup<LigneFormulaire<T>> {
+    const controles: Record<string, FormControl<unknown>> = {};
+    for (const [cle, valeur] of Object.entries(entree)) {
+      controles[cle] = new FormControl<unknown>(valeur, { nonNullable: true });
+    }
+    return new FormGroup<LigneFormulaire<T>>({
+      idOrigine: new FormControl<string | null>(idOrigine),
+      valeur: new FormGroup(controles) as unknown as FormGroup<ControlesDe<T>>,
+    });
+  }
+
+  /**
+   * Réconcilie les lignes d'une section liste avec les entrées enregistrées, dans leur ordre :
+   * la ligne d'une entrée toujours présente (même `idOrigine`) est réutilisée et reçoit la
+   * valeur enregistrée, une ligne est créée pour une entrée nouvelle, les autres lignes
+   * (entrées disparues, lignes jamais enregistrées) sont retirées.
+   * @param lignes Lignes de la section.
+   * @param entrees Entrées enregistrées de la section.
+   */
+  private static reconcilierLignes<T extends { id: string }>(
+    lignes: FormArray<FormGroup<LigneFormulaire<T>>>,
+    entrees: readonly T[],
+  ): void {
+    const lignesParId = new Map<string, FormGroup<LigneFormulaire<T>>>();
+    for (const ligne of lignes.controls) {
+      const idOrigine = ligne.controls.idOrigine.value;
+      if (idOrigine !== null) lignesParId.set(idOrigine, ligne);
+    }
+    const reconciliees = entrees.map((entree) => {
+      const existante = lignesParId.get(entree.id);
+      if (!existante)
+        return EcranParametrageComponent.creerLigne(structuredClone(entree), entree.id);
+      const valeur = structuredClone(entree) as Parameters<
+        typeof existante.controls.valeur.reset
+      >[0];
+      existante.controls.valeur.reset(valeur, { emitEvent: false });
+      return existante;
+    });
+    lignes.clear({ emitEvent: false });
+    for (const ligne of reconciliees) lignes.push(ligne, { emitEvent: false });
+  }
+
+  /**
+   * Marque une ligne comme représentant l'entrée enregistrée sous son identifiant courant,
+   * pour que la réconciliation qui suit l'enregistrement réutilise la ligne.
+   * @param ligne Ligne enregistrée.
+   * @returns Valeur de l'entrée à enregistrer.
+   */
+  private static marquerLigneEnregistree<T extends { id: string }>(
+    ligne: FormGroup<LigneFormulaire<T>>,
+  ): T {
+    const valeur = ligne.controls.valeur.getRawValue() as T;
+    ligne.controls.idOrigine.setValue(valeur.id);
+    return valeur;
   }
 
   /**
@@ -730,26 +960,28 @@ export class EcranParametrageComponent {
   }
 
   /**
-   * Indique si une ligne éditée inline diffère de sa version enregistrée dans le store.
-   * Une ligne absente du store (création en cours) est considérée comme modifiée.
-   * @param ligne Ligne de la copie locale (`undefined` si l'index est hors bornes).
+   * Indique si une ligne éditée inline diffère de sa version enregistrée dans le store,
+   * retrouvée par l'identifiant saisi. Une ligne absente du store (création en cours) est
+   * considérée comme modifiée.
+   * @param ligne Ligne de la section (`undefined` si l'index est hors bornes).
    * @param listeStore Liste correspondante dans le store.
    * @returns `true` si la ligne est nouvelle ou a été modifiée.
    */
   private verifierLigneModifiee<T extends { id: string }>(
-    ligne: T | undefined,
+    ligne: FormGroup<LigneFormulaire<T>> | undefined,
     listeStore: readonly T[],
   ): boolean {
     if (!ligne) return false;
-    const enregistree = listeStore.find((e) => e.id === ligne.id);
-    return !enregistree || !ObjetUtils.sontEgaux(enregistree, ligne);
+    const valeur = ligne.controls.valeur.getRawValue() as T;
+    const enregistree = listeStore.find((e) => e.id === valeur.id);
+    return !enregistree || !ObjetUtils.sontEgaux(enregistree, valeur);
   }
 
   /** @returns `true` si le formulaire Enseignant & Classe diffère du store. */
   protected estEnseignantClasseModifie(): boolean {
     const d = this.donneesService.donnees();
     if (!d) return false;
-    return !ObjetUtils.sontEgaux(this.formEnseignantClasse, {
+    return !ObjetUtils.sontEgaux(this.formEnseignantClasse.getRawValue(), {
       prenom: d.enseignant.prenom,
       nom: d.enseignant.nom,
       annee: d.enseignant.annee,
@@ -766,11 +998,9 @@ export class EcranParametrageComponent {
     const d = this.donneesService.donnees();
     if (!d) return false;
     const store = d.referentiels.configEmploiDuTemps;
+    const saisie = this.formSemaineHoraires.getRawValue();
     return !ObjetUtils.sontEgaux(
-      {
-        ...this.formSemaineHoraires,
-        joursOuvres: [...this.formSemaineHoraires.joursOuvres].sort((a, b) => a.localeCompare(b)),
-      },
+      { ...saisie, joursOuvres: [...saisie.joursOuvres].sort((a, b) => a.localeCompare(b)) },
       { ...store, joursOuvres: [...store.joursOuvres].sort((a, b) => a.localeCompare(b)) },
     );
   }
@@ -780,7 +1010,8 @@ export class EcranParametrageComponent {
     const d = this.donneesService.donnees();
     if (!d) return false;
     return (
-      this.formPreferences.delaiSauvegardeAutoMinutes !== d.configuration.delaiSauvegardeAutoMinutes
+      this.formPreferences.controls.delaiSauvegardeAutoMinutes.value !==
+      d.configuration.delaiSauvegardeAutoMinutes
     );
   }
 
@@ -798,67 +1029,70 @@ export class EcranParametrageComponent {
   }
 
   /**
-   * @param index Index de la ligne dans la copie locale.
+   * @param index Index de la ligne dans la section.
    * @returns `true` si la période est nouvelle ou modifiée.
    */
   protected estPeriodeLigneModifiee(index: number): boolean {
     const d = this.donneesService.donnees();
-    return !!d && this.verifierLigneModifiee(this.copiePeriodes()[index], d.referentiels.periodes);
+    return (
+      !!d && this.verifierLigneModifiee(this.lignesPeriodes.at(index), d.referentiels.periodes)
+    );
   }
 
   /**
-   * @param index Index de la ligne dans la copie locale.
+   * @param index Index de la ligne dans la section.
    * @returns `true` si le groupe est nouveau ou modifié.
    */
   protected estGroupeLigneModifiee(index: number): boolean {
     const d = this.donneesService.donnees();
-    return !!d && this.verifierLigneModifiee(this.copieGroupes()[index], d.referentiels.groupes);
+    return !!d && this.verifierLigneModifiee(this.lignesGroupes.at(index), d.referentiels.groupes);
   }
 
   /**
-   * @param index Index de la ligne dans la copie locale.
+   * @param index Index de la ligne dans la section.
    * @returns `true` si le statut d'acquisition est nouveau ou modifié.
    */
   protected estStatutAcquisitionLigneModifiee(index: number): boolean {
     const d = this.donneesService.donnees();
     return (
       !!d &&
-      this.verifierLigneModifiee(this.copieBareme()[index], d.referentiels.statutsAcquisition)
+      this.verifierLigneModifiee(this.lignesBareme.at(index), d.referentiels.statutsAcquisition)
     );
   }
 
   /**
-   * @param index Index de la ligne dans la copie locale.
+   * @param index Index de la ligne dans la section.
    * @returns `true` si le statut élève est nouveau ou modifié.
    */
   protected estStatutEleveLigneModifiee(index: number): boolean {
     const d = this.donneesService.donnees();
     return (
       !!d &&
-      this.verifierLigneModifiee(this.copieStatutsEleve()[index], d.referentiels.statutsEleve)
+      this.verifierLigneModifiee(this.lignesStatutsEleve.at(index), d.referentiels.statutsEleve)
     );
   }
 
   /**
-   * @param index Index de la ligne dans la copie locale.
+   * @param index Index de la ligne dans la section.
    * @returns `true` si le type de contact est nouveau ou modifié.
    */
   protected estTypeContactLigneModifiee(index: number): boolean {
     const d = this.donneesService.donnees();
     return (
       !!d &&
-      this.verifierLigneModifiee(this.copieTypesContact()[index], d.referentiels.typesContact)
+      this.verifierLigneModifiee(this.lignesTypesContact.at(index), d.referentiels.typesContact)
     );
   }
 
   /**
-   * @param index Index de la ligne dans la copie locale.
+   * @param index Index de la ligne dans la section.
    * @returns `true` si le jour férié est nouveau ou modifié.
    */
   protected estJourFerieLigneModifiee(index: number): boolean {
     const d = this.donneesService.donnees();
     return (
-      !!d && this.verifierLigneModifiee(this.copieJoursFeries()[index], d.referentiels.joursFeries)
+      !!d &&
+      this.verifierLigneModifiee(this.lignesJoursFeries.at(index), d.referentiels.joursFeries)
     );
   }
 }

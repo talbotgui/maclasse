@@ -5,6 +5,8 @@ import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { SauvegardeAutoService } from '../../services/sansEtat/sauvegarde-auto.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { CompetenceMother } from '../../tests/competence.mother';
+import { ReferentielService } from '../../services/sansEtat/referentiel.service';
+import { LIBELLES } from '../../libelles';
 
 describe('EcranParametrageComponent', () => {
   let fixture: ComponentFixture<EcranParametrageComponent>;
@@ -55,13 +57,12 @@ describe('EcranParametrageComponent', () => {
       expect((component as any).sectionActive()).toBe('periodes');
     });
 
-    it('réinitialise les copies locales selon la section activée', () => {
+    it('charge les lignes de la section activée', () => {
       (component as any).activerSection('periodes');
       fixture.detectChanges();
 
-      const periodes = (component as any).copiePeriodes();
-      expect(periodes).toHaveLength(1);
-      expect(periodes[0].id).toBe('p1');
+      const lignes = (component as any).lignesPeriodes.getRawValue();
+      expect(lignes).toEqual([{ idOrigine: 'p1', valeur: donnees.referentiels.periodes[0] }]);
     });
   });
 
@@ -72,14 +73,14 @@ describe('EcranParametrageComponent', () => {
     });
 
     it('formEnseignantClasse chargé depuis le store', () => {
-      expect((component as any).formEnseignantClasse.prenom).toBe('Marie');
-      expect((component as any).formEnseignantClasse.niveauClasse).toBe('CM2');
+      expect((component as any).formEnseignantClasse.controls.prenom.value).toBe('Marie');
+      expect((component as any).formEnseignantClasse.controls.niveauClasse.value).toBe('CM2');
     });
 
     it('enregistrerEnseignantClasse met à jour le store', () => {
-      (component as any).formEnseignantClasse.prenom = 'Sophie';
-      (component as any).formEnseignantClasse.nom = 'MARTIN';
-      (component as any).formEnseignantClasse.niveauClasse = 'CM1';
+      (component as any).formEnseignantClasse.controls.prenom.setValue('Sophie');
+      (component as any).formEnseignantClasse.controls.nom.setValue('MARTIN');
+      (component as any).formEnseignantClasse.controls.niveauClasse.setValue('CM1');
 
       (component as any).enregistrerEnseignantClasse();
 
@@ -89,11 +90,11 @@ describe('EcranParametrageComponent', () => {
     });
 
     it('annulerEnseignantClasse recharge depuis le store', () => {
-      (component as any).formEnseignantClasse.prenom = 'Modifié';
+      (component as any).formEnseignantClasse.controls.prenom.setValue('Modifié');
 
       (component as any).annulerEnseignantClasse();
 
-      expect((component as any).formEnseignantClasse.prenom).toBe('Marie');
+      expect((component as any).formEnseignantClasse.controls.prenom.value).toBe('Marie');
     });
   });
 
@@ -104,11 +105,11 @@ describe('EcranParametrageComponent', () => {
     });
 
     it('formSemaineHoraires chargé depuis le store', () => {
-      expect((component as any).formSemaineHoraires.joursOuvres).toContain('lundi');
+      expect((component as any).formSemaineHoraires.controls.joursOuvres.value).toContain('lundi');
     });
 
     it('enregistrerSemaineHoraires met à jour le store', () => {
-      (component as any).formSemaineHoraires.joursOuvres = ['lundi', 'mardi'];
+      (component as any).formSemaineHoraires.controls.joursOuvres.setValue(['lundi', 'mardi']);
 
       (component as any).enregistrerSemaineHoraires();
 
@@ -116,20 +117,37 @@ describe('EcranParametrageComponent', () => {
       expect(d?.referentiels.configEmploiDuTemps.joursOuvres).toEqual(['lundi', 'mardi']);
     });
 
+    it('annulerSemaineHoraires recharge depuis le store', () => {
+      (component as any).formSemaineHoraires.controls.heureDebutJournee.setValue('09:15');
+      (component as any).retirerJourOuvre('lundi');
+
+      (component as any).annulerSemaineHoraires();
+
+      expect((component as any).formSemaineHoraires.getRawValue()).toEqual(
+        donnees.referentiels.configEmploiDuTemps,
+      );
+      expect((component as any).estSemaineHorairesModifie()).toBe(false);
+    });
+
     it("ajouterJourOuvre ajoute un jour dans l'ordre canonique", () => {
-      (component as any).formSemaineHoraires.joursOuvres = ['lundi'];
+      (component as any).formSemaineHoraires.controls.joursOuvres.setValue(['lundi']);
 
       (component as any).ajouterJourOuvre('mercredi');
 
-      expect((component as any).formSemaineHoraires.joursOuvres).toEqual(['lundi', 'mercredi']);
+      expect((component as any).formSemaineHoraires.controls.joursOuvres.value).toEqual([
+        'lundi',
+        'mercredi',
+      ]);
     });
 
     it('retirerJourOuvre retire un jour', () => {
-      (component as any).formSemaineHoraires.joursOuvres = ['lundi', 'mercredi'];
+      (component as any).formSemaineHoraires.controls.joursOuvres.setValue(['lundi', 'mercredi']);
 
       (component as any).retirerJourOuvre('lundi');
 
-      expect((component as any).formSemaineHoraires.joursOuvres).not.toContain('lundi');
+      expect((component as any).formSemaineHoraires.controls.joursOuvres.value).not.toContain(
+        'lundi',
+      );
     });
   });
 
@@ -140,11 +158,11 @@ describe('EcranParametrageComponent', () => {
     });
 
     it('formPreferences chargé depuis le store', () => {
-      expect((component as any).formPreferences.delaiSauvegardeAutoMinutes).toBe(5);
+      expect((component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.value).toBe(5);
     });
 
     it('enregistrerPreferences met à jour le store', () => {
-      (component as any).formPreferences.delaiSauvegardeAutoMinutes = 10;
+      (component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.setValue(10);
 
       (component as any).enregistrerPreferences();
 
@@ -152,34 +170,34 @@ describe('EcranParametrageComponent', () => {
     });
 
     it('annulerPreferences recharge depuis le store', () => {
-      (component as any).formPreferences.delaiSauvegardeAutoMinutes = 99;
+      (component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.setValue(99);
 
       (component as any).annulerPreferences();
 
-      expect((component as any).formPreferences.delaiSauvegardeAutoMinutes).toBe(5);
+      expect((component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.value).toBe(5);
     });
 
     describe('preferencesValides', () => {
       it('borne minimale (1) valide', () => {
-        (component as any).formPreferences.delaiSauvegardeAutoMinutes = 1;
+        (component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.setValue(1);
 
         expect((component as any).preferencesValides()).toBe(true);
       });
 
       it('borne maximale (60) valide', () => {
-        (component as any).formPreferences.delaiSauvegardeAutoMinutes = 60;
+        (component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.setValue(60);
 
         expect((component as any).preferencesValides()).toBe(true);
       });
 
       it('0 invalide (sous la borne minimale)', () => {
-        (component as any).formPreferences.delaiSauvegardeAutoMinutes = 0;
+        (component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.setValue(0);
 
         expect((component as any).preferencesValides()).toBe(false);
       });
 
       it('61 invalide (au-dessus de la borne maximale)', () => {
-        (component as any).formPreferences.delaiSauvegardeAutoMinutes = 61;
+        (component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.setValue(61);
 
         expect((component as any).preferencesValides()).toBe(false);
       });
@@ -216,7 +234,7 @@ describe('EcranParametrageComponent', () => {
     });
 
     it('enregistrerPreferences ne modifie pas le store si le délai est hors bornes', () => {
-      (component as any).formPreferences.delaiSauvegardeAutoMinutes = 61;
+      (component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.setValue(61);
 
       (component as any).enregistrerPreferences();
 
@@ -226,7 +244,7 @@ describe('EcranParametrageComponent', () => {
     describe('relance du timer de sauvegarde automatique', () => {
       it('timer inactif → demarrer() non rappelé', () => {
         const spy = vi.spyOn(sauvegardeAutoService, 'demarrer');
-        (component as any).formPreferences.delaiSauvegardeAutoMinutes = 10;
+        (component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.setValue(10);
 
         (component as any).enregistrerPreferences();
 
@@ -236,7 +254,7 @@ describe('EcranParametrageComponent', () => {
       it('timer actif → demarrer() rappelé pour appliquer le nouveau délai', () => {
         sauvegardeAutoService.demarrer();
         const spy = vi.spyOn(sauvegardeAutoService, 'demarrer');
-        (component as any).formPreferences.delaiSauvegardeAutoMinutes = 10;
+        (component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.setValue(10);
 
         (component as any).enregistrerPreferences();
 
@@ -254,28 +272,42 @@ describe('EcranParametrageComponent', () => {
     it('ajouterPeriode ajoute une période vide', () => {
       (component as any).ajouterPeriode();
 
-      expect((component as any).copiePeriodes()).toHaveLength(2);
-      expect((component as any).copiePeriodes()[1].nom).toBe('');
+      const lignes = (component as any).lignesPeriodes;
+      expect(lignes.length).toBe(2);
+      expect(lignes.at(1).controls.valeur.controls.nom.value).toBe('');
+      expect(lignes.at(1).controls.idOrigine.value).toBeNull();
+      expect((component as any).indexAFocaliserPeriode()).toBe(1);
     });
 
     it('enregistrerPeriode modifie une période existante', () => {
-      (component as any).copiePeriodes.update((l: any[]) => {
-        const clone = [...l];
-        clone[0] = { ...clone[0], nom: 'Modifié' };
-        return clone;
-      });
+      (component as any).lignesPeriodes.at(0).controls.valeur.controls.nom.setValue('Modifié');
 
       (component as any).enregistrerPeriode(0);
 
       expect(donneesService.donnees()?.referentiels.periodes[0].nom).toBe('Modifié');
     });
 
-    it('supprimerPeriode retire de la copie et du store', () => {
-      const periode = (component as any).copiePeriodes()[0];
+    it('supprimerPeriode retire la ligne et la période du store', () => {
+      (component as any).supprimerPeriode(0);
 
-      (component as any).supprimerPeriode(periode);
+      expect((component as any).lignesPeriodes.length).toBe(0);
+      expect(donneesService.donnees()?.referentiels.periodes).toHaveLength(0);
+      expect((component as any).indexAFocaliserPeriode()).toBeNull();
+    });
 
-      expect((component as any).copiePeriodes()).toHaveLength(0);
+    it('supprimerPeriode ne fait rien pour un index inexistant', () => {
+      (component as any).supprimerPeriode(5);
+
+      expect(donneesService.donnees()?.referentiels.periodes).toHaveLength(1);
+    });
+
+    it('ajout puis enregistrement d’une nouvelle période', () => {
+      (component as any).ajouterPeriode();
+      (component as any).lignesPeriodes.at(1).controls.valeur.controls.nom.setValue('Période 2');
+
+      (component as any).enregistrerPeriode(1);
+
+      expect(donneesService.donnees()?.referentiels.periodes[1].nom).toBe('Période 2');
     });
   });
 
@@ -288,27 +320,33 @@ describe('EcranParametrageComponent', () => {
     it('ajouterGroupe ajoute un groupe vide', () => {
       (component as any).ajouterGroupe();
 
-      expect((component as any).copieGroupes()).toHaveLength(2);
+      expect((component as any).lignesGroupes.length).toBe(2);
+      expect((component as any).indexAFocaliserGroupe()).toBe(1);
     });
 
     it('enregistrerGroupe modifie un groupe existant', () => {
-      (component as any).copieGroupes.update((l: any[]) => {
-        const clone = [...l];
-        clone[0] = { ...clone[0], libelle: 'Groupe Modifié' };
-        return clone;
-      });
+      (component as any).lignesGroupes
+        .at(0)
+        .controls.valeur.controls.libelle.setValue('Groupe Modifié');
 
       (component as any).enregistrerGroupe(0);
 
       expect(donneesService.donnees()?.referentiels.groupes[0].libelle).toBe('Groupe Modifié');
     });
 
-    it('supprimerGroupe retire de la copie locale', () => {
-      const groupe = (component as any).copieGroupes()[0];
+    it('supprimerGroupe retire la ligne', () => {
+      (component as any).supprimerGroupe(0);
 
-      (component as any).supprimerGroupe(groupe);
+      expect((component as any).lignesGroupes.length).toBe(0);
+    });
 
-      expect((component as any).copieGroupes()).toHaveLength(0);
+    it('ajout puis enregistrement d’un nouveau groupe', () => {
+      (component as any).ajouterGroupe();
+      (component as any).lignesGroupes.at(1).controls.valeur.controls.libelle.setValue('Groupe B');
+
+      (component as any).enregistrerGroupe(1);
+
+      expect(donneesService.donnees()?.referentiels.groupes[1].libelle).toBe('Groupe B');
     });
   });
 
@@ -391,13 +429,13 @@ describe('EcranParametrageComponent', () => {
       });
 
       it('modifié dès qu un champ diffère', () => {
-        (component as any).formEnseignantClasse.prenom = 'Sophie';
+        (component as any).formEnseignantClasse.controls.prenom.setValue('Sophie');
 
         expect((component as any).estEnseignantClasseModifie()).toBe(true);
       });
 
       it('revient à non modifié après annulation', () => {
-        (component as any).formEnseignantClasse.nom = 'AUTRE';
+        (component as any).formEnseignantClasse.controls.nom.setValue('AUTRE');
         (component as any).annulerEnseignantClasse();
 
         expect((component as any).estEnseignantClasseModifie()).toBe(false);
@@ -433,7 +471,7 @@ describe('EcranParametrageComponent', () => {
       });
 
       it('repasse non modifié après enregistrement', () => {
-        (component as any).formEnseignantClasse.prenom = 'Sophie';
+        (component as any).formEnseignantClasse.controls.prenom.setValue('Sophie');
         (component as any).enregistrerEnseignantClasse();
         fixture.detectChanges();
 
@@ -452,7 +490,7 @@ describe('EcranParametrageComponent', () => {
       });
 
       it('modifié quand une heure change', () => {
-        (component as any).formSemaineHoraires.heureDebutJournee = '09:00';
+        (component as any).formSemaineHoraires.controls.heureDebutJournee.setValue('09:00');
 
         expect((component as any).estSemaineHorairesModifie()).toBe(true);
       });
@@ -475,7 +513,7 @@ describe('EcranParametrageComponent', () => {
       });
 
       it('modifié quand le délai change', () => {
-        (component as any).formPreferences.delaiSauvegardeAutoMinutes = 10;
+        (component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.setValue(10);
 
         expect((component as any).estPreferencesModifie()).toBe(true);
       });
@@ -489,7 +527,9 @@ describe('EcranParametrageComponent', () => {
         champ.dispatchEvent(new Event('input'));
         fixture.detectChanges();
 
-        expect((component as any).formPreferences.delaiSauvegardeAutoMinutes).toBe(5);
+        expect((component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.value).toBe(
+          5,
+        );
         expect((component as any).estPreferencesModifie()).toBe(false);
       });
     });
@@ -540,60 +580,54 @@ describe('EcranParametrageComponent', () => {
           detection: 'estPeriodeLigneModifiee',
           ajout: 'ajouterPeriode',
           muter: () =>
-            (component as any).copiePeriodes.update((l: any[]) => [
-              { ...l[0], nom: 'Renommée' },
-              ...l.slice(1),
-            ]),
+            (component as any).lignesPeriodes
+              .at(0)
+              .controls.valeur.controls.nom.setValue('Renommée'),
         },
         {
           section: 'groupes',
           detection: 'estGroupeLigneModifiee',
           ajout: 'ajouterGroupe',
           muter: () =>
-            (component as any).copieGroupes.update((l: any[]) => [
-              { ...l[0], libelle: 'Groupe B' },
-              ...l.slice(1),
-            ]),
+            (component as any).lignesGroupes
+              .at(0)
+              .controls.valeur.controls.libelle.setValue('Groupe B'),
         },
         {
           section: 'bareme',
           detection: 'estStatutAcquisitionLigneModifiee',
           ajout: 'ajouterStatutAcquisition',
           muter: () =>
-            (component as any).copieBareme.update((l: any[]) => [
-              { ...l[0], libelle: 'Autre' },
-              ...l.slice(1),
-            ]),
+            (component as any).lignesBareme
+              .at(0)
+              .controls.valeur.controls.libelle.setValue('Autre'),
         },
         {
           section: 'statutsEleve',
           detection: 'estStatutEleveLigneModifiee',
           ajout: 'ajouterStatutEleve',
           muter: () =>
-            (component as any).copieStatutsEleve.update((l: any[]) => [
-              { ...l[0], libelle: 'Autre' },
-              ...l.slice(1),
-            ]),
+            (component as any).lignesStatutsEleve
+              .at(0)
+              .controls.valeur.controls.libelle.setValue('Autre'),
         },
         {
           section: 'typesContact',
           detection: 'estTypeContactLigneModifiee',
           ajout: 'ajouterTypeContact',
           muter: () =>
-            (component as any).copieTypesContact.update((l: any[]) => [
-              { ...l[0], libelle: 'Autre' },
-              ...l.slice(1),
-            ]),
+            (component as any).lignesTypesContact
+              .at(0)
+              .controls.valeur.controls.libelle.setValue('Autre'),
         },
         {
           section: 'joursFeries',
           detection: 'estJourFerieLigneModifiee',
           ajout: 'ajouterJourFerie',
           muter: () =>
-            (component as any).copieJoursFeries.update((l: any[]) => [
-              { ...l[0], nom: 'Autre' },
-              ...l.slice(1),
-            ]),
+            (component as any).lignesJoursFeries
+              .at(0)
+              .controls.valeur.controls.nom.setValue('Autre'),
         },
       ];
 
@@ -656,15 +690,31 @@ describe('EcranParametrageComponent', () => {
   describe('CRUD des sections liste', () => {
     const cas: {
       section: string;
-      copie: string;
+      lignes: string;
       liste: string;
       enregistrer: string;
       supprimer: string;
       champ: string;
     }[] = [
       {
+        section: 'periodes',
+        lignes: 'lignesPeriodes',
+        liste: 'periodes',
+        enregistrer: 'enregistrerPeriode',
+        supprimer: 'supprimerPeriode',
+        champ: 'nom',
+      },
+      {
+        section: 'groupes',
+        lignes: 'lignesGroupes',
+        liste: 'groupes',
+        enregistrer: 'enregistrerGroupe',
+        supprimer: 'supprimerGroupe',
+        champ: 'libelle',
+      },
+      {
         section: 'bareme',
-        copie: 'copieBareme',
+        lignes: 'lignesBareme',
         liste: 'statutsAcquisition',
         enregistrer: 'enregistrerStatutAcquisition',
         supprimer: 'supprimerStatutAcquisition',
@@ -672,7 +722,7 @@ describe('EcranParametrageComponent', () => {
       },
       {
         section: 'statutsEleve',
-        copie: 'copieStatutsEleve',
+        lignes: 'lignesStatutsEleve',
         liste: 'statutsEleve',
         enregistrer: 'enregistrerStatutEleve',
         supprimer: 'supprimerStatutEleve',
@@ -680,7 +730,7 @@ describe('EcranParametrageComponent', () => {
       },
       {
         section: 'typesContact',
-        copie: 'copieTypesContact',
+        lignes: 'lignesTypesContact',
         liste: 'typesContact',
         enregistrer: 'enregistrerTypeContact',
         supprimer: 'supprimerTypeContact',
@@ -688,7 +738,7 @@ describe('EcranParametrageComponent', () => {
       },
       {
         section: 'joursFeries',
-        copie: 'copieJoursFeries',
+        lignes: 'lignesJoursFeries',
         liste: 'joursFeries',
         enregistrer: 'enregistrerJourFerie',
         supprimer: 'supprimerJourFerie',
@@ -696,7 +746,7 @@ describe('EcranParametrageComponent', () => {
       },
     ];
 
-    for (const { section, copie, liste, enregistrer, supprimer, champ } of cas) {
+    for (const { section, lignes, liste, enregistrer, supprimer, champ } of cas) {
       describe(section, () => {
         beforeEach(() => {
           (component as any).activerSection(section);
@@ -704,10 +754,9 @@ describe('EcranParametrageComponent', () => {
         });
 
         it('enregistre la modification de la ligne existante dans le store', () => {
-          (component as any)[copie].update((l: any[]) => [
-            { ...l[0], [champ]: 'Valeur modifiée' },
-            ...l.slice(1),
-          ]);
+          (component as any)[lignes]
+            .at(0)
+            .controls.valeur.controls[champ].setValue('Valeur modifiée');
 
           (component as any)[enregistrer](0);
 
@@ -716,13 +765,137 @@ describe('EcranParametrageComponent', () => {
         });
 
         it('supprime la ligne du store', () => {
-          const entite = (component as any)[copie]()[0];
-
-          (component as any)[supprimer](entite);
+          (component as any)[supprimer](0);
 
           expect((donneesService.donnees()?.referentiels as any)[liste]).toHaveLength(0);
+          expect((component as any)[lignes].length).toBe(0);
+        });
+
+        it('ne fait rien pour un index de ligne inexistant', () => {
+          (component as any)[enregistrer](5);
+          (component as any)[supprimer](5);
+
+          expect((donneesService.donnees()?.referentiels as any)[liste]).toHaveLength(1);
         });
       });
     }
+  });
+
+  describe('suivi des lignes par instance de FormGroup', () => {
+    const casIdentifiant: { section: string; champ: string }[] = [
+      { section: 'bareme', champ: '#champStatutId0-input' },
+      { section: 'statutsEleve', champ: '#champStatutEleveId0-input' },
+      { section: 'typesContact', champ: '#champTypeContactId0-input' },
+    ];
+
+    for (const { section, champ } of casIdentifiant) {
+      it(`${section} : saisir dans l'identifiant ne recrée pas la ligne et garde le focus`, () => {
+        (component as any).activerSection(section);
+        fixture.detectChanges();
+        const input = fixture.nativeElement.querySelector(champ) as HTMLInputElement;
+        input.focus();
+
+        input.value = 'XY';
+        input.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector(champ)).toBe(input);
+        expect(document.activeElement).toBe(input);
+      });
+    }
+
+    describe('réconciliation au rechargement de la section', () => {
+      beforeEach(() => {
+        (component as any).activerSection('bareme');
+        fixture.detectChanges();
+      });
+
+      it("enregistrement d'une autre ligne → mêmes instances pour les lignes toujours présentes", () => {
+        const lignes = (component as any).lignesBareme;
+        const premiere = lignes.at(0);
+        (component as any).ajouterStatutAcquisition();
+        const nouvelle = lignes.at(1);
+        nouvelle.controls.valeur.controls.id.setValue('EC');
+        nouvelle.controls.valeur.controls.libelle.setValue('En cours');
+
+        (component as any).enregistrerStatutAcquisition(1);
+        fixture.detectChanges();
+
+        expect(lignes.length).toBe(2);
+        expect(lignes.at(0)).toBe(premiere);
+        expect(lignes.at(1)).toBe(nouvelle);
+        expect(nouvelle.controls.idOrigine.value).toBe('EC');
+        expect((component as any).estStatutAcquisitionLigneModifiee(1)).toBe(false);
+      });
+
+      it('ANNULER global → ligne retirée, instance des autres lignes conservée', () => {
+        const lignes = (component as any).lignesBareme;
+        const premiere = lignes.at(0);
+        (component as any).ajouterStatutAcquisition();
+        lignes.at(1).controls.valeur.controls.id.setValue('EC');
+        (component as any).enregistrerStatutAcquisition(1);
+        fixture.detectChanges();
+
+        donneesService.annuler();
+        fixture.detectChanges();
+
+        expect(lignes.length).toBe(1);
+        expect(lignes.at(0)).toBe(premiere);
+      });
+
+      it('entrée modifiée ailleurs → la ligne réutilisée reçoit la valeur enregistrée', () => {
+        const lignes = (component as any).lignesBareme;
+        const premiere = lignes.at(0);
+        const statut = donnees.referentiels.statutsAcquisition[0];
+        TestBed.inject(ReferentielService).modifierStatutAcquisition(statut, {
+          ...statut,
+          libelle: 'Maîtrisé',
+        });
+        fixture.detectChanges();
+
+        expect(lignes.at(0)).toBe(premiere);
+        expect(premiere.controls.valeur.controls.libelle.value).toBe('Maîtrisé');
+      });
+    });
+  });
+
+  describe('bornes du délai de sauvegarde', () => {
+    const saisir = (valeur: string) => {
+      const input = fixture.nativeElement.querySelector(
+        '#champDelaiSauvegarde-input',
+      ) as HTMLInputElement;
+      input.value = valeur;
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+    };
+
+    beforeEach(() => {
+      (component as any).activerSection('preferences');
+      fixture.detectChanges();
+    });
+
+    for (const valeur of ['0', '61', '']) {
+      it(`délai « ${valeur} » → ENREGISTRER désactivé et message affiché`, () => {
+        saisir(valeur);
+
+        const btn = fixture.nativeElement.querySelector(
+          '#btnEnregistrerPreferences',
+        ) as HTMLButtonElement;
+        const erreur = fixture.nativeElement.querySelector('.parametrage__erreur') as HTMLElement;
+        expect(btn.disabled).toBe(true);
+        expect(erreur.getAttribute('role')).toBe('alert');
+        expect(erreur.textContent?.trim()).toBe(
+          LIBELLES.parametrage.erreurDelaiSauvegardeHorsBornes,
+        );
+      });
+    }
+
+    it('délai saisi émis en nombre', () => {
+      saisir('12');
+
+      (component as any).enregistrerPreferences();
+
+      expect(donneesService.donnees()?.configuration.delaiSauvegardeAutoMinutes).toBe(12);
+    });
   });
 });

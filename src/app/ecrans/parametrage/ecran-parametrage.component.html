@@ -54,22 +54,22 @@
             <mc-input
               id="champPrenomEnseignant"
               [label]="LIBELLES.parametrage.labelPrenom"
-              [(ngModel)]="formEnseignantClasse.prenom"
+              [formControl]="formEnseignantClasse.controls.prenom"
             />
             <mc-input
               id="champNomEnseignant"
               [label]="LIBELLES.parametrage.labelNom"
-              [(ngModel)]="formEnseignantClasse.nom"
+              [formControl]="formEnseignantClasse.controls.nom"
             />
             <mc-input
               id="champAnneeEnseignant"
               [label]="LIBELLES.parametrage.labelAnnee"
-              [(ngModel)]="formEnseignantClasse.annee"
+              [formControl]="formEnseignantClasse.controls.annee"
             />
             <mc-input
               id="champNiveauClasse"
               [label]="LIBELLES.parametrage.labelNiveauClasse"
-              [(ngModel)]="formEnseignantClasse.niveauClasse"
+              [formControl]="formEnseignantClasse.controls.niveauClasse"
             />
           </div>
         </section>
@@ -87,26 +87,26 @@
             </button>
           </div>
           <ul class="parametrage__liste-items">
-            @for (periode of copiePeriodes(); track periode.id; let i = $index) {
+            @for (ligne of lignesPeriodes.controls; track ligne; let i = $index) {
               @let periodeModifiee = estPeriodeLigneModifiee(i);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champPeriodeNom' + i"
                   [label]="LIBELLES.parametrage.labelPeriodeNom"
-                  [(ngModel)]="periode.nom"
+                  [formControl]="ligne.controls.valeur.controls.nom"
                   [mcAutoFocus]="i === indexAFocaliserPeriode()"
                 />
                 <mc-input
                   [id]="'champPeriodeDebut' + i"
                   [label]="LIBELLES.parametrage.labelPeriodeDebut"
                   type="date"
-                  [(ngModel)]="periode.debut"
+                  [formControl]="ligne.controls.valeur.controls.debut"
                 />
                 <mc-input
                   [id]="'champPeriodeFin' + i"
                   [label]="LIBELLES.parametrage.labelPeriodeFin"
                   type="date"
-                  [(ngModel)]="periode.fin"
+                  [formControl]="ligne.controls.valeur.controls.fin"
                 />
                 <div class="parametrage__item-actions">
                   <button
@@ -125,9 +125,9 @@
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerPeriode' + i"
-                    [desactive]="estPeriodeUtilisee(periode)"
+                    [desactive]="estPeriodeUtilisee(obtenirValeurLigne(ligne))"
                     [tooltipDesactive]="LIBELLES.parametrage.tooltipValeurUtilisee"
-                    (confirme)="supprimerPeriode(periode)"
+                    (confirme)="supprimerPeriode(i)"
                   />
                 </div>
               </li>
@@ -174,7 +174,7 @@
                   <mc-chip-filtre
                     [id]="'chipJour' + jour"
                     [libelle]="LIBELLES_JOURS[jour]"
-                    [actif]="formSemaineHoraires.joursOuvres.includes(jour)"
+                    [actif]="estJourOuvre(jour)"
                     (selectionChange)="$event ? ajouterJourOuvre(jour) : retirerJourOuvre(jour)"
                   />
                 }
@@ -183,12 +183,12 @@
             <mc-champ-heure
               id="champHeureDebutJournee"
               [label]="LIBELLES.parametrage.labelHeureDebutJournee"
-              [(ngModel)]="formSemaineHoraires.heureDebutJournee"
+              [formControl]="formSemaineHoraires.controls.heureDebutJournee"
             />
             <mc-champ-heure
               id="champHeureFinJournee"
               [label]="LIBELLES.parametrage.labelHeureFinJournee"
-              [(ngModel)]="formSemaineHoraires.heureFinJournee"
+              [formControl]="formSemaineHoraires.controls.heureFinJournee"
             />
           </div>
         </section>
@@ -206,13 +206,13 @@
             </button>
           </div>
           <ul class="parametrage__liste-items">
-            @for (groupe of copieGroupes(); track groupe.id; let i = $index) {
+            @for (ligne of lignesGroupes.controls; track ligne; let i = $index) {
               @let groupeModifie = estGroupeLigneModifiee(i);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champGroupeLibelle' + i"
                   [label]="LIBELLES.parametrage.labelGroupeLibelle"
-                  [(ngModel)]="groupe.libelle"
+                  [formControl]="ligne.controls.valeur.controls.libelle"
                   [mcAutoFocus]="i === indexAFocaliserGroupe()"
                 />
                 <div class="parametrage__item-actions">
@@ -232,9 +232,9 @@
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerGroupe' + i"
-                    [desactive]="estGroupeUtilise(groupe)"
+                    [desactive]="estGroupeUtilise(obtenirValeurLigne(ligne))"
                     [tooltipDesactive]="LIBELLES.parametrage.tooltipValeurUtilisee"
-                    (confirme)="supprimerGroupe(groupe)"
+                    (confirme)="supprimerGroupe(i)"
                   />
                 </div>
               </li>
@@ -259,42 +259,42 @@
             </button>
           </div>
           <ul class="parametrage__liste-items">
-            @for (statut of copieBareme(); track statut.id; let i = $index) {
+            @for (ligne of lignesBareme.controls; track ligne; let i = $index) {
               @let statutModifie = estStatutAcquisitionLigneModifiee(i);
               <li class="parametrage__item parametrage__item--bareme">
                 <mc-input
                   [id]="'champStatutId' + i"
                   [label]="LIBELLES.parametrage.labelStatutId"
-                  [(ngModel)]="statut.id"
+                  [formControl]="ligne.controls.valeur.controls.id"
                   [mcAutoFocus]="i === indexAFocaliserBareme()"
                 />
                 <mc-input
                   [id]="'champStatutGlyphe' + i"
                   [label]="LIBELLES.parametrage.labelStatutGlyphe"
-                  [(ngModel)]="statut.glyphe"
+                  [formControl]="ligne.controls.valeur.controls.glyphe"
                 />
                 <mc-input
                   [id]="'champStatutLibelle' + i"
                   [label]="LIBELLES.parametrage.labelStatutLibelle"
-                  [(ngModel)]="statut.libelle"
+                  [formControl]="ligne.controls.valeur.controls.libelle"
                 />
                 <mc-input
                   [id]="'champStatutCouleur' + i"
                   [label]="LIBELLES.parametrage.labelStatutCouleur"
                   type="color"
-                  [(ngModel)]="statut.couleur"
+                  [formControl]="ligne.controls.valeur.controls.couleur"
                 />
                 <mc-input
                   [id]="'champStatutFond' + i"
                   [label]="LIBELLES.parametrage.labelStatutFond"
                   type="color"
-                  [(ngModel)]="statut.fond"
+                  [formControl]="ligne.controls.valeur.controls.fond"
                 />
                 <div class="parametrage__apercu">
                   <span class="parametrage__label-apercu">{{
                     LIBELLES.parametrage.labelStatutApercu
                   }}</span>
-                  <mc-badge-statut [statut]="statut" />
+                  <mc-badge-statut [statut]="obtenirValeurLigne(ligne)" />
                 </div>
                 <div class="parametrage__item-actions">
                   <button
@@ -313,9 +313,9 @@
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerStatut' + i"
-                    [desactive]="estStatutAcquisitionUtilise(statut)"
+                    [desactive]="estStatutAcquisitionUtilise(obtenirValeurLigne(ligne))"
                     [tooltipDesactive]="LIBELLES.parametrage.tooltipValeurUtilisee"
-                    (confirme)="supprimerStatutAcquisition(statut)"
+                    (confirme)="supprimerStatutAcquisition(i)"
                   />
                 </div>
               </li>
@@ -340,19 +340,19 @@
             </button>
           </div>
           <ul class="parametrage__liste-items">
-            @for (statut of copieStatutsEleve(); track statut.id; let i = $index) {
+            @for (ligne of lignesStatutsEleve.controls; track ligne; let i = $index) {
               @let statutEleveModifie = estStatutEleveLigneModifiee(i);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champStatutEleveId' + i"
                   [label]="LIBELLES.parametrage.labelStatutEleveId"
-                  [(ngModel)]="statut.id"
+                  [formControl]="ligne.controls.valeur.controls.id"
                   [mcAutoFocus]="i === indexAFocaliserStatutEleve()"
                 />
                 <mc-input
                   [id]="'champStatutEleveLibelle' + i"
                   [label]="LIBELLES.parametrage.labelStatutEleveLibelle"
-                  [(ngModel)]="statut.libelle"
+                  [formControl]="ligne.controls.valeur.controls.libelle"
                 />
                 <div class="parametrage__item-actions">
                   <button
@@ -373,9 +373,9 @@
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerStatutEleve' + i"
-                    [desactive]="estStatutEleveUtilise(statut)"
+                    [desactive]="estStatutEleveUtilise(obtenirValeurLigne(ligne))"
                     [tooltipDesactive]="LIBELLES.parametrage.tooltipValeurUtilisee"
-                    (confirme)="supprimerStatutEleve(statut)"
+                    (confirme)="supprimerStatutEleve(i)"
                   />
                 </div>
               </li>
@@ -400,19 +400,19 @@
             </button>
           </div>
           <ul class="parametrage__liste-items">
-            @for (type of copieTypesContact(); track type.id; let i = $index) {
+            @for (ligne of lignesTypesContact.controls; track ligne; let i = $index) {
               @let typeContactModifie = estTypeContactLigneModifiee(i);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champTypeContactId' + i"
                   [label]="LIBELLES.parametrage.labelTypeContactId"
-                  [(ngModel)]="type.id"
+                  [formControl]="ligne.controls.valeur.controls.id"
                   [mcAutoFocus]="i === indexAFocaliserTypeContact()"
                 />
                 <mc-input
                   [id]="'champTypeContactLibelle' + i"
                   [label]="LIBELLES.parametrage.labelTypeContactLibelle"
-                  [(ngModel)]="type.libelle"
+                  [formControl]="ligne.controls.valeur.controls.libelle"
                 />
                 <div class="parametrage__item-actions">
                   <button
@@ -433,9 +433,9 @@
                   <mc-bouton-destruction
                     [petit]="true"
                     [idBase]="'btnSupprimerTypeContact' + i"
-                    [desactive]="estTypeContactUtilise(type)"
+                    [desactive]="estTypeContactUtilise(obtenirValeurLigne(ligne))"
                     [tooltipDesactive]="LIBELLES.parametrage.tooltipValeurUtilisee"
-                    (confirme)="supprimerTypeContact(type)"
+                    (confirme)="supprimerTypeContact(i)"
                   />
                 </div>
               </li>
@@ -456,20 +456,20 @@
             </button>
           </div>
           <ul class="parametrage__liste-items">
-            @for (jourFerie of copieJoursFeries(); track jourFerie.id; let i = $index) {
+            @for (ligne of lignesJoursFeries.controls; track ligne; let i = $index) {
               @let jourFerieModifie = estJourFerieLigneModifiee(i);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champJourFerieNom' + i"
                   [label]="LIBELLES.parametrage.labelJourFerieNom"
-                  [(ngModel)]="jourFerie.nom"
+                  [formControl]="ligne.controls.valeur.controls.nom"
                   [mcAutoFocus]="i === indexAFocaliserJourFerie()"
                 />
                 <mc-input
                   [id]="'champJourFerieDate' + i"
                   [label]="LIBELLES.parametrage.labelJourFerieDate"
                   type="date"
-                  [(ngModel)]="jourFerie.date"
+                  [formControl]="ligne.controls.valeur.controls.date"
                 />
                 <div class="parametrage__item-actions">
                   <button
@@ -492,7 +492,7 @@
                     [idBase]="'btnSupprimerJourFerie' + i"
                     [desactive]="false"
                     [tooltipDesactive]="''"
-                    (confirme)="supprimerJourFerie(jourFerie)"
+                    (confirme)="supprimerJourFerie(i)"
                   />
                 </div>
               </li>
@@ -539,7 +539,7 @@
               type="number"
               [min]="delaiSauvegardeMin"
               [max]="delaiSauvegardeMax"
-              [(ngModel)]="formPreferences.delaiSauvegardeAutoMinutes"
+              [formControl]="formPreferences.controls.delaiSauvegardeAutoMinutes"
             />
             @if (!prefValide) {
               <p class="parametrage__erreur" role="alert">

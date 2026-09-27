@@ -161,6 +161,7 @@ Chaîne ordonnée d'étapes dans `MigrationService` ; chaque étape amène les d
 | `2026.09.2` | Créneaux EDT à plat convertis en un `TempsCreneau` unique (`creneau.temps`) |
 | `2026.09.3` | Ajout du tableau `emploisDuTempsCalcules` |
 | `2026.09.4` | Source `recreation` des EDT calculés renommée `tempsHorsClasse` (sans doublon) ; champs pédagogiques retirés des temps des créneaux récréation et pause déjeuner |
+| `2026.09.5` | Champs `manualite` et `dispositifsMedicaux` retirés des élèves (abandonnés : aucun écran ne permettait de les saisir) |
 
 Les migrations sont appliquées dans l'ordre jusqu'à atteindre la version courante de l'application.
 

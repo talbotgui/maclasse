@@ -1,6 +1,6 @@
 ---
 name: reference-commandes-dev
-description: Commandes npm pour démarrer l'app, lancer les tests unitaires (Vitest) et les tests E2E (Playwright)
+description: Commandes npm pour démarrer l'app, lancer le lint (ESLint), les tests unitaires (Vitest) et les tests E2E (Playwright)
 metadata:
   type: reference
 ---
@@ -22,6 +22,16 @@ npm test
 Équivaut à `ng test`. Builder `@angular/build:unit-test` avec `runner: vitest` (voir `angular.json`, section `test`). Couverture activée par défaut (4 métriques : lignes, branches, fonctions, statements). Seuil minimal et conventions détaillées dans `.claude/rules/tests-code.md`.
 
 Fichiers exclus de la couverture (config `angular.json`) : `src/app/modeles/*.modele.ts`, `src/app/gardes/**`, `src/app/commandes/**`, `src/**/libelles.ts`, `src/**/composant-base.ts`, `src/app/app.ts`, `src/main.ts`, `**/*.html`.
+
+## Lint (ESLint)
+
+```bash
+npm run lint           # ng lint — bloquant, toutes les règles en error
+npm run lint:corriger  # ng lint --fix
+npx eslint <fichiers>  # limiter au périmètre d'un incrément
+```
+
+Configuration dans `eslint.config.js`, périmètre (`src/`, `e2e/`, `playwright.config.ts`) dans la cible `lint` d'`angular.json`. Conventions dans `.claude/rules/lint.md`.
 
 ## Tests E2E (Playwright)
 

@@ -38,6 +38,7 @@ Les règles de codage du projet sont dans **`/workspaces/maclasse/.claude/rules/
 | `conventions-nommage.md` | Nommage français, organisation des répertoires, pas d'underscore | `**/*` |
 | `html-ids.md` | `id` lowerCamelCase sur tout élément interactif | `**/*.html` |
 | `jsdoc.md` | JSDoc rédigée obligatoire sur tous les membres | `**/*.ts` |
+| `lint.md` | ESLint bloquant (`npm run lint`), correspondance règles ESLint ↔ conventions | `**/*` |
 | `rgaa-accessibilite.md` | Focus modales, balises natives, `focusDemande` | `**/*.html`, `**/*.ts` |
 | `scss-css.md` | Préfixe `mc-`, composition boutons, pas de hex, polices locales | `**/*.scss`, `**/index.html` |
 | `tests.md` | Vitest, TestBed, pas de mocks, Object Mother, couverture 80% | `**/*.spec.ts` |

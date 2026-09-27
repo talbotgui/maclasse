@@ -5,6 +5,7 @@
     "anthropic.claude-code",
     "searking.preview-vscode",
     "ms-playwright.playwright",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint"
   ]
 }

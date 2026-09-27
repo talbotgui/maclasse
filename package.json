@@ -12,7 +12,9 @@
     "e2e:avec-visu": "playwright test --headed",
     "e2e:ui": "playwright test --ui",
     "e2e:rapport": "playwright show-report",
-    "e2e:couverture": "COUVERTURE_E2E=1 playwright test"
+    "e2e:couverture": "COUVERTURE_E2E=1 playwright test",
+    "lint": "ng lint",
+    "lint:corriger": "ng lint --fix"
   },
   "private": true,
   "packageManager": "npm@11.9.0",
@@ -32,14 +34,18 @@
     "@angular/cli": "^22.1.8",
     "@angular/compiler-cli": "^22.1.7",
     "@axe-core/playwright": "^4.13.0",
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.61.0",
     "@types/node": "^26.0.0",
     "@vitest/coverage-v8": "^4.1.9",
     "angular-cli-ghpages": "^3.1.0",
+    "angular-eslint": "22.5.0",
+    "eslint": "^10.9.1",
     "jsdom": "^30.1.0",
     "monocart-reporter": "^2.12.2",
     "prettier": "^3.8.1",
     "typescript": "~6.0.3",
+    "typescript-eslint": "8.69.0",
     "vitest": "^4.0.8"
   }
 }

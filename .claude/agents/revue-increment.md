@@ -24,9 +24,10 @@ Si l'un des deux manque, détermine d'abord le périmètre avec `git status` et 
 
 1. Lister tous les fichiers modifiés ou créés dans l'incrément (`git diff --stat` par rapport au point de départ de l'incrément).
 2. Lire chaque fichier impacté en entier — pas seulement le diff — pour juger la cohérence avec le reste du fichier et du module.
-3. Vérifier la conformité aux règles du projet dans `.claude/rules/*.md` selon le type de fichier concerné (nommage français, architecture — `ComposantBase`/DTOs dans `modeles/`/constantes `static readonly` —, conventions Angular/TypeScript, RGAA/accessibilité, SCSS, conventions de tests unitaires et E2E).
-4. Vérifier que l'incrément correspond à l'intention annoncée : rien d'oublié par rapport au plan/à la demande, rien d'ajouté hors périmètre.
-5. Repérer les régressions probables, les incohérences avec le code existant, et les manques de couverture de tests.
+3. Lancer `npx eslint <fichiers .ts/.html de l'incrément>` (configuration `eslint.config.js`, voir `.claude/rules/lint.md`). Le lint est bloquant : toute erreur ESLint dans un fichier de l'incrément est une anomalie bloquante, à rapporter avec la règle et la ligne. Signaler aussi tout `eslint-disable` ajouté par l'incrément et toute modification d'`eslint.config.js` qui affaiblit une règle.
+4. Vérifier la conformité aux règles du projet dans `.claude/rules/*.md` selon le type de fichier concerné (nommage français, architecture — `ComposantBase`/DTOs dans `modeles/`/constantes `static readonly` —, conventions Angular/TypeScript, RGAA/accessibilité, SCSS, conventions de tests unitaires et E2E).
+5. Vérifier que l'incrément correspond à l'intention annoncée : rien d'oublié par rapport au plan/à la demande, rien d'ajouté hors périmètre.
+6. Repérer les régressions probables, les incohérences avec le code existant, et les manques de couverture de tests.
 
 ## Ce que tu ne fais pas
 

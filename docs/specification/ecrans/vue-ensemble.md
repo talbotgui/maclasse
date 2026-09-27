@@ -1,39 +1,89 @@
 ---
 name: vue-ensemble
-description: Détail des écrans de MaClasse — structure, navigation, interactions par écran
+description: Structure globale des écrans de MaClasse — entête, sauvegarde automatique, thèmes, responsive, UNDO/REDO, liens vers les spécifications d'écran
 metadata:
   type: project
-  updated: 2026-06-09
+  updated: 2026-09-27
 related:
   - specification/description-generale
   - specification/composants-partages
   - specification/services
 ---
 
+Ce document décrit ce qui est commun à tous les écrans. Le détail de chaque écran est dans sa propre spécification.
+
+## Écrans
+
+| Écran | Route | Spécification |
+|---|---|---|
+| Démarrage | `/demarrage` | [demarrage](demarrage.md) |
+| Accueil | `/accueil` | [accueil](accueil.md) |
+| Élèves | `/eleves` | [eleves](eleves.md) |
+| Projets | `/projets` | [projets](projets.md) |
+| Compétences | `/competences` | [competences](competences.md) |
+| Emploi du temps | `/emploi-du-temps` | [emploi-du-temps](emploi-du-temps.md) |
+| Cahier journal | `/cahier-journal` | [cahier-journal](cahier-journal.md) |
+| Paramétrage | `/parametrage` | [parametrage](parametrage.md) |
+
+Écrans de phase 2, non implémentés : PPI (Projet Pédagogique Individuel), Bulletins, Tableau de bord de progression.
+
+Gardes et routes : voir [elements-techniques](../elements-techniques.md#routing-angular).
+
+---
+
 ## Structure globale
 
 ### Entête fixe
 
+Composant `mc-entete` (voir [composants-partages](../composants-partages.md#mc-entete)).
+
 - Logo + titre de l'application
-- Boutons de navigation vers chaque écran (visibles uniquement après chargement des données)
-- **Champ de recherche globale** : autocomplétion en temps réel, résultats au format *"TYPE — titre"* (ex. "Élève — MARTIN Paul", "Projet — compostage") ; au clic sur un résultat, navigue vers l'écran concerné et sélectionne l'élément (visible uniquement après chargement)
-- Bouton **SAUVEGARDER** (re-télécharge le ZIP chiffré ; popin de saisie du mot de passe si première sauvegarde) — **tooltip : date et heure de la dernière sauvegarde**
-- Bouton **ANNULER** (undo) — désactivé si la pile undo est vide
-- Bouton **REFAIRE** (redo) — désactivé si la pile redo est vide
-- Bouton de changement de thème visuel (bascule entre les thèmes disponibles)
+- Liens de navigation vers chaque écran (visibles uniquement après chargement des données)
+- **Champ de recherche globale** : recherche différée de 300 ms ; chaque résultat affiche un libellé de type accentué (« Élève », « Projet ») puis le titre (« MARTIN Paul », « compostage ») ; navigation clavier ↑ / ↓ / Début / Fin dans les résultats ; au clic sur un résultat, navigue vers l'écran concerné et sélectionne l'élément (détail : [elements-techniques](../elements-techniques.md#composant-de-recherche-globale))
+- Bouton **SAUVEGARDER** : re-télécharge le ZIP chiffré ; popin de saisie du mot de passe si aucun mot de passe n'est connu (première sauvegarde d'une classe créée depuis les données d'exemple). **Désactivé tant qu'aucune modification n'est en attente** (`DonneesService.aDonneesModifiees`). Tooltip : date et heure de la dernière sauvegarde, ou « Aucune sauvegarde effectuée »
+- Bouton **ANNULER** (undo, ↶) : désactivé si la pile undo est vide ; tooltip et `aria-label` « Annuler : » suivi du libellé de la commande au sommet de la pile (ex. « Annuler : Ajout d'un élève »), ou « Annuler » si la pile est vide
+- Bouton **REFAIRE** (redo, ↷) : même principe avec « Refaire : » et la pile redo
+- Bouton de changement de thème visuel (cycle parmi les 5 thèmes), toujours visible
+
+#### État de l'entête
+
+| Élément | Sans données (démarrage) | Données chargées | Mode consultation du référentiel |
+|---|---|---|---|
+| Logo + titre | Visible | Visible | Visible |
+| Liens de navigation | Masqués | Visibles, lien actif mis en évidence | Visibles ; **tous désactivés sauf Compétences** |
+| Recherche globale | Masquée | Visible | **Masquée** |
+| SAUVEGARDER, ANNULER, REFAIRE | Masqués | Visibles | **Masqués** |
+| Bouton de thème | Actif | Actif | Actif |
+
+En mode consultation du référentiel (données d'exemple chargées par « Accéder aux programmes », voir [demarrage](demarrage.md)) :
+- Les liens désactivés portent `aria-disabled="true"`, sont retirés de l'ordre de tabulation et affichent le tooltip `LIBELLES.entete.tooltipNavRestreinte`, également lu par les lecteurs d'écran (`aria-describedby`)
+- La garde `referentielSeulGarde` bloque aussi l'accès direct à ces écrans
+- Pour sortir de ce mode, l'utilisateur recharge la page et crée ou charge une classe
 
 ### Sauvegarde automatique
 
-- Après le **premier clic sur SAUVEGARDER**, une sauvegarde automatique se déclenche **toutes les N minutes** (N configuré dans Paramétrage > Préférences, défaut : 2 minutes), **uniquement si des modifications ont été effectuées** depuis la dernière sauvegarde
-- Le délai est lu depuis `donnees.configuration.delaiSauvegardeAutoMinutes`
-- La sauvegarde automatique utilise le mot de passe déjà conservé en mémoire (`ContextService.motDePasse`) — aucune popin supplémentaire
+Service `SauvegardeAutoService` (voir [services](../services.md#sauvegardeautoservice)).
+
+- Le minuteur démarre **au chargement d'un ZIP** (le mot de passe est connu) ou **après la première sauvegarde manuelle** d'une classe créée depuis les données d'exemple
+- Une sauvegarde automatique se déclenche **toutes les N minutes** (N configuré dans Paramétrage > Préférences, **défaut : 5 minutes**, bornes 1–60), **uniquement si des modifications ont été effectuées** depuis la dernière sauvegarde
+- Le délai est lu depuis `donnees.configuration.delaiSauvegardeAutoMinutes` ; enregistrer les Préférences redémarre le minuteur avec le nouveau délai s'il était actif
+- La sauvegarde automatique utilise le mot de passe déjà conservé en mémoire (`ContexteService.motDePasse`) — aucune popin
 - Le tooltip du bouton SAUVEGARDER est mis à jour après chaque sauvegarde (manuelle ou automatique)
 
 ### Thèmes visuels
 
-- **Thème 1 (défaut)** : bleu et blanc
-- **Thème 2 (contraste)** : noir et blanc (accessibilité fort contraste)
-- Implémentation : variables CSS portées sur la balise DOM la plus haute (`<html>` ou `<app-root>`)
+Cinq thèmes, parcourus en cycle par le bouton de l'entête (détail des variables : [themes](../themes.md)) :
+
+| Identifiant | Thème |
+|---|---|
+| `defaut` | Océan (bleu et blanc), thème par défaut |
+| `foret` | Forêt (vert) |
+| `crepuscule` | Crépuscule |
+| `terre` | Terre |
+| `contraste` | Contraste (noir et blanc, accessibilité fort contraste) |
+
+- Implémentation : attribut `data-theme` sur `<html>` (absent pour le thème par défaut), variables CSS surchargées sur `:root[data-theme="…"]`
+- Le thème choisi est mémorisé dans le `localStorage`
 - Règle : aucune couleur hardcodée dans les composants, tout passe par les variables CSS
 
 ### Comportement responsive (petite largeur ≤ 768px)
@@ -56,131 +106,9 @@ related:
 
 ---
 
-## Écran de démarrage (avant chargement des données)
-
-- Le menu de l'entête est **masqué**
-- Une **popin obligatoire** (non fermable) s'affiche avec deux options :
-  1. **Charger un fichier** : upload d'un fichier ZIP chiffré + saisie du mot de passe (AES-GCM)
-  2. **Nouveau fichier** : crée un jeu de données vierge à partir de `public/donnees-defaut.json`
-- Une fois les données chargées, le menu s'affiche et l'utilisateur est redirigé vers l'écran d'accueil
-
----
-
-## Écran Accueil
-
-- Affiché après le chargement des données (page d'accueil par défaut)
-- Contenu : **résumé du cahier journal du jour**
-  - Date du jour
-  - Liste des séances de la journée courante avec :
-    - Heure de début / heure de fin
-    - Nombre d'élèves concernés
-    - Domaine(s) de compétences associés (niveau 1 de l'arbre)
-- Vue allégée (lecture seule, pas d'interaction de modification)
-
----
-
-## Écran Compétences
-
-- **Lecture seule** (pas d'édition dans cette version)
-- Layout : 2 zones — `mc-arbre-competences` à gauche (filtres + arbre intégrés) | panier à droite
-- Zone gauche : composant `mc-arbre-competences` — champ de recherche textuelle + chips de filtrage par domaine + arbre repliable (filtre masque les non-correspondants et déploie les ancêtres), navigation clavier WAI-ARIA Tree View
-- Zone droite : panier de compétences sélectionnées, persisté dans `ContextService`, export vers ProjetPeriode ou séance via popin
-
----
-
-## Écran Élèves
-
-- Layout : colonne latérale gauche + zone principale droite
-
-### Colonne gauche
-
-- Bouton **CRÉER** (ouvre un formulaire vide dans la zone droite)
-- Champ filtre de recherche (filtre sur prénom + nom)
-- Liste des élèves filtrée (prénom + nom), cliquable
-
-### Zone droite
-
-#### Mode lecture (par défaut au clic sur un élève)
-
-- Affichage complet de la fiche élève en lecture seule
-- Bouton **MODIFIER** → passe en mode édition
-- Bouton **SUPPRIMER** → `mc-bouton-destruction` (masque SUPPRIMER, affiche ANNULER + CONFIRMER)
-
-#### Mode édition / création
-
-- Formulaire complet de la fiche élève
-- Bouton **ANNULER** → revient au mode lecture sans modifier le JSON
-- Bouton **ENREGISTRER** → écrit dans le JSON via le service de mutation (UNDO/REDO)
-
----
-
-## Écran Projets
-
-- Même pattern liste+détail que l'écran Élèves
-- Colonne gauche : bouton CRÉER + filtre + liste des projets (nom)
-- Zone droite :
-  - Mode lecture : détail du projet (nom, description, élèves, périodes+compétences)
-  - Mode édition : formulaire + Annuler / Enregistrer / Supprimer
-
----
-
-## Écran Emploi du temps
-
-- Layout 3 colonnes : liste des EDT à gauche | grille hebdomadaire au centre | formulaire contextuel à droite
-- Colonne gauche : bouton CRÉER + liste des EDT (nom, fréquence, dates) avec icône warning si chevauchement
-- Chaque EDT a une fréquence (paire / impaire / les deux) et des dates de début/fin optionnelles
-- Deux EDT ne peuvent pas se chevaucher (même plage de dates ET même parité) — warning sur l'EDT dans la liste
-- Colonne droite contextuelle : propriétés EDT (état 1) ou formulaire créneau (état 2), sans mode lecture intermédiaire
-- Types de créneau : séance pédagogique, récréation (type dédié), pause déjeuner (type dédié)
-- **Warning non bloquant** à la sauvegarde si un créneau EDT est incohérent avec une absence récurrente d'élève
-
----
-
-## Écran Cahier journal
-
-- Layout : colonne latérale gauche + zone principale droite
-
-### Colonne gauche
-
-- **Mini-calendrier** pour navigation par date
-- Boutons de navigation rapide : **J−7**, **J−1**, **J+1**, **J+7**
-
-### Zone principale droite
-
-#### Journée non initialisée
-
-- Bouton **Initialiser vide** : crée une journée vide
-- Bouton **Initialiser depuis EDT** : pré-remplit depuis l'emploi du temps du jour correspondant
-- Ces deux boutons sont **inactifs** si une entrée existe déjà pour ce jour
-
-#### Journée existante
-
-- Liste ordonnée des séances de la journée (heure début/fin, disciplines, titre, élèves concernés)
-- Types de séance : pédagogique, récréation (type dédié), pause déjeuner (type dédié)
-- **Réorganisation** : flèches haut/bas (pas de glisser-déposer)
-- **Ajout** d'une séance possible en milieu de journée (insertion à une position donnée)
-- **Warning non bloquant** à la sauvegarde si une séance est incohérente avec une absence récurrente d'élève
-
----
-
-## Écrans phase 2 (à concevoir ultérieurement)
-
-- PPI (Projet Pédagogique Individuel)
-- Bulletins
-- Tableau de bord de progression
-
-## Écran Paramétrage (spécifié, à implémenter)
-
-- Layout 2 colonnes : liste fixe de 10 sections à gauche | contenu à droite
-- Sections formulaire simple : Enseignant & Classe, Semaine & Horaires
-- Sections liste éditable : Périodes, Barème d'évaluation, Groupes, Statuts élève, Types de contact, Raisons/Fréquences d'absence, Jours fériés
-- Bouton SUPPRIMER désactivé (tooltip + ARIA) si la valeur est utilisée dans les données
-
----
-
 ## Contrainte transverse : UNDO/REDO
 
-- **Aucune frappe ni perte de focus** ne modifie le JSON
-- **Seul un clic sur ENREGISTRER** déclenche une mutation
-- Chaque mutation transite par un **service dédié** (à concevoir) qui gère la pile UNDO/REDO
-- Granularité : 1 clic ENREGISTRER = 1 étape dans la pile
+- **Aucune frappe ni perte de focus** ne modifie le JSON, sauf les notes de la journée du cahier journal (enregistrées au blur, voir [cahier-journal](cahier-journal.md#notes-de-la-journée))
+- Sinon, **seul un clic sur ENREGISTRER** (ou une action explicite : SUPPRIMER confirmé, ↑ ↓ du cahier journal, initialisation, duplication, export du panier) déclenche une mutation
+- Chaque mutation est une **commande** soumise à `DonneesService`, qui gère les piles UNDO/REDO (voir [elements-techniques](../elements-techniques.md#pattern-commande-undoredo))
+- Granularité : 1 action = 1 étape dans la pile, avec un libellé affiché dans les tooltips ANNULER / REFAIRE

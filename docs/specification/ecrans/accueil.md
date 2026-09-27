@@ -3,7 +3,7 @@ name: accueil
 description: Spécification détaillée de l'écran d'accueil — résumé du cahier journal du jour
 metadata:
   type: project
-  updated: 2026-06-09
+  updated: 2026-09-27
 related:
   - specification/ecrans/vue-ensemble
   - specification/ecrans/demarrage
@@ -59,7 +59,7 @@ Pas de titre d'écran affiché — l'écran actif est identifiable via le bouton
 
 #### Cas — entrée existante
 
-Liste des séances de la journée, **filtrées** (récréation et pause déjeuner exclues), dans l'ordre chronologique.
+Liste des séances de la journée, **filtrées** (récréation et pause déjeuner exclues), **triées par heure de début** (quel que soit leur ordre de stockage).
 
 Pour chaque séance :
 

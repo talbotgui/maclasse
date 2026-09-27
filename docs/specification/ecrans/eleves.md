@@ -3,7 +3,7 @@ name: eleves
 description: Spécification détaillée de l'écran Élèves — liste filtrée, lecture seule, formulaire de création/modification
 metadata:
   type: project
-  updated: 2026-06-09
+  updated: 2026-09-27
 related:
   - specification/ecrans/vue-ensemble
   - specification/modeles-donnees
@@ -51,7 +51,7 @@ Deux colonnes côte à côte :
 - Affiche au format **NOM Prénom** (nom en majuscules)
 - Triée par **nom de famille** ascendant
 - Au clic sur un élève :
-  - Si aucun formulaire non enregistré ouvert → affiche la fiche en lecture seule dans la colonne droite + mémorise l'élève dans `ContextService`
+  - Si aucun formulaire non enregistré ouvert → affiche la fiche en lecture seule dans la colonne droite + mémorise l'élève dans `ContexteService.eleveSelectionne`
   - Si formulaire non enregistré ouvert → affiche la **popin d'avertissement**
 
 ---

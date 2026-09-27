@@ -1,16 +1,16 @@
 ---
 name: themes
-description: Variables CSS des thèmes visuels de MaClasse — 14 variables par thème, 5 thèmes proposés
+description: Variables CSS des thèmes visuels de MaClasse — 15 variables par thème, 5 thèmes
 metadata:
   type: project
-  updated: 2026-06-15
+  updated: 2026-09-27
 related:
   - specification/architecture-applicative
 ---
 
 ## Principe
 
-Chaque thème est défini par **14 variables CSS** sur `:root`. Le thème contraste surcharge sur `[data-theme="contraste"]`. Les variantes hover peuvent être calculées via `color-mix()` sans variable supplémentaire.
+Chaque thème est défini par **15 variables CSS** sur `:root`. Les autres thèmes surchargent ces variables sur `:root[data-theme="<id>"]`. Les valeurs de référence sont celles de `src/styles.scss`. Les variantes hover peuvent être calculées via `color-mix()` sans variable supplémentaire.
 
 Les 3 types de bouton ne nécessitent pas de variables dédiées — ils combinent les variables existantes :
 - **Primaire** → `background: --couleur-primaire ; color: --texte-sur-primaire`
@@ -20,7 +20,7 @@ Les 3 types de bouton ne nécessitent pas de variables dédiées — ils combine
 
 ---
 
-## Liste des 14 variables CSS
+## Liste des 15 variables CSS
 
 | Variable | Rôle |
 |---|---|
@@ -36,12 +36,13 @@ Les 3 types de bouton ne nécessitent pas de variables dédiées — ils combine
 | `--bordure` | Bordures légères, séparateurs |
 | `--couleur-focus` | Anneau de focus RGAA (rapport ≥ 3:1) |
 | `--chip-actif` | Fond des chips/filtres sélectionnés |
-| `--avertissement` | Triangles warning, icônes orange |
+| `--avertissement` | Teinte orange des fonds d'avertissement (bandeau des absences EDT, pastille « Non enregistré »…) |
+| `--avertissement-texte` | Couleur des icônes ⚠ de conflit (`.mc-icone-conflit`), assez sombre pour un contraste AA sur fond clair |
 | `--erreur` | Messages d'erreur, bouton danger |
 
 ---
 
-## 5 thèmes proposés
+## 5 thèmes
 
 ### Océan *(thème par défaut)*
 
@@ -60,6 +61,7 @@ Les 3 types de bouton ne nécessitent pas de variables dédiées — ils combine
   --couleur-focus:           #F59E0B;
   --chip-actif:              #BFDBFE;
   --avertissement:           #F59E0B;
+  --avertissement-texte:     #92400E;
   --erreur:                  #DC2626;
 }
 ```
@@ -81,6 +83,7 @@ Les 3 types de bouton ne nécessitent pas de variables dédiées — ils combine
   --couleur-focus:           #F59E0B;
   --chip-actif:              #86EFAC;
   --avertissement:           #D97706;
+  --avertissement-texte:     #92400E;
   --erreur:                  #DC2626;
 }
 ```
@@ -102,6 +105,7 @@ Les 3 types de bouton ne nécessitent pas de variables dédiées — ils combine
   --couleur-focus:           #F59E0B;
   --chip-actif:              #C4B5FD;
   --avertissement:           #D97706;
+  --avertissement-texte:     #92400E;
   --erreur:                  #DC2626;
 }
 ```
@@ -123,6 +127,7 @@ Les 3 types de bouton ne nécessitent pas de variables dédiées — ils combine
   --couleur-focus:           #7C3AED;
   --chip-actif:              #FCD34D;
   --avertissement:           #D97706;
+  --avertissement-texte:     #92400E;
   --erreur:                  #DC2626;
 }
 ```
@@ -144,6 +149,7 @@ Les 3 types de bouton ne nécessitent pas de variables dédiées — ils combine
   --couleur-focus:           #FF0000;
   --chip-actif:              #000000;
   --avertissement:           #CC7700;
+  --avertissement-texte:     #663300;
   --erreur:                  #CC0000;
 }
 ```

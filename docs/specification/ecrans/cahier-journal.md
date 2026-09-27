@@ -37,13 +37,17 @@ Deux zones (une seule colonne empilée sous 768 px) :
 | Date courante | Format long (ex. « lundi 9 juin 2026 ») |
 | Bouton **›** (J+1) | Avance d'un jour |
 | Bouton **»** (J+7) | Avance d'une semaine |
-| `mc-mini-calendrier` | Calendrier mensuel miniature ; met en évidence les jours ayant une entrée, les jours fériés et non ouvrés ; clic sur un jour → chargé dans la zone centrale |
+| `mc-mini-calendrier` | Calendrier mensuel miniature ; met en évidence les jours ayant une entrée ; grise et désactive les week-ends, jours fériés et jours non ouvrés ; clic sur un jour → chargé dans la zone centrale |
 | **DUPLIQUER LA JOURNÉE** | Si une journée existe ; ouvre le formulaire inline de duplication |
 | **IMPRIMER** | Si une journée existe ; `window.print()` |
 | **SUPPRIMER LA JOURNÉE** | Si une journée existe ; confirmation via `popin-avertissement` |
 | Formulaire inline de duplication | Champ date « jour cible » + CONFIRMER / ANNULER ; sert à la duplication de journée **et** de séance |
 
 - Navigation (flèches ou calendrier) : ferme le formulaire de séance ouvert
+- **Bornage par les périodes scolaires** : le mini-calendrier reçoit `dateMin` = premier jour de la première période (`referentiels.periodes`, plus petite date de début) et `dateMax` = dernier jour de la dernière période (plus grande date de fin) ; sans période, aucune borne. Ces bornes limitent **seulement** la navigation entre les mois du calendrier (voir [composants-partages](../composants-partages.md#mc-mini-calendrier)) :
+  - les boutons mois précédent / suivant sont désactivés sur le mois de la borne
+  - dans ce mois, les jours hors période restent cliquables
+  - les flèches **J−7 / J−1 / J+1 / J+7 ne sont pas bornées** : elles peuvent amener hors de l'année scolaire, et le calendrier suit alors la date affichée
 - Le jour consulté est mémorisé dans `ContexteService.jourCourantCahierJournal` et rechargé à l'ouverture de l'écran
 
 ---
@@ -74,6 +78,7 @@ Une seule ligne (`cj__entete`) :
 - Champ réactif `notesControl = new FormControl('', { nonNullable: true })` (Reactive Forms — pas de `ngModel`), resynchronisé par un `effect` (`setValue(..., { emitEvent: false })` + `cdr.markForCheck()`) sur `notesJournee()` — jamais pendant la frappe
 - `notesJournee = computed(() => journeeSelectionnee()?.notes ?? '')` : version persistée, utilisée pour le `<p>` d'impression et la condition d'affichage
 - Impression : un `<p class="cj__notes-impression">` (masqué à l'écran, rendu que les notes soient repliées ou non) remplace le textarea ; bascule gérée dans le `@media print` de `styles.scss` (`.cj__notes-saisie` et `.cj__bascule-notes` masqués, `.cj__notes-impression` affichée `white-space: pre-wrap`)
+- **Pré-remplissage avec les absences du jour** : à l'initialisation d'une journée (vide ou depuis l'EDT), s'il y a au moins une absence ce jour-là, les notes reçoivent l'en-tête « Absences du jour (horaire entre parenthèses = récurrente, MAJUSCULES = ponctuelle) : » (`cahierJournal.enteteAbsencesJour`) suivi d'une ligne par élève absent, triée par élève : « - NOM Prénom : Orthophonie (10:00-10:45) ; SORTIE MÉDICALE ». Les absences récurrentes (jour de la semaine, parité compatible) viennent en premier, triées par heure, avec leur horaire ; les absences ponctuelles de la date suivent, en MAJUSCULES (`EleveService.genererLibellesAbsencesDuJour`, règle détaillée dans le [plan 17](../../plans/17-cahier-journal-regroupement-absences.md)). Les notes restent ensuite librement modifiables
 - `dupliquerJournee` reporte les notes de la source vers la cible (création **et** remplacement) ; `dupliquerSeance` ne les touche pas (notes = niveau journée)
 - Libellés : `cahierJournal.labelNotes`, `cahierJournal.placeholderNotes`, `commandes.modificationNotesJournee`
 
@@ -95,7 +100,7 @@ Séances triées par heure. Chaque séance est une ligne (`cj__ligne`, grille `1
 | Heure début – heure fin | Toujours |
 | Type | Récréation / pause déjeuner uniquement (libellés `LIBELLES.edt.typeRecreation` / `typePauseDejeuner`) |
 | Titre | Séance pédagogique, si renseigné |
-| Icône warning ⚠ | Si `conflitDetecte` (conflit avec une absence récurrente d'un élève concerné) |
+| Icône warning ⚠ | Si `conflitDetecte` (champ dérivé persisté sur la séance : conflit avec une absence récurrente d'un élève concerné) |
 | Pastilles élèves/groupes (`mc-pastilles-eleves-concernes`) | Séance pédagogique, si des élèves sont concernés |
 | Objectifs | Séance pédagogique, si renseignés, sous l'en-tête de la carte |
 | ↑ monter / ↓ descendre | Toujours ; désactivés respectivement sur la première et la dernière séance ; **échangent les heures** avec la séance voisine |
@@ -111,7 +116,7 @@ Séances triées par heure. Chaque séance est une ligne (`cj__ligne`, grille `1
 
 - Tabulable et cliquable (RGAA)
 - Au clic : ouvre `popin-warnings-absences` listant les conflits (recalculés)
-- `conflitDetecte` est calculé à l'**ENREGISTRER** d'une séance ; s'il y a des conflits, la popin s'ouvre aussitôt (warning non bloquant)
+- `conflitDetecte` est recalculé à chaque **ENREGISTRER** d'une séance (`CahierJournalService.calculerConflitsPourSeance`) et enregistré avec elle ; s'il y a des conflits, la popin s'ouvre aussitôt (warning non bloquant). Il n'est pas recalculé si une absence récurrente est ajoutée ou modifiée ensuite dans la fiche élève
 
 ---
 

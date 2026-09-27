@@ -3,7 +3,7 @@ name: projets
 description: Spécification détaillée de l'écran Projets — structure similaire à l'écran Élèves
 metadata:
   type: project
-  updated: 2026-06-09
+  updated: 2026-09-27
 related:
   - specification/ecrans/eleves
   - specification/ecrans/vue-ensemble
@@ -39,7 +39,7 @@ Mêmes comportements que l'écran Élèves : popin d'avertissement si formulaire
 ### Filtre textuel
 
 - Champ `mc-champ-recherche`, déclenchement à la frappe
-- Filtre sur le nom du projet
+- Filtre sur le **nom et la description** du projet (`ProjetService.rechercherProjets`, insensible à la casse et aux accents)
 
 ### Chips de filtrage par domaine de compétence
 
@@ -50,7 +50,7 @@ Mêmes comportements que l'écran Élèves : popin d'avertissement si formulaire
 ### Liste des projets
 
 - Affiche le **nom du projet** uniquement
-- Au clic : affiche la fiche en lecture seule + mémorise dans `ContextService`
+- Au clic : affiche la fiche en lecture seule + mémorise dans `ContexteService.projetSelectionne` (restaurée au retour sur l'écran et par la recherche globale)
 
 ---
 

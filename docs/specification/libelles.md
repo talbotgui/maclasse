@@ -1,9 +1,9 @@
 ---
 name: libelles
-description: Structure du fichier libelles.ts — constante LIBELLES centralisée, organisée par domaine fonctionnel
+description: Structure du fichier libelles.ts — constante LIBELLES centralisée, organisée par domaine fonctionnel, rôle de chaque section
 metadata:
   type: project
-  updated: 2026-06-15
+  updated: 2026-09-27
 related:
   - specification/architecture-applicative
 ---
@@ -17,173 +17,54 @@ related:
 ## Principe
 
 - Constante `LIBELLES` exportée en `as const` (les valeurs sont des string literals inférables par TypeScript)
-- Importée par `composant-base.ts` pour l'exposer dans tous les templates via `protected readonly LIBELLES`
-- Organisée par domaine fonctionnel, pas par type d'élément (pas de section "boutons", pas de section "titres")
-- La section `aria` regroupe les libellés uniquement destinés à l'accessibilité
+- Importée par `composant-base.ts` pour l'exposer dans tous les templates des composants partagés via `protected readonly LIBELLES`
+- Organisée par domaine fonctionnel, pas par type d'élément (pas de section « boutons », pas de section « titres »)
+- Contient aussi les chaînes françaises utilisées par la logique (ex. `dates.nomsJours` pour un lookup par index, libellés des commandes UNDO/REDO)
+- Le fichier `libelles.ts` fait foi pour les valeurs : ce document décrit la structure et donne des exemples, sans recopier chaque clé
 
 ---
 
-## Structure
+## Sections
+
+| Section | Contenu | Exemples de clés |
+|---|---|---|
+| `dates` | Noms et initiales des jours, indexés comme `Date.getDay()` (0 = dimanche) | `nomsJours`, `initialeJours` |
+| `commun` | Libellés réutilisés dans plusieurs domaines : actions, états, messages génériques | `enregistrer`, `annuler`, `supprimer`, `chargement`, `rechercher`, `avertissementModifications`, `erreurPlageHoraire` |
+| `entete` | Barre d'en-tête : titre, SAUVEGARDER / ANNULER / REFAIRE et leurs tooltips, recherche globale, thème, mode consultation du référentiel | `tooltipDerniereSauvegarde`, `tooltipPrefixeAnnuler`, `tooltipPrefixeRefaire`, `typesResultatRecherche` (`eleve` → « Élève », `projet` → « Projet »), `tooltipNavRestreinte` |
+| `navigation` | Libellés des liens de navigation vers chaque écran | `accueil`, `eleves`, `competences`, `parametrage` |
+| `demarrage` | Popin de démarrage : bienvenue, trois zones (nouveau, charger, référentiel), erreurs de chargement | `bienvenue`, `titreNouveau`, `texteNouveau`, `boutonCreer`, `titreCharger`, `titreReferentiel`, `boutonReferentiel`, `erreurMotDePasse`, `erreurVersionIncompatible` |
+| `accueil` | Écran d'accueil | `labelAujourdhui`, `aucunJournal`, `labelNbEleves` |
+| `eleve` | Écran Élèves : liste, fiche, formulaire (sections, champs, contacts, absences, cursus) | `sectionIdentite`, `sectionAbsencesRecurrentes`, `aucunEleve` |
+| `projet` | Écran Projets : liste, fiche, formulaire, périodes | `sectionInfos`, `sectionPeriodes`, `aucunProjet` |
+| `competences` | Écran Compétences : panier, export, information sur les domaines actifs, arbre | `panierVide`, `boutonEnvoyerProjet`, `infoDomainesParametrage`, `erreurExport` |
+| `selecteurCompetences` | Composant `mc-selecteur-competences` | `placeholder`, `ariaSuggestions`, `ariaSupprimer` |
+| `edt` | Écran Emploi du temps : listes, grille, formulaires d'EDT, de créneau et d'EDT calculé, types de créneau, sources, impression, conflits | `typesCreneau`, `joursLibelles`, `colonneHeure`, `boutonAjouterTemps`, `erreurNomObligatoire`, `prefixeDateDepuis`, `separateurPlageDates` |
+| `cahierJournal` | Écran Cahier journal : navigation, journée, notes, séances, formulaire, duplication | `boutonInitialiserVide`, `labelNotes`, `enteteAbsencesJour`, `erreurChampsObligatoires` |
+| `parametrage` | Écran Paramétrage : sections, champs, bornes du délai, pastille « Non enregistré », domaines de compétences | `sections`, `erreurDelaiSauvegardeHorsBornes`, `pastilleNonEnregistre`, `labelDomainesInfo` |
+| `popins` | Titres et boutons des popins (avertissement, sauvegarde, conflits, export de compétences) | `avertissement.confirmer`, `sauvegarde.labelMotDePasse`, `exportCompetences.choixSeance` |
+| `elevesConcernes` | Composants `mc-eleves-concernes` et `mc-pastilles-eleves-concernes` | `modeClasse`, `modeGroupes`, `modeEleves`, `mentionEleveAbsent` |
+| `commandes` | Libellés des commandes UNDO/REDO, affichés dans les tooltips ANNULER / REFAIRE | `ajoutEleve`, `initialisationDepuisEdt`, `modificationDomainesActifs` |
+| `aria` | Libellés destinés uniquement à l'accessibilité (lecteurs d'écran) | `navigationPrincipale`, `valeurUtiliseeNonSupprimable`, `calendrierMoisPrecedent` |
+
+### Extrait
 
 ```typescript
 export const LIBELLES = {
   dates: {
     nomsJours: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
+    initialeJours: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
   },
-
-  commun: {
-    enregistrer:               'Enregistrer',
-    annuler:                   'Annuler',
-    supprimer:                 'Supprimer',
-    modifier:                  'Modifier',
-    creer:                     'Créer',
-    confirmer:                 'Confirmer',
-    imprimer:                  'Imprimer',
-    fermer:                    'Fermer',
-    ajouter:                   'Ajouter',
-    vider:                     'Vider',
-    dupliquer:                 'Dupliquer',
-    charger:                   'Charger',
-    chargement:                'Chargement…',
-    rechercher:                'Rechercher…',
-    aucunResultat:             'Aucun résultat',
-    avertissementModifications:'Des modifications non enregistrées seront perdues. Voulez-vous continuer ?',
-  },
-
   entete: {
-    titre:                     'MaClasse',
-    sauvegarder:               'Sauvegarder',
-    refaire:                   'Refaire',
-    annuler:                   'Annuler',
-    tooltipDerniereSauvegarde: 'Dernière sauvegarde : ',
-    tooltipAucuneSauvegarde:   'Aucune sauvegarde effectuée',
-    rechercheLabel:            'Recherche globale',
-    rechercheAria:             'Résultats de recherche',
+    titre: 'MaClasse',
+    tooltipPrefixeAnnuler: 'Annuler : ',
+    typesResultatRecherche: { eleve: 'Élève', projet: 'Projet' },
+    // …
   },
-
-  navigation: {
-    accueil:      'Accueil',
-    eleves:       'Élèves',
-    projets:      'Projets',
-    competences:  'Compétences',
-    emploiDuTemps:'Emploi du temps',
-    cahierJournal:'Cahier journal',
-    parametrage:  'Paramétrage',
+  commandes: {
+    ajoutEleve: "Ajout d'un élève",
+    // …
   },
-
-  demarrage: {
-    bienvenue:                 'Bienvenue dans MaClasse — gérez votre classe, à votre façon.',
-    titreNouveauFichier:       'Première utilisation ? Créez votre espace de classe.',
-    boutonCreer:               'Créer ma classe à partir d\'un jeu de données d\'exemple',
-    titreCharger:              'Sélectionner la dernière version des données de votre classe',
-    labelFichier:              'Fichier ZIP',
-    labelMotDePasse:           'Mot de passe',
-    boutonCharger:             'Charger',
-    boutonChargement:          'Chargement…',
-    erreurFichier:             'Fichier invalide ou corrompu.',
-    erreurMotDePasse:          'Mot de passe incorrect.',
-    erreurVersionIncompatible: 'Ce fichier a été créé avec une version plus récente de MaClasse. Veuillez mettre à jour l\'application.',
-  },
-
-  eleve: {
-    titre:                    'Élèves',
-    sectionIdentite:          'Identité',
-    sectionContacts:          'Contacts',
-    sectionAbsencesRecurrentes:'Absences récurrentes',
-    sectionAbsencesPonctuelles:'Absences ponctuelles',
-    sectionCursus:            'Cursus',
-    sectionNotes:             'Notes administratives',
-    aucunEleve:               'Aucun élève dans la classe',
-    boutonImprimer:           'Imprimer la fiche',
-  },
-
-  projet: {
-    titre:          'Projets',
-    sectionInfos:   'Informations générales',
-    sectionPeriodes:'Périodes',
-    aucunProjet:    'Aucun projet',
-    boutonImprimer: 'Imprimer le projet',
-  },
-
-  competences: {
-    titre:                  'Compétences',
-    panierVide:             'Aucune compétence sélectionnée',
-    boutonVider:            'Vider la liste',
-    boutonEnvoyerProjet:    'Envoyer vers un projet',
-    boutonEnvoyerSeance:    'Envoyer vers une séance',
-  },
-
-  edt: {
-    titre:                  'Emploi du temps',
-    boutonImprimer:         'Imprimer',
-    avertissementChevauchement: 'Un conflit d\'absence a été détecté.',
-  },
-
-  cahierJournal: {
-    titre:                  'Cahier journal',
-    boutonInitialiserVide:  'Initialiser une journée vide',
-    boutonInitialiserEdt:   'Initialiser depuis l\'emploi du temps',
-    boutonSupprimerJournee: 'Supprimer la journée',
-    boutonDupliquerSeance:  'Dupliquer la séance',
-    boutonDupliquerJournee: 'Dupliquer la journée',
-    boutonImprimer:         'Imprimer',
-    aucuneSeance:           'Aucune séance pour cette journée',
-    labelJourCible:         'Jour cible',
-    avertissementRemplacement: 'Le jour cible contient déjà des séances. Voulez-vous les remplacer ?',
-  },
-
-  parametrage: {
-    titre:        'Paramétrage',
-    sections: {
-      enseignant:         'Enseignant',
-      classe:             'Classe',
-      groupes:            'Groupes',
-      periodes:           'Périodes',
-      raisonsAbsence:     'Raisons d\'absence',
-      statutsEleve:       'Statuts élève',
-      typesContact:       'Types de contact',
-      statutsAcquisition: 'Statuts d\'acquisition',
-      configEdt:          'Configuration emploi du temps',
-      joursFeries:        'Jours fériés',
-      preferences:        'Préférences',
-    },
-    labelDelaiSauvegarde: 'Délai de sauvegarde automatique (minutes)',
-  },
-
-  popins: {
-    avertissement: {
-      titre:    'Attention',
-      confirmer:'Continuer sans enregistrer',
-      annuler:  'Rester sur la page',
-    },
-    sauvegarde: {
-      titre:          'Première sauvegarde',
-      labelMotDePasse:'Mot de passe de chiffrement',
-      confirmer:      'Sauvegarder',
-      annuler:        'Annuler',
-    },
-    warnings: {
-      titre:  'Conflits détectés',
-      fermer: 'Fermer',
-    },
-    exportCompetences: {
-      titre:         'Exporter les compétences',
-      choixProjet:   'Projet',
-      choixPeriode:  'Période',
-      choixJour:     'Jour',
-      choixSeance:   'Séance',
-      confirmer:     'Exporter',
-      annuler:       'Annuler',
-    },
-  },
-
-  aria: {
-    boutonFermerPopin:           'Fermer la fenêtre',
-    navigationPrincipale:        'Navigation principale',
-    champRecherche:              'Champ de recherche',
-    valeurUtiliseeNonSupprimable:'Cette valeur est utilisée dans l\'application et ne peut pas être supprimée',
-    eleveAbsent:                 'Élève absent ce jour',
-  },
+  // …
 } as const;
 ```
 
@@ -194,4 +75,5 @@ export const LIBELLES = {
 - Dans les **templates de composants partagés** (`composants/`) : `LIBELLES.section.cle` — disponible via l'héritage de `ComposantBase`
 - Dans les **composants d'écran** : déclarer `protected readonly LIBELLES = LIBELLES;` (les écrans n'héritent pas de `ComposantBase`)
 - Dans les **valeurs par défaut d'`input()`** : importer `LIBELLES` directement depuis `'../../libelles'` (les valeurs par défaut sont évaluées au niveau module, pas à l'instance)
+- Dans les **services** : importer `LIBELLES` pour les libellés de commande et les textes générés (ex. en-tête des notes d'absences)
 - Ne jamais dupliquer une chaîne : si le même texte apparaît à deux endroits, pointer `commun.xxx` depuis les sections spécifiques

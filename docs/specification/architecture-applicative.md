@@ -1,9 +1,9 @@
 ---
 name: architecture-applicative
-description: Architecture applicative de MaClasse — structure des dossiers, conventions de nommage, ordre d'implémentation
+description: Architecture applicative de MaClasse — structure des dossiers, conventions de nommage, fichiers racine, décisions techniques
 metadata:
   type: project
-  updated: 2026-06-13
+  updated: 2026-09-27
 related:
   - specification/description-generale
   - specification/services
@@ -12,80 +12,99 @@ related:
 
 ## Principe général
 
-Application Angular 21 **standalone** : pas de `NgModule`. Chaque composant, directive et tuyau est déclaré `standalone: true` (valeur par défaut depuis Angular v20, ne pas écrire `standalone: true` explicitement). Les services sont `providedIn: 'root'`.
+Application Angular **standalone**, sans `NgModule`. Les versions d'Angular, de TypeScript et des dépendances sont celles de `package.json`. Chaque composant et chaque directive est standalone par défaut, et `standalone: true` n'est jamais écrit. Les services sont `providedIn: 'root'`.
 
 ---
 
 ## Structure des dossiers
 
+L'arborescence ci-dessous ne liste pas les fichiers de test (`*.spec.ts`). Chaque composant a ses trois fichiers `.ts`, `.html` et `.scss`, détaillés une seule fois pour `mc-entete`.
+
 ```
 maclasse/
 ├── public/
-│   ├── fonts/                        # Polices locales (@font-face dans styles.scss)
-│   └── donnees-defaut.json           # Données d'exemple (bootstrap "Nouveau fichier")
+│   ├── fonts/                        # Polices locales Roboto (@font-face dans styles.scss)
+│   ├── donnees-defaut.json           # Données d'exemple (création d'une classe, consultation du référentiel)
+│   ├── favicon.ico
+│   └── maclasse-logo-*.png
+│
+├── e2e/                              # Tests Playwright (sélecteurs, fixtures, jeu de données figé)
 │
 └── src/
     ├── index.html
     ├── main.ts
-    ├── styles.scss                   # Variables CSS, @font-face, @media print, classes utilitaires
+    ├── styles.scss                   # Variables CSS des 5 thèmes, @font-face, classes mc-* globales, @media print
     │
     └── app/
         ├── app.ts                    # Composant racine (layout : entête + <router-outlet>)
         ├── app.html
         ├── app.scss
-        ├── app.config.ts             # ApplicationConfig (routes, providers)
-        ├── app.routes.ts             # Routes avec loadComponent (lazy) + DonneesChargeesGarde
+        ├── app.config.ts             # ApplicationConfig (routeur, providers)
+        ├── app.routes.ts             # Routes lazy (loadComponent) + gardes
         ├── composant-base.ts         # ComposantBase — expose LIBELLES dans les templates
+        ├── champ-base.ts             # ChampBase — ControlValueAccessor commun des champs mc-*
+        ├── popin-base.ts             # PopinBase — synchronise <dialog> et l'input visible
+        ├── ecran-edition-gardee-base.ts # EcranEditionGardeeBase — mode édition + garde de navigation
         ├── libelles.ts               # Constantes de libellés UI centralisées
         │
         ├── modeles/                  # Interfaces et types TypeScript (pas de logique)
-        │   ├── donnees-application.modele.ts   # Structure racine du JSON
+        │   ├── donnees-application.modele.ts   # Structure racine du JSON, ConfigApplication, Enseignant, Classe
+        │   ├── referentiels.modele.ts          # Competence, Periode, Groupe, StatutAcquisition, StatutEleve, TypeContact, JourFerie…
         │   ├── eleve.modele.ts
         │   ├── projet.modele.ts
-        │   ├── emploi-du-temps.modele.ts
+        │   ├── emploi-du-temps.modele.ts       # EDT, créneaux, temps, types communs (JourSemaine, ElevesConcernes…)
+        │   ├── emploi-du-temps-calcule.modele.ts # Définition d'EDT calculé, CreneauCalcule (non persisté)
         │   ├── cahier-journal.modele.ts
-        │   ├── referentiels.modele.ts
-        │   └── commande.modele.ts    # Interface Commande (executer/annuler)
+        │   ├── ppi-bulletin.modele.ts          # Ppi, Bulletin (phase 2)
+        │   ├── migration.modele.ts             # Étape de migration, ancien format de créneau
+        │   ├── recherche.modele.ts             # ResultatRecherche
+        │   ├── composants.modele.ts            # DTO d'affichage des composants (options, cases de calendrier, nœuds d'arbre…)
+        │   └── commande.modele.ts              # Interface Commande (executer/annuler/libelle)
         │
         ├── services/
         │   ├── avecEtat/             # Services portant un état (signal)
         │   │   ├── donnees.service.ts
         │   │   └── contexte.service.ts
-        │   └── sansEtat/             # Services stateless (algorithmes, I/O)
+        │   └── sansEtat/             # Services sans état propre (algorithmes, I/O)
         │       ├── chiffrement.service.ts
+        │       ├── migration.service.ts
         │       ├── sauvegarde-auto.service.ts
         │       ├── recherche-globale.service.ts
         │       ├── eleve.service.ts
         │       ├── projet.service.ts
         │       ├── competence.service.ts
         │       ├── emploi-du-temps.service.ts
+        │       ├── emploi-du-temps-calcule.service.ts
         │       ├── cahier-journal.service.ts
         │       └── referentiel.service.ts
         │
-        ├── commandes/                # Implémentations du pattern Commande (génériques)
+        ├── commandes/                # Implémentations génériques du pattern Commande
         │   ├── commande-creation.ts
         │   ├── commande-modification.ts
         │   ├── commande-suppression.ts
-        │   ├── commande-deplacement.ts
-        │   └── commande-initialisation-journee.ts
+        │   └── commande-remplacement.ts
         │
         ├── gardes/
-        │   └── donnees-chargees.garde.ts   # Redirige vers /demarrage si pas de données
+        │   ├── donnees-chargees.garde.ts              # Redirige vers /demarrage si pas de données
+        │   ├── referentiel-seul.garde.ts              # Bloque les écrans hors Compétences en mode consultation du référentiel
+        │   └── modifications-non-enregistrees.garde.ts # canDeactivate : confirmation si un formulaire est modifié
         │
         ├── utilitaires/
-        │   └── date.utils.ts               # DateUtils (J±1, J±7, parité, formatage)
+        │   ├── date.utils.ts         # DateUtils (J±n, parité, formatage, chevauchements)
+        │   ├── eleve.utils.ts        # EleveUtils (résolution d'un périmètre ElevesConcernes)
+        │   ├── texte.utils.ts        # TexteUtils (normalisation casse/accents)
+        │   └── objet.utils.ts        # ObjetUtils (égalité profonde)
+        │
+        ├── directives/
+        │   └── mc-auto-focus.directive.ts
         │
         ├── composants/               # Composants mc-* partagés (≥ 2 écrans ou usage global)
-        │   ├── mc-entete/            # En-tête de l'application (instancié dans app.ts)
+        │   ├── mc-entete/            # En-tête de l'application (instancié dans app.html)
         │   │   ├── mc-entete.component.ts
         │   │   ├── mc-entete.component.html
         │   │   └── mc-entete.component.scss
         │   ├── mc-input/
-        │   │   ├── mc-input.component.ts
-        │   │   ├── mc-input.component.html
-        │   │   └── mc-input.component.scss
         │   ├── mc-textarea/
-        │   ├── mc-checkbox/
         │   ├── mc-select/
         │   ├── mc-radio-group/
         │   ├── mc-champ-heure/
@@ -95,7 +114,9 @@ maclasse/
         │   ├── mc-bouton-destruction/
         │   ├── mc-mini-calendrier/
         │   ├── mc-selecteur-competences/
+        │   ├── mc-arbre-competences/
         │   ├── mc-eleves-concernes/
+        │   ├── mc-pastilles-eleves-concernes/
         │   └── popins/
         │       ├── popin-demarrage/
         │       ├── popin-sauvegarde/
@@ -103,24 +124,25 @@ maclasse/
         │       ├── popin-avertissement/
         │       └── popin-export-competences/
         │
-        ├── directives/
-        │   └── mc-auto-focus.directive.ts
+        ├── ecrans/
+        │   ├── _mixins.scss          # Mixins SCSS partagés par les écrans
+        │   ├── demarrage/
+        │   ├── accueil/
+        │   ├── eleves/
+        │   │   ├── fe-fiche-eleve/
+        │   │   └── fe-formulaire-eleve/
+        │   ├── projets/
+        │   │   ├── fp-fiche-projet/
+        │   │   └── fp-formulaire-projet/
+        │   ├── competences/
+        │   ├── emploi-du-temps/
+        │   │   ├── edt-formulaire/   # Propriétés d'un EDT et formulaire de créneau
+        │   │   └── edtc-formulaire/  # Définition d'un EDT calculé
+        │   ├── cahier-journal/
+        │   │   └── cj-formulaire-seance/
+        │   └── parametrage/
         │
-        ├── tuyaux/
-        │   └── format-date.tuyau.ts
-        │
-        └── ecrans/
-            ├── demarrage/
-            │   ├── ecran-demarrage.component.ts
-            │   ├── ecran-demarrage.component.html
-            │   └── ecran-demarrage.component.scss
-            ├── accueil/
-            ├── eleves/
-            ├── projets/
-            ├── competences/
-            ├── emploi-du-temps/
-            ├── cahier-journal/
-            └── parametrage/
+        └── tests/                    # Object Mothers des tests unitaires (*.mother.ts)
 ```
 
 ---
@@ -131,18 +153,19 @@ maclasse/
 |---|---|---|
 | Composant racine | `app.ts` | `App` |
 | Composant d'écran | `ecran-eleves.component.ts` | `EcranElevesComponent` |
+| Sous-composant d'écran | `fe-fiche-eleve.component.ts` | `FeFicheEleveComponent` |
 | Composant partagé | `mc-input.component.ts` | `McInputComponent` |
 | Popin | `popin-avertissement.component.ts` | `PopinAvertissementComponent` |
 | Service (avec état) | `donnees.service.ts` | `DonneesService` |
 | Service (sans état) | `eleve.service.ts` | `EleveService` |
-| Garde | `donnees-chargees.garde.ts` | `DonneesChargeesGarde` |
+| Garde (fonction) | `donnees-chargees.garde.ts` | `donneesChargeesGarde` |
 | Directive | `mc-auto-focus.directive.ts` | `McAutoFocusDirective` |
-| Tuyau (pipe) | `format-date.tuyau.ts` | `FormatDateTuyau` |
 | Interface modèle | `eleve.modele.ts` | `Eleve`, `Contact`, `AbsenceRecurrente`… |
 | Commande | `commande-creation.ts` | `CommandeCreation` |
 | Classe utilitaire | `date.utils.ts` | `DateUtils` |
+| Object Mother (tests) | `eleve.mother.ts` | `EleveMother` |
 
-> Le suffixe `.tuyau.ts` remplace `.pipe.ts` (convention française du projet, voir `.claude/rules/conventions-nommage.md`).
+Les règles détaillées de nommage (français, suffixes `.garde.ts` et `.tuyau.ts`, préfixes des sous-composants) sont dans `.claude/rules/conventions-nommage.md`.
 
 ---
 
@@ -151,10 +174,13 @@ maclasse/
 | Fichier | Rôle |
 |---|---|
 | `app.ts` | Composant racine : entête + `<router-outlet>` |
-| `app.config.ts` | `ApplicationConfig` : providers, withRouter |
-| `app.routes.ts` | Toutes les routes avec `loadComponent` (lazy) + `DonneesChargeesGarde` |
-| `composant-base.ts` | Classe de base pour les composants partagés — expose `LIBELLES` |
-| `libelles.ts` | Constantes de libellés centralisées (chaînes UI), importé par `composant-base.ts` |
+| `app.config.ts` | `ApplicationConfig` : `provideRouter(routes, withComponentInputBinding(), withHashLocation())`, écouteur global d'erreurs |
+| `app.routes.ts` | Toutes les routes avec `loadComponent` (lazy) et leurs gardes (voir [elements-techniques](elements-techniques.md#routing-angular)) |
+| `composant-base.ts` | Classe de base des composants partagés : expose `LIBELLES` |
+| `champ-base.ts` | Classe de base des champs de formulaire `mc-*` (voir [composants-partages](composants-partages.md#classe-de-base-champbase)) |
+| `popin-base.ts` | Classe de base des popins (voir [composants-partages](composants-partages.md#popins)) |
+| `ecran-edition-gardee-base.ts` | Classe de base des écrans liste + fiche (voir [elements-techniques](elements-techniques.md#ecraneditiongardeebase)) |
+| `libelles.ts` | Constantes de libellés centralisées (voir [libelles](libelles.md)) |
 
 ---
 
@@ -162,73 +188,10 @@ maclasse/
 
 Le fichier `styles.scss` contient :
 
-1. **`@font-face`** — déclarations des polices locales depuis `public/fonts/`
-2. **Variables CSS** — sur `:root` pour le thème par défaut, surchargées sur `[data-theme="contraste"]` pour le thème fort contraste
-3. **Classes utilitaires CSS** — layout, espacement, accessibilité (`sr-only`…)
-4. **`@media print`** — masque la colonne gauche (`.mc-colonne-gauche`) dans tous les écrans
-
----
-
-## Ordre d'implémentation recommandé
-
-Chaque étape doit être validée avant de passer à la suivante.
-
-### Étape 1 — Squelette et configuration
-
-- `app.ts`, `app.html`, `app.scss`
-- `app.config.ts` (providers, routing)
-- `app.routes.ts` (routes lazy + `DonneesChargeesGarde`)
-- `gardes/donnees-chargees.garde.ts`
-- `styles.scss` (variables CSS + thèmes)
-- `libelles.ts` + `composant-base.ts`
-
-### Étape 2 — Modèles TypeScript
-
-- Tous les fichiers de `modeles/` (interfaces uniquement, pas de logique)
-
-### Étape 3 — Services de contexte et chiffrement
-
-- `commandes/` (5 classes, pur TypeScript)
-- `services/avecEtat/donnees.service.ts`
-- `services/avecEtat/contexte.service.ts`
-- `services/sansEtat/chiffrement.service.ts`
-
-### Étape 4 — Services métier
-
-- `utilitaires/date.utils.ts`
-- `services/sansEtat/referentiel.service.ts`
-- `services/sansEtat/eleve.service.ts`
-- `services/sansEtat/competence.service.ts`
-- `services/sansEtat/projet.service.ts`
-- `services/sansEtat/emploi-du-temps.service.ts`
-- `services/sansEtat/cahier-journal.service.ts`
-- `services/sansEtat/sauvegarde-auto.service.ts`
-- `services/sansEtat/recherche-globale.service.ts`
-
-### Étape 5 — Directive et tuyau
-
-- `directives/mc-auto-focus.directive.ts`
-- `tuyaux/format-date.tuyau.ts`
-
-### Étape 6 — Composants partagés simples
-
-Dans cet ordre (des plus simples aux plus complexes) :
-`mc-input` → `mc-textarea` → `mc-champ-heure` → `mc-checkbox` → `mc-select` → `mc-radio-group` → `mc-chip-filtre` → `mc-badge-statut` → `mc-champ-recherche` → `mc-bouton-destruction`
-
-### Étape 7 — Composants partagés riches et popins
-
-- `mc-mini-calendrier` → `mc-selecteur-competences` → `mc-eleves-concernes`
-- `popin-avertissement` → `popin-sauvegarde` → `popin-warnings-absences` → `popin-export-competences` → `popin-demarrage`
-
-### Étape 8 — Écrans (du plus simple au plus complexe)
-
-`ecran-demarrage` → `ecran-accueil` → `ecran-parametrage` → `ecran-eleves` → `ecran-projets` → `ecran-competences` → `ecran-emploi-du-temps` → `ecran-cahier-journal`
-
-### Étape 9 — Composant d'en-tête
-
-- `composants/mc-entete/` (voir [composants-partages](composants-partages.md) pour le détail)
-- Intégration de `<mc-entete>` dans `app.ts`
-- Couvre : navigation, SAUVEGARDER (+ tooltip), ANNULER/REFAIRE, recherche globale, bascule de thème
+1. **`@font-face`** : déclarations des polices locales depuis `public/fonts/`
+2. **Variables CSS** : sur `:root` pour le thème par défaut, surchargées sur `:root[data-theme="…"]` pour les 4 autres thèmes (voir [themes](themes.md))
+3. **Classes `mc-*` globales** : boutons, champs, listes, fiches, popins, chips, pastilles, accessibilité (`sr-only`…)
+4. **`@media print`** : seule source de vérité de l'impression (voir [elements-techniques](elements-techniques.md#impression-media-print))
 
 ---
 
@@ -236,13 +199,14 @@ Dans cet ordre (des plus simples aux plus complexes) :
 
 | Sujet | Décision |
 |---|---|
-| Modules Angular | Aucun — `standalone: true` est le défaut (ne pas l'écrire) |
+| Modules Angular | Aucun : `standalone` est le défaut (ne pas l'écrire) |
 | Lazy loading | `loadComponent` sur toutes les routes d'écrans |
+| URL | Routage par fragment (`withHashLocation`) : l'application fonctionne sur un hébergement statique sans réécriture d'URL |
 | State management | Signal unique dans `DonneesService` (pas de NgRx ni autre store) |
-| Formulaires | `ControlValueAccessor` dans les composants `mc-*` |
+| Formulaires | Reactive Forms ; `ControlValueAccessor` dans les composants `mc-*` |
 | Détection de changement | `ChangeDetectionStrategy.OnPush` sur tous les composants |
 | Injection | `inject()` dans le corps de la classe (pas de constructeur à injection) |
 | Inputs/Outputs | `input()` / `output()` (pas de `@Input` / `@Output`) |
-| Tests | Vitest — instanciation directe si possible, `TestBed` si `inject()` requis |
+| Tests | Vitest ; instanciation directe si possible, `TestBed` si `inject()` requis ; Object Mothers dans `tests/` ; E2E Playwright |
 | Polices | Locales dans `public/fonts/`, jamais de CDN |
 | Couleurs | Variables CSS uniquement, jamais de couleur hardcodée |

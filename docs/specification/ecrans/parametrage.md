@@ -1,9 +1,9 @@
 ---
 name: parametrage
-description: Spécification détaillée de l'écran Paramétrage — enseignant, classe, référentiels éditables
+description: Spécification détaillée de l'écran Paramétrage — enseignant, classe, référentiels éditables, préférences, domaines de compétences
 metadata:
   type: project
-  updated: 2026-06-10
+  updated: 2026-09-27
 related:
   - specification/modeles-donnees
   - specification/ecrans/vue-ensemble
@@ -14,7 +14,7 @@ related:
 ## Contexte
 
 Écran de gestion des données de configuration : enseignant, classe, référentiels et données non manipulables depuis les autres écrans.
-Accessible uniquement après chargement des données (`DonneesChargeesGarde`).
+Accessible uniquement après chargement des données (`donneesChargeesGarde`), hors mode consultation du référentiel (`referentielSeulGarde`).
 
 ---
 
@@ -28,44 +28,75 @@ Deux colonnes :
 
 ## Colonne gauche — Navigation par section
 
-Liste fixe cliquable (pas de CRÉER, pas de filtre, pas de SUPPRIMER) :
+Liste fixe de boutons (`btnSection{id}`), sans CRÉER, filtre ni SUPPRIMER :
 
 1. Enseignant & Classe
 2. Périodes scolaires
 3. Semaine & Horaires
 4. Groupes
 5. Barème d'évaluation
-6. Statuts d'élève
+6. Statuts élève
 7. Types de contact
-8. Raisons d'absence
-9. Fréquences d'absence
-10. Jours fériés
-11. Préférences
+8. Jours fériés
+9. Préférences
+10. Domaines de compétences
 
-La section active est mise en évidence (même convention que le bouton de navigation actif dans l'entête).
+La section active est mise en évidence (même convention que le lien de navigation actif dans l'entête). Enseignant & Classe est active à l'ouverture.
+
+---
+
+## Comportement commun
+
+- **Pastille « Non enregistré »** : affichée à côté des boutons d'une section formulaire, ou d'une ligne de liste, dès que ses valeurs diffèrent des données enregistrées (comparaison `ObjetUtils.sontEgaux`)
+- Les boutons ENREGISTRER (et ANNULER des sections formulaire) sont **désactivés tant que rien n'est modifié**
+- Chaque ENREGISTRER soumet une commande à `DonneesService` (UNDO/REDO)
 
 ---
 
 ## Zone droite — Sections formulaire simple
 
-Ces sections affichent un formulaire directement éditable avec **ENREGISTRER** / **ANNULER** en haut.
+Ces sections affichent un formulaire directement éditable avec **ENREGISTRER** / **ANNULER** en haut. ANNULER recharge les valeurs enregistrées.
 
 ### Section "Enseignant & Classe"
 
-| Champ | Composant |
-|---|---|
-| Prénom | `mc-input` |
-| Nom | `mc-input` |
-| Année scolaire | `mc-input` (ex. "2025-2026") |
-| Niveau de la classe | `mc-input` (ex. "CM1") |
+| Champ | Composant | Donnée |
+|---|---|---|
+| Prénom | `mc-input` | `enseignant.prenom` |
+| Nom | `mc-input` | `enseignant.nom` |
+| Année scolaire | `mc-input` (ex. "2025-2026") | `enseignant.annee` |
+| Niveau de la classe | `mc-input` (ex. "CM1") | `classe.niveau` |
+
+ENREGISTRER produit deux commandes `CommandeRemplacement` (enseignant, niveau de la classe), donc deux étapes UNDO.
 
 ### Section "Semaine & Horaires"
 
 | Champ | Composant |
 |---|---|
-| Jours ouvrés | Chips sélectionnables (lundi à samedi, sélection multiple) |
+| Jours ouvrés | Chips `mc-chip-filtre` du **lundi au vendredi**, sélection multiple |
 | Heure de début de journée | `mc-champ-heure` |
 | Heure de fin de journée | `mc-champ-heure` |
+
+> Persisté dans `referentiels.configEmploiDuTemps` (`ReferentielService.modifierConfigEmploiDuTemps`). Utilisé par la grille de l'EDT, le mini-calendrier et les heures proposées du cahier journal.
+
+### Section "Préférences"
+
+| Champ | Composant | Détail |
+|---|---|---|
+| Délai de sauvegarde automatique | `mc-input` type number (`min` 1, `max` 60) | En minutes, **5 par défaut**. Persiste dans `donnees.configuration.delaiSauvegardeAutoMinutes` |
+
+- Hors des bornes 1–60, le message *« Le délai doit être compris entre 1 et 60 minutes. »* s'affiche et ENREGISTRER est désactivé
+- À l'ENREGISTRER, le minuteur de sauvegarde automatique est **redémarré avec le nouveau délai s'il était actif** (voir [vue-ensemble](vue-ensemble.md#sauvegarde-automatique))
+
+### Section "Domaines de compétences"
+
+Choix des domaines de compétences utilisés dans la classe → `configuration.domainesActifs`.
+
+- Texte d'aide : *« Cochez les domaines et sous-domaines à utiliser dans votre classe. Décochez tout pour tout afficher. »*
+- Une **case à cocher native** par domaine de niveau 1 (`checkDomaine{i}`), et sous chaque domaine une case par sous-domaine de niveau 2 (`checkSousDomaine{i}_{j}`), avec un `aria-label` « Activer le domaine / sous-domaine »
+- Cocher ou décocher un domaine coche ou décoche tous ses sous-domaines ; décocher un seul sous-domaine d'un domaine entièrement actif le décompose en ses autres sous-domaines
+- **ENREGISTRER** : `CommandeRemplacement` sur `configuration.domainesActifs`. Si tout est coché, la liste enregistrée est vide (= tous les domaines)
+- **ANNULER** : recharge la sélection enregistrée (tout coché si la liste est vide)
+- Effets : chips de disciplines (séances, temps de créneau), arbre et chips de l'écran Compétences, via `CompetenceService.obtenirDomaines()` (voir [services](../services.md#competenceservice))
 
 ---
 
@@ -75,15 +106,15 @@ Ces sections affichent une liste d'éléments éditables inline.
 
 ### Comportement commun
 
-- Bouton **AJOUTER** en haut de la liste : crée un nouvel élément vide en bas de liste
+- Bouton **AJOUTER** en haut de la liste : ajoute une ligne vide en bas de liste (identifiant généré) et place le focus sur son premier champ ; la ligne n'existe dans les données qu'après son ENREGISTRER
 - Chaque élément est **éditable directement dans la liste** (champs inline)
-- Chaque élément dispose d'un bouton **SUPPRIMER** (`mc-bouton-destruction`) avec comportement conditionnel :
-  - **Si la valeur est utilisée** dans les données (élèves, séances, projets, absences…) :
-    - Bouton désactivé (`disabled`)
-    - Tooltip affiché au survol/focus : *"Cette valeur est utilisée et ne peut pas être supprimée"*
-    - Attribut `aria-describedby` pointant vers un message masqué visuellement (conformité RGAA)
+- **ENREGISTRER par ligne** (`btnEnregistrer…{i}`, `mc-btn-sm`) : crée ou modifie l'élément via `ReferentielService`. Il n'y a **pas d'ANNULER par ligne**
+- Chaque élément dispose d'un bouton **SUPPRIMER** (`mc-bouton-destruction`, petit) avec comportement conditionnel :
+  - **Si la valeur est utilisée** dans les données (méthode `estXxxUtilise` de `ReferentielService`, voir [services](../services.md#referentielservice)) :
+    - Bouton désactivé (`desactive`)
+    - Tooltip affiché au survol/focus : *« Cette valeur est utilisée et ne peut pas être supprimée »*
+    - Message masqué visuellement relié par `aria-describedby` (conformité RGAA)
   - **Si la valeur n'est pas utilisée** : comportement standard `mc-bouton-destruction` (ANNULER + CONFIRMER)
-- Un bouton **ENREGISTRER** global (ou par ligne — à décider à l'implémentation) valide les modifications via `DonneesService`
 
 ### Section "Périodes scolaires"
 
@@ -93,7 +124,15 @@ Ces sections affichent une liste d'éléments éditables inline.
 | Date de début | `mc-input` type date |
 | Date de fin | `mc-input` type date |
 
-> Utilisé par : `ProjetPeriode` (via `periodeNom`), `Bulletin` (via `periode`)
+> Utilisé par : `ProjetPeriode.periodeNom` et `Bulletin.periode` (référence par le **nom**), bornes du mini-calendrier du cahier journal
+
+### Section "Groupes"
+
+| Champ | Composant |
+|---|---|
+| Libellé | `mc-input` |
+
+> Identifiant généré à l'AJOUTER. Utilisé par : `Eleve.groupes`, `elevesConcernes.groupes` (séances, temps de créneau, EDT calculés)
 
 ### Section "Barème d'évaluation" (`statutsAcquisition`)
 
@@ -106,17 +145,9 @@ Ces sections affichent une liste d'éléments éditables inline.
 | Couleur fond | `mc-input` type color |
 | Aperçu | `mc-badge-statut` en temps réel (mis à jour à la frappe) |
 
-> Utilisé par : `PpiCompetence.evaluation`, `BulletinCompetence.evaluation`
+> Utilisé par : `PpiCompetence.evaluation`, `BulletinCompetence.evaluation` (phase 2)
 
-### Section "Groupes"
-
-| Champ | Composant |
-|---|---|
-| Libellé | `mc-input` |
-
-> Utilisé par : `Eleve.groupes`, `elevesConcernes.groupes` (séances, créneaux EDT)
-
-### Section "Statuts d'élève"
+### Section "Statuts élève"
 
 | Champ | Composant |
 |---|---|
@@ -134,22 +165,6 @@ Ces sections affichent une liste d'éléments éditables inline.
 
 > Utilisé par : `Contact.type`
 
-### Section "Raisons d'absence"
-
-| Champ | Composant |
-|---|---|
-| Libellé | `mc-input` |
-
-> Utilisé par : `AbsenceRecurrente` (si lié — à confirmer)
-
-### Section "Fréquences d'absence"
-
-| Champ | Composant |
-|---|---|
-| Libellé | `mc-input` |
-
-> Utilisé par : `AbsenceRecurrente` (si lié — à confirmer)
-
 ### Section "Jours fériés"
 
 | Champ | Composant |
@@ -157,16 +172,4 @@ Ces sections affichent une liste d'éléments éditables inline.
 | Nom | `mc-input` |
 | Date | `mc-input` type date |
 
-> Utilisé par : logique de navigation du cahier journal (jours non travaillés)
-
----
-
-## Zone droite — Section Préférences
-
-Section formulaire simple (ENREGISTRER / ANNULER) portant les paramètres de l'application.
-
-| Champ | Composant | Détail |
-|---|---|---|
-| Délai de sauvegarde automatique | `mc-input` type number | En minutes, valeur par défaut 2. Persiste dans `donnees.configuration.delaiSauvegardeAutoMinutes` |
-
-> La sauvegarde automatique se déclenche après le premier clic manuel sur SAUVEGARDER, toutes les N minutes, uniquement si des modifications ont eu lieu depuis la dernière sauvegarde.
+> Utilisé par : mini-calendrier du cahier journal (jours grisés). Un jour férié n'est jamais « utilisé » : il est toujours supprimable

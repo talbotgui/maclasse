@@ -8,18 +8,18 @@ Description de l'application telle que conçue et implémentée.
 
 | Document | Contenu |
 |---|---|
-| [description-generale](specification/description-generale.md) | SPA Angular 21 hors ligne, mono-utilisateur, ZIP chiffré AES-GCM, périmètre fonctionnel |
+| [description-generale](specification/description-generale.md) | SPA Angular hors ligne, mono-utilisateur, ZIP chiffré AES-GCM, périmètre fonctionnel (PPI, bulletins, tableau de bord en phase 2) |
 | [modeles-donnees](specification/modeles-donnees.md) | Structure JSON : configuration, référentiels, enseignant, classe, élèves, EDT, projets, cahier journal, PPI, bulletins |
-| [architecture-applicative](specification/architecture-applicative.md) | Structure des dossiers, nommage, ordre d'implémentation |
-| [elements-techniques](specification/elements-techniques.md) | Garde, pattern Commande, `@media print`, recherche globale, routing |
-| [services](specification/services.md) | `DonneesService`, `ContextService`, `SauvegardeAutoService`, services métier |
-| [composants-partages](specification/composants-partages.md) | Composants formulaire (ControlValueAccessor), mini-calendrier, popins |
-| [themes](specification/themes.md) | 14 variables CSS par thème, 5 thèmes |
-| [libelles](specification/libelles.md) | Structure de `libelles.ts` |
+| [architecture-applicative](specification/architecture-applicative.md) | Structure des dossiers, nommage, fichiers racine, décisions techniques |
+| [elements-techniques](specification/elements-techniques.md) | Gardes, classes de base, utilitaires, pattern Commande, versions du JSON, persistance, routing, `@media print`, recherche globale |
+| [services](specification/services.md) | `DonneesService`, `ContexteService`, services métier, `MigrationService`, `SauvegardeAutoService`, `ChiffrementService` |
+| [composants-partages](specification/composants-partages.md) | `ChampBase`, composants formulaire et d'affichage, composants riches, `PopinBase` et popins, entête |
+| [themes](specification/themes.md) | 15 variables CSS par thème, 5 thèmes |
+| [libelles](specification/libelles.md) | Structure de `libelles.ts`, rôle de chaque section |
 
 ### Écrans
 
-[vue d'ensemble](specification/ecrans/vue-ensemble.md) (entête, recherche globale, sauvegarde auto, UNDO/REDO) puis :
+[vue d'ensemble](specification/ecrans/vue-ensemble.md) (entête, sauvegarde auto, thèmes, responsive, UNDO/REDO) puis :
 [démarrage](specification/ecrans/demarrage.md) ·
 [accueil](specification/ecrans/accueil.md) ·
 [élèves](specification/ecrans/eleves.md) ·

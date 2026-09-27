@@ -21,18 +21,37 @@ related:
   emploisDuTempsCalcules: EmploiDuTempsCalcule[],
   projets: Projet[],
   cahierJournal: JourneeJournal[],
-  ppi: Ppi[],           // à construire
-  bulletins: Bulletin[] // à construire
+  ppi: Ppi[],           // phase 2, non implémenté
+  bulletins: Bulletin[] // phase 2, non implémenté
 }
 ```
+
+## Types communs
+
+```
+JourSemaine      = 'lundi' | 'mardi' | 'mercredi' | 'jeudi' | 'vendredi'   // jours ouvrés possibles
+FrequenceSemaine = 'paire' | 'impaire' | 'lesDeux'
+TypeCreneau      = 'pedagogique' | 'recreation' | 'pauseDejeuner'
+
+ElevesConcernes {
+  type: 'classe' | 'groupes' | 'eleves',
+  groupes: string[],     // ids de Groupe (mode groupes)
+  elevesIds: string[]    // UUID d'élèves (mode élèves)
+}
+```
+
+`JourSemaine` s'arrête au vendredi : le samedi et le dimanche ne peuvent pas être jours ouvrés.
 
 ## ConfigApplication
 
 ```
 {
-  delaiSauvegardeAutoMinutes: number  // délai entre deux sauvegardes automatiques (défaut : 2)
+  delaiSauvegardeAutoMinutes: number, // délai entre deux sauvegardes automatiques, en minutes (défaut : 5, bornes 1–60)
+  domainesActifs?: string[]           // ids des domaines (niveau 1) et sous-domaines (niveau 2) de compétences activés
 }
 ```
+
+`domainesActifs` absent ou vide : tous les domaines sont actifs. Sinon, un domaine de niveau 1 coché inclut tout son sous-arbre ; si seuls certains sous-domaines sont cochés, seuls leurs sous-arbres sont retenus (voir `CompetenceService.obtenirDomaines()` dans [services](services.md#competenceservice)). Modifié par la section « Domaines de compétences » du [paramétrage](ecrans/parametrage.md).
 
 ## Enseignant
 
@@ -48,8 +67,8 @@ related:
 
 ```
 {
-  annee: string | null,
-  niveau: string | null,
+  annee: string,
+  niveau: string,
   eleves: Eleve[]
 }
 ```
@@ -63,10 +82,10 @@ related:
   nom: string,
   sexe: 'M' | 'F',
   niveau: string,               // ex: "CM1"
-  groupes: string[],            // ex: ["A"]
+  groupes: string[],            // ref: Groupe.id
   dateNaissance: string,        // ISO date
   dateArrivee: string,          // ISO date
-  statut: string,               // ref: statutsEleve (DC/DE/HE)
+  statut: string,               // ref: StatutEleve.id (DC/DE/HE)
   bilans: string,               // texte libre
   accueil: string,              // texte libre
   inclusion: string | null,     // texte libre
@@ -77,9 +96,7 @@ related:
   notesDroitImage: string,      // texte libre
   notesAutorisationBaignade: string, // texte libre
   notesPPA: string | null,      // texte libre
-  notesESS: string | null,      // texte libre
-  manualite: 'D' | 'G' | 'A',
-  dispositifsMedicaus: string   // texte libre
+  notesESS: string | null       // texte libre
 }
 ```
 
@@ -87,7 +104,7 @@ related:
 
 ```
 {
-  type: string,           // ref: typesContact (P=père, M=mère, ...)
+  type: string,           // ref: TypeContact.id (P=père, M=mère, ...)
   nom: string,
   email: string,
   telephone: string,
@@ -99,6 +116,7 @@ related:
 
 ```
 {
+  id: string,             // UUID
   annee: number,
   niveau: string,
   etablissement: string,
@@ -117,8 +135,6 @@ related:
   typesContact: TypeContact[],
   groupes: Groupe[],
   joursFeries: JourFerie[],
-  raisonsAbsence: RaisonAbsence[],
-  frequencesAbsence: FrequenceAbsence[],
   configEmploiDuTemps: ConfigEmploiDuTemps
 }
 ```
@@ -137,7 +153,7 @@ related:
 
 ```
 {
-  id: 'A' | 'EC' | 'NA' | 'NE',
+  id: string,       // ex: "A", "EC", "NA", "NE" — barème personnalisable
   glyphe: string,   // ex: "✓", "~", "✗", "?"
   libelle: string,  // ex: "Acquis", "En cours", "Non acquis", "Non évalué"
   couleur: string,  // couleur texte (CSS)
@@ -149,9 +165,47 @@ related:
 
 ```
 {
-  nom: string,    // ex: "Période 1"
+  id: string,     // UUID
+  nom: string,    // ex: "Période 1" — clé métier référencée par ProjetPeriode.periodeNom et Bulletin.periode
   debut: string,  // ISO date
   fin: string     // ISO date
+}
+```
+
+### StatutEleve
+
+```
+{
+  id: string,      // ex: "DC"
+  libelle: string  // ex: "Dans la classe"
+}
+```
+
+### TypeContact
+
+```
+{
+  id: string,      // ex: "P"
+  libelle: string  // ex: "Père"
+}
+```
+
+### Groupe
+
+```
+{
+  id: string,      // "A", "B"… dans les données d'exemple ; UUID pour un groupe ajouté dans le Paramétrage
+  libelle: string  // ex: "Groupe A"
+}
+```
+
+### JourFerie
+
+```
+{
+  id: string,      // UUID
+  nom: string,     // ex: "Toussaint"
+  date: string     // ISO date
 }
 ```
 
@@ -159,7 +213,7 @@ related:
 
 ```
 {
-  joursOuvres: JourSemaine[],   // ex: ["lundi","mardi","jeudi","vendredi"]
+  joursOuvres: JourSemaine[],   // ex: ["lundi","mardi","jeudi","vendredi"] — du lundi au vendredi
   heureDebutJournee: string,    // "HH:MM"
   heureFinJournee: string       // "HH:MM"
 }
@@ -174,7 +228,7 @@ related:
   jour: JourSemaine,
   heureDebut: string,       // "HH:MM"
   heureFin: string,         // "HH:MM"
-  paritesSemaine: 'paire' | 'impaire' | 'lesDeux'
+  paritesSemaine: FrequenceSemaine
 }
 ```
 
@@ -196,7 +250,7 @@ related:
   nom: string,              // obligatoire
   dateDebut: string | null, // ISO date
   dateFin: string | null,   // ISO date
-  frequence: 'paire' | 'impaire' | 'lesDeux',
+  frequence: FrequenceSemaine,
   creneaux: CreneauEdt[]
 }
 ```
@@ -207,7 +261,7 @@ related:
 {
   id: string,
   jour: JourSemaine,        // ex: 'lundi', 'mardi'...
-  type: 'pedagogique' | 'recreation' | 'pauseDejeuner',
+  type: TypeCreneau,
   temps: TempsCreneau[]     // 1 à 4, chacun avec son horaire
 }
 ```
@@ -223,11 +277,7 @@ Récréations et pauses déjeuner forment les **temps hors classe**.
   heureFin: string,         // "HH:MM"
   disciplinesIds?: string[], // si créneau pédagogique — plusieurs disciplines possibles
   titre?: string,           // si créneau pédagogique
-  elevesConcernes?: {       // si créneau pédagogique
-    type: 'classe' | 'groupes' | 'eleves',
-    groupes: string[],
-    elevesIds: string[]
-  }
+  elevesConcernes?: ElevesConcernes // si créneau pédagogique
 }
 ```
 
@@ -245,11 +295,30 @@ Définition persistée d'une vue en lecture seule ; ses créneaux sont recalcul�
   nom: string,              // obligatoire
   dateDebut: string | null, // ISO date
   dateFin: string | null,   // ISO date
-  frequence: 'paire' | 'impaire' | 'lesDeux',
+  frequence: FrequenceSemaine,
   sources: ('tempsHorsClasse' | 'tempsClasse' | 'absencesRegulieres')[], // au moins une
   elevesConcernes: ElevesConcernes
 }
 ```
+
+### CreneauCalcule (non persisté)
+
+Créneau produit par `EmploiDuTempsCalculeService.calculerCreneaux()` à chaque affichage d'un EDT calculé. Jamais écrit dans le JSON.
+
+```
+{
+  jour: JourSemaine,
+  heureDebut: string,        // "HH:MM"
+  heureFin: string,          // "HH:MM"
+  source: TypeSourceCalculee,
+  libelle: string,           // titre du temps, libellé de l'absence ou libellé du type hors classe
+  eleveConcerneId?: string   // uniquement pour source = 'absenceReguliere'
+}
+
+TypeSourceCalculee = 'recreation' | 'pauseDejeuner' | 'tempsClasse' | 'absenceReguliere'
+```
+
+`TypeSourceCalculee` détaille l'origine d'un créneau calculé (la source `tempsHorsClasse` d'une définition produit des créneaux `recreation` ou `pauseDejeuner`) ; il détermine la couleur de la cellule dans la grille.
 
 ---
 
@@ -269,7 +338,8 @@ Définition persistée d'une vue en lecture seule ; ses créneaux sont recalcul�
 
 ```
 {
-  periodeNom: string,
+  id: string,               // UUID
+  periodeNom: string,       // ref: Periode.nom
   debut: string,            // ISO date — tri ascendant des périodes
   fin: string,              // ISO date
   description: string,
@@ -295,7 +365,7 @@ Définition persistée d'une vue en lecture seule ; ses créneaux sont recalcul�
   id: string,
   heureDebut: string,   // "HH:MM"
   heureFin: string,     // "HH:MM"
-  type: 'pedagogique' | 'recreation' | 'pauseDejeuner',
+  type: TypeCreneau,
   disciplinesIds?: string[], // si type pédagogique — plusieurs disciplines possibles
   titre?: string,            // si type pédagogique
   objectifs?: string,     // textarea libre, si type pédagogique
@@ -303,15 +373,14 @@ Définition persistée d'une vue en lecture seule ; ses créneaux sont recalcul�
   deroulement?: string,   // textarea libre, si type pédagogique
   ressources?: string,    // textarea libre, si type pédagogique
   description?: string,   // si type pédagogique
-  elevesConcernes?: {     // si type pédagogique
-    type: 'classe' | 'groupes' | 'eleves',
-    groupes: string[],
-    elevesIds: string[]
-  }
+  elevesConcernes?: ElevesConcernes, // si type pédagogique
+  conflitDetecte?: boolean  // champ dérivé : conflit avec une absence récurrente d'un élève concerné
 }
 ```
 
-## PPI (Projet Pédagogique Individuel) — à construire
+`conflitDetecte` est un champ **dérivé** mais persisté : il est recalculé à chaque ENREGISTRER du formulaire de séance (voir [cahier-journal](ecrans/cahier-journal.md)) et affiche l'icône ⚠ dans la liste des séances.
+
+## PPI (Projet Pédagogique Individuel) — phase 2, non implémenté
 
 ```
 {
@@ -336,7 +405,7 @@ Définition persistée d'une vue en lecture seule ; ses créneaux sont recalcul�
 }
 ```
 
-## Bulletin — à construire
+## Bulletin — phase 2, non implémenté
 
 ```
 {

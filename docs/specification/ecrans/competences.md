@@ -3,7 +3,7 @@ name: competences
 description: Spécification détaillée de l'écran Compétences — arbre filtrable, panier et export vers projet/cahier journal
 metadata:
   type: project
-  updated: 2026-06-09
+  updated: 2026-09-27
 related:
   - specification/ecrans/vue-ensemble
   - specification/modeles-donnees
@@ -29,6 +29,8 @@ Deux zones côte à côte :
 
 Écran en **lecture seule** — aucune modification des compétences dans cette version.
 
+C'est le seul écran accessible en **mode consultation du référentiel** (voir [démarrage](demarrage.md#zone-référentiel-de-compétences)).
+
 ---
 
 ## Zone gauche — `mc-arbre-competences`
@@ -43,6 +45,11 @@ Le composant `mc-arbre-competences` intègre les trois sous-zones suivantes :
 
 - Les deux filtres sont **cumulatifs** (ET logique)
 - Pas de bouton "Réinitialiser les filtres"
+
+### Domaines actifs
+
+- L'arbre et les chips de domaine ne montrent que les **domaines actifs** : `CompetenceService.obtenirDomaines()` filtre l'arbre selon `configuration.domainesActifs` (tous les domaines si la liste est absente ou vide ; voir [services](../services.md#competenceservice))
+- Sous l'arbre, un paragraphe d'information renvoie au Paramétrage : *« Tous les domaines sont disponibles et activables dans l'écran Paramétrage. »* (`LIBELLES.competences.infoDomainesParametrage`) — les domaines se choisissent dans la section « Domaines de compétences » du [paramétrage](parametrage.md#section-domaines-de-compétences)
 
 ### Arbre des compétences
 
@@ -75,7 +82,7 @@ Le composant `mc-arbre-competences` intègre les trois sous-zones suivantes :
 
 ## Colonne droite — Panier
 
-- **Persisté** entre les accès à l'écran via `ContextService`
+- **Persisté** entre les accès à l'écran via `ContexteService`
 - **Pas de doublon** : une compétence ne peut être ajoutée qu'une seule fois
 
 ### Contenu
@@ -97,7 +104,11 @@ Pour chaque compétence dans le panier :
 #### Boutons d'export
 
 Les deux boutons d'export sont **désactivés** si le panier est vide.  
-Après un export confirmé, le panier est **automatiquement vidé**.
+Après un export réussi, le panier est **automatiquement vidé**.
+
+Les deux exports passent par `popin-export-competences` (voir [composants-partages](../composants-partages.md#popin-export-competences)). CONFIRMER n'est actif qu'une fois les deux listes renseignées.
+
+**Échec de l'export** : si la période ou la séance ciblée n'existe plus au moment de l'export, un message s'affiche au-dessus des boutons (`role="alert"`) : *« L'export a échoué : la période ou la séance ciblée n'existe plus. Le panier a été conservé. »* ; le panier n'est **pas** vidé. Le message disparaît au prochain export réussi.
 
 #### Bouton "Envoyer vers un projet"
 
@@ -105,12 +116,12 @@ Au clic, ouvre une **popin** contenant :
 1. Liste déroulante `mc-select` — *Choisir un projet* (liste de tous les projets)
 2. Liste déroulante `mc-select` — *Choisir une période* (périodes du projet sélectionné)
 - Bouton **ANNULER** : ferme la popin sans action
-- Bouton **CONFIRMER** : ajoute les compétences du panier à la `ProjetPeriode` sélectionnée (sans doublon) via `ProjetService`, puis **vide le panier**
+- Bouton **CONFIRMER** : ajoute les compétences du panier à la `ProjetPeriode` sélectionnée (sans doublon) via `ProjetService.modifierPeriode`, puis **vide le panier**
 
 #### Bouton "Envoyer vers une séance"
 
 Au clic, ouvre une **popin** contenant :
-1. `mc-input` type date — *Choisir un jour* (date libre, ex. "2026-06-09")
-2. Liste déroulante `mc-select` — *Choisir une séance* (séances pédagogiques du jour sélectionné, si entrée CJ existante)
+1. Liste déroulante `mc-select` — *Jour* : les journées du cahier journal qui ont **au moins une séance pédagogique**, dates affichées au format **JJ/MM/AAAA**
+2. Liste déroulante `mc-select` — *Séance* : séances pédagogiques de la journée choisie (titre, ou « hh:mm – hh:mm » sans titre)
 - Bouton **ANNULER** : ferme la popin sans action
-- Bouton **CONFIRMER** : ajoute les compétences du panier à la séance sélectionnée (sans doublon) via `CahierJournalService`, puis **vide le panier**
+- Bouton **CONFIRMER** : ajoute les compétences du panier à la séance sélectionnée (sans doublon) via `CahierJournalService.modifierSeance`, puis **vide le panier**

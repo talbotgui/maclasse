@@ -10,10 +10,18 @@ import {
   effect,
   inject,
   signal,
+  untracked,
 } from '@angular/core';
 import type { WritableSignal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ReferentielService } from '../../services/sansEtat/referentiel.service';
@@ -26,9 +34,10 @@ import { McChipFiltreComponent } from '../../composants/mc-chip-filtre/mc-chip-f
 import { McBoutonDestructionComponent } from '../../composants/mc-bouton-destruction/mc-bouton-destruction.component';
 import { McBadgeStatutComponent } from '../../composants/mc-badge-statut/mc-badge-statut.component';
 import { ObjetUtils } from '../../utilitaires/objet.utils';
-import type { Enseignant } from '../../modeles/donnees-application.modele';
+import type { DonneesApplication, Enseignant } from '../../modeles/donnees-application.modele';
 import type {
   Competence,
+  ConfigEmploiDuTemps,
   Groupe,
   JourFerie,
   Periode,
@@ -71,6 +80,11 @@ interface LigneFormulaire<T> {
   idOrigine: FormControl<string | null>;
   /** Valeur éditée de l'entrée. */
   valeur: FormGroup<ControlesDe<T>>;
+  /**
+   * Valeur enregistrée lors du dernier chargement de la ligne (`null` si jamais enregistrée) :
+   * référence qui décide si la ligne est modifiée au rechargement suivant.
+   */
+  reference: FormControl<T | null>;
 }
 
 /** Structure typée du formulaire Enseignant & Classe. */
@@ -100,6 +114,11 @@ interface FormulairePreferences {
   /** Délai de sauvegarde automatique en minutes ; chaîne vide si le champ est vidé. */
   delaiSauvegardeAutoMinutes: FormControl<number | string>;
 }
+
+/** Valeurs brutes d'un formulaire réactif dont les contrôles sont décrits par `C`. */
+type ValeursDe<C extends { [K in keyof C]: AbstractControl }> = ReturnType<
+  FormGroup<C>['getRawValue']
+>;
 
 /**
  * Écran de paramétrage de l'application.
@@ -257,15 +276,35 @@ export class EcranParametrageComponent {
    */
   protected readonly copieDomainesActifs = signal<Set<string>>(new Set());
 
+  /**
+   * Section chargée lors du dernier passage de l'`effect` de rechargement (`null` avant le
+   * premier) : distingue un changement de section (rechargement complet) d'un changement
+   * des données (saisies modifiées conservées).
+   */
+  private sectionChargee: SectionId | null = null;
+
+  /** Valeurs enregistrées chargées en dernier dans le formulaire Enseignant & Classe. */
+  private referenceEnseignantClasse: ValeursDe<FormulaireEnseignantClasse> | null = null;
+
+  /** Valeurs enregistrées chargées en dernier dans le formulaire Semaine & Horaires. */
+  private referenceSemaineHoraires: ValeursDe<FormulaireSemaineHoraires> | null = null;
+
+  /** Valeurs enregistrées chargées en dernier dans le formulaire Préférences. */
+  private referencePreferences: ValeursDe<FormulairePreferences> | null = null;
+
+  /** Sélection enregistrée chargée en dernier dans la section Domaines de compétences. */
+  private referenceDomainesActifs: Set<string> | null = null;
+
   /** Tous les domaines N1 de l'arbre complet (non filtré), pour affichage dans le paramétrage. */
   protected readonly tousDomaines = computed<Competence[]>(
     () => this.donneesService.donnees()?.referentiels.competences ?? [],
   );
 
   /**
-   * Recharge la section active à chaque changement de section ou de données. Les sections
-   * liste sont réconciliées ligne par ligne : les instances de `FormGroup` des entrées
-   * toujours présentes sont conservées.
+   * Recharge la section active à chaque changement de section ou de données. Un changement
+   * de section recharge entièrement la nouvelle section ; un changement des données (ENREGISTRER,
+   * ANNULER / REFAIRE de l'entête) conserve les saisies modifiées de la section active et ne
+   * met à jour que ce qui ne l'est pas.
    */
   public constructor() {
     this.formPreferences.statusChanges
@@ -275,57 +314,11 @@ export class EcranParametrageComponent {
       const section = this.sectionActive();
       const d = this.donneesService.donnees();
       if (!d) return;
-
-      switch (section) {
-        case 'enseignantClasse':
-          this.chargerEnseignantClasse();
-          break;
-        case 'periodes':
-          EcranParametrageComponent.reconcilierLignes(this.lignesPeriodes, d.referentiels.periodes);
-          this.indexAFocaliserPeriode.set(null);
-          break;
-        case 'semaineHoraires':
-          this.chargerSemaineHoraires();
-          break;
-        case 'groupes':
-          EcranParametrageComponent.reconcilierLignes(this.lignesGroupes, d.referentiels.groupes);
-          this.indexAFocaliserGroupe.set(null);
-          break;
-        case 'bareme':
-          EcranParametrageComponent.reconcilierLignes(
-            this.lignesBareme,
-            d.referentiels.statutsAcquisition,
-          );
-          this.indexAFocaliserBareme.set(null);
-          break;
-        case 'statutsEleve':
-          EcranParametrageComponent.reconcilierLignes(
-            this.lignesStatutsEleve,
-            d.referentiels.statutsEleve,
-          );
-          this.indexAFocaliserStatutEleve.set(null);
-          break;
-        case 'typesContact':
-          EcranParametrageComponent.reconcilierLignes(
-            this.lignesTypesContact,
-            d.referentiels.typesContact,
-          );
-          this.indexAFocaliserTypeContact.set(null);
-          break;
-        case 'joursFeries':
-          EcranParametrageComponent.reconcilierLignes(
-            this.lignesJoursFeries,
-            d.referentiels.joursFeries,
-          );
-          this.indexAFocaliserJourFerie.set(null);
-          break;
-        case 'preferences':
-          this.chargerPreferences();
-          break;
-        case 'domainesCompetences':
-          this.chargerDomainesCompetences();
-          break;
-      }
+      untracked(() => {
+        const conserver = this.sectionChargee === section;
+        this.sectionChargee = section;
+        this.rechargerSection(section, d, conserver);
+      });
       this.cdr.markForCheck();
     });
   }
@@ -830,53 +823,249 @@ export class EcranParametrageComponent {
     this.cdr.markForCheck();
   }
 
-  /** Charge le formulaire Enseignant & Classe depuis le store. */
-  private chargerEnseignantClasse(): void {
-    const d = this.donneesService.donnees();
-    if (!d) return;
-    this.formEnseignantClasse.reset(
-      {
-        prenom: d.enseignant.prenom,
-        nom: d.enseignant.nom,
-        annee: d.enseignant.annee,
-        niveauClasse: d.classe.niveau,
-      },
-      { emitEvent: false },
-    );
-  }
-
-  /** Charge le formulaire Semaine & Horaires depuis le store. */
-  private chargerSemaineHoraires(): void {
-    const d = this.donneesService.donnees();
-    if (!d) return;
-    const config = d.referentiels.configEmploiDuTemps;
-    this.formSemaineHoraires.reset(
-      { ...config, joursOuvres: [...config.joursOuvres] },
-      { emitEvent: false },
-    );
-  }
-
-  /** Charge le formulaire Préférences depuis le store et resynchronise son statut. */
-  private chargerPreferences(): void {
-    const d = this.donneesService.donnees();
-    if (!d) return;
-    this.formPreferences.reset(
-      { delaiSauvegardeAutoMinutes: d.configuration.delaiSauvegardeAutoMinutes },
-      { emitEvent: false },
-    );
-    this.statutPreferences.set(this.formPreferences.status);
-  }
-
-  /** Charge la sélection des domaines actifs depuis le store (rien de configuré = tout coché). */
-  private chargerDomainesCompetences(): void {
-    const d = this.donneesService.donnees();
-    if (!d) return;
-    const actifs = d.configuration.domainesActifs;
-    if (!actifs || actifs.length === 0) {
-      this.copieDomainesActifs.set(new Set(this.collecterIdsDomaines()));
-    } else {
-      this.copieDomainesActifs.set(new Set(actifs));
+  /**
+   * Recharge une section depuis les données.
+   * @param section Section à recharger.
+   * @param d Données courantes.
+   * @param conserver `true` pour conserver les saisies modifiées (même section, données changées),
+   * `false` pour un rechargement complet (changement de section).
+   */
+  private rechargerSection(section: SectionId, d: DonneesApplication, conserver: boolean): void {
+    switch (section) {
+      case 'enseignantClasse':
+        this.chargerEnseignantClasse(conserver);
+        break;
+      case 'periodes':
+        EcranParametrageComponent.reconcilierLignes(
+          this.lignesPeriodes,
+          d.referentiels.periodes,
+          conserver,
+        );
+        this.indexAFocaliserPeriode.set(null);
+        break;
+      case 'semaineHoraires':
+        this.chargerSemaineHoraires(conserver);
+        break;
+      case 'groupes':
+        EcranParametrageComponent.reconcilierLignes(
+          this.lignesGroupes,
+          d.referentiels.groupes,
+          conserver,
+        );
+        this.indexAFocaliserGroupe.set(null);
+        break;
+      case 'bareme':
+        EcranParametrageComponent.reconcilierLignes(
+          this.lignesBareme,
+          d.referentiels.statutsAcquisition,
+          conserver,
+        );
+        this.indexAFocaliserBareme.set(null);
+        break;
+      case 'statutsEleve':
+        EcranParametrageComponent.reconcilierLignes(
+          this.lignesStatutsEleve,
+          d.referentiels.statutsEleve,
+          conserver,
+        );
+        this.indexAFocaliserStatutEleve.set(null);
+        break;
+      case 'typesContact':
+        EcranParametrageComponent.reconcilierLignes(
+          this.lignesTypesContact,
+          d.referentiels.typesContact,
+          conserver,
+        );
+        this.indexAFocaliserTypeContact.set(null);
+        break;
+      case 'joursFeries':
+        EcranParametrageComponent.reconcilierLignes(
+          this.lignesJoursFeries,
+          d.referentiels.joursFeries,
+          conserver,
+        );
+        this.indexAFocaliserJourFerie.set(null);
+        break;
+      case 'preferences':
+        this.chargerPreferences(conserver);
+        break;
+      case 'domainesCompetences':
+        this.chargerDomainesCompetences(conserver);
+        break;
     }
+  }
+
+  /**
+   * Lit dans les données les valeurs enregistrées du formulaire Enseignant & Classe.
+   * @param d Données courantes.
+   * @returns Valeurs enregistrées, dans la structure du formulaire.
+   */
+  private static lireEnseignantClasse(
+    d: DonneesApplication,
+  ): ValeursDe<FormulaireEnseignantClasse> {
+    return {
+      prenom: d.enseignant.prenom,
+      nom: d.enseignant.nom,
+      annee: d.enseignant.annee,
+      niveauClasse: d.classe.niveau,
+    };
+  }
+
+  /**
+   * Lit dans les données les valeurs enregistrées du formulaire Semaine & Horaires.
+   * @param d Données courantes.
+   * @returns Copie de la configuration enregistrée, dans la structure du formulaire.
+   */
+  private static lireSemaineHoraires(d: DonneesApplication): ValeursDe<FormulaireSemaineHoraires> {
+    const config: ConfigEmploiDuTemps = d.referentiels.configEmploiDuTemps;
+    return {
+      joursOuvres: [...config.joursOuvres],
+      heureDebutJournee: config.heureDebutJournee,
+      heureFinJournee: config.heureFinJournee,
+    };
+  }
+
+  /**
+   * Lit dans les données les valeurs enregistrées du formulaire Préférences.
+   * @param d Données courantes.
+   * @returns Valeurs enregistrées, dans la structure du formulaire.
+   */
+  private static lirePreferences(d: DonneesApplication): ValeursDe<FormulairePreferences> {
+    return { delaiSauvegardeAutoMinutes: d.configuration.delaiSauvegardeAutoMinutes };
+  }
+
+  /**
+   * Lit dans les données la sélection enregistrée des domaines actifs.
+   * @param d Données courantes.
+   * @returns Identifiants actifs ; tous les domaines et sous-domaines si rien n'est configuré.
+   */
+  private lireDomainesActifs(d: DonneesApplication): Set<string> {
+    const actifs = d.configuration.domainesActifs;
+    return new Set(actifs && actifs.length > 0 ? actifs : this.collecterIdsDomaines());
+  }
+
+  /**
+   * Indique si le rechargement doit remplacer la saisie d'un formulaire par les valeurs
+   * enregistrées : toujours lors d'un rechargement complet, sinon seulement si la saisie
+   * n'est pas modifiée par rapport à la référence chargée précédemment.
+   * @param conserver `true` si les saisies modifiées doivent être conservées.
+   * @param saisie Saisie courante du formulaire.
+   * @param reference Valeurs enregistrées chargées précédemment (`null` si aucune).
+   * @returns `true` si le formulaire doit recevoir les valeurs enregistrées.
+   */
+  private static verifierRemplacementSaisie(
+    conserver: boolean,
+    saisie: unknown,
+    reference: unknown,
+  ): boolean {
+    return !conserver || reference === null || ObjetUtils.sontEgaux(saisie, reference);
+  }
+
+  /**
+   * Charge le formulaire Enseignant & Classe depuis le store.
+   * @param conserver `true` pour conserver une saisie modifiée par rapport à la référence.
+   */
+  private chargerEnseignantClasse(conserver = false): void {
+    const d = this.donneesService.donnees();
+    if (!d) return;
+    const enregistrees = EcranParametrageComponent.lireEnseignantClasse(d);
+    if (
+      EcranParametrageComponent.verifierRemplacementSaisie(
+        conserver,
+        this.formEnseignantClasse.getRawValue(),
+        this.referenceEnseignantClasse,
+      )
+    ) {
+      this.formEnseignantClasse.reset(enregistrees, { emitEvent: false });
+    }
+    this.referenceEnseignantClasse = enregistrees;
+  }
+
+  /**
+   * Charge le formulaire Semaine & Horaires depuis le store. Les jours ouvrés sont comparés
+   * triés : seul l'ensemble des jours compte, pas leur ordre de saisie.
+   * @param conserver `true` pour conserver une saisie modifiée par rapport à la référence.
+   */
+  private chargerSemaineHoraires(conserver = false): void {
+    const d = this.donneesService.donnees();
+    if (!d) return;
+    const enregistrees = EcranParametrageComponent.lireSemaineHoraires(d);
+    const reference = this.referenceSemaineHoraires;
+    if (
+      EcranParametrageComponent.verifierRemplacementSaisie(
+        conserver,
+        EcranParametrageComponent.normaliserSemaineHoraires(this.formSemaineHoraires.getRawValue()),
+        reference && EcranParametrageComponent.normaliserSemaineHoraires(reference),
+      )
+    ) {
+      this.formSemaineHoraires.reset(
+        { ...enregistrees, joursOuvres: [...enregistrees.joursOuvres] },
+        { emitEvent: false },
+      );
+    }
+    this.referenceSemaineHoraires = enregistrees;
+  }
+
+  /**
+   * Charge le formulaire Préférences depuis le store et resynchronise son statut.
+   * @param conserver `true` pour conserver une saisie modifiée par rapport à la référence.
+   */
+  private chargerPreferences(conserver = false): void {
+    const d = this.donneesService.donnees();
+    if (!d) return;
+    const enregistrees = EcranParametrageComponent.lirePreferences(d);
+    if (
+      EcranParametrageComponent.verifierRemplacementSaisie(
+        conserver,
+        this.formPreferences.getRawValue(),
+        this.referencePreferences,
+      )
+    ) {
+      this.formPreferences.reset(enregistrees, { emitEvent: false });
+      this.statutPreferences.set(this.formPreferences.status);
+    }
+    this.referencePreferences = enregistrees;
+  }
+
+  /**
+   * Charge la sélection des domaines actifs depuis le store (rien de configuré = tout coché).
+   * @param conserver `true` pour conserver une sélection modifiée par rapport à la référence.
+   */
+  private chargerDomainesCompetences(conserver = false): void {
+    const d = this.donneesService.donnees();
+    if (!d) return;
+    const enregistres = this.lireDomainesActifs(d);
+    const reference = this.referenceDomainesActifs;
+    if (
+      EcranParametrageComponent.verifierRemplacementSaisie(
+        conserver,
+        EcranParametrageComponent.trierIdentifiants(this.copieDomainesActifs()),
+        reference && EcranParametrageComponent.trierIdentifiants(reference),
+      )
+    ) {
+      this.copieDomainesActifs.set(new Set(enregistres));
+    }
+    this.referenceDomainesActifs = enregistres;
+  }
+
+  /**
+   * Normalise les valeurs Semaine & Horaires pour comparaison : jours ouvrés triés.
+   * @param valeurs Valeurs du formulaire ou valeurs enregistrées.
+   * @returns Copie dont les jours ouvrés sont triés.
+   */
+  private static normaliserSemaineHoraires(
+    valeurs: ValeursDe<FormulaireSemaineHoraires>,
+  ): ValeursDe<FormulaireSemaineHoraires> {
+    return { ...valeurs, joursOuvres: [...valeurs.joursOuvres].sort((a, b) => a.localeCompare(b)) };
+  }
+
+  /**
+   * Trie un ensemble d'identifiants pour une comparaison indépendante de l'ordre d'insertion.
+   * @param ids Ensemble d'identifiants.
+   * @returns Identifiants triés.
+   */
+  private static trierIdentifiants(ids: ReadonlySet<string>): string[] {
+    return [...ids].sort((a, b) => a.localeCompare(b));
   }
 
   /**
@@ -896,38 +1085,82 @@ export class EcranParametrageComponent {
     return new FormGroup<LigneFormulaire<T>>({
       idOrigine: new FormControl<string | null>(idOrigine),
       valeur: new FormGroup(controles) as unknown as FormGroup<ControlesDe<T>>,
+      reference: new FormControl<T | null>(idOrigine === null ? null : structuredClone(entree)),
     });
   }
 
   /**
-   * Réconcilie les lignes d'une section liste avec les entrées enregistrées, dans leur ordre :
-   * la ligne d'une entrée toujours présente (même `idOrigine`) est réutilisée et reçoit la
-   * valeur enregistrée, une ligne est créée pour une entrée nouvelle, les autres lignes
-   * (entrées disparues, lignes jamais enregistrées) sont retirées.
+   * Réconcilie les lignes d'une section liste avec les entrées enregistrées, dans leur ordre.
+   * La ligne d'une entrée toujours présente (même `idOrigine`) est réutilisée ; une ligne est
+   * créée pour une entrée nouvelle.
+   *
+   * Rechargement complet (`conserverSaisies` à `false`) : les lignes réutilisées reçoivent la
+   * valeur enregistrée, les autres (entrées disparues, lignes jamais enregistrées) sont retirées.
+   *
+   * Conservation des saisies (`conserverSaisies` à `true`) : une ligne réutilisée garde sa saisie
+   * si elle est modifiée par rapport à sa référence ; une ligne jamais enregistrée est conservée ;
+   * une ligne dont l'entrée a disparu est retirée sauf si elle est modifiée, auquel cas elle
+   * redevient non enregistrée. Les lignes conservées sans entrée suivent, dans leur ordre d'origine.
    * @param lignes Lignes de la section.
    * @param entrees Entrées enregistrées de la section.
+   * @param conserverSaisies `true` pour conserver les saisies modifiées.
    */
   private static reconcilierLignes<T extends { id: string }>(
     lignes: FormArray<FormGroup<LigneFormulaire<T>>>,
     entrees: readonly T[],
+    conserverSaisies = false,
   ): void {
     const lignesParId = new Map<string, FormGroup<LigneFormulaire<T>>>();
     for (const ligne of lignes.controls) {
       const idOrigine = ligne.controls.idOrigine.value;
       if (idOrigine !== null) lignesParId.set(idOrigine, ligne);
     }
+    const rattachees = new Set<FormGroup<LigneFormulaire<T>>>();
     const reconciliees = entrees.map((entree) => {
       const existante = lignesParId.get(entree.id);
       if (!existante)
         return EcranParametrageComponent.creerLigne(structuredClone(entree), entree.id);
-      const valeur = structuredClone(entree) as Parameters<
-        typeof existante.controls.valeur.reset
-      >[0];
-      existante.controls.valeur.reset(valeur, { emitEvent: false });
+      rattachees.add(existante);
+      if (
+        !conserverSaisies ||
+        !EcranParametrageComponent.verifierLigneModifieeDepuisReference(existante)
+      ) {
+        const valeur = structuredClone(entree) as Parameters<
+          typeof existante.controls.valeur.reset
+        >[0];
+        existante.controls.valeur.reset(valeur, { emitEvent: false });
+      }
+      existante.controls.reference.setValue(structuredClone(entree), { emitEvent: false });
       return existante;
     });
+    const conservees = conserverSaisies
+      ? lignes.controls.filter(
+          (ligne) =>
+            !rattachees.has(ligne) &&
+            EcranParametrageComponent.verifierLigneModifieeDepuisReference(ligne),
+        )
+      : [];
+    for (const ligne of conservees) {
+      ligne.controls.idOrigine.setValue(null, { emitEvent: false });
+      ligne.controls.reference.setValue(null, { emitEvent: false });
+    }
     lignes.clear({ emitEvent: false });
-    for (const ligne of reconciliees) lignes.push(ligne, { emitEvent: false });
+    for (const ligne of [...reconciliees, ...conservees]) lignes.push(ligne, { emitEvent: false });
+  }
+
+  /**
+   * Indique si une ligne est modifiée par rapport à sa référence, c'est-à-dire à la valeur
+   * enregistrée lors de son dernier chargement. Une ligne jamais enregistrée est modifiée.
+   * @param ligne Ligne d'une section liste.
+   * @returns `true` si la ligne n'a pas de référence ou si sa saisie en diffère.
+   */
+  private static verifierLigneModifieeDepuisReference<T>(
+    ligne: FormGroup<LigneFormulaire<T>>,
+  ): boolean {
+    const reference = ligne.controls.reference.value;
+    return (
+      reference === null || !ObjetUtils.sontEgaux(ligne.controls.valeur.getRawValue(), reference)
+    );
   }
 
   /**
@@ -981,12 +1214,10 @@ export class EcranParametrageComponent {
   protected estEnseignantClasseModifie(): boolean {
     const d = this.donneesService.donnees();
     if (!d) return false;
-    return !ObjetUtils.sontEgaux(this.formEnseignantClasse.getRawValue(), {
-      prenom: d.enseignant.prenom,
-      nom: d.enseignant.nom,
-      annee: d.enseignant.annee,
-      niveauClasse: d.classe.niveau,
-    });
+    return !ObjetUtils.sontEgaux(
+      this.formEnseignantClasse.getRawValue(),
+      EcranParametrageComponent.lireEnseignantClasse(d),
+    );
   }
 
   /**
@@ -997,11 +1228,11 @@ export class EcranParametrageComponent {
   protected estSemaineHorairesModifie(): boolean {
     const d = this.donneesService.donnees();
     if (!d) return false;
-    const store = d.referentiels.configEmploiDuTemps;
-    const saisie = this.formSemaineHoraires.getRawValue();
     return !ObjetUtils.sontEgaux(
-      { ...saisie, joursOuvres: [...saisie.joursOuvres].sort((a, b) => a.localeCompare(b)) },
-      { ...store, joursOuvres: [...store.joursOuvres].sort((a, b) => a.localeCompare(b)) },
+      EcranParametrageComponent.normaliserSemaineHoraires(this.formSemaineHoraires.getRawValue()),
+      EcranParametrageComponent.normaliserSemaineHoraires(
+        EcranParametrageComponent.lireSemaineHoraires(d),
+      ),
     );
   }
 

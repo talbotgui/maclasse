@@ -5,6 +5,7 @@ import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { SauvegardeAutoService } from '../../services/sansEtat/sauvegarde-auto.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { CompetenceMother } from '../../tests/competence.mother';
+import { GroupeMother } from '../../tests/referentiel.mother';
 import { ReferentielService } from '../../services/sansEtat/referentiel.service';
 import { LIBELLES } from '../../libelles';
 
@@ -62,7 +63,13 @@ describe('EcranParametrageComponent', () => {
       fixture.detectChanges();
 
       const lignes = (component as any).lignesPeriodes.getRawValue();
-      expect(lignes).toEqual([{ idOrigine: 'p1', valeur: donnees.referentiels.periodes[0] }]);
+      expect(lignes).toEqual([
+        {
+          idOrigine: 'p1',
+          valeur: donnees.referentiels.periodes[0],
+          reference: donnees.referentiels.periodes[0],
+        },
+      ]);
     });
   });
 
@@ -855,6 +862,258 @@ describe('EcranParametrageComponent', () => {
 
         expect(lignes.at(0)).toBe(premiere);
         expect(premiere.controls.valeur.controls.libelle.value).toBe('Maîtrisé');
+      });
+    });
+  });
+
+  describe('conservation des saisies au rechargement des données', () => {
+    const groupeA = GroupeMother.base('GA', 'Groupe A');
+    const groupeB = GroupeMother.base('GB', 'Groupe B');
+    let referentielService: ReferentielService;
+
+    beforeEach(() => {
+      referentielService = TestBed.inject(ReferentielService);
+      donneesService.charger(
+        DonneesMother.base({
+          ...donnees,
+          referentiels: { ...donnees.referentiels, groupes: [groupeA, groupeB] },
+        }),
+      );
+      fixture.detectChanges();
+    });
+
+    describe('section liste', () => {
+      beforeEach(() => {
+        (component as any).activerSection('groupes');
+        fixture.detectChanges();
+      });
+
+      it('ligne B modifiée, enregistrement de la ligne A → saisie de B conservée', () => {
+        const lignes = (component as any).lignesGroupes;
+        lignes.at(1).controls.valeur.controls.libelle.setValue('Saisie B');
+        lignes.at(0).controls.valeur.controls.libelle.setValue('Groupe A2');
+
+        (component as any).enregistrerGroupe(0);
+        fixture.detectChanges();
+
+        expect(lignes.at(0).controls.valeur.controls.libelle.value).toBe('Groupe A2');
+        expect(lignes.at(1).controls.valeur.controls.libelle.value).toBe('Saisie B');
+        expect((component as any).estGroupeLigneModifiee(0)).toBe(false);
+        expect((component as any).estGroupeLigneModifiee(1)).toBe(true);
+      });
+
+      it("ligne ajoutée non enregistrée, enregistrement d'une autre ligne → ligne ajoutée conservée", () => {
+        const lignes = (component as any).lignesGroupes;
+        (component as any).ajouterGroupe();
+        const ajoutee = lignes.at(2);
+        ajoutee.controls.valeur.controls.libelle.setValue('Groupe C');
+        lignes.at(0).controls.valeur.controls.libelle.setValue('Groupe A2');
+
+        (component as any).enregistrerGroupe(0);
+        fixture.detectChanges();
+
+        expect(lignes.length).toBe(3);
+        expect(lignes.at(2)).toBe(ajoutee);
+        expect(ajoutee.controls.valeur.controls.libelle.value).toBe('Groupe C');
+        expect(ajoutee.controls.idOrigine.value).toBeNull();
+      });
+
+      it("UNDO d'une modification de la ligne A pendant que A est modifiée → saisie de A conservée", () => {
+        const lignes = (component as any).lignesGroupes;
+        referentielService.modifierGroupe(groupeA, { ...groupeA, libelle: 'Groupe A2' });
+        fixture.detectChanges();
+        lignes.at(0).controls.valeur.controls.libelle.setValue('Saisie A');
+
+        donneesService.annuler();
+        fixture.detectChanges();
+
+        expect(lignes.at(0).controls.valeur.controls.libelle.value).toBe('Saisie A');
+      });
+
+      it("UNDO d'une modification de la ligne A non modifiée → A reprend l'ancienne valeur", () => {
+        const lignes = (component as any).lignesGroupes;
+        referentielService.modifierGroupe(groupeA, { ...groupeA, libelle: 'Groupe A2' });
+        fixture.detectChanges();
+        expect(lignes.at(0).controls.valeur.controls.libelle.value).toBe('Groupe A2');
+
+        donneesService.annuler();
+        fixture.detectChanges();
+
+        expect(lignes.at(0).controls.valeur.controls.libelle.value).toBe('Groupe A');
+      });
+
+      it('suppression → ligne retirée ; ANNULER de la suppression → ligne rétablie', () => {
+        const lignes = (component as any).lignesGroupes;
+
+        (component as any).supprimerGroupe(1);
+        fixture.detectChanges();
+        expect(lignes.getRawValue().map((l: any) => l.idOrigine)).toEqual(['GA']);
+
+        donneesService.annuler();
+        fixture.detectChanges();
+        expect(lignes.getRawValue().map((l: any) => l.idOrigine)).toEqual(['GA', 'GB']);
+        expect(lignes.at(1).controls.valeur.controls.libelle.value).toBe('Groupe B');
+      });
+
+      it('ligne enregistrée puis modifiée, UNDO de son ajout → ligne conservée et redevenue non enregistrée', () => {
+        const lignes = (component as any).lignesGroupes;
+        (component as any).ajouterGroupe();
+        const ajoutee = lignes.at(2);
+        ajoutee.controls.valeur.controls.libelle.setValue('Groupe C');
+        (component as any).enregistrerGroupe(2);
+        fixture.detectChanges();
+        ajoutee.controls.valeur.controls.libelle.setValue('Groupe C2');
+
+        donneesService.annuler();
+        fixture.detectChanges();
+
+        expect(lignes.length).toBe(3);
+        expect(lignes.at(2)).toBe(ajoutee);
+        expect(ajoutee.controls.valeur.controls.libelle.value).toBe('Groupe C2');
+        expect(ajoutee.controls.idOrigine.value).toBeNull();
+        expect(ajoutee.controls.reference.value).toBeNull();
+      });
+
+      it('ligne enregistrée non modifiée, UNDO de son ajout → ligne retirée', () => {
+        const lignes = (component as any).lignesGroupes;
+        (component as any).ajouterGroupe();
+        lignes.at(2).controls.valeur.controls.libelle.setValue('Groupe C');
+        (component as any).enregistrerGroupe(2);
+        fixture.detectChanges();
+
+        donneesService.annuler();
+        fixture.detectChanges();
+
+        expect(lignes.length).toBe(2);
+      });
+
+      it('changement de section → saisies et lignes non enregistrées abandonnées', () => {
+        const lignes = (component as any).lignesGroupes;
+        lignes.at(0).controls.valeur.controls.libelle.setValue('Saisie A');
+        (component as any).ajouterGroupe();
+
+        (component as any).activerSection('periodes');
+        fixture.detectChanges();
+        (component as any).activerSection('groupes');
+        fixture.detectChanges();
+
+        expect(lignes.length).toBe(2);
+        expect(lignes.at(0).controls.valeur.controls.libelle.value).toBe('Groupe A');
+      });
+    });
+
+    describe('sections formulaire', () => {
+      it("Enseignant & Classe modifiée + UNDO d'une autre commande → saisie conservée", () => {
+        referentielService.ajouterGroupe(GroupeMother.base('GC', 'Groupe C'));
+        fixture.detectChanges();
+        (component as any).formEnseignantClasse.controls.prenom.setValue('Sophie');
+
+        donneesService.annuler();
+        fixture.detectChanges();
+
+        expect((component as any).formEnseignantClasse.controls.prenom.value).toBe('Sophie');
+        expect((component as any).estEnseignantClasseModifie()).toBe(true);
+      });
+
+      it('Enseignant & Classe non modifiée + UNDO de son enregistrement → ancienne valeur', () => {
+        (component as any).formEnseignantClasse.controls.prenom.setValue('Sophie');
+        (component as any).enregistrerEnseignantClasse();
+        fixture.detectChanges();
+
+        donneesService.annuler();
+        donneesService.annuler();
+        fixture.detectChanges();
+
+        expect((component as any).formEnseignantClasse.controls.prenom.value).toBe('Marie');
+      });
+
+      it("Semaine & Horaires modifiée + UNDO d'une autre commande → saisie conservée", () => {
+        (component as any).activerSection('semaineHoraires');
+        fixture.detectChanges();
+        referentielService.ajouterGroupe(GroupeMother.base('GC', 'Groupe C'));
+        fixture.detectChanges();
+        (component as any).formSemaineHoraires.controls.heureDebutJournee.setValue('08:30');
+
+        donneesService.annuler();
+        fixture.detectChanges();
+
+        expect((component as any).formSemaineHoraires.controls.heureDebutJournee.value).toBe(
+          '08:30',
+        );
+      });
+
+      it('Semaine & Horaires non modifiée → reçoit la valeur enregistrée ailleurs', () => {
+        (component as any).activerSection('semaineHoraires');
+        fixture.detectChanges();
+        const config = donnees.referentiels.configEmploiDuTemps;
+
+        referentielService.modifierConfigEmploiDuTemps(config, {
+          ...config,
+          heureFinJournee: '17:00',
+        });
+        fixture.detectChanges();
+
+        expect((component as any).formSemaineHoraires.controls.heureFinJournee.value).toBe('17:00');
+      });
+
+      it("Préférences modifiée + UNDO d'une autre commande → saisie conservée", () => {
+        (component as any).activerSection('preferences');
+        fixture.detectChanges();
+        referentielService.ajouterGroupe(GroupeMother.base('GC', 'Groupe C'));
+        fixture.detectChanges();
+        (component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.setValue(10);
+
+        donneesService.annuler();
+        fixture.detectChanges();
+
+        expect((component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.value).toBe(
+          10,
+        );
+      });
+
+      it("Domaines de compétences modifiée + UNDO d'une autre commande → sélection conservée", () => {
+        const domaineN1 = CompetenceMother.domaineAvecSousDomaines();
+        donneesService.charger(
+          DonneesMother.base({
+            ...donnees,
+            referentiels: { ...donnees.referentiels, competences: [domaineN1] },
+            configuration: { delaiSauvegardeAutoMinutes: 5, domainesActifs: ['d1-1'] },
+          }),
+        );
+        fixture.detectChanges();
+        (component as any).activerSection('domainesCompetences');
+        fixture.detectChanges();
+        referentielService.ajouterGroupe(GroupeMother.base('GC', 'Groupe C'));
+        fixture.detectChanges();
+        (component as any).basculerSousDomaine(domaineN1, domaineN1.enfants![1], true);
+
+        donneesService.annuler();
+        fixture.detectChanges();
+
+        expect([...(component as any).copieDomainesActifs()].sort()).toEqual(['d1-1', 'd1-2']);
+        expect((component as any).estDomainesCompetencesModifie()).toBe(true);
+      });
+
+      it('Domaines de compétences non modifiée → reçoit la sélection enregistrée ailleurs', () => {
+        const domaineN1 = CompetenceMother.domaineAvecSousDomaines();
+        donneesService.charger(
+          DonneesMother.base({
+            ...donnees,
+            referentiels: { ...donnees.referentiels, competences: [domaineN1] },
+            configuration: { delaiSauvegardeAutoMinutes: 5, domainesActifs: ['d1-1'] },
+          }),
+        );
+        fixture.detectChanges();
+        (component as any).activerSection('domainesCompetences');
+        fixture.detectChanges();
+        (component as any).basculerSousDomaine(domaineN1, domaineN1.enfants![1], true);
+        (component as any).enregistrerDomainesCompetences();
+        fixture.detectChanges();
+
+        donneesService.annuler();
+        fixture.detectChanges();
+
+        expect([...(component as any).copieDomainesActifs()]).toEqual(['d1-1']);
       });
     });
   });

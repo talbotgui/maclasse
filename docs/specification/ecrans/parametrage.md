@@ -50,6 +50,10 @@ La section active est mise en évidence (même convention que le lien de navigat
 - **Pastille « Non enregistré »** : affichée à côté des boutons d'une section formulaire, ou d'une ligne de liste, dès que ses valeurs diffèrent des données enregistrées (comparaison `ObjetUtils.sontEgaux`)
 - Les boutons ENREGISTRER (et ANNULER des sections formulaire) sont **désactivés tant que rien n'est modifié**
 - Chaque ENREGISTRER soumet une commande à `DonneesService` (UNDO/REDO)
+- **Saisies conservées au changement des données** : quand les données changent sans changement de section (ENREGISTRER d'une ligne, ANNULER / REFAIRE depuis l'entête), la section active ne recharge que ce qui n'est pas modifié. La comparaison se fait avec la valeur enregistrée au chargement précédent (référence mémorisée à chaque chargement) :
+  - section formulaire (y compris la sélection des Domaines de compétences) : rechargée si la saisie est identique à la référence, conservée sinon ;
+  - section liste : une ligne non modifiée reçoit la nouvelle valeur enregistrée ; une ligne modifiée garde sa saisie ; une ligne ajoutée non enregistrée est conservée ; une ligne dont l'entrée a disparu des données (suppression, ANNULER d'un ajout) est retirée, sauf si elle est modifiée : elle redevient alors une ligne non enregistrée, placée après les lignes enregistrées
+- **Changement de section** : la nouvelle section est rechargée entièrement depuis les données ; les saisies non enregistrées de la section quittée sont abandonnées
 
 ---
 

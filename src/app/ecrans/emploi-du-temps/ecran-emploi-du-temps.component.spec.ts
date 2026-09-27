@@ -411,7 +411,7 @@ describe('EcranEmploiDuTempsComponent', () => {
       (component as any).selectionnerEdt(edtBase);
       fixture.detectChanges();
       const formulaire = (component as any).formulaireEdt();
-      formulaire.formEdt.nom = 'Nom modifié';
+      formulaire.formEdt.controls.nom.setValue('Nom modifié');
 
       const promesse = component.confirmerNavigation();
       fixture.detectChanges();
@@ -426,7 +426,7 @@ describe('EcranEmploiDuTempsComponent', () => {
       (component as any).selectionnerEdt(edtBase);
       fixture.detectChanges();
       const formulaire = (component as any).formulaireEdt();
-      formulaire.formEdt.nom = 'Nom modifié';
+      formulaire.formEdt.controls.nom.setValue('Nom modifié');
 
       const promesse = component.confirmerNavigation();
       (component as any).annulerAbandonNavigation();

@@ -1,13 +1,17 @@
 @if (!creneau()) {
   <!-- ── Formulaire propriétés EDT ── -->
-  @if (formEdt) {
-    <form class="edt-formulaire" id="formProprietesEdt" (ngSubmit)="onEnregistrerEdt()">
+  @if (edt()) {
+    <form
+      class="edt-formulaire"
+      id="formProprietesEdt"
+      [formGroup]="formEdt"
+      (ngSubmit)="onEnregistrerEdt()"
+    >
       <h2 class="edt-formulaire__titre">{{ LIBELLES.edt.titre }}</h2>
 
       <mc-input
         id="inputNomEdt"
-        [(ngModel)]="formEdt.nom"
-        name="nom"
+        [formControl]="formEdt.controls.nom"
         [label]="LIBELLES.edt.labelNom"
         [required]="true"
         [mcAutoFocus]="focusDemande()"
@@ -19,24 +23,21 @@
 
       <mc-input
         id="inputDateDebutEdt"
-        [(ngModel)]="formEdt.dateDebut"
-        name="dateDebut"
+        [formControl]="formEdt.controls.dateDebut"
         type="date"
         [label]="LIBELLES.edt.labelDateDebut"
       />
 
       <mc-input
         id="inputDateFinEdt"
-        [(ngModel)]="formEdt.dateFin"
-        name="dateFin"
+        [formControl]="formEdt.controls.dateFin"
         type="date"
         [label]="LIBELLES.edt.labelDateFin"
       />
 
       <mc-select
         id="selectFrequenceEdt"
-        [(ngModel)]="formEdt.frequence"
-        name="frequence"
+        [formControl]="formEdt.controls.frequence"
         [options]="optionsFrequence"
         [label]="LIBELLES.edt.labelFrequence"
       />
@@ -59,137 +60,133 @@
   }
 } @else {
   <!-- ── Formulaire créneau ── -->
-  @if (formCreneau) {
-    <form class="edt-formulaire" id="formCreneau" (ngSubmit)="onEnregistrerCreneau()">
-      <h2 class="edt-formulaire__titre">
-        {{ estEditionCreneau() ? LIBELLES.commun.modifier : LIBELLES.commun.creer }}
-        {{ LIBELLES.edt.suffixeCreneau }}
-      </h2>
+  <form
+    class="edt-formulaire"
+    id="formCreneau"
+    [formGroup]="formCreneau"
+    (ngSubmit)="onEnregistrerCreneau()"
+  >
+    <h2 class="edt-formulaire__titre">
+      {{ estEditionCreneau() ? LIBELLES.commun.modifier : LIBELLES.commun.creer }}
+      {{ LIBELLES.edt.suffixeCreneau }}
+    </h2>
 
-      <mc-select
-        id="selectJourCreneau"
-        [(ngModel)]="formCreneau.jour"
-        name="jour"
-        [options]="optionsJour()"
-        [label]="LIBELLES.edt.labelJour"
-        [mcAutoFocus]="focusDemande()"
-      />
+    <mc-select
+      id="selectJourCreneau"
+      [formControl]="formCreneau.controls.jour"
+      [options]="optionsJour()"
+      [label]="LIBELLES.edt.labelJour"
+      [mcAutoFocus]="focusDemande()"
+    />
 
-      <mc-select
-        id="selectTypeCreneau"
-        [(ngModel)]="formCreneau.type"
-        name="type"
-        [options]="optionsTypeCreneau"
-        [label]="LIBELLES.edt.labelType"
-      />
+    <mc-select
+      id="selectTypeCreneau"
+      [formControl]="formCreneau.controls.type"
+      [options]="optionsTypeCreneau"
+      [label]="LIBELLES.edt.labelType"
+    />
 
-      @for (temps of formCreneau.temps; track temps.id; let i = $index) {
-        <fieldset class="edt-formulaire__temps">
-          <legend>{{ LIBELLES.edt.prefixeTemps }} {{ i + 1 }}</legend>
+    @for (groupe of tempsFormArray.controls; track groupe.controls.id.value; let i = $index) {
+      <fieldset class="edt-formulaire__temps">
+        <legend>{{ LIBELLES.edt.prefixeTemps }} {{ i + 1 }}</legend>
 
-          <mc-champ-heure
-            [id]="'inputHeureDebutTemps' + i"
-            [(ngModel)]="temps.heureDebut"
-            [name]="'heureDebutTemps' + i"
-            [label]="LIBELLES.edt.labelHeureDebut"
-            [required]="true"
-            [mcAutoFocus]="i === indexAFocaliserTemps()"
-          />
+        <mc-champ-heure
+          [id]="'inputHeureDebutTemps' + i"
+          [formControl]="groupe.controls.heureDebut"
+          [label]="LIBELLES.edt.labelHeureDebut"
+          [required]="true"
+          [mcAutoFocus]="i === indexAFocaliserTemps()"
+        />
 
-          <mc-champ-heure
-            [id]="'inputHeureFinTemps' + i"
-            [(ngModel)]="temps.heureFin"
-            [name]="'heureFinTemps' + i"
-            [label]="LIBELLES.edt.labelHeureFin"
-            [required]="true"
-          />
+        <mc-champ-heure
+          [id]="'inputHeureFinTemps' + i"
+          [formControl]="groupe.controls.heureFin"
+          [label]="LIBELLES.edt.labelHeureFin"
+          [required]="true"
+        />
 
-          @if (obtenirErreurHorairesTemps(temps); as message) {
-            <p [id]="'erreurHeuresTemps' + i" class="edt-formulaire__erreur" role="alert">
-              {{ message }}
+        @if (obtenirErreurHorairesTemps(groupe); as message) {
+          <p [id]="'erreurHeuresTemps' + i" class="edt-formulaire__erreur" role="alert">
+            {{ message }}
+          </p>
+        }
+
+        @if (typeCreneau() === 'pedagogique') {
+          <fieldset
+            class="edt-formulaire__groupe mc-groupe-nu"
+            [attr.aria-labelledby]="'labelDisciplinesTemps' + i"
+          >
+            <p [id]="'labelDisciplinesTemps' + i" class="edt-formulaire__label-groupe">
+              {{ LIBELLES.edt.labelDisciplines }}
             </p>
-          }
-
-          @if (formCreneau.type === 'pedagogique') {
-            <fieldset
-              class="edt-formulaire__groupe mc-groupe-nu"
-              [attr.aria-labelledby]="'labelDisciplinesTemps' + i"
-            >
-              <p [id]="'labelDisciplinesTemps' + i" class="edt-formulaire__label-groupe">
-                {{ LIBELLES.edt.labelDisciplines }}
-              </p>
-              <div class="edt-formulaire__chips">
-                @for (domaine of domaines(); track domaine.id) {
-                  <mc-chip-filtre
-                    [id]="'chipDisciplineTemps' + i + domaine.id"
-                    [libelle]="domaine.libelle"
-                    [actif]="(temps.disciplinesIds ?? []).includes(domaine.id)"
-                    (selectionChange)="basculerDiscipline(i, domaine.id, $event)"
-                  />
-                }
-              </div>
-            </fieldset>
-
-            <mc-input
-              [id]="'inputTitreTemps' + i"
-              [(ngModel)]="temps.titre"
-              [name]="'titreTemps' + i"
-              [label]="LIBELLES.edt.labelTitreCreneau"
-            />
-
-            <div class="edt-formulaire__groupe">
-              <p class="edt-formulaire__label-groupe">{{ LIBELLES.edt.labelEleves }}</p>
-              <mc-eleves-concernes
-                [id]="'elevesConcernesTemps' + i"
-                [ngModel]="temps.elevesConcernes"
-                (ngModelChange)="surElevesConcernesChange(i, $event)"
-                [name]="'elevesConcernesTemps' + i"
-              />
+            <div class="edt-formulaire__chips">
+              @for (domaine of domaines(); track domaine.id) {
+                <mc-chip-filtre
+                  [id]="'chipDisciplineTemps' + i + domaine.id"
+                  [libelle]="domaine.libelle"
+                  [actif]="estDisciplineSelectionnee(groupe, domaine.id)"
+                  (selectionChange)="basculerDiscipline(i, domaine.id, $event)"
+                />
+              }
             </div>
-          }
+          </fieldset>
 
-          @if (formCreneau.temps.length > 1) {
-            <mc-bouton-destruction
-              [idBase]="'btnSupprimerTemps' + i"
-              [petit]="true"
-              (confirme)="supprimerTemps(i)"
-              >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction
-            >
-          }
-        </fieldset>
-      }
+          <mc-input
+            [id]="'inputTitreTemps' + i"
+            [formControl]="groupe.controls.titre"
+            [label]="LIBELLES.edt.labelTitreCreneau"
+          />
 
-      <button
-        id="btnAjouterTemps"
-        type="button"
-        class="mc-btn-primaire mc-btn-sm"
-        [disabled]="estNombreTempsMaxAtteint()"
-        (click)="ajouterTemps()"
-      >
-        {{ LIBELLES.edt.boutonAjouterTemps }}
-      </button>
+          <div class="edt-formulaire__groupe">
+            <p class="edt-formulaire__label-groupe">{{ LIBELLES.edt.labelEleves }}</p>
+            <mc-eleves-concernes
+              [id]="'elevesConcernesTemps' + i"
+              [formControl]="groupe.controls.elevesConcernes"
+            />
+          </div>
+        }
 
-      <div class="edt-formulaire__actions">
-        <button id="btnEnregistrerCreneau" type="submit" class="mc-btn-primaire">
-          {{ LIBELLES.commun.enregistrer }}
-        </button>
-        <button
-          id="btnAnnulerCreneau"
-          type="button"
-          class="mc-btn-fantome"
-          (click)="onCreneauAnnule()"
-        >
-          {{ LIBELLES.commun.annuler }}
-        </button>
-        @if (estEditionCreneau()) {
+        @if (tempsFormArray.length > 1) {
           <mc-bouton-destruction
-            [idBase]="'btnSupprimerCreneau'"
+            [idBase]="'btnSupprimerTemps' + i"
             [petit]="true"
-            (confirme)="onCreneauSupprime()"
+            (confirme)="supprimerTemps(i)"
             >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction
           >
         }
-      </div>
-    </form>
-  }
+      </fieldset>
+    }
+
+    <button
+      id="btnAjouterTemps"
+      type="button"
+      class="mc-btn-primaire mc-btn-sm"
+      [disabled]="estNombreTempsMaxAtteint()"
+      (click)="ajouterTemps()"
+    >
+      {{ LIBELLES.edt.boutonAjouterTemps }}
+    </button>
+
+    <div class="edt-formulaire__actions">
+      <button id="btnEnregistrerCreneau" type="submit" class="mc-btn-primaire">
+        {{ LIBELLES.commun.enregistrer }}
+      </button>
+      <button
+        id="btnAnnulerCreneau"
+        type="button"
+        class="mc-btn-fantome"
+        (click)="onCreneauAnnule()"
+      >
+        {{ LIBELLES.commun.annuler }}
+      </button>
+      @if (estEditionCreneau()) {
+        <mc-bouton-destruction
+          [idBase]="'btnSupprimerCreneau'"
+          [petit]="true"
+          (confirme)="onCreneauSupprime()"
+          >{{ LIBELLES.commun.supprimer }}</mc-bouton-destruction
+        >
+      }
+    </div>
+  </form>
 }

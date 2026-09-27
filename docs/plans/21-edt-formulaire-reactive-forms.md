@@ -13,7 +13,7 @@ related:
 
 # Plan 21 — EDT : formulaire en Reactive Forms
 
-**Statut : proposé le 2026-09-27, en attente de validation.** Aucune modification de code effectuée.
+**Statut : terminé le 2026-09-27.** Écart de forme avec le texte : les champs sont liés par `[formControl]="groupe.controls.xxx"` (usage d'`edtc-formulaire` et de `cj-formulaire-seance`) plutôt que par `formControlName` / `formArrayName`, pour garder le typage des contrôles dans le template.
 
 ## Contexte
 

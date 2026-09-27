@@ -87,7 +87,14 @@ Les écrans Emploi du temps et Cahier journal implémentent directement `AvecNav
 ### `ObjetUtils`
 
 - `sontEgaux(a, b)` : égalité structurelle profonde (primitives, `Date`, tableaux ordonnés, objets JSON sans ordre de clés)
-- Utilisé par le Paramétrage pour détecter les lignes et sections modifiées (pastille « Non enregistré »)
+- Utilisé par le Paramétrage pour détecter les lignes et sections modifiées (pastille « Non enregistré »), et par `edt-formulaire` pour sa détection des modifications (`estModifie()`)
+
+### `FormulaireUtils`
+
+Validateurs partagés des formulaires réactifs :
+- `validerPlageHoraire(groupe)` : validateur de groupe ; erreur `{ plageHoraireInvalide: true }` si `heureDebut` et `heureFin` sont renseignées et que la fin n'est pas strictement postérieure au début (une heure manquante relève de `Validators.required`)
+- `validerTexteNonVide(controle)` : erreur `{ texteVide: true }` si la valeur, espaces retirés, est vide
+- Utilisé par `edt-formulaire` (nom de l'EDT, plage de chaque temps) et `cj-formulaire-seance` (plage de la séance)
 
 > `CompetenceService` porte directement le parcours de l'arbre : il n'y a pas de classe `CompetenceUtils`.
 

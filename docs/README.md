@@ -54,7 +54,7 @@ Un plan par évolution ou chantier. La numérotation est historique ; le 13 est 
 | [18](plans/18-edt-impression.md) | EDT : impression paysage, grille seule, titre, page unique | terminé le 2026-09-27 |
 | [19](plans/19-cahier-journal-densification.md) | Cahier journal : densification (« + » en bout de ligne, notes repliables, récréations en ligne fine) + règles élève absent / séances simultanées | terminé le 2026-09-27 |
 | [20](plans/20-edt-pause-meridienne.md) | EDT : pause méridienne (libellé, couleur, source « Temps hors classe », conflits limités au pédagogique, migration 2026.09.4) | terminé le 2026-09-27 |
-| [21](plans/21-edt-formulaire-reactive-forms.md) | EDT : `edt-formulaire` en Reactive Forms (FormGroup des propriétés, FormArray des temps, validateurs partagés `FormulaireUtils`) | proposé, en attente de validation |
+| [21](plans/21-edt-formulaire-reactive-forms.md) | EDT : `edt-formulaire` en Reactive Forms (FormGroup des propriétés, FormArray des temps, validateurs partagés `FormulaireUtils`) | terminé le 2026-09-27 |
 | [22](plans/22-formulaires-reactive-forms.md) | Formulaires Élèves, Projets et Paramétrage en Reactive Forms (3 incréments, suivi des lignes par instance de `FormGroup`) | proposé, en attente de validation |
 | [23](plans/23-parametrage-saisies-identifiants-absences.md) | Paramétrage : saisies conservées au rechargement, identifiants figés et uniques, avertissement de navigation ; plage horaire des absences récurrentes | proposé, en attente de validation |
 

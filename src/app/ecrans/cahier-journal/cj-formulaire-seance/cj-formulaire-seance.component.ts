@@ -16,16 +16,10 @@ import {
 } from '@angular/core';
 import type { InputSignal, OutputEmitterRef, Signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { LIBELLES } from '../../../libelles';
+import { FormulaireUtils } from '../../../utilitaires/formulaire.utils';
 import { McInputComponent } from '../../../composants/mc-input/mc-input.component';
 import { McSelectComponent } from '../../../composants/mc-select/mc-select.component';
 import { McChampHeureComponent } from '../../../composants/mc-champ-heure/mc-champ-heure.component';
@@ -173,7 +167,7 @@ export class CjFormulaireSeanceComponent {
         { nonNullable: true },
       ),
     },
-    { validators: CjFormulaireSeanceComponent.validerPlageHoraire },
+    { validators: FormulaireUtils.validerPlageHoraire },
   );
 
   /** Type de séance sélectionné, dérivé réactivement du formulaire pour piloter l'affichage. */
@@ -282,20 +276,6 @@ export class CjFormulaireSeanceComponent {
       competencesIds: [],
       elevesConcernes: CjFormulaireSeanceComponent.ELEVES_CONCERNES_DEFAUT,
     };
-  }
-
-  /**
-   * Valide que l'heure de fin est postérieure à l'heure de début.
-   * @param groupe Groupe de contrôles portant `heureDebut`/`heureFin`.
-   * @returns Erreur `plageHoraireInvalide` si l'heure de fin n'est pas après l'heure de début.
-   */
-  private static validerPlageHoraire(groupe: AbstractControl): ValidationErrors | null {
-    const debut = groupe.get('heureDebut')?.value;
-    const fin = groupe.get('heureFin')?.value;
-    if (debut && fin && fin <= debut) {
-      return { plageHoraireInvalide: true };
-    }
-    return null;
   }
 
   /**

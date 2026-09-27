@@ -15,10 +15,13 @@ import {
   signal,
 } from '@angular/core';
 import type { InputSignal, OutputEmitterRef, WritableSignal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
-import { FormsModule } from '@angular/forms';
 import { LIBELLES } from '../../../libelles';
 import { DateUtils } from '../../../utilitaires/date.utils';
+import { FormulaireUtils } from '../../../utilitaires/formulaire.utils';
+import { ObjetUtils } from '../../../utilitaires/objet.utils';
 import { McInputComponent } from '../../../composants/mc-input/mc-input.component';
 import { McSelectComponent } from '../../../composants/mc-select/mc-select.component';
 import { McChampHeureComponent } from '../../../composants/mc-champ-heure/mc-champ-heure.component';
@@ -30,11 +33,51 @@ import type {
   CreneauEdt,
   TempsCreneau,
   ElevesConcernes,
+  FrequenceSemaine,
   JourSemaine,
+  TypeCreneau,
 } from '../../../modeles/emploi-du-temps.modele';
 import type { Competence } from '../../../modeles/referentiels.modele';
 import type { OptionFormulaire } from '../../../modeles/composants.modele';
 import { EmploiDuTempsService } from '../../../services/sansEtat/emploi-du-temps.service';
+
+/** Structure typée du formulaire des propriétés d'un EDT. */
+interface FormulaireProprietesEdt {
+  /** Nom de l'EDT (obligatoire). */
+  nom: FormControl<string>;
+  /** Date de début ISO, chaîne vide si sans limite. */
+  dateDebut: FormControl<string>;
+  /** Date de fin ISO, chaîne vide si sans limite. */
+  dateFin: FormControl<string>;
+  /** Semaines sur lesquelles l'EDT s'applique. */
+  frequence: FormControl<FrequenceSemaine>;
+}
+
+/** Structure typée du formulaire d'un temps de créneau. */
+interface FormulaireTemps {
+  /** Identifiant du temps (non affiché, sert au suivi des lignes). */
+  id: FormControl<string>;
+  /** Heure de début au format `HH:MM`. */
+  heureDebut: FormControl<string>;
+  /** Heure de fin au format `HH:MM`. */
+  heureFin: FormControl<string>;
+  /** Disciplines traitées, pilotées par les chips. */
+  disciplinesIds: FormControl<string[]>;
+  /** Titre libre du temps, chaîne vide si absent. */
+  titre: FormControl<string>;
+  /** Périmètre des élèves concernés, `null` si non renseigné. */
+  elevesConcernes: FormControl<ElevesConcernes | null>;
+}
+
+/** Structure typée du formulaire d'un créneau. */
+interface FormulaireCreneau {
+  /** Jour du créneau. */
+  jour: FormControl<JourSemaine>;
+  /** Nature du créneau. */
+  type: FormControl<TypeCreneau>;
+  /** Temps du créneau (1 à `NOMBRE_TEMPS_MAX`). */
+  temps: FormArray<FormGroup<FormulaireTemps>>;
+}
 
 /**
  * Formulaire contextuel de l'emploi du temps.
@@ -45,7 +88,7 @@ import { EmploiDuTempsService } from '../../../services/sansEtat/emploi-du-temps
   selector: 'edt-formulaire',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
+    ReactiveFormsModule,
     McAutoFocusDirective,
     McInputComponent,
     McSelectComponent,
@@ -58,6 +101,9 @@ import { EmploiDuTempsService } from '../../../services/sansEtat/emploi-du-temps
   styleUrl: './edt-formulaire.component.scss',
 })
 export class EdtFormulaireComponent {
+  /** Heure de début proposée pour un nouveau temps quand le créneau n'en a aucun. */
+  private static readonly HEURE_DEBUT_DEFAUT = '08:00';
+
   /** Constante centralisée des libellés. */
   protected readonly LIBELLES = LIBELLES;
 
@@ -119,17 +165,44 @@ export class EdtFormulaireComponent {
     this.joursOuvres().map((jour) => ({ valeur: jour, libelle: LIBELLES.edt.joursLibelles[jour] })),
   );
 
-  /** Copie locale de l'EDT en cours d'édition. */
-  protected formEdt: EmploiDuTemps | null = null;
+  /** Formulaire réactif des propriétés de l'EDT. */
+  protected readonly formEdt: FormGroup<FormulaireProprietesEdt> =
+    new FormGroup<FormulaireProprietesEdt>({
+      nom: new FormControl('', {
+        nonNullable: true,
+        validators: FormulaireUtils.validerTexteNonVide,
+      }),
+      dateDebut: new FormControl('', { nonNullable: true }),
+      dateFin: new FormControl('', { nonNullable: true }),
+      frequence: new FormControl<FrequenceSemaine>('lesDeux', { nonNullable: true }),
+    });
 
-  /** Copie locale du créneau en cours d'édition. */
-  protected formCreneau: CreneauEdt | null = null;
+  /** Formulaire réactif du créneau. */
+  protected readonly formCreneau: FormGroup<FormulaireCreneau> = new FormGroup<FormulaireCreneau>({
+    jour: new FormControl<JourSemaine>('lundi', { nonNullable: true }),
+    type: new FormControl<TypeCreneau>('pedagogique', { nonNullable: true }),
+    temps: new FormArray<FormGroup<FormulaireTemps>>([]),
+  });
 
-  /** Valeur d'origine de l'EDT à l'ouverture du formulaire, pour la détection de modifications. */
-  private edtOrigine: EmploiDuTemps | null = null;
+  /** Identifiant de l'EDT édité, non modifiable par le formulaire et recopié à l'émission. */
+  private idEdt = '';
 
-  /** Valeur d'origine du créneau à l'ouverture du formulaire, pour la détection de modifications. */
-  private creneauOrigine: CreneauEdt | null = null;
+  /**
+   * Créneaux de l'EDT édité, non modifiables par ce formulaire et recopiés à l'émission :
+   * l'EDT émis remplace l'EDT entier, un EDT émis sans créneaux les effacerait.
+   */
+  private creneauxEdt: CreneauEdt[] = [];
+
+  /** Identifiant du créneau édité, non modifiable par le formulaire et recopié à l'émission. */
+  private idCreneau = '';
+
+  /** Valeur du formulaire des propriétés au chargement ou au dernier enregistrement, `null` sans EDT. */
+  private valeurEdtOrigine: ReturnType<FormGroup<FormulaireProprietesEdt>['getRawValue']> | null =
+    null;
+
+  /** Valeur du formulaire du créneau au chargement ou au dernier enregistrement, `null` sans créneau. */
+  private valeurCreneauOrigine: ReturnType<FormGroup<FormulaireCreneau>['getRawValue']> | null =
+    null;
 
   /**
    * Identifiant de l'EDT actuellement chargé dans `formEdt` (`null` si aucun),
@@ -154,130 +227,151 @@ export class EdtFormulaireComponent {
   /** `true` après une tentative d'enregistrement du créneau (déclenche l'affichage des erreurs). */
   protected readonly soumissionCreneauTentee: WritableSignal<boolean> = signal(false);
 
+  /**
+   * Statut du formulaire des propriétés, suivi via `statusChanges` et resynchronisé après
+   * chaque chargement (un `reset` sans émission ne déclenche pas `statusChanges`).
+   */
+  private readonly statutEdt: WritableSignal<string> = signal(this.formEdt.status);
+
+  /**
+   * Statut du formulaire du créneau, suivi via `statusChanges` et resynchronisé après
+   * chaque chargement ou modification programmatique du `FormArray` des temps.
+   */
+  private readonly statutCreneau: WritableSignal<string> = signal(this.formCreneau.status);
+
+  /** Type du créneau sélectionné, pour l'affichage conditionnel des champs pédagogiques. */
+  protected readonly typeCreneau: WritableSignal<TypeCreneau> = signal(
+    this.formCreneau.controls.type.value,
+  );
+
   /** Index du bloc temps à focaliser à l'apparition (RGAA), `null` si aucun ajout récent. */
   protected readonly indexAFocaliserTemps: WritableSignal<number | null> = signal(null);
 
   /**
-   * Indique si le créneau en cours d'édition a atteint le nombre maximal de temps.
-   * @returns `true` si `formCreneau.temps` contient déjà le nombre maximal autorisé.
+   * Accès typé au `FormArray` des temps du créneau, pour le template.
+   * @returns Le `FormArray` des temps.
    */
-  protected estNombreTempsMaxAtteint(): boolean {
-    return (this.formCreneau?.temps.length ?? 0) >= EmploiDuTempsService.NOMBRE_TEMPS_MAX;
+  protected get tempsFormArray(): FormArray<FormGroup<FormulaireTemps>> {
+    return this.formCreneau.controls.temps;
   }
 
   /**
-   * Charge les copies locales lors d'un changement réel d'EDT/créneau édité.
+   * Charge les formulaires lors d'un changement réel d'EDT/créneau édité.
    * Ignore les changements de référence qui ne correspondent pas à un changement
    * d'identité (ex. UNDO/REDO global), pour ne pas écraser la saisie en cours.
    */
   public constructor() {
+    this.formEdt.statusChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((statut) => this.statutEdt.set(statut));
+    this.formCreneau.statusChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((statut) => this.statutCreneau.set(statut));
+    this.formCreneau.controls.type.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((type) => this.typeCreneau.set(type));
     effect(() => {
       const e = this.edt();
       const id = e?.id ?? null;
       if (id === this.idEdtCharge) return;
       this.idEdtCharge = id;
-      this.formEdt = e ? structuredClone(e) : null;
-      this.edtOrigine = e ? structuredClone(e) : null;
-      this.soumissionEdtTentee.set(false);
-      this.cdr.markForCheck();
+      this.chargerEdt(e);
     });
     effect(() => {
       const c = this.creneau();
       const id = c?.id ?? null;
       if (id === this.idCreneauCharge) return;
       this.idCreneauCharge = id;
-      this.formCreneau = c ? structuredClone(c) : null;
-      this.creneauOrigine = c ? structuredClone(c) : null;
-      this.soumissionCreneauTentee.set(false);
-      this.cdr.markForCheck();
+      this.chargerCreneau(c);
     });
   }
 
   /**
    * Indique si le formulaire actuellement affiché (propriétés EDT ou créneau) contient
    * des modifications non enregistrées par rapport à sa valeur d'origine.
+   * Revenir à la valeur d'origine n'est pas une modification.
    * @returns `true` si les propriétés EDT ou le créneau ont été modifiés depuis le chargement.
    */
   public estModifie(): boolean {
-    return (
-      JSON.stringify(this.formEdt) !== JSON.stringify(this.edtOrigine) ||
-      JSON.stringify(this.formCreneau) !== JSON.stringify(this.creneauOrigine)
-    );
+    const edtModifie =
+      this.valeurEdtOrigine !== null &&
+      !ObjetUtils.sontEgaux(this.formEdt.getRawValue(), this.valeurEdtOrigine);
+    const creneauModifie =
+      this.valeurCreneauOrigine !== null &&
+      !ObjetUtils.sontEgaux(this.formCreneau.getRawValue(), this.valeurCreneauOrigine);
+    return edtModifie || creneauModifie;
+  }
+
+  /**
+   * Indique si le créneau en cours d'édition a atteint le nombre maximal de temps.
+   * @returns `true` si le `FormArray` des temps contient déjà le nombre maximal autorisé.
+   */
+  protected estNombreTempsMaxAtteint(): boolean {
+    return this.tempsFormArray.length >= EmploiDuTempsService.NOMBRE_TEMPS_MAX;
   }
 
   /**
    * Message d'erreur des propriétés de l'EDT, affiché après une tentative d'enregistrement.
-   * @returns Message « nom obligatoire » si le nom est vide après une tentative, `null` sinon.
+   * @returns Message « nom obligatoire » si le nom est invalide après une tentative, `null` sinon.
    */
   protected obtenirErreurNomEdt(): string | null {
-    if (!this.soumissionEdtTentee() || this.verifierNomEdtRenseigne()) return null;
+    if (!this.soumissionEdtTentee() || this.statutEdt() === 'VALID') return null;
     return LIBELLES.edt.erreurNomObligatoire;
   }
 
   /**
    * Message d'erreur des horaires d'un temps, affiché après une tentative d'enregistrement.
-   * @param temps Temps du créneau à contrôler.
-   * @returns Message « fin postérieure au début » si la plage est invalide après une tentative, `null` sinon.
+   * Couvre l'heure manquante comme la plage vide ou inversée.
+   * @param groupe Groupe du temps à contrôler.
+   * @returns Message « fin postérieure au début » si le temps est invalide après une tentative,
+   *   `null` sinon.
    */
-  protected obtenirErreurHorairesTemps(temps: TempsCreneau): string | null {
-    if (!this.soumissionCreneauTentee() || EdtFormulaireComponent.verifierPlageHoraire(temps)) {
+  protected obtenirErreurHorairesTemps(groupe: FormGroup<FormulaireTemps>): string | null {
+    if (!this.soumissionCreneauTentee() || this.statutCreneau() === 'VALID' || groupe.valid) {
       return null;
     }
     return LIBELLES.commun.erreurPlageHoraire;
   }
 
   /**
-   * Indique si le nom de l'EDT en cours d'édition est renseigné (hors espaces).
-   * @returns `true` si le nom contient au moins un caractère non blanc.
+   * Indique si une discipline est sélectionnée pour un temps.
+   * @param groupe Groupe du temps.
+   * @param id Identifiant du domaine.
+   * @returns `true` si la discipline figure dans les disciplines du temps.
    */
-  private verifierNomEdtRenseigne(): boolean {
-    return (this.formEdt?.nom ?? '').trim().length > 0;
-  }
-
-  /**
-   * Indique si les horaires d'un temps sont renseignés et forment une plage non vide.
-   * @param temps Temps à contrôler.
-   * @returns `true` si l'heure de fin est strictement postérieure à l'heure de début.
-   */
-  private static verifierPlageHoraire(temps: TempsCreneau): boolean {
-    return !!temps.heureDebut && !!temps.heureFin && temps.heureFin > temps.heureDebut;
+  protected estDisciplineSelectionnee(groupe: FormGroup<FormulaireTemps>, id: string): boolean {
+    return groupe.controls.disciplinesIds.value.includes(id);
   }
 
   /**
    * Bascule une discipline dans les disciplines du temps donné.
-   * @param indexTemps Index du temps dans `formCreneau.temps`.
+   * @param indexTemps Index du temps dans le `FormArray` des temps.
    * @param id Identifiant du domaine.
    * @param actif Nouvel état.
    */
   protected basculerDiscipline(indexTemps: number, id: string, actif: boolean): void {
-    if (!this.formCreneau) return;
-    const ids = this.formCreneau.temps[indexTemps].disciplinesIds ?? [];
-    const disciplinesIds = actif ? [...ids, id] : ids.filter((d) => d !== id);
-    this.formCreneau.temps = this.formCreneau.temps.map((t, i) =>
-      i === indexTemps ? { ...t, disciplinesIds } : t,
-    );
+    const controle = this.tempsFormArray.at(indexTemps)?.controls.disciplinesIds;
+    if (!controle) return;
+    const ids = controle.value;
+    controle.setValue(actif ? [...ids, id] : ids.filter((d) => d !== id));
   }
 
-  /**
-   * Met à jour l'objet `elevesConcernes` du temps donné.
-   * @param indexTemps Index du temps dans `formCreneau.temps`.
-   * @param val Nouvelle valeur des élèves concernés.
-   */
-  protected surElevesConcernesChange(indexTemps: number, val: ElevesConcernes): void {
-    if (!this.formCreneau) return;
-    this.formCreneau = {
-      ...this.formCreneau,
-      temps: this.formCreneau.temps.map((t, i) =>
-        i === indexTemps ? { ...t, elevesConcernes: val } : t,
-      ),
-    };
-  }
-
-  /** Ajoute un temps vide en fin de liste et demande le focus dessus. No-op au-delà de 4 temps. */
+  /** Ajoute un temps en fin de liste et demande le focus dessus. No-op au-delà du maximum. */
   protected ajouterTemps(): void {
-    if (!this.formCreneau || this.estNombreTempsMaxAtteint()) return;
-    this.formCreneau.temps = [...this.formCreneau.temps, this.creerTempsVide()];
-    this.indexAFocaliserTemps.set(this.formCreneau.temps.length - 1);
+    if (this.estNombreTempsMaxAtteint()) return;
+    const heureDebut =
+      this.tempsFormArray.at(-1)?.controls.heureFin.value ??
+      EdtFormulaireComponent.HEURE_DEBUT_DEFAUT;
+    this.tempsFormArray.push(
+      EdtFormulaireComponent.creerGroupeTemps({
+        id: crypto.randomUUID(),
+        heureDebut,
+        heureFin: DateUtils.ajouterHeures(heureDebut, 1),
+        disciplinesIds: [],
+        elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
+      }),
+    );
+    this.indexAFocaliserTemps.set(this.tempsFormArray.length - 1);
   }
 
   /**
@@ -285,31 +379,25 @@ export class EdtFormulaireComponent {
    * @param index Index du temps à supprimer.
    */
   protected supprimerTemps(index: number): void {
-    if (!this.formCreneau || this.formCreneau.temps.length <= 1) return;
-    this.formCreneau.temps = this.formCreneau.temps.filter((_, i) => i !== index);
+    if (this.tempsFormArray.length <= 1) return;
+    this.tempsFormArray.removeAt(index);
     this.indexAFocaliserTemps.set(null);
-  }
-
-  /**
-   * Crée un temps vide, avec un horaire par défaut enchaîné sur le dernier temps existant.
-   * @returns Nouveau temps initialisé.
-   */
-  private creerTempsVide(): TempsCreneau {
-    const heureDebut = this.formCreneau?.temps.at(-1)?.heureFin ?? '08:00';
-    return {
-      id: crypto.randomUUID(),
-      heureDebut,
-      heureFin: DateUtils.ajouterHeures(heureDebut, 1),
-      disciplinesIds: [],
-      elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
-    };
   }
 
   /** Enregistre les propriétés de l'EDT si le nom est renseigné ; sinon affiche l'erreur. */
   protected onEnregistrerEdt(): void {
     this.soumissionEdtTentee.set(true);
-    if (!this.formEdt || !this.verifierNomEdtRenseigne()) return;
-    this.edtEnregistre.emit(structuredClone(this.formEdt));
+    if (this.valeurEdtOrigine === null || this.formEdt.invalid) return;
+    const valeurs = this.formEdt.getRawValue();
+    this.edtEnregistre.emit({
+      id: this.idEdt,
+      nom: valeurs.nom,
+      dateDebut: valeurs.dateDebut || null,
+      dateFin: valeurs.dateFin || null,
+      frequence: valeurs.frequence,
+      creneaux: structuredClone(this.creneauxEdt),
+    });
+    this.valeurEdtOrigine = valeurs;
   }
 
   /**
@@ -320,19 +408,20 @@ export class EdtFormulaireComponent {
    */
   protected onEnregistrerCreneau(): void {
     this.soumissionCreneauTentee.set(true);
-    if (!this.formCreneau) return;
-    if (!this.formCreneau.temps.every((t) => EdtFormulaireComponent.verifierPlageHoraire(t))) {
-      return;
-    }
-    const creneau = structuredClone(this.formCreneau);
-    if (creneau.type !== 'pedagogique') {
-      creneau.temps = creneau.temps.map(({ id, heureDebut, heureFin }) => ({
-        id,
-        heureDebut,
-        heureFin,
-      }));
-    }
-    this.creneauEnregistre.emit(creneau);
+    if (this.valeurCreneauOrigine === null || this.formCreneau.invalid) return;
+    const valeurs = this.formCreneau.getRawValue();
+    const pedagogique = valeurs.type === 'pedagogique';
+    this.creneauEnregistre.emit({
+      id: this.idCreneau,
+      jour: valeurs.jour,
+      type: valeurs.type,
+      temps: valeurs.temps.map((t) =>
+        pedagogique
+          ? EdtFormulaireComponent.convertirTempsPedagogique(t)
+          : { id: t.id, heureDebut: t.heureDebut, heureFin: t.heureFin },
+      ),
+    });
+    this.valeurCreneauOrigine = valeurs;
   }
 
   /**
@@ -340,7 +429,9 @@ export class EdtFormulaireComponent {
    * l'annulation au parent (qui ferme le formulaire si l'EDT n'a jamais été enregistré).
    */
   protected onEdtAnnule(): void {
-    this.formEdt = this.edtOrigine ? structuredClone(this.edtOrigine) : null;
+    if (this.valeurEdtOrigine) {
+      this.formEdt.reset(this.valeurEdtOrigine);
+    }
     this.soumissionEdtTentee.set(false);
     this.cdr.markForCheck();
     this.edtAnnule.emit();
@@ -358,6 +449,111 @@ export class EdtFormulaireComponent {
 
   /** Délègue la demande de suppression du créneau en cours au parent. */
   protected onCreneauSupprime(): void {
-    if (this.formCreneau) this.creneauSupprime.emit(this.formCreneau.id);
+    if (this.valeurCreneauOrigine !== null) this.creneauSupprime.emit(this.idCreneau);
+  }
+
+  /**
+   * Charge les propriétés d'un EDT dans le formulaire et mémorise la valeur d'origine.
+   * @param edt EDT à charger, `null` pour n'afficher aucun formulaire de propriétés.
+   */
+  private chargerEdt(edt: EmploiDuTemps | null): void {
+    this.soumissionEdtTentee.set(false);
+    if (!edt) {
+      this.valeurEdtOrigine = null;
+      this.cdr.markForCheck();
+      return;
+    }
+    this.idEdt = edt.id;
+    this.creneauxEdt = structuredClone(edt.creneaux);
+    this.formEdt.reset(
+      {
+        nom: edt.nom,
+        dateDebut: edt.dateDebut ?? '',
+        dateFin: edt.dateFin ?? '',
+        frequence: edt.frequence,
+      },
+      { emitEvent: false },
+    );
+    this.valeurEdtOrigine = this.formEdt.getRawValue();
+    this.statutEdt.set(this.formEdt.status);
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Charge un créneau dans le formulaire : `jour` et `type` par `reset`, puis le `FormArray`
+   * des temps vidé et reconstruit (un `reset` ne redimensionne pas un `FormArray`).
+   * @param creneau Créneau à charger, `null` pour n'afficher aucun formulaire de créneau.
+   */
+  private chargerCreneau(creneau: CreneauEdt | null): void {
+    this.soumissionCreneauTentee.set(false);
+    this.indexAFocaliserTemps.set(null);
+    if (!creneau) {
+      this.valeurCreneauOrigine = null;
+      this.cdr.markForCheck();
+      return;
+    }
+    this.idCreneau = creneau.id;
+    this.tempsFormArray.clear({ emitEvent: false });
+    for (const temps of creneau.temps) {
+      this.tempsFormArray.push(EdtFormulaireComponent.creerGroupeTemps(temps), {
+        emitEvent: false,
+      });
+    }
+    this.formCreneau.controls.jour.reset(creneau.jour, { emitEvent: false });
+    this.formCreneau.controls.type.reset(creneau.type, { emitEvent: false });
+    this.formCreneau.updateValueAndValidity({ emitEvent: false });
+    this.valeurCreneauOrigine = this.formCreneau.getRawValue();
+    this.statutCreneau.set(this.formCreneau.status);
+    this.typeCreneau.set(creneau.type);
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Crée le groupe de contrôles d'un temps, avec le validateur de plage horaire.
+   * @param temps Temps à représenter.
+   * @returns Groupe de contrôles initialisé avec les valeurs du temps.
+   */
+  private static creerGroupeTemps(temps: TempsCreneau): FormGroup<FormulaireTemps> {
+    return new FormGroup<FormulaireTemps>(
+      {
+        id: new FormControl(temps.id, { nonNullable: true }),
+        heureDebut: new FormControl(temps.heureDebut, {
+          nonNullable: true,
+          validators: Validators.required,
+        }),
+        heureFin: new FormControl(temps.heureFin, {
+          nonNullable: true,
+          validators: Validators.required,
+        }),
+        disciplinesIds: new FormControl<string[]>([...(temps.disciplinesIds ?? [])], {
+          nonNullable: true,
+        }),
+        titre: new FormControl(temps.titre ?? '', { nonNullable: true }),
+        elevesConcernes: new FormControl<ElevesConcernes | null>(
+          temps.elevesConcernes ? structuredClone(temps.elevesConcernes) : null,
+        ),
+      },
+      { validators: FormulaireUtils.validerPlageHoraire },
+    );
+  }
+
+  /**
+   * Convertit la valeur d'un temps pédagogique du formulaire en `TempsCreneau`,
+   * sans titre vide ni périmètre d'élèves non renseigné.
+   * @param valeur Valeur brute du groupe du temps.
+   * @returns Le temps à émettre.
+   */
+  private static convertirTempsPedagogique(
+    valeur: ReturnType<FormGroup<FormulaireTemps>['getRawValue']>,
+  ): TempsCreneau {
+    const temps: TempsCreneau = {
+      id: valeur.id,
+      heureDebut: valeur.heureDebut,
+      heureFin: valeur.heureFin,
+      disciplinesIds: [...valeur.disciplinesIds],
+    };
+    if (valeur.titre) temps.titre = valeur.titre;
+    if (valeur.elevesConcernes) temps.elevesConcernes = structuredClone(valeur.elevesConcernes);
+    return temps;
   }
 }

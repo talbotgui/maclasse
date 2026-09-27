@@ -93,7 +93,8 @@ maclasse/
         │   ├── date.utils.ts         # DateUtils (J±n, parité, formatage, chevauchements)
         │   ├── eleve.utils.ts        # EleveUtils (résolution d'un périmètre ElevesConcernes)
         │   ├── texte.utils.ts        # TexteUtils (normalisation casse/accents)
-        │   └── objet.utils.ts        # ObjetUtils (égalité profonde)
+        │   ├── objet.utils.ts        # ObjetUtils (égalité profonde)
+        │   └── formulaire.utils.ts   # FormulaireUtils (validateurs partagés des formulaires réactifs)
         │
         ├── directives/
         │   └── mc-auto-focus.directive.ts

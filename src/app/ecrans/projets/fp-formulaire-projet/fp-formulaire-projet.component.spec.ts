@@ -3,7 +3,7 @@ import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { FpFormulaireProjetComponent } from './fp-formulaire-projet.component';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
 import { DonneesMother } from '../../../tests/donnees.mother';
-import { ProjetMother } from '../../../tests/projet.mother';
+import { ProjetMother, PeriodeMother } from '../../../tests/projet.mother';
 import { EleveMother } from '../../../tests/eleve.mother';
 import type { Projet } from '../../../modeles/projet.modele';
 
@@ -29,46 +29,58 @@ describe('FpFormulaireProjetComponent', () => {
   });
 
   describe('initialisation', () => {
-    it('projet=null → formProjet créé vide avec id UUID', () => {
+    it('projet=null → formulaire vide, projet émis avec un nouvel id', () => {
       fixture.componentRef.setInput('projet', null);
       fixture.detectChanges();
 
-      expect((component as any).formProjet.id).toBeTruthy();
-      expect((component as any).formProjet.nom).toBe('');
-      expect((component as any).formProjet.periodes).toEqual([]);
+      expect((component as any).form.getRawValue()).toEqual({
+        nom: '',
+        description: '',
+        elevesIds: [],
+        periodes: [],
+      });
+      expect((component as any).idProjet).toBeTruthy();
     });
 
-    it('projet existant → formProjet est un clone', () => {
-      const projet = ProjetMother.base({ id: 'p1', nom: 'Compostage' });
+    it('projet existant → formulaire chargé avec ses valeurs et ses périodes', () => {
+      const periode = PeriodeMother.base({ competencesIds: ['c1'] });
+      const projet = ProjetMother.base({ elevesIds: ['e1'], periodes: [periode] });
       fixture.componentRef.setInput('projet', projet);
       fixture.detectChanges();
 
-      expect((component as any).formProjet.nom).toBe('Compostage');
-      expect((component as any).formProjet).not.toBe(projet);
+      expect((component as any).form.getRawValue()).toEqual({
+        nom: projet.nom,
+        description: projet.description,
+        elevesIds: ['e1'],
+        periodes: [periode],
+      });
     });
 
-    it("changement d'identité de l'input projet → formProjet rechargé", () => {
-      const p1 = ProjetMother.base({ id: 'p1', nom: 'Sciences' });
-      const p2 = ProjetMother.base({ id: 'p2', nom: 'Arts' });
-      fixture.componentRef.setInput('projet', p1);
+    it("changement d'identité de l'input projet → formulaire rechargé", () => {
+      fixture.componentRef.setInput(
+        'projet',
+        ProjetMother.base({ id: 'p1', nom: 'Sciences', periodes: [PeriodeMother.base()] }),
+      );
       fixture.detectChanges();
-      fixture.componentRef.setInput('projet', p2);
+      fixture.componentRef.setInput('projet', ProjetMother.base({ id: 'p2', nom: 'Arts' }));
       fixture.detectChanges();
 
-      expect((component as any).formProjet.nom).toBe('Arts');
+      expect((component as any).form.controls.nom.value).toBe('Arts');
+      expect((component as any).periodesFormArray.length).toBe(0);
     });
 
-    it('régression SOU-020 : même identité de projet avec contenu différent → formProjet non écrasé', () => {
-      const p1 = ProjetMother.base({ id: 'p1', nom: 'Sciences' });
-      fixture.componentRef.setInput('projet', p1);
+    it('régression SOU-020 : même identité de projet avec contenu différent (UNDO/REDO) → saisie conservée', () => {
+      fixture.componentRef.setInput('projet', ProjetMother.base({ id: 'p1', nom: 'Sciences' }));
       fixture.detectChanges();
-      (component as any).formProjet.nom = 'Saisie en cours';
+      (component as any).form.controls.nom.setValue('Saisie en cours');
 
-      const p1Modifie = ProjetMother.base({ id: 'p1', nom: 'Sciences (modifié ailleurs)' });
-      fixture.componentRef.setInput('projet', p1Modifie);
+      fixture.componentRef.setInput(
+        'projet',
+        ProjetMother.base({ id: 'p1', nom: 'Sciences (modifié ailleurs)' }),
+      );
       fixture.detectChanges();
 
-      expect((component as any).formProjet.nom).toBe('Saisie en cours');
+      expect((component as any).form.controls.nom.value).toBe('Saisie en cours');
     });
   });
 
@@ -88,43 +100,75 @@ describe('FpFormulaireProjetComponent', () => {
     it('ajoute un élève absent', () => {
       (component as any).ajouterEleve('e1');
 
-      expect((component as any).formProjet.elevesIds).toContain('e1');
+      expect((component as any).form.controls.elevesIds.value).toEqual(['e1']);
+      expect((component as any).estEleveSelectionne('e1')).toBe(true);
     });
 
     it('retire un élève présent', () => {
-      (component as any).formProjet.elevesIds = ['e1'];
+      (component as any).form.controls.elevesIds.setValue(['e1', 'e2']);
 
       (component as any).retirerEleve('e1');
 
-      expect((component as any).formProjet.elevesIds).not.toContain('e1');
+      expect((component as any).form.controls.elevesIds.value).toEqual(['e2']);
+      expect((component as any).estEleveSelectionne('e1')).toBe(false);
     });
 
     it("n'ajoute pas un élève déjà présent", () => {
-      (component as any).formProjet.elevesIds = ['e1'];
+      (component as any).form.controls.elevesIds.setValue(['e1']);
 
       (component as any).ajouterEleve('e1');
 
-      expect(
-        (component as any).formProjet.elevesIds.filter((id: string) => id === 'e1'),
-      ).toHaveLength(1);
+      expect((component as any).form.controls.elevesIds.value).toEqual(['e1']);
     });
   });
 
   describe('ajouterPeriode / supprimerPeriode', () => {
-    it('ajouterPeriode ajoute une période vide', () => {
+    it('ajouterPeriode ajoute une période vide et demande le focus sur elle', () => {
+      (component as any).ajouterPeriode();
       (component as any).ajouterPeriode();
 
-      expect((component as any).formProjet.periodes).toHaveLength(1);
-      expect((component as any).formProjet.periodes[0].periodeNom).toBe('');
+      const periodes = (component as any).form.getRawValue().periodes;
+      expect(periodes).toHaveLength(2);
+      expect(periodes[1].periodeNom).toBe('');
+      expect(periodes[1].id).not.toBe(periodes[0].id);
+      expect((component as any).indexAFocaliserPeriode()).toBe(1);
     });
 
-    it("supprimerPeriode(0) retire à l'index 0", () => {
+    it("supprimerPeriode(0) retire à l'index 0 et remet le focus demandé à null", () => {
       (component as any).ajouterPeriode();
       (component as any).ajouterPeriode();
 
       (component as any).supprimerPeriode(0);
 
-      expect((component as any).formProjet.periodes).toHaveLength(1);
+      expect((component as any).periodesFormArray.length).toBe(1);
+      expect((component as any).indexAFocaliserPeriode()).toBeNull();
+    });
+
+    it('suppression de la période du milieu parmi trois → les deux restantes gardent leurs valeurs et compétences', () => {
+      fixture.componentRef.setInput(
+        'projet',
+        ProjetMother.base({
+          periodes: [
+            PeriodeMother.base({ id: 'pa', periodeNom: 'A', competencesIds: ['c1'] }),
+            PeriodeMother.base({ id: 'pb', periodeNom: 'B', competencesIds: ['c2'] }),
+            PeriodeMother.base({ id: 'pc', periodeNom: 'C', competencesIds: ['c3'] }),
+          ],
+        }),
+      );
+      fixture.detectChanges();
+      const selecteurDernier = fixture.nativeElement.querySelector('#selecteurCompetences2');
+
+      (component as any).supprimerPeriode(1);
+      (component as any).cdr.markForCheck();
+      fixture.detectChanges();
+
+      const periodes = (component as any).form.getRawValue().periodes;
+      expect(periodes.map((p: { periodeNom: string }) => p.periodeNom)).toEqual(['A', 'C']);
+      expect(periodes.map((p: { competencesIds: string[] }) => p.competencesIds)).toEqual([
+        ['c1'],
+        ['c3'],
+      ]);
+      expect(fixture.nativeElement.querySelector('#selecteurCompetences1')).toBe(selecteurDernier);
     });
   });
 
@@ -135,25 +179,44 @@ describe('FpFormulaireProjetComponent', () => {
 
       (component as any).surSelectionCompetences(1, ['c1', 'c2']);
 
-      expect((component as any).formProjet.periodes[0].competencesIds).toEqual([]);
-      expect((component as any).formProjet.periodes[1].competencesIds).toEqual(['c1', 'c2']);
+      const periodes = (component as any).form.getRawValue().periodes;
+      expect(periodes[0].competencesIds).toEqual([]);
+      expect(periodes[1].competencesIds).toEqual(['c1', 'c2']);
+    });
+
+    it('ne fait rien pour un index inexistant', () => {
+      expect(() => (component as any).surSelectionCompetences(3, ['c1'])).not.toThrow();
     });
   });
 
   describe('onEnregistrer', () => {
-    it('émet un clone de formProjet', () => {
-      const projet = ProjetMother.base({ id: 'p1', nom: 'Sciences' });
-      fixture.componentRef.setInput('projet', projet);
+    it('émet le projet saisi avec son id', () => {
+      const periode = PeriodeMother.base({ competencesIds: ['c1'] });
+      fixture.componentRef.setInput(
+        'projet',
+        ProjetMother.base({ id: 'p1', nom: 'Sciences', periodes: [periode] }),
+      );
       fixture.detectChanges();
-
+      (component as any).ajouterEleve('e2');
       const spy = vi.spyOn((component as any).enregistrer, 'emit');
 
       (component as any).onEnregistrer();
 
       expect(spy).toHaveBeenCalledTimes(1);
-      const emis = spy.mock.calls[0][0] as Projet;
-      expect(emis.nom).toBe('Sciences');
-      expect(emis).not.toBe((component as any).formProjet);
+      expect(spy.mock.calls[0][0]).toEqual(
+        ProjetMother.base({ id: 'p1', nom: 'Sciences', elevesIds: ['e2'], periodes: [periode] }),
+      );
+    });
+
+    it('émet un projet créé avec un identifiant stable', () => {
+      fixture.componentRef.setInput('projet', null);
+      fixture.detectChanges();
+      (component as any).form.controls.nom.setValue('Nouveau');
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
+
+      (component as any).onEnregistrer();
+
+      expect((spy.mock.calls[0][0] as Projet).id).toBe((component as any).idProjet);
     });
 
     it('n’émet rien si le nom est vide ou blanc', () => {
@@ -184,6 +247,21 @@ describe('FpFormulaireProjetComponent', () => {
         '#btnEnregistrerProjet',
       ) as HTMLButtonElement;
       expect(bouton.disabled).toBe(true);
+    });
+
+    it("faux avec un nom fait d'espaces, bouton désactivé ; vrai dès qu'un nom est saisi", () => {
+      fixture.componentRef.setInput('projet', ProjetMother.base({ id: 'p1', nom: '   ' }));
+      fixture.detectChanges();
+      const bouton = fixture.nativeElement.querySelector(
+        '#btnEnregistrerProjet',
+      ) as HTMLButtonElement;
+      expect(bouton.disabled).toBe(true);
+
+      (component as any).form.controls.nom.setValue('Sciences');
+      fixture.detectChanges();
+
+      expect((component as any).estFormulaireValide()).toBe(true);
+      expect(bouton.disabled).toBe(false);
     });
   });
 

@@ -4,7 +4,7 @@
     <mc-input
       id="champFormNomProjet"
       [label]="LIBELLES.projet.labelNom"
-      [(ngModel)]="formProjet.nom"
+      [formControl]="form.controls.nom"
       [required]="true"
       [mcAutoFocus]="focusDemande()"
     />
@@ -31,7 +31,7 @@
     <mc-textarea
       id="champFormDescProjet"
       [label]="LIBELLES.projet.labelDescription"
-      [(ngModel)]="formProjet.description"
+      [formControl]="form.controls.description"
     />
     <fieldset class="form-projet__chips-fieldset">
       <legend>{{ LIBELLES.projet.labelEleves }}</legend>
@@ -40,7 +40,7 @@
           <mc-chip-filtre
             [id]="'chipProjetEleve' + eleve.id"
             [libelle]="eleve.nom.toUpperCase() + ' ' + eleve.prenom"
-            [actif]="formProjet.elevesIds.includes(eleve.id)"
+            [actif]="estEleveSelectionne(eleve.id)"
             (selectionChange)="$event ? ajouterEleve(eleve.id) : retirerEleve(eleve.id)"
           />
         }
@@ -61,26 +61,26 @@
       {{ LIBELLES.projet.boutonAjouterPeriode }}
     </button>
     <ul class="form-projet__periodes">
-      @for (periode of formProjet.periodes; track $index; let i = $index) {
+      @for (groupe of periodesFormArray.controls; track groupe; let i = $index) {
         <li class="form-projet__periode">
           <div class="form-projet__periode-header">
             <mc-input
               [id]="'champPeriodeNomProjet' + i"
               [label]="LIBELLES.projet.labelPeriodeNom"
-              [(ngModel)]="periode.periodeNom"
+              [formControl]="groupe.controls.periodeNom"
               [mcAutoFocus]="i === indexAFocaliserPeriode()"
             />
             <mc-input
               [id]="'champPeriodeDebutProjet' + i"
               [label]="LIBELLES.projet.labelPeriodeDebut"
               type="date"
-              [(ngModel)]="periode.debut"
+              [formControl]="groupe.controls.debut"
             />
             <mc-input
               [id]="'champPeriodeFinProjet' + i"
               [label]="LIBELLES.projet.labelPeriodeFin"
               type="date"
-              [(ngModel)]="periode.fin"
+              [formControl]="groupe.controls.fin"
             />
             <mc-bouton-destruction
               [idBase]="'btnSupprimerPeriodeProjet' + i"
@@ -93,7 +93,7 @@
           <mc-textarea
             [id]="'champPeriodeDescProjet' + i"
             [label]="LIBELLES.projet.labelPeriodeDescription"
-            [(ngModel)]="periode.description"
+            [formControl]="groupe.controls.description"
           />
           <div class="form-projet__competences">
             <span class="form-projet__label-competences">{{
@@ -102,7 +102,7 @@
             <mc-selecteur-competences
               [id]="'selecteurCompetences' + i"
               [contexteId]="'Periode' + i"
-              [competencesSelectionnees]="periode.competencesIds"
+              [competencesSelectionnees]="groupe.controls.competencesIds.value"
               [multiSelection]="true"
               (selectionChange)="surSelectionCompetences(i, $event)"
             />

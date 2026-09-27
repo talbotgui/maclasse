@@ -699,23 +699,47 @@ button {
     white-space: pre-wrap;
   }
 
-  // Emploi du temps : seule la grille centrale s'imprime, colonnes liste EDT et
-  // formulaire masquées (layout à 3 colonnes propre à cet écran, sans équivalent
-  // dans mc-colonne-gauche/droite).
+  // Emploi du temps : seule la grille centrale s'imprime, en paysage et sur une page
+  // (layout à 3 colonnes propre à cet écran, sans équivalent dans mc-colonne-gauche/droite).
+  // `!important` : les règles du composant, suffixées par Angular d'un attribut
+  // [_ngcontent-xxx], sont plus spécifiques que ces sélecteurs globaux.
+  @page edt-paysage {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
   .edt__gauche,
   .edt__droite,
   .edt__bandeau-absences,
-  .edt__btn-icone-conflit {
-    display: none;
+  .edt__btn-icone-conflit,
+  .edt__btn-ajouter-creneau,
+  .edt__grille-ligne-ajout {
+    display: none !important;
   }
 
-  .edt {
-    grid-template-columns: 1fr;
-    display: block;
+  ecran-emploi-du-temps,
+  .edt,
+  .edt__grille-conteneur,
+  .edt__grille-defilement {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    border: none !important;
   }
 
+  // Sur <body> et non sur .edt : un changement de page nommée force un saut de page,
+  // ce qui ajouterait des pages portrait vides autour de la grille.
+  body:has(.edt) {
+    page: edt-paysage;
+  }
+
+  // Facteur ≤ 1 calculé au beforeprint par EcranEmploiDuTempsComponent.preparerImpression().
   .edt__grille-conteneur {
-    overflow: visible;
+    zoom: var(--edt-echelle-impression, 1);
+  }
+
+  .edt__grille-th {
+    position: static !important;
   }
 }
 

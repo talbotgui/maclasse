@@ -247,9 +247,22 @@ testAvecDonnees("E2E-62 — Imprimer la grille de l'EDT", async ({ appAvecDonnee
   await expect(edt.btnImprimerEdt).toBeVisible();
   await expect(edt.btnImprimerEdt).toBeEnabled();
 
-  // La boîte d'impression du navigateur n'est pas testable en headless.
-  // On vérifie que la zone de la grille reste visible (masquée uniquement en @media print).
+  // La boîte d'impression du navigateur n'est pas testable en headless :
+  // on émule le média print et les événements beforeprint/afterprint.
+  await appAvecDonnees.emulateMedia({ media: 'print' });
+  await expect(edt.colonneGauche).toBeHidden();
+  await expect(edt.colonneDroite).toBeHidden();
   await expect(edt.conteneurGrille).toBeVisible();
+
+  // Pendant l'impression, le titre du document porte les métadonnées de l'EDT
+  const titreApplication = await appAvecDonnees.title();
+  await appAvecDonnees.evaluate(() => window.dispatchEvent(new Event('beforeprint')));
+  await expect(appAvecDonnees).toHaveTitle(/^Semaine paire — 1ère partie \(.*Semaines paires\)$/);
+  await appAvecDonnees.evaluate(() => window.dispatchEvent(new Event('afterprint')));
+  await expect(appAvecDonnees).toHaveTitle(titreApplication);
+
+  await appAvecDonnees.emulateMedia({ media: 'screen' });
+  await expect(edt.colonneGauche).toBeVisible();
 });
 
 testAvecDonnees(

@@ -168,6 +168,8 @@ Tous les composants d'écran sont chargés en **lazy loading** via `loadComponen
 - L'impression passe par le mécanisme natif du navigateur (`window.print()`)
 - Une règle CSS `@media print` **masque la colonne gauche** (navigation + filtres) et les champs et boutons de l'entête dans tous ces écrans
 - Définie dans les styles globaux ou par écran selon le layout
+- Les règles globales qui masquent un élément stylé par un composant portent `!important` : sans cela, le sélecteur du composant (suffixé par Angular d'un attribut `[_ngcontent-xxx]`) est plus spécifique et l'emporte
+- L'emploi du temps s'imprime en paysage sur une page unique (page nommée `edt-paysage`, voir [emploi-du-temps](ecrans/emploi-du-temps.md#bouton-imprimer))
 
 ---
 

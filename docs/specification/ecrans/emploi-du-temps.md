@@ -3,7 +3,7 @@ name: emploi-du-temps
 description: Spécification détaillée de l'écran Emploi du temps — colonne gauche liste EDT, grille hebdomadaire centrale, formulaire contextuel droit
 metadata:
   type: project
-  updated: 2026-06-10
+  updated: 2026-09-27
 related:
   - specification/ecrans/vue-ensemble
   - specification/modeles-donnees
@@ -142,9 +142,21 @@ Affiché au clic sur une cellule ou sur un bouton AJOUTER / intercalaire "+".
 
 ## Bouton IMPRIMER
 
-- Positionné dans la colonne droite (ou en haut de la zone centrale)
-- Déclenche l'impression via le navigateur (`window.print()`)
-- **La colonne gauche n'est pas imprimée** (masquée via `@media print`)
+- Positionné en haut de la zone centrale, à droite du nom de l'EDT affiché
+- Déclenche l'impression via le navigateur (`window.print()`) ; tout ce qui suit s'applique aussi à Ctrl+P
+- **Seule la grille est imprimée** : colonne gauche, colonne droite, bandeau des absences, icônes de conflit, boutons « + » et ligne AJOUTER sont masqués (`@media print` de `styles.scss`)
+- **Orientation paysage** imposée (A4, marges 10 mm) via la page nommée `edt-paysage`, propre à cet écran
+- **Page unique** : au `beforeprint`, la grille est mesurée à la largeur imprimable et réduite par un facteur `zoom` ≤ 1 (variable CSS `--edt-echelle-impression`) pour tenir en hauteur ; facteur remis à 1 au `afterprint`
+- **Titre du document** (`document.title`) remplacé pendant l'impression, puis restauré. Il apparaît dans l'en-tête d'impression du navigateur et comme nom du PDF proposé :
+
+| Dates renseignées | Titre |
+|---|---|
+| Début et fin | `nom (01/09/2026-18/10/2026 / Semaines paires)` |
+| Début seul | `nom (à partir du 01/09/2026 / Semaines paires)` |
+| Fin seule | `nom (jusqu'au 18/10/2026 / Semaines paires)` |
+| Aucune | `nom (Semaines paires)` |
+
+S'applique aussi aux EDT calculés. Sans EDT affiché, le titre n'est pas modifié.
 
 ---
 

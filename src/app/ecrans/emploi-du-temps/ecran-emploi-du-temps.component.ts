@@ -57,6 +57,10 @@ import type {
   ],
   templateUrl: './ecran-emploi-du-temps.component.html',
   styleUrl: './ecran-emploi-du-temps.component.scss',
+  host: {
+    '(window:beforeprint)': 'preparerImpression()',
+    '(window:afterprint)': 'terminerImpression()',
+  },
 })
 export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   /** Ordre canonique des jours ouvrés. */
@@ -67,6 +71,52 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
     'jeudi',
     'vendredi',
   ];
+
+  /** Libellé affiché pour chaque fréquence dans le titre d'impression. */
+  private static readonly LIBELLES_FREQUENCE: Record<FrequenceSemaine, string> = {
+    paire: LIBELLES.edt.frequencePaire,
+    impaire: LIBELLES.edt.frequenceImpaire,
+    lesDeux: LIBELLES.edt.frequenceLesDeux,
+  };
+
+  /** Largeur imprimable d'une page A4 paysage aux marges de 10 mm (277 mm), en pixels CSS. */
+  private static readonly LARGEUR_IMPRIMABLE_PX = 1047;
+
+  /** Hauteur imprimable d'une page A4 paysage aux marges de 10 mm (190 mm), en pixels CSS. */
+  private static readonly HAUTEUR_IMPRIMABLE_PX = 718;
+
+  /** Variable CSS portant le facteur de réduction de la grille à l'impression. */
+  private static readonly VARIABLE_ECHELLE_IMPRESSION = '--edt-echelle-impression';
+
+  /**
+   * Calcule le facteur de réduction qui fait tenir un contenu dans la hauteur imprimable.
+   * @param hauteurContenu Hauteur mesurée du contenu, en pixels CSS.
+   * @returns Facteur entre 0 et 1 ; 1 si le contenu tient déjà ou n'a pas pu être mesuré.
+   */
+  private static calculerEchelleImpression(hauteurContenu: number): number {
+    if (hauteurContenu <= EcranEmploiDuTempsComponent.HAUTEUR_IMPRIMABLE_PX) return 1;
+    return EcranEmploiDuTempsComponent.HAUTEUR_IMPRIMABLE_PX / hauteurContenu;
+  }
+
+  /**
+   * Formate le titre d'impression d'un EDT : `nom (début-fin / fréquence)`.
+   * La partie dates devient `à partir du …` ou `jusqu'au …` si une seule date est connue,
+   * et disparaît si aucune ne l'est.
+   * @param edt EDT ou EDT calculé à imprimer.
+   * @returns Titre formaté.
+   */
+  private static formaterTitreImpression(
+    edt: Pick<EmploiDuTemps, 'nom' | 'dateDebut' | 'dateFin' | 'frequence'>,
+  ): string {
+    const frequence = EcranEmploiDuTempsComponent.LIBELLES_FREQUENCE[edt.frequence];
+    const debut = edt.dateDebut ? DateUtils.formaterDateCourt(edt.dateDebut) : null;
+    const fin = edt.dateFin ? DateUtils.formaterDateCourt(edt.dateFin) : null;
+    let dates: string | null = null;
+    if (debut && fin) dates = `${debut}-${fin}`;
+    else if (debut) dates = LIBELLES.edt.prefixeImpressionDepuis + debut;
+    else if (fin) dates = LIBELLES.edt.prefixeImpressionJusquau + fin;
+    return dates ? `${edt.nom} (${dates} / ${frequence})` : `${edt.nom} (${frequence})`;
+  }
 
   /**
    * Crée un EDT vide prêt pour la saisie.
@@ -197,6 +247,18 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   /** Boutons de sélection d'EDT actuellement rendus, dans l'ordre d'affichage. */
   private readonly optionsEdt = viewChildren<ElementRef<HTMLButtonElement>>('optionEdt');
 
+  /** Conteneur de la grille, porteur du facteur de réduction appliqué à l'impression. */
+  private readonly grilleConteneur = viewChild<ElementRef<HTMLElement>>('grilleConteneur');
+
+  /** En-tête de la grille (nom de l'EDT), mesuré pour ajuster l'impression à une page. */
+  private readonly grilleEntete = viewChild<ElementRef<HTMLElement>>('grilleEntete');
+
+  /** Tableau de la grille, mesuré pour ajuster l'impression à une page. */
+  private readonly grilleTableau = viewChild<ElementRef<HTMLElement>>('grilleTableau');
+
+  /** Titre du document mémorisé au début de l'impression, restauré à la fin ; `null` hors impression. */
+  private titreAvantImpression: string | null = null;
+
   /** Résolution de la promesse de navigation (garde CanDeactivate). */
   private resolveGarde: ((result: boolean) => void) | null = null;
 
@@ -227,6 +289,12 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   protected readonly nomGrille = computed<string>(
     () => this.edtSelectionne()?.nom ?? this.edtCalculeSelectionne()?.nom ?? '',
   );
+
+  /** Titre du document pendant l'impression (métadonnées de l'EDT affiché), vide sans EDT affiché. */
+  protected readonly titreImpression = computed<string>(() => {
+    const edt = this.edtSelectionne() ?? this.edtCalculeSelectionne();
+    return edt ? EcranEmploiDuTempsComponent.formaterTitreImpression(edt) : '';
+  });
 
   /** Liste complète des EDT depuis le store. */
   protected readonly edts = computed<EmploiDuTemps[]>(
@@ -522,6 +590,42 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   /** Lance l'impression de la grille de l'EDT sélectionné. */
   protected imprimer(): void {
     window.print();
+  }
+
+  /**
+   * Prépare l'impression (bouton IMPRIMER ou Ctrl+P) : remplace le titre du document par
+   * les métadonnées de l'EDT affiché et réduit la grille pour qu'elle tienne sur une page.
+   * La grille est mesurée avec les styles écran à la largeur imprimable : les éléments
+   * masqués à l'impression sont encore comptés, l'estimation est donc prudente.
+   */
+  protected preparerImpression(): void {
+    const titre = this.titreImpression();
+    if (titre) {
+      this.titreAvantImpression = document.title;
+      document.title = titre;
+    }
+    const conteneur = this.grilleConteneur()?.nativeElement;
+    if (!conteneur) return;
+    conteneur.style.width = `${EcranEmploiDuTempsComponent.LARGEUR_IMPRIMABLE_PX}px`;
+    const hauteur =
+      (this.grilleEntete()?.nativeElement.offsetHeight ?? 0) +
+      (this.grilleTableau()?.nativeElement.offsetHeight ?? 0);
+    conteneur.style.width = '';
+    conteneur.style.setProperty(
+      EcranEmploiDuTempsComponent.VARIABLE_ECHELLE_IMPRESSION,
+      String(EcranEmploiDuTempsComponent.calculerEchelleImpression(hauteur)),
+    );
+  }
+
+  /** Termine l'impression : restaure le titre du document et l'échelle de la grille. */
+  protected terminerImpression(): void {
+    if (this.titreAvantImpression !== null) {
+      document.title = this.titreAvantImpression;
+      this.titreAvantImpression = null;
+    }
+    this.grilleConteneur()?.nativeElement.style.removeProperty(
+      EcranEmploiDuTempsComponent.VARIABLE_ECHELLE_IMPRESSION,
+    );
   }
 
   /**

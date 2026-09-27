@@ -92,11 +92,11 @@
   </div>
 
   <!-- ── Colonne centrale : grille hebdomadaire ── -->
-  <div class="edt__grille-conteneur">
+  <div #grilleConteneur class="edt__grille-conteneur">
     @if (!edtSelectionne() && !edtCalculeSelectionne()) {
       <p class="edt__grille-vide">{{ LIBELLES.edt.aucunEdtSelectionne }}</p>
     } @else {
-      <div class="edt__grille-entete">
+      <div #grilleEntete class="edt__grille-entete">
         <span class="edt__grille-nom">{{ nomGrille() }}</span>
         <button id="btnImprimerEdt" class="mc-btn-fantome" (click)="imprimer()">
           {{ LIBELLES.edt.boutonImprimer }}
@@ -105,6 +105,7 @@
 
       <div class="edt__grille-defilement">
         <table
+          #grilleTableau
           class="edt__grille"
           [attr.aria-label]="
             edtCalculeSelectionne()

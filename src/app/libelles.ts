@@ -214,6 +214,8 @@ export const LIBELLES = {
     ariaGrilleCalculee: 'Grille hebdomadaire calculée (lecture seule)',
     boutonCreer: 'Créer un emploi du temps',
     boutonImprimer: 'Imprimer',
+    prefixeImpressionDepuis: 'à partir du ',
+    prefixeImpressionJusquau: "jusqu'au ",
     aucunEdtSelectionne: 'Sélectionnez un emploi du temps ou créez-en un.',
     avertissementChevauchementEdt: 'Cet emploi du temps chevauche un autre emploi du temps.',
     ariaVoirConflitEdt: 'Voir les emplois du temps en conflit',

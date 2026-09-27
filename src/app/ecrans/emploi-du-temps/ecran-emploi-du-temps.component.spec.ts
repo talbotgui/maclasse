@@ -760,4 +760,108 @@ describe('EcranEmploiDuTempsComponent', () => {
       expect(await promesse).toBe(true);
     });
   });
+
+  describe('impression', () => {
+    const titreApplication = 'MaClasse';
+
+    beforeEach(() => {
+      document.title = titreApplication;
+    });
+
+    it('titre avec dates de début et de fin', () => {
+      (component as any).selectionnerEdt(
+        EdtMother.base({
+          nom: 'Période 1',
+          dateDebut: '2026-09-01',
+          dateFin: '2026-10-18',
+          frequence: 'paire',
+        }),
+      );
+      expect((component as any).titreImpression()).toBe(
+        `Période 1 (01/09/2026-18/10/2026 / ${LIBELLES.edt.frequencePaire})`,
+      );
+    });
+
+    it('titre avec date de début seule', () => {
+      (component as any).selectionnerEdt(
+        EdtMother.base({ nom: 'Période 1', dateDebut: '2026-09-01', frequence: 'impaire' }),
+      );
+      expect((component as any).titreImpression()).toBe(
+        `Période 1 (${LIBELLES.edt.prefixeImpressionDepuis}01/09/2026 / ${LIBELLES.edt.frequenceImpaire})`,
+      );
+    });
+
+    it('titre avec date de fin seule', () => {
+      (component as any).selectionnerEdt(
+        EdtMother.base({ nom: 'Période 1', dateFin: '2026-10-18' }),
+      );
+      expect((component as any).titreImpression()).toBe(
+        `Période 1 (${LIBELLES.edt.prefixeImpressionJusquau}18/10/2026 / ${LIBELLES.edt.frequenceLesDeux})`,
+      );
+    });
+
+    it('titre sans date', () => {
+      (component as any).selectionnerEdt(EdtMother.base({ nom: 'Période 1' }));
+      expect((component as any).titreImpression()).toBe(
+        `Période 1 (${LIBELLES.edt.frequenceLesDeux})`,
+      );
+    });
+
+    it("titre d'un EDT calculé", () => {
+      (component as any).selectionnerEdtCalcule(
+        EdtCalculeMother.base({ nom: 'Vue A', dateDebut: '2026-09-01', dateFin: '2026-10-18' }),
+      );
+      expect((component as any).titreImpression()).toBe(
+        `Vue A (01/09/2026-18/10/2026 / ${LIBELLES.edt.frequenceLesDeux})`,
+      );
+    });
+
+    it('titre vide sans EDT affiché', () => {
+      expect((component as any).titreImpression()).toBe('');
+    });
+
+    it("remplace le titre du document au beforeprint et le restaure à l'afterprint", () => {
+      (component as any).selectionnerEdt(EdtMother.base({ nom: 'Période 1' }));
+      fixture.detectChanges();
+
+      window.dispatchEvent(new Event('beforeprint'));
+      expect(document.title).toBe(`Période 1 (${LIBELLES.edt.frequenceLesDeux})`);
+
+      window.dispatchEvent(new Event('afterprint'));
+      expect(document.title).toBe(titreApplication);
+    });
+
+    it('ne modifie pas le titre du document sans EDT affiché', () => {
+      window.dispatchEvent(new Event('beforeprint'));
+      expect(document.title).toBe(titreApplication);
+      window.dispatchEvent(new Event('afterprint'));
+      expect(document.title).toBe(titreApplication);
+    });
+
+    it('conserve une échelle de 1 quand la grille tient sur la page', () => {
+      (component as any).selectionnerEdt(edtBase);
+      fixture.detectChanges();
+      const conteneur: HTMLElement = fixture.nativeElement.querySelector('.edt__grille-conteneur');
+
+      (component as any).preparerImpression();
+
+      expect(conteneur.style.getPropertyValue('--edt-echelle-impression')).toBe('1');
+      expect(conteneur.style.width).toBe('');
+    });
+
+    it("réduit la grille trop haute puis rétablit l'échelle après impression", () => {
+      (component as any).selectionnerEdt(edtBase);
+      fixture.detectChanges();
+      const conteneur: HTMLElement = fixture.nativeElement.querySelector('.edt__grille-conteneur');
+      const tableau: HTMLElement = fixture.nativeElement.querySelector('.edt__grille');
+      // jsdom ne calcule pas de mise en page : hauteur imposée (2 × 718 px imprimables).
+      Object.defineProperty(tableau, 'offsetHeight', { configurable: true, value: 1436 });
+
+      (component as any).preparerImpression();
+      expect(conteneur.style.getPropertyValue('--edt-echelle-impression')).toBe('0.5');
+
+      (component as any).terminerImpression();
+      expect(conteneur.style.getPropertyValue('--edt-echelle-impression')).toBe('');
+    });
+  });
 });

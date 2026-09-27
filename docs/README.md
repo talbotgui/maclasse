@@ -51,6 +51,7 @@ Un plan par évolution ou chantier. La numérotation est historique ; le 13 est 
 | [15](plans/15-montees-de-version.md) | Montées de version (jsdom 30, Angular 22, TS 6.0) | terminé le 2026-09-20 |
 | [16](plans/16-site-documentaire.md) | Site documentaire `/maclasse/doc/` | proposé, en attente de validation |
 | [17](plans/17-cahier-journal-regroupement-absences.md) | Cahier journal : regroupement des absences par élève | terminé le 2026-09-27 |
+| [18](plans/18-edt-impression.md) | EDT : impression paysage, grille seule, titre, page unique | terminé le 2026-09-27 |
 
 ## Audits
 

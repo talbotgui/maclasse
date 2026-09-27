@@ -34,6 +34,10 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
   readonly droiteVide: Locator;
   /** Bouton IMPRIMER l'EDT sélectionné. */
   readonly btnImprimerEdt: Locator;
+  /** Colonne gauche (listes des EDT), masquée à l'impression. */
+  readonly colonneGauche: Locator;
+  /** Colonne droite (formulaire contextuel), masquée à l'impression. */
+  readonly colonneDroite: Locator;
   /** Premier créneau existant dans la grille (index 0 — tout EDT confondu). */
   readonly premierCreneauGrille: Locator;
   /**
@@ -171,6 +175,8 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
     this.grilleVide = page.locator('.edt__grille-vide');
     this.droiteVide = page.locator('.edt__droite-vide');
     this.btnImprimerEdt = page.locator('#btnImprimerEdt');
+    this.colonneGauche = page.locator('.edt__gauche');
+    this.colonneDroite = page.locator('.edt__droite');
     this.premierCreneauGrille = page.locator('[id^="btnCreneau"]').first();
     this.premierCreneauSemainePaire = page
       .locator('[id^="btnCreneaucr000001-0000-4000-8000-000000000001"]')

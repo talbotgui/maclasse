@@ -8,6 +8,7 @@ import { DonneesMother } from '../../tests/donnees.mother';
 import { SeanceMother } from '../../tests/cahier-journal.mother';
 import { EleveMother } from '../../tests/eleve.mother';
 import { DateUtils } from '../../utilitaires/date.utils';
+import { LIBELLES } from '../../libelles';
 import type { Seance } from '../../modeles/cahier-journal.modele';
 
 describe('EcranCahierJournalComponent', () => {
@@ -454,6 +455,221 @@ describe('EcranCahierJournalComponent', () => {
     });
   });
 
+  describe('dateCourte', () => {
+    it('retourne la date sélectionnée au format JJ/MM/AAAA', () => {
+      expect((component as any).dateCourte()).toBe(DateUtils.formaterDateCourt(dateTest));
+    });
+  });
+
+  describe('repli des notes de la journée', () => {
+    it('affiche les notes dépliées par défaut', () => {
+      expect((component as any).notesDepliees()).toBe(true);
+      expect(fixture.nativeElement.querySelector('#champNotesJournee')).not.toBeNull();
+      expect(
+        fixture.nativeElement.querySelector('#btnBasculerNotes').getAttribute('aria-expanded'),
+      ).toBe('true');
+    });
+
+    it('replie puis déplie la zone de saisie au clic sur le bouton de bascule', () => {
+      const bouton = fixture.nativeElement.querySelector('#btnBasculerNotes') as HTMLButtonElement;
+
+      bouton.click();
+      fixture.detectChanges();
+      expect((component as any).notesDepliees()).toBe(false);
+      expect(fixture.nativeElement.querySelector('#champNotesJournee')).toBeNull();
+      expect(bouton.getAttribute('aria-expanded')).toBe('false');
+      expect(bouton.hasAttribute('aria-controls')).toBe(false);
+
+      bouton.click();
+      fixture.detectChanges();
+      expect((component as any).notesDepliees()).toBe(true);
+      expect(fixture.nativeElement.querySelector('#champNotesJournee')).not.toBeNull();
+    });
+
+    it('conserve le paragraphe d’impression des notes quand la zone est repliée', () => {
+      donneesService.charger(
+        DonneesMother.base({
+          cahierJournal: [{ id: 'j1', date: dateTest, seances: [seance1], notes: 'Sortie' }],
+        }),
+      );
+      (component as any).basculerNotes();
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.cj__notes-impression')?.textContent).toBe(
+        'Sortie',
+      );
+    });
+
+    it('affiche l’aperçu de la première ligne des notes quand la zone est repliée', () => {
+      donneesService.charger(
+        DonneesMother.base({
+          cahierJournal: [
+            { id: 'j1', date: dateTest, seances: [seance1], notes: 'Ligne 1\nLigne 2' },
+          ],
+        }),
+      );
+      (component as any).basculerNotes();
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.cj__notes-apercu')?.textContent?.trim()).toBe(
+        '— Ligne 1',
+      );
+    });
+
+    it('n’affiche pas d’aperçu quand la zone est dépliée', () => {
+      donneesService.charger(
+        DonneesMother.base({
+          cahierJournal: [{ id: 'j1', date: dateTest, seances: [seance1], notes: 'Ligne 1' }],
+        }),
+      );
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.cj__notes-apercu')).toBeNull();
+    });
+  });
+
+  describe('apercuNotes', () => {
+    it('est vide si la journée n’a pas de notes', () => {
+      expect((component as any).apercuNotes()).toBe('');
+    });
+
+    it('retourne la note entière si elle tient sur une ligne', () => {
+      donneesService.charger(
+        DonneesMother.base({
+          cahierJournal: [{ id: 'j1', date: dateTest, seances: [], notes: 'Piscine' }],
+        }),
+      );
+      expect((component as any).apercuNotes()).toBe('Piscine');
+    });
+
+    it('ne retient que la première ligne des notes', () => {
+      donneesService.charger(
+        DonneesMother.base({
+          cahierJournal: [{ id: 'j1', date: dateTest, seances: [], notes: 'Piscine\nSortie' }],
+        }),
+      );
+      expect((component as any).apercuNotes()).toBe('Piscine');
+    });
+  });
+
+  describe('boutons d’ajout de séance', () => {
+    it('la ligne de tête ouvre la création en position 0', () => {
+      (fixture.nativeElement.querySelector('#btnAjouterSeanceDebut') as HTMLButtonElement).click();
+
+      expect((component as any).enCreationSeance()).toBe(true);
+      expect((component as any).positionCreation()).toBe(0);
+    });
+
+    it('le bouton en bout de ligne ouvre la création juste après sa séance', () => {
+      (
+        fixture.nativeElement.querySelector('#btnAjouterSeanceApress1') as HTMLButtonElement
+      ).click();
+      fixture.detectChanges();
+
+      expect((component as any).positionCreation()).toBe(1);
+      const elements = Array.from(
+        fixture.nativeElement.querySelectorAll('.cj__seance, cj-formulaire-seance'),
+      ) as Element[];
+      expect(elements.map((e) => e.tagName.toLowerCase())).toEqual([
+        'article',
+        'cj-formulaire-seance',
+        'article',
+      ]);
+    });
+
+    it('désactive les boutons d’ajout pendant une création', () => {
+      (component as any).creerSeance(0);
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('#btnAjouterSeanceDebut').disabled).toBe(true);
+      expect(fixture.nativeElement.querySelector('#btnAjouterSeanceApress2').disabled).toBe(true);
+    });
+
+    it('affiche la ligne de tête sur une journée sans séance', () => {
+      donneesService.charger(
+        DonneesMother.base({ cahierJournal: [{ id: 'j1', date: dateTest, seances: [] }] }),
+      );
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('#btnAjouterSeanceDebut')).not.toBeNull();
+      expect(
+        fixture.nativeElement.querySelector('.cj__ligne-ajout-debut-texte')?.textContent?.trim(),
+      ).toBe(LIBELLES.cahierJournal.aucuneSeance);
+    });
+  });
+
+  describe('boutons d’initialisation', () => {
+    it('sont proposés dans la zone centrale sur une journée vide', () => {
+      (component as any).dateSelectionnee.set('2000-01-03');
+      fixture.detectChanges();
+
+      const centre = fixture.nativeElement.querySelector('.cj__droite') as HTMLElement;
+      expect(centre.querySelector('#btnInitialiserVidePrincipal')).not.toBeNull();
+      expect(centre.querySelector('#btnInitialiserEdt')).not.toBeNull();
+      expect(fixture.nativeElement.querySelector('.cj__gauche #btnInitialiserEdt')).toBeNull();
+    });
+
+    it('sont absents du DOM quand la journée existe', () => {
+      expect(fixture.nativeElement.querySelector('#btnInitialiserVidePrincipal')).toBeNull();
+      expect(fixture.nativeElement.querySelector('#btnInitialiserEdt')).toBeNull();
+    });
+
+    it('le bouton d’initialisation depuis l’EDT crée la journée', () => {
+      (component as any).dateSelectionnee.set('2000-01-03');
+      fixture.detectChanges();
+
+      (fixture.nativeElement.querySelector('#btnInitialiserEdt') as HTMLButtonElement).click();
+
+      expect(donneesService.donnees()?.cahierJournal.some((j) => j.date === '2000-01-03')).toBe(
+        true,
+      );
+    });
+  });
+
+  describe('affichage des séances non pédagogiques', () => {
+    it('affiche une récréation en ligne fine avec son libellé', () => {
+      const articles = fixture.nativeElement.querySelectorAll('.cj__seance');
+      const recreation = articles[1] as HTMLElement;
+
+      expect(recreation.classList.contains('cj__seance--fine')).toBe(true);
+      expect(recreation.querySelector('.cj__seance-type')?.textContent?.trim()).toBe(
+        LIBELLES.edt.typeRecreation,
+      );
+      expect((articles[0] as HTMLElement).classList.contains('cj__seance--fine')).toBe(false);
+    });
+
+    it('obtenirLibelleType retourne le libellé de la pause déjeuner', () => {
+      expect((component as any).obtenirLibelleType('pauseDejeuner')).toBe(
+        LIBELLES.edt.typePauseDejeuner,
+      );
+    });
+
+    it('obtenirLibelleType retourne le libellé de la récréation', () => {
+      expect((component as any).obtenirLibelleType('recreation')).toBe(LIBELLES.edt.typeRecreation);
+    });
+  });
+
+  describe('infobulles des actions de séance', () => {
+    it('chaque bouton d’action porte une infobulle', () => {
+      const racine = fixture.nativeElement as HTMLElement;
+      expect(racine.querySelector('#btnMonterSeances1')?.getAttribute('title')).toBe(
+        LIBELLES.cahierJournal.ariaMonterSeance,
+      );
+      expect(racine.querySelector('#btnDescendreSeances1')?.getAttribute('title')).toBe(
+        LIBELLES.cahierJournal.ariaDescendreSeance,
+      );
+      expect(racine.querySelector('#btnModifierSeances1')?.getAttribute('title')).toBe(
+        LIBELLES.cahierJournal.ariaModifierSeance,
+      );
+      expect(racine.querySelector('#btnDupliquerSeances1')?.getAttribute('title')).toBe(
+        LIBELLES.cahierJournal.boutonDupliquerSeance,
+      );
+      expect(racine.querySelector('#btnSupprimerSeances1')?.getAttribute('title')).toBe(
+        LIBELLES.cahierJournal.ariaSupprimerSeance,
+      );
+    });
+  });
+
   describe('notes de la journée', () => {
     it('affiche le titre de date dès qu’une journée existe, même sans séance', () => {
       donneesService.charger(
@@ -462,7 +678,7 @@ describe('EcranCahierJournalComponent', () => {
       fixture.detectChanges();
 
       const titre = fixture.nativeElement.querySelector('.cj__titre-journee');
-      expect(titre?.textContent?.trim()).toBe(DateUtils.formaterDateLong(dateTest));
+      expect(titre?.textContent?.trim()).toBe(DateUtils.formaterDateCourt(dateTest));
     });
 
     it('masque la zone de notes tant qu’aucune séance n’existe', () => {

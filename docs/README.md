@@ -52,7 +52,7 @@ Un plan par évolution ou chantier. La numérotation est historique ; le 13 est 
 | [16](plans/16-site-documentaire.md) | Site documentaire `/maclasse/doc/` | proposé, en attente de validation |
 | [17](plans/17-cahier-journal-regroupement-absences.md) | Cahier journal : regroupement des absences par élève | terminé le 2026-09-27 |
 | [18](plans/18-edt-impression.md) | EDT : impression paysage, grille seule, titre, page unique | terminé le 2026-09-27 |
-| [19](plans/19-cahier-journal-densification.md) | Cahier journal : densification (« + » en bout de ligne, notes repliables, récréations en ligne fine) + règles élève absent / séances simultanées | proposé, en attente de validation |
+| [19](plans/19-cahier-journal-densification.md) | Cahier journal : densification (« + » en bout de ligne, notes repliables, récréations en ligne fine) + règles élève absent / séances simultanées | terminé le 2026-09-27 |
 
 ## Audits
 

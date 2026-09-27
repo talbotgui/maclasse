@@ -55,6 +55,7 @@ Chaque service expose des méthodes pures de manipulation et validation. Les mut
 - Validation des données d'une fiche élève
 - Résolution : élève par ID, liste filtrée par recherche textuelle
 - Calcul des absences récurrentes d'un élève (liste des conflits potentiels)
+- `listerIdsElevesAbsents(date)` : UUID des élèves ayant une `AbsencePonctuelle` à cette date (utilisé par le formulaire de séance du cahier journal)
 
 ### `CompetenceService`
 
@@ -91,14 +92,12 @@ Chaque service expose des méthodes pures de manipulation et validation. Les mut
   2. Parmi eux, garder ceux dont la fréquence correspond à la parité de la semaine (ou fréquence = lesDeux)
   3. Copier les créneaux du jour de semaine correspondant
 - Réorganisation des séances (déplacement vers le haut/bas)
-- Validation : un élève ne peut pas être affecté à deux séances simultanées
+- **Élèves sur des séances simultanées** — `detecterElevesSurSeancesSimultanees(date, seance)` : pour une séance pédagogique, libellés « NOM Prénom » (triés) des élèves également concernés par une autre séance pédagogique de la journée qui la chevauche (chevauchement strict, séance de même id exclue) ; appelé à l'ENREGISTRER du formulaire de séance, **bloquant**
 - **Contrôle de cohérence absences récurrentes** :
   - Déclenché à l'**ENREGISTRER** d'une séance (warning non bloquant)
   - Déclenché au clic sur le triangle warning d'une séance
   - Retourne la liste des conflits (séance ↔ absence récurrente d'un élève concerné)
-- **Contrôle des absences ponctuelles** :
-  - Pour chaque élève sélectionné dans une séance, vérifie si `eleveId` a une `AbsencePonctuelle` dont la date correspond au jour de la journée
-  - Résultat utilisé par `mc-eleves-concernes` pour **désactiver le chip** de l'élève absent
+- Le périmètre d'une séance (classe / groupes / élèves) est résolu en identifiants d'élèves par une méthode privée commune au contrôle des absences récurrentes et à celui des séances simultanées
 - **Duplication de séance** : copie une séance existante vers un autre jour (résout la date cible, crée la `JourneeJournal` si nécessaire)
 - **Duplication de journée** : copie l'intégralité des séances d'un jour vers un autre jour (crée la journée cible si nécessaire)
 

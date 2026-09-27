@@ -99,6 +99,7 @@
         <p class="cj-formulaire-seance__label-groupe">{{ LIBELLES.cahierJournal.labelEleves }}</p>
         <mc-eleves-concernes
           [id]="'elevesConcernesSeance'"
+          [elevesIndisponiblesIds]="elevesAbsentsIds()"
           [formControl]="form.controls.elevesConcernes"
         />
       </div>

@@ -130,6 +130,18 @@ export class EleveService {
   }
 
   /**
+   * Liste les élèves ayant une absence ponctuelle à la date donnée.
+   * @param date Date ISO du jour à analyser.
+   * @returns UUID des élèves absents ce jour-là, ou `[]` si aucun (ou si aucune donnée n'est chargée).
+   */
+  public listerIdsElevesAbsents(date: string): string[] {
+    const eleves = this.donneesService.donnees()?.classe.eleves ?? [];
+    return eleves
+      .filter((eleve) => eleve.absencesPonctuelles.some((abs) => abs.date === date))
+      .map((eleve) => eleve.id);
+  }
+
+  /**
    * Génère les libellés des absences (récurrentes et ponctuelles) du jour donné, regroupées
    * en une ligne par élève concerné. Une absence récurrente est retenue si son jour correspond
    * ET si sa parité de semaine est `"lesDeux"` ou coïncide avec la parité de la date. Une

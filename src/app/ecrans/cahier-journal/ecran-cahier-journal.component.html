@@ -52,30 +52,6 @@
     />
 
     <div class="cj__actions-journee">
-      <button
-        id="btnInitialiserVide"
-        class="mc-btn-secondaire mc-btn-sm"
-        [disabled]="journeeSelectionnee() !== null"
-        [attr.aria-describedby]="journeeSelectionnee() !== null ? 'descInitialisation' : null"
-        (click)="initialiserVide()"
-      >
-        {{ LIBELLES.cahierJournal.boutonInitialiserVide }}
-      </button>
-      <button
-        id="btnInitialiserEdt"
-        class="mc-btn-secondaire mc-btn-sm"
-        [disabled]="journeeSelectionnee() !== null"
-        [attr.aria-describedby]="journeeSelectionnee() !== null ? 'descInitialisation' : null"
-        (click)="initialiserDepuisEdt()"
-      >
-        {{ LIBELLES.cahierJournal.boutonInitialiserEdt }}
-      </button>
-      @if (journeeSelectionnee() !== null) {
-        <span id="descInitialisation" class="sr-only">{{
-          LIBELLES.cahierJournal.tooltipJourneeDejaInitialisee
-        }}</span>
-      }
-
       @if (journeeSelectionnee()) {
         <button
           id="btnDupliquerJournee"
@@ -139,33 +115,62 @@
     </div>
   </div>
 
-  <!-- ── Colonne droite : séances ── -->
+  <!-- ── Zone centrale : notes et séances ── -->
   <div class="cj__droite">
     @if (!journeeSelectionnee()) {
       <div class="cj__droite-vide">
         <p>{{ LIBELLES.cahierJournal.aucuneSeance }}</p>
-        <button
-          id="btnInitialiserVidePrincipal"
-          class="mc-btn-secondaire"
-          (click)="initialiserVide()"
-        >
-          {{ LIBELLES.cahierJournal.boutonInitialiserVide }}
-        </button>
+        <div class="cj__initialisation">
+          <button
+            id="btnInitialiserVidePrincipal"
+            class="mc-btn-secondaire"
+            (click)="initialiserVide()"
+          >
+            {{ LIBELLES.cahierJournal.boutonInitialiserVide }}
+          </button>
+          <button id="btnInitialiserEdt" class="mc-btn-secondaire" (click)="initialiserDepuisEdt()">
+            {{ LIBELLES.cahierJournal.boutonInitialiserEdt }}
+          </button>
+        </div>
       </div>
     } @else {
-      <h2 class="cj__titre-journee">{{ dateFormatee() }}</h2>
+      <div class="cj__entete">
+        <h2 class="cj__titre-journee">{{ dateCourte() }}</h2>
+        @if (notesAffichables()) {
+          <button
+            id="btnBasculerNotes"
+            type="button"
+            class="cj__bascule-notes"
+            [attr.aria-expanded]="notesDepliees()"
+            [attr.aria-controls]="notesDepliees() ? 'zoneNotesJournee' : null"
+            (click)="basculerNotes()"
+          >
+            <span class="cj__bascule-notes-chevron" aria-hidden="true">{{
+              notesDepliees() ? '▾' : '▸'
+            }}</span>
+            <span>{{ LIBELLES.cahierJournal.labelNotes }}</span>
+            @if (!notesDepliees() && apercuNotes()) {
+              <span class="cj__notes-apercu">— {{ apercuNotes() }}</span>
+            }
+          </button>
+        }
+      </div>
 
-      @if (seances().length > 0 || notesJournee()) {
+      @if (notesAffichables()) {
         <div class="cj__notes">
-          <mc-textarea
-            id="champNotesJournee"
-            class="cj__notes-saisie"
-            [formControl]="notesControl"
-            (focusout)="enregistrerNotes()"
-            [label]="LIBELLES.cahierJournal.labelNotes"
-            [placeholder]="LIBELLES.cahierJournal.placeholderNotes"
-            [lignes]="3"
-          />
+          @if (notesDepliees()) {
+            <div id="zoneNotesJournee">
+              <mc-textarea
+                id="champNotesJournee"
+                class="cj__notes-saisie"
+                [formControl]="notesControl"
+                (focusout)="enregistrerNotes()"
+                [label]="LIBELLES.cahierJournal.labelNotes"
+                [placeholder]="LIBELLES.cahierJournal.placeholderNotes"
+                [lignes]="3"
+              />
+            </div>
+          }
           @if (notesJournee()) {
             <p class="cj__notes-impression">{{ notesJournee() }}</p>
           }
@@ -173,102 +178,133 @@
       }
 
       <div class="cj__seances-liste">
-        @if (seances().length === 0) {
-          <p class="cj__seances-vide">{{ LIBELLES.cahierJournal.aucuneSeance }}</p>
-        }
-
-        @for (seance of seances(); track seance.id; let i = $index) {
+        <div class="cj__ligne cj__ligne-ajout-debut">
+          <span class="cj__ligne-ajout-debut-texte">
+            @if (seances().length === 0) {
+              {{ LIBELLES.cahierJournal.aucuneSeance }}
+            }
+          </span>
           <button
-            [id]="'btnAjouterSeanceAvant' + seance.id"
-            class="mc-btn-ajouter cj__intercalaire"
+            id="btnAjouterSeanceDebut"
+            class="mc-btn-ajouter cj__ajout"
             [disabled]="enCreationSeance()"
-            [attr.aria-label]="LIBELLES.cahierJournal.ariaAjouterSeanceAPosition"
-            (click)="creerSeance(i)"
+            [title]="LIBELLES.cahierJournal.ariaAjouterSeanceDebut"
+            [attr.aria-label]="LIBELLES.cahierJournal.ariaAjouterSeanceDebut"
+            (click)="creerSeance(0)"
           >
             +
           </button>
+        </div>
 
-          @if (enCreationSeance() && positionCreation() === i) {
-            <cj-formulaire-seance
-              [focusDemande]="true"
-              [seance]="null"
-              [journee]="journeeSelectionnee()"
-              [domaines]="domaines()"
-              [heuresParDefaut]="heuresCreationParDefaut()"
-              (enregistrer)="onEnregistrerSeance($event)"
-              (annuler)="fermerFormulaire()"
-            />
-          }
+        @if (enCreationSeance() && positionCreation() === 0) {
+          <cj-formulaire-seance
+            [focusDemande]="true"
+            [seance]="null"
+            [journee]="journeeSelectionnee()"
+            [domaines]="domaines()"
+            [heuresParDefaut]="heuresCreationParDefaut()"
+            (enregistrer)="onEnregistrerSeance($event)"
+            (annuler)="fermerFormulaire()"
+          />
+        }
 
-          <article class="cj__seance" [class.cj__seance--editee]="seanceEditee()?.id === seance.id">
-            <div class="cj__seance-entete">
-              <span class="cj__seance-heures">{{ seance.heureDebut }} – {{ seance.heureFin }}</span>
-              <span class="cj__seance-type">{{ seance.type }}</span>
-              @if (seance.titre) {
-                <span class="cj__seance-titre">{{ seance.titre }}</span>
-              }
-              @if (seance.conflitDetecte) {
-                <button
-                  [id]="'btnConflitSeance' + seance.id"
-                  type="button"
-                  class="mc-icone-conflit"
-                  [attr.aria-label]="LIBELLES.cahierJournal.ariaVoirConflitSeance"
-                  (click)="afficherConflitsSeance(seance)"
+        @for (seance of seances(); track seance.id; let i = $index) {
+          <div class="cj__ligne">
+            <article
+              class="cj__seance"
+              [class.cj__seance--editee]="seanceEditee()?.id === seance.id"
+              [class.cj__seance--fine]="seance.type !== 'pedagogique'"
+            >
+              <div class="cj__seance-entete">
+                <span class="cj__seance-heures"
+                  >{{ seance.heureDebut }} – {{ seance.heureFin }}</span
                 >
-                  ⚠
-                </button>
-              }
-              <mc-pastilles-eleves-concernes [elevesConcernes]="seance.elevesConcernes" />
-              <div class="cj__seance-controles">
-                <button
-                  [id]="'btnMonterSeance' + seance.id"
-                  class="mc-btn-icone mc-btn-xs"
-                  [disabled]="i === 0"
-                  [attr.aria-label]="LIBELLES.cahierJournal.ariaMonterSeance"
-                  (click)="deplacerSeance(i, -1)"
-                >
-                  ↑
-                </button>
-                <button
-                  [id]="'btnDescendreSeance' + seance.id"
-                  class="mc-btn-icone mc-btn-xs"
-                  [disabled]="i === seances().length - 1"
-                  [attr.aria-label]="LIBELLES.cahierJournal.ariaDescendreSeance"
-                  (click)="deplacerSeance(i, 1)"
-                >
-                  ↓
-                </button>
-                <button
-                  [id]="'btnModifierSeance' + seance.id"
-                  class="mc-btn-icone mc-btn-xs"
-                  [attr.aria-label]="LIBELLES.cahierJournal.ariaModifierSeance"
-                  (click)="editerSeance(seance)"
-                >
-                  ✎
-                </button>
-                <button
-                  [id]="'btnDupliquerSeance' + seance.id"
-                  class="mc-btn-icone mc-btn-xs"
-                  [attr.aria-label]="LIBELLES.cahierJournal.boutonDupliquerSeance"
-                  (click)="demanderDuplication(seance.id)"
-                >
-                  ⎘
-                </button>
-                <button
-                  [id]="'btnSupprimerSeance' + seance.id"
-                  class="mc-btn-icone mc-btn-xs mc-btn-danger"
-                  [attr.aria-label]="LIBELLES.cahierJournal.ariaSupprimerSeance"
-                  (click)="supprimerSeance(seance.id)"
-                >
-                  ✕
-                </button>
+                @if (seance.type !== 'pedagogique') {
+                  <span class="cj__seance-type">{{ obtenirLibelleType(seance.type) }}</span>
+                } @else if (seance.titre) {
+                  <span class="cj__seance-titre">{{ seance.titre }}</span>
+                }
+                @if (seance.conflitDetecte) {
+                  <button
+                    [id]="'btnConflitSeance' + seance.id"
+                    type="button"
+                    class="mc-icone-conflit"
+                    [attr.aria-label]="LIBELLES.cahierJournal.ariaVoirConflitSeance"
+                    (click)="afficherConflitsSeance(seance)"
+                  >
+                    ⚠
+                  </button>
+                }
+                @if (seance.type === 'pedagogique') {
+                  <mc-pastilles-eleves-concernes [elevesConcernes]="seance.elevesConcernes" />
+                }
+                <div class="cj__seance-controles">
+                  <button
+                    [id]="'btnMonterSeance' + seance.id"
+                    class="mc-btn-icone"
+                    [disabled]="i === 0"
+                    [title]="LIBELLES.cahierJournal.ariaMonterSeance"
+                    [attr.aria-label]="LIBELLES.cahierJournal.ariaMonterSeance"
+                    (click)="deplacerSeance(i, -1)"
+                  >
+                    ↑
+                  </button>
+                  <button
+                    [id]="'btnDescendreSeance' + seance.id"
+                    class="mc-btn-icone"
+                    [disabled]="i === seances().length - 1"
+                    [title]="LIBELLES.cahierJournal.ariaDescendreSeance"
+                    [attr.aria-label]="LIBELLES.cahierJournal.ariaDescendreSeance"
+                    (click)="deplacerSeance(i, 1)"
+                  >
+                    ↓
+                  </button>
+                  <button
+                    [id]="'btnModifierSeance' + seance.id"
+                    class="mc-btn-icone"
+                    [title]="LIBELLES.cahierJournal.ariaModifierSeance"
+                    [attr.aria-label]="LIBELLES.cahierJournal.ariaModifierSeance"
+                    (click)="editerSeance(seance)"
+                  >
+                    ✎
+                  </button>
+                  <button
+                    [id]="'btnDupliquerSeance' + seance.id"
+                    class="mc-btn-icone"
+                    [title]="LIBELLES.cahierJournal.boutonDupliquerSeance"
+                    [attr.aria-label]="LIBELLES.cahierJournal.boutonDupliquerSeance"
+                    (click)="demanderDuplication(seance.id)"
+                  >
+                    ⎘
+                  </button>
+                  <button
+                    [id]="'btnSupprimerSeance' + seance.id"
+                    class="mc-btn-icone mc-btn-xs mc-btn-danger"
+                    [title]="LIBELLES.cahierJournal.ariaSupprimerSeance"
+                    [attr.aria-label]="LIBELLES.cahierJournal.ariaSupprimerSeance"
+                    (click)="supprimerSeance(seance.id)"
+                  >
+                    ✕
+                  </button>
+                </div>
               </div>
-            </div>
 
-            @if (seance.objectifs) {
-              <p class="cj__seance-objectifs">{{ seance.objectifs }}</p>
-            }
-          </article>
+              @if (seance.type === 'pedagogique' && seance.objectifs) {
+                <p class="cj__seance-objectifs">{{ seance.objectifs }}</p>
+              }
+            </article>
+
+            <button
+              [id]="'btnAjouterSeanceApres' + seance.id"
+              class="mc-btn-ajouter cj__ajout"
+              [disabled]="enCreationSeance()"
+              [title]="LIBELLES.cahierJournal.ariaAjouterSeanceApres"
+              [attr.aria-label]="LIBELLES.cahierJournal.ariaAjouterSeanceApres"
+              (click)="creerSeance(i + 1)"
+            >
+              +
+            </button>
+          </div>
 
           @if (seanceEditee()?.id === seance.id) {
             <cj-formulaire-seance
@@ -280,30 +316,19 @@
               (annuler)="fermerFormulaire()"
             />
           }
-        }
 
-        @if (enCreationSeance() && positionCreation() === seances().length) {
-          <cj-formulaire-seance
-            [focusDemande]="true"
-            [seance]="null"
-            [journee]="journeeSelectionnee()"
-            [domaines]="domaines()"
-            [heuresParDefaut]="heuresCreationParDefaut()"
-            (enregistrer)="onEnregistrerSeance($event)"
-            (annuler)="fermerFormulaire()"
-          />
+          @if (enCreationSeance() && positionCreation() === i + 1) {
+            <cj-formulaire-seance
+              [focusDemande]="true"
+              [seance]="null"
+              [journee]="journeeSelectionnee()"
+              [domaines]="domaines()"
+              [heuresParDefaut]="heuresCreationParDefaut()"
+              (enregistrer)="onEnregistrerSeance($event)"
+              (annuler)="fermerFormulaire()"
+            />
+          }
         }
-      </div>
-
-      <div class="cj__ajouter-seance">
-        <button
-          id="btnAjouterSeance"
-          class="mc-btn-secondaire"
-          [disabled]="enCreationSeance()"
-          (click)="creerSeance(seances().length)"
-        >
-          + {{ LIBELLES.cahierJournal.boutonAjouterSeance }}
-        </button>
       </div>
     }
   </div>

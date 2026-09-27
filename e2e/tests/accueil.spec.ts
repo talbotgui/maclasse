@@ -19,11 +19,11 @@ testAvecDonnees(
     await expect(appAvecDonnees).toHaveURL(/\/cahier-journal/);
 
     // Initialiser une journée vide pour aujourd'hui
-    await expect(cj.btnInitialiserVide).toBeVisible();
-    await cj.btnInitialiserVide.click();
+    await expect(cj.btnInitialiserVidePrincipal).toBeVisible();
+    await cj.btnInitialiserVidePrincipal.click();
 
     // Ajouter une séance via le bouton "+"
-    await cj.btnAjouterSeance.click();
+    await cj.btnAjouterSeanceDebut.click();
 
     // Remplir la séance : heure début, heure fin, type Pédagogique
     await cj.champHeureDebutSeance.fill('06:00');

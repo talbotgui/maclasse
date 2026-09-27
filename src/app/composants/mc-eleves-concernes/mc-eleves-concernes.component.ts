@@ -44,6 +44,12 @@ export class McElevesConcernesComponent extends ComposantBase implements Control
   /** Préfixe des identifiants HTML internes du composant pour éviter les collisions. */
   public readonly id: InputSignal<string> = input.required<string>();
 
+  /**
+   * UUID des élèves indisponibles (ex. : absents le jour de la séance). En mode élèves,
+   * leur chip est désactivé tant qu'ils ne sont pas sélectionnés. Vide par défaut.
+   */
+  public readonly elevesIndisponiblesIds: InputSignal<string[]> = input<string[]>([]);
+
   /** Accès aux données de l'application pour charger groupes et élèves. */
   private readonly donneesService = inject(DonneesService);
 
@@ -126,6 +132,19 @@ export class McElevesConcernesComponent extends ComposantBase implements Control
     this.valeurInterne.set(nouvelleValeur);
     this.onChange(nouvelleValeur);
     this.onTouched();
+  }
+
+  /**
+   * Indique si le chip d'un élève doit être désactivé : l'élève est indisponible et ne fait
+   * pas partie de la sélection (un élève déjà sélectionné reste retirable).
+   * @param eleveId UUID de l'élève.
+   * @returns `true` si le chip doit être désactivé.
+   */
+  protected estEleveIndisponible(eleveId: string): boolean {
+    return (
+      this.elevesIndisponiblesIds().includes(eleveId) &&
+      !this.valeurInterne().elevesIds.includes(eleveId)
+    );
   }
 
   /**

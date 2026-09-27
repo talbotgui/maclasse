@@ -77,9 +77,16 @@
           class="mc-chip"
           [class.mc-chip-actif]="valeurInterne().elevesIds.includes(eleve.id)"
           [attr.aria-pressed]="valeurInterne().elevesIds.includes(eleve.id)"
+          [disabled]="estEleveIndisponible(eleve.id)"
+          [attr.title]="
+            estEleveIndisponible(eleve.id) ? LIBELLES.elevesConcernes.mentionEleveAbsent : null
+          "
           (click)="basculerEleve(eleve.id)"
         >
           {{ eleve.nom.toUpperCase() }} {{ eleve.prenom }}
+          @if (estEleveIndisponible(eleve.id)) {
+            <span class="sr-only">({{ LIBELLES.elevesConcernes.mentionEleveAbsent }})</span>
+          }
         </button>
       }
     </fieldset>

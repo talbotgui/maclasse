@@ -1,6 +1,7 @@
 import { type Page } from '@playwright/test';
 import { testAvecDonnees, expect } from '../fixtures';
 import { SelecteursCahierJournal } from '../selecteurs/selecteurs-cahier-journal';
+import { SelecteursEleves } from '../selecteurs/selecteurs-eleves';
 import { SelecteursEntete } from '../selecteurs/selecteurs-entete';
 
 // Données du jeu d'exemple (dates décalées à la semaine suivant lundiDeLaSemaine(today)) :
@@ -151,7 +152,7 @@ testAvecDonnees('E2E-66 — Initialiser une journée vide', async ({ appAvecDonn
 
   // La journée existe maintenant (liste vide, boutons d'action présents)
   await expect(cj.btnSupprimerJournee).toBeVisible();
-  await expect(cj.btnAjouterSeance).toBeVisible();
+  await expect(cj.btnAjouterSeanceDebut).toBeVisible();
   await expect(entete.btnAnnuler).toBeEnabled();
 });
 
@@ -175,7 +176,7 @@ testAvecDonnees("E2E-67 — Initialiser une journée depuis l'EDT", async ({ app
 });
 
 testAvecDonnees(
-  "E2E-68 — Boutons d'initialisation désactivés si la journée existe déjà",
+  "E2E-68 — Boutons d'initialisation masqués si la journée existe déjà",
   async ({ appAvecDonnees }) => {
     const entete = new SelecteursEntete(appAvecDonnees);
     const cj = new SelecteursCahierJournal(appAvecDonnees);
@@ -188,16 +189,17 @@ testAvecDonnees(
     await expect(cj.btnDupliquerJournee).toBeVisible();
     await expect(cj.btnImprimerCj).toBeVisible();
 
-    // Bouton d'initialisation principal masqué (journée déjà initialisée)
+    // Boutons d'initialisation masqués (journée déjà initialisée)
     await expect(cj.btnInitialiserVidePrincipal).not.toBeVisible();
+    await expect(cj.btnInitialiserEdt).not.toBeVisible();
 
     // Bouton d'ajout de séance disponible
-    await expect(cj.btnAjouterSeance).toBeVisible();
+    await expect(cj.btnAjouterSeanceDebut).toBeVisible();
   },
 );
 
 testAvecDonnees(
-  'E2E-69 — Créer une séance via le bouton AJOUTER UNE SÉANCE',
+  'E2E-69 — Créer une séance via le bouton « + » de début de journée',
   async ({ appAvecDonnees }) => {
     const entete = new SelecteursEntete(appAvecDonnees);
     const cj = new SelecteursCahierJournal(appAvecDonnees);
@@ -206,12 +208,13 @@ testAvecDonnees(
     await naviguerVersDateCj(cj, appAvecDonnees, 0);
 
     // Ouvrir le formulaire de création
-    await cj.btnAjouterSeance.click();
+    await cj.btnAjouterSeanceDebut.click();
     await expect(cj.champTitreSeance).toBeVisible();
 
-    // Renseigner heure de début, fin et titre (type pédagogique par défaut)
-    await cj.champHeureDebutSeance.fill('09:00');
-    await cj.champHeureFinSeance.fill('10:00');
+    // Renseigner heure de début, fin et titre (type pédagogique par défaut), après la
+    // dernière séance de la journée pour ne pas chevaucher une séance de toute la classe
+    await cj.champHeureDebutSeance.fill('16:00');
+    await cj.champHeureFinSeance.fill('17:00');
     await cj.champTitreSeance.fill('Dictée');
     await cj.btnEnregistrerSeance.click();
 
@@ -294,7 +297,7 @@ testAvecDonnees(
     await naviguerVersDateCj(cj, appAvecDonnees, 0);
 
     // Ouvrir le formulaire de création
-    await cj.btnAjouterSeance.click();
+    await cj.btnAjouterSeanceDebut.click();
 
     // Changer le type en "récréation"
     await cj.selectTypeSeance.selectOption('recreation');
@@ -464,9 +467,10 @@ testAvecDonnees(
 
     await entete.navCahierJournal.click();
     await naviguerVersDateCj(cj, appAvecDonnees, 0);
-    await cj.btnAjouterSeance.click();
-    await cj.champHeureDebutSeance.fill('09:00');
-    await cj.champHeureFinSeance.fill('10:00');
+    await cj.btnAjouterSeanceDebut.click();
+    // Après la dernière séance : les séances du jour concernent toute la classe
+    await cj.champHeureDebutSeance.fill('16:00');
+    await cj.champHeureFinSeance.fill('17:00');
     await cj.champTitreSeance.fill('Séance en groupes');
     await cj.radioGroupesSeance.check();
     await cj.chipGroupeASeance.click();
@@ -487,7 +491,7 @@ testAvecDonnees(
 
     await entete.navCahierJournal.click();
     await naviguerVersDateCj(cj, appAvecDonnees, 0);
-    await cj.btnAjouterSeance.click();
+    await cj.btnAjouterSeanceDebut.click();
     await cj.champHeureDebutSeance.fill('09:00');
     await cj.champHeureFinSeance.fill('10:00');
     await cj.champTitreSeance.fill('Séance abandonnée');
@@ -523,5 +527,84 @@ testAvecDonnees(
     await expect(cj.champNotesJournee).toHaveValue(/Ducobu/);
     await expect(cj.champNotesJournee).toHaveValue(/Orthophoniste/);
     await expect(cj.champNotesJournee).not.toHaveValue(/Petit-Tonnerre/);
+  },
+);
+
+testAvecDonnees(
+  'E2E-127 — Replier et déplier les notes de la journée',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const cj = new SelecteursCahierJournal(appAvecDonnees);
+
+    await entete.navCahierJournal.click();
+    await naviguerVersDateCj(cj, appAvecDonnees, 0);
+
+    // Saisir des notes puis replier : le champ disparaît, l'aperçu montre la première ligne
+    await cj.champNotesJournee.fill('Sortie piscine\nPrévoir les maillots');
+    await cj.btnBasculerNotes.click();
+    await expect(cj.btnBasculerNotes).toHaveAttribute('aria-expanded', 'false');
+    await expect(cj.champNotesJournee).not.toBeVisible();
+    await expect(cj.apercuNotes).toHaveText('— Sortie piscine');
+
+    // Déplier : le champ réapparaît avec les notes enregistrées au blur
+    await cj.btnBasculerNotes.click();
+    await expect(cj.btnBasculerNotes).toHaveAttribute('aria-expanded', 'true');
+    await expect(cj.champNotesJournee).toHaveValue('Sortie piscine\nPrévoir les maillots');
+    await expect(cj.apercuNotes).not.toBeVisible();
+  },
+);
+
+testAvecDonnees(
+  'E2E-128 — Un élève absent ce jour-là ne peut pas être sélectionné dans une séance',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
+    const cj = new SelecteursCahierJournal(appAvecDonnees);
+
+    // Jean Ducobu est absent (absence ponctuelle) le lundi de la journée de test
+    const dateAbsence = await obtenirDateCible(appAvecDonnees, 0);
+    await entete.navEleves.click();
+    await eleves.selectionnerDucobu();
+    await eleves.btnModifier.click();
+    await eleves.btnAjouterAbsencePonctuelle.click();
+    await eleves.champNouvelleAbsencePonctuelleDate.fill(dateAbsence);
+    await eleves.champNouvelleAbsencePonctuelleJustification.fill('Rendez-vous');
+    await eleves.btnEnregistrer.click();
+
+    await entete.navCahierJournal.click();
+    await naviguerVersDateCj(cj, appAvecDonnees, 0);
+    await cj.btnModifierPremierSeance.click();
+    await cj.radioElevesSeance.check();
+
+    await expect(cj.chipEleveDucobuSeance).toBeDisabled();
+  },
+);
+
+testAvecDonnees(
+  'E2E-129 — Un élève ne peut pas être affecté à deux séances simultanées',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const cj = new SelecteursCahierJournal(appAvecDonnees);
+
+    await entete.navCahierJournal.click();
+    await naviguerVersDateCj(cj, appAvecDonnees, 0);
+
+    // 08:00–09:00 chevauche « Lecture » (08:30–09:30, toute la classe)
+    await cj.btnAjouterSeanceDebut.click();
+    await cj.champHeureDebutSeance.fill('08:00');
+    await cj.champHeureFinSeance.fill('09:00');
+    await cj.champTitreSeance.fill('Séance en conflit');
+    await cj.btnEnregistrerSeance.click();
+
+    // Enregistrement bloqué : message d'erreur, formulaire toujours ouvert
+    await expect(cj.erreurFormulaireSeance).toContainText('Ducobu Jean');
+    await expect(cj.btnEnregistrerSeance).toBeVisible();
+    await expect(entete.btnAnnuler).toBeDisabled();
+
+    // Séance adjacente (08:00–08:30) : l'enregistrement passe
+    await cj.champHeureFinSeance.fill('08:30');
+    await cj.btnEnregistrerSeance.click();
+    await expect(cj.btnEnregistrerSeance).not.toBeVisible();
+    await expect(appAvecDonnees.locator('body')).toContainText('Séance en conflit');
   },
 );

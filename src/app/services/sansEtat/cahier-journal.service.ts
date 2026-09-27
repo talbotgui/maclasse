@@ -9,6 +9,7 @@ import { CommandeCreation } from '../../commandes/commande-creation';
 import { CommandeModification } from '../../commandes/commande-modification';
 import { CommandeSuppression } from '../../commandes/commande-suppression';
 import { EmploiDuTemps, TempsCreneau } from '../../modeles/emploi-du-temps.modele';
+import { Eleve } from '../../modeles/eleve.modele';
 import { DonneesService } from '../avecEtat/donnees.service';
 import { EleveService } from './eleve.service';
 import { DateUtils } from '../../utilitaires/date.utils';
@@ -407,18 +408,7 @@ export class CahierJournalService {
     const parite = DateUtils.calculerParite(date);
 
     const tousEleves = donnees.classe.eleves;
-    let elevesIds: string[];
-
-    if (!seance.elevesConcernes || seance.elevesConcernes.type === 'classe') {
-      elevesIds = tousEleves.map((e) => e.id);
-    } else if (seance.elevesConcernes.type === 'groupes') {
-      const groupes = seance.elevesConcernes.groupes;
-      elevesIds = tousEleves
-        .filter((e) => e.groupes.some((g) => groupes.includes(g)))
-        .map((e) => e.id);
-    } else {
-      elevesIds = seance.elevesConcernes.elevesIds;
-    }
+    const elevesIds = this.resoudreElevesIds(seance, tousEleves);
 
     const conflits: string[] = [];
     for (const eleveId of elevesIds) {
@@ -440,6 +430,68 @@ export class CahierJournalService {
       }
     }
     return conflits;
+  }
+
+  /**
+   * Détecte les élèves d'une séance pédagogique déjà concernés par une autre séance
+   * pédagogique de la même journée dont la plage horaire chevauche la sienne
+   * (chevauchement strict : des séances adjacentes ne sont pas en conflit).
+   * La séance de même identifiant (cas d'une modification) est exclue de la comparaison.
+   * @param date Date ISO de la journée.
+   * @param seance Séance candidate à l'enregistrement.
+   * @returns Libellés `"NOM Prénom"` des élèves en conflit, triés, ou `[]` si aucun conflit
+   * ou si la séance n'est pas pédagogique.
+   */
+  public detecterElevesSurSeancesSimultanees(date: string, seance: Seance): string[] {
+    const donnees = this.donneesService.donnees();
+    if (!donnees || seance.type !== 'pedagogique') return [];
+    const journee = donnees.cahierJournal.find((j) => j.date === date);
+    if (!journee) return [];
+
+    const tousEleves = donnees.classe.eleves;
+    const elevesSeance = new Set(this.resoudreElevesIds(seance, tousEleves));
+    const elevesEnConflit = new Set<string>();
+    for (const autre of journee.seances) {
+      if (
+        autre.id === seance.id ||
+        autre.type !== 'pedagogique' ||
+        !DateUtils.chevauchementHoraire(
+          autre.heureDebut,
+          autre.heureFin,
+          seance.heureDebut,
+          seance.heureFin,
+        )
+      ) {
+        continue;
+      }
+      for (const eleveId of this.resoudreElevesIds(autre, tousEleves)) {
+        if (elevesSeance.has(eleveId)) elevesEnConflit.add(eleveId);
+      }
+    }
+
+    return tousEleves
+      .filter((e) => elevesEnConflit.has(e.id))
+      .map((e) => `${e.nom} ${e.prenom}`)
+      .sort((a, b) => a.localeCompare(b));
+  }
+
+  /**
+   * Résout le périmètre d'élèves d'une séance en liste d'identifiants.
+   * Sans périmètre ou en mode classe : tous les élèves ; en mode groupes : élèves membres
+   * d'au moins un groupe sélectionné ; en mode élèves : les élèves nommés.
+   * @param seance Séance dont le périmètre est résolu.
+   * @param tousEleves Élèves de la classe.
+   * @returns Identifiants des élèves concernés.
+   */
+  private resoudreElevesIds(seance: Seance, tousEleves: Eleve[]): string[] {
+    const perimetre = seance.elevesConcernes;
+    if (!perimetre || perimetre.type === 'classe') return tousEleves.map((e) => e.id);
+    if (perimetre.type === 'groupes') {
+      return tousEleves
+        .filter((e) => e.groupes.some((g) => perimetre.groupes.includes(g)))
+        .map((e) => e.id);
+    }
+    return perimetre.elevesIds;
   }
 
   /**

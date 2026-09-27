@@ -20,9 +20,7 @@ export class SelecteursCahierJournal extends SelecteursBase {
   readonly btnPlus7Jours: Locator;
 
   // --- Actions sur la journée affichée ---
-  /** Bouton "Initialiser une journée vide" (bandeau haut, journée non initialisée). */
-  readonly btnInitialiserVide: Locator;
-  /** Bouton "Initialiser depuis l'EDT" (bandeau haut, journée non initialisée). */
+  /** Bouton "Initialiser depuis l'EDT" (zone centrale, journée non initialisée). */
   readonly btnInitialiserEdt: Locator;
   /** Bouton "Initialiser une journée vide" (zone centrale, journée vide). */
   readonly btnInitialiserVidePrincipal: Locator;
@@ -54,10 +52,14 @@ export class SelecteursCahierJournal extends SelecteursBase {
   readonly btnSupprimerPremierSeance: Locator;
 
   // --- Bouton d'ajout ---
-  /** Bouton AJOUTER UNE SÉANCE dans la journée courante. */
-  readonly btnAjouterSeance: Locator;
+  /** Bouton « + » de la ligne de tête : ajoute une séance en début de journée. */
+  readonly btnAjouterSeanceDebut: Locator;
   /** Zone de notes de la journée (textarea interne de mc-textarea). */
   readonly champNotesJournee: Locator;
+  /** Bouton de repli / dépli des notes de la journée. */
+  readonly btnBasculerNotes: Locator;
+  /** Aperçu de la première ligne des notes, affiché quand elles sont repliées. */
+  readonly apercuNotes: Locator;
   /** Bouton CONTINUER de la popin d'avertissement de navigation (modifications non enregistrées). */
   readonly btnAvertissementNavigationConfirmer: Locator;
   /** Bouton ANNULER de la popin d'avertissement de navigation. */
@@ -72,6 +74,12 @@ export class SelecteursCahierJournal extends SelecteursBase {
   readonly chipGroupeASeance: Locator;
   /** Chip du groupe B dans le périmètre de la séance en cours d'édition. */
   readonly chipGroupeBSeance: Locator;
+  /** Bouton radio « Élèves spécifiques » du périmètre de la séance en cours d'édition. */
+  readonly radioElevesSeance: Locator;
+  /** Chip de l'élève Jean Ducobu dans le périmètre de la séance en cours d'édition. */
+  readonly chipEleveDucobuSeance: Locator;
+  /** Message d'erreur du formulaire de séance. */
+  readonly erreurFormulaireSeance: Locator;
 
   // --- Formulaire de séance ---
   /** Champ Heure de début de séance (mc-champ-heure). */
@@ -110,7 +118,6 @@ export class SelecteursCahierJournal extends SelecteursBase {
     this.btnPlus1Jour = page.locator('#btnPlus1Jour');
     this.btnPlus7Jours = page.locator('#btnPlus7Jours');
 
-    this.btnInitialiserVide = page.locator('#btnInitialiserVide');
     this.btnInitialiserEdt = page.locator('#btnInitialiserEdt');
     this.btnInitialiserVidePrincipal = page.locator('#btnInitialiserVidePrincipal');
     this.btnDupliquerJournee = page.locator('#btnDupliquerJournee');
@@ -127,8 +134,10 @@ export class SelecteursCahierJournal extends SelecteursBase {
     this.btnDupliquerPremierSeance = page.locator('[id^="btnDupliquerSeance"]').first();
     this.btnSupprimerPremierSeance = page.locator('[id^="btnSupprimerSeance"]').first();
 
-    this.btnAjouterSeance = page.locator('#btnAjouterSeance');
+    this.btnAjouterSeanceDebut = page.locator('#btnAjouterSeanceDebut');
     this.champNotesJournee = page.locator('#champNotesJournee textarea');
+    this.btnBasculerNotes = page.locator('#btnBasculerNotes');
+    this.apercuNotes = page.locator('.cj__notes-apercu');
     this.btnAvertissementNavigationConfirmer = page.locator('#btnAvertissementConfirmerNavigation');
     this.btnAvertissementNavigationAnnuler = page.locator('#btnAvertissementAnnulerNavigation');
     this.listeConflitsAbsences = page.locator('.mc-popin__liste-conflits');
@@ -136,6 +145,11 @@ export class SelecteursCahierJournal extends SelecteursBase {
     this.radioGroupesSeance = page.locator('#elevesConcernesSeance_groupes');
     this.chipGroupeASeance = page.locator('#elevesConcernesSeance_groupe_A');
     this.chipGroupeBSeance = page.locator('#elevesConcernesSeance_groupe_B');
+    this.radioElevesSeance = page.locator('#elevesConcernesSeance_eleves');
+    this.chipEleveDucobuSeance = page.locator(
+      '#elevesConcernesSeance_eleve_b3c4d5e6-f7a8-9012-cdef-123456789012',
+    );
+    this.erreurFormulaireSeance = page.locator('#erreurFormulaireSeance');
 
     this.champHeureDebutSeance = page.locator('[id*="HeureDebut"] input').first();
     this.champHeureFinSeance = page.locator('[id*="HeureFin"] input').first();

@@ -15,8 +15,7 @@ import {
   untracked,
 } from '@angular/core';
 import type { InputSignal, OutputEmitterRef, Signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   FormControl,
@@ -37,6 +36,8 @@ import { McSelecteurCompetencesComponent } from '../../../composants/mc-selecteu
 import type { Seance, JourneeJournal } from '../../../modeles/cahier-journal.modele';
 import type { ElevesConcernes, TypeCreneau } from '../../../modeles/emploi-du-temps.modele';
 import type { Competence } from '../../../modeles/referentiels.modele';
+import { CahierJournalService } from '../../../services/sansEtat/cahier-journal.service';
+import { EleveService } from '../../../services/sansEtat/eleve.service';
 
 /** Structure typée du formulaire réactif de saisie d'une séance. */
 interface FormulaireSeance {
@@ -97,6 +98,12 @@ export class CjFormulaireSeanceComponent {
 
   /** Détection de changement pour mise à jour en mode OnPush. */
   private readonly cdr = inject(ChangeDetectorRef);
+
+  /** Service élèves : élèves absents le jour de la séance. */
+  private readonly eleveService = inject(EleveService);
+
+  /** Service du cahier journal : contrôle des élèves affectés à des séances simultanées. */
+  private readonly cahierJournalService = inject(CahierJournalService);
 
   /** Demande le focus sur le premier champ à l'apparition du formulaire. */
   public readonly focusDemande: InputSignal<boolean> = input(false);
@@ -178,23 +185,48 @@ export class CjFormulaireSeanceComponent {
   /** `true` dès que l'utilisateur a tenté d'enregistrer au moins une fois. */
   protected readonly soumissionTentee = signal(false);
 
-  /** `true` si le formulaire est actuellement invalide, dérivé réactivement de son statut. */
-  private readonly formInvalide: Signal<boolean> = toSignal(
-    this.form.statusChanges.pipe(map((statut) => statut !== 'VALID')),
-    { initialValue: this.form.invalid },
-  );
+  /**
+   * `true` si le formulaire est actuellement invalide. Suivi via `statusChanges`, et resynchronisé
+   * après le chargement d'une séance (le `reset` sans émission ne déclenche pas `statusChanges`).
+   */
+  private readonly formInvalide = signal(this.form.invalid);
 
-  /** Message d'erreur à afficher, `null` tant qu'aucune tentative d'enregistrement invalide. */
-  protected readonly messageErreur = computed<string | null>(() => {
-    if (!this.soumissionTentee() || !this.formInvalide()) return null;
-    if (this.form.hasError('plageHoraireInvalide')) {
-      return LIBELLES.cahierJournal.erreurPlageHoraire;
-    }
-    return LIBELLES.cahierJournal.erreurChampsObligatoires;
+  /** UUID des élèves ayant une absence ponctuelle le jour de la journée, non sélectionnables. */
+  protected readonly elevesAbsentsIds = computed<string[]>(() => {
+    const date = this.journee()?.date;
+    return date ? this.eleveService.listerIdsElevesAbsents(date) : [];
   });
 
-  /** Charge la copie locale à chaque changement de l'entrée. */
+  /**
+   * Élèves (« NOM Prénom ») déjà concernés par une séance simultanée, relevés à la dernière
+   * tentative d'enregistrement ; vidé à toute modification du formulaire, des disciplines ou
+   * des compétences.
+   */
+  protected readonly elevesEnConflit = signal<string[]>([]);
+
+  /** Message d'erreur à afficher, `null` tant qu'aucune tentative d'enregistrement n'a échoué. */
+  protected readonly messageErreur = computed<string | null>(() => {
+    if (this.soumissionTentee() && this.formInvalide()) {
+      if (this.form.hasError('plageHoraireInvalide')) {
+        return LIBELLES.cahierJournal.erreurPlageHoraire;
+      }
+      return LIBELLES.cahierJournal.erreurChampsObligatoires;
+    }
+    const enConflit = this.elevesEnConflit();
+    return enConflit.length > 0
+      ? LIBELLES.cahierJournal.erreurEleveSeanceSimultanee + enConflit.join(', ')
+      : null;
+  });
+
+  /**
+   * Charge la copie locale à chaque changement de l'entrée et efface le conflit d'élèves
+   * relevé dès que le formulaire est modifié.
+   */
   public constructor() {
+    this.form.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.elevesEnConflit.set([]));
+    this.form.statusChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((statut) => this.formInvalide.set(statut !== 'VALID'));
     effect(() => {
       const s = this.seance();
       const valeurs = s ?? untracked(() => this.creerValeursVides());
@@ -218,7 +250,9 @@ export class CjFormulaireSeanceComponent {
       this.disciplinesOrigine = valeurs.disciplinesIds ?? [];
       this.competencesIds.set(valeurs.competencesIds ?? []);
       this.competencesOrigine = valeurs.competencesIds ?? [];
+      this.formInvalide.set(this.form.invalid);
       this.soumissionTentee.set(false);
+      this.elevesEnConflit.set([]);
       this.cdr.markForCheck();
     });
   }
@@ -273,6 +307,7 @@ export class CjFormulaireSeanceComponent {
     this.disciplinesIdsInternes.update((ids) =>
       actif ? [...ids, id] : ids.filter((d) => d !== id),
     );
+    this.elevesEnConflit.set([]);
   }
 
   /**
@@ -281,9 +316,13 @@ export class CjFormulaireSeanceComponent {
    */
   protected surSelectionCompetences(ids: string[]): void {
     this.competencesIds.set(ids);
+    this.elevesEnConflit.set([]);
   }
 
-  /** Émet la séance complète à l'enregistrement, ou bloque et affiche l'erreur si le formulaire est invalide. */
+  /**
+   * Émet la séance complète à l'enregistrement, ou bloque et affiche l'erreur si le formulaire
+   * est invalide ou si des élèves sont déjà concernés par une séance simultanée.
+   */
   protected onEnregistrer(): void {
     this.soumissionTentee.set(true);
     if (this.form.invalid) return;
@@ -302,6 +341,12 @@ export class CjFormulaireSeanceComponent {
       description: valeurs.description || undefined,
       elevesConcernes: valeurs.elevesConcernes,
     };
+    const date = this.journee()?.date;
+    const enConflit = date
+      ? this.cahierJournalService.detecterElevesSurSeancesSimultanees(date, seance)
+      : [];
+    this.elevesEnConflit.set(enConflit);
+    if (enConflit.length > 0) return;
     this.enregistrer.emit(seance);
   }
 

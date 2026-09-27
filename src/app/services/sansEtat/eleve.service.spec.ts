@@ -396,4 +396,36 @@ describe('EleveService', () => {
       ]);
     });
   });
+
+  /** Élèves ayant une absence ponctuelle à une date donnée. */
+  describe('listerIdsElevesAbsents', () => {
+    it('retourne tableau vide si aucune donnée chargée', () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({});
+      expect(TestBed.inject(EleveService).listerIdsElevesAbsents(DatesTest.lundiPaire)).toEqual([]);
+    });
+
+    it('retourne tableau vide si aucun élève n’est absent', () => {
+      const d = DonneesMother.base();
+      d.classe.eleves = [EleveMother.base('e1', 'MARTIN', 'Paul')];
+      donneesService.charger(d);
+
+      expect(service.listerIdsElevesAbsents(DatesTest.lundiPaire)).toEqual([]);
+    });
+
+    it('retourne les élèves absents à la date et ignore les absences d’un autre jour', () => {
+      const d = DonneesMother.base();
+      d.classe.eleves = [
+        EleveMother.base('e1', 'MARTIN', 'Paul', {
+          absencesPonctuelles: [AbsencePonctuelleMother.base({ date: DatesTest.lundiPaire })],
+        }),
+        EleveMother.base('e2', 'DUPONT', 'Léa', {
+          absencesPonctuelles: [AbsencePonctuelleMother.base({ date: DatesTest.lundiImpaire })],
+        }),
+      ];
+      donneesService.charger(d);
+
+      expect(service.listerIdsElevesAbsents(DatesTest.lundiPaire)).toEqual(['e1']);
+    });
+  });
 });

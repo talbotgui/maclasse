@@ -73,6 +73,7 @@ Ces composants wrappent les éléments natifs HTML pour centraliser le style et 
 - Trois modes exclusifs via `mc-radio-group` : *Toute la classe* / *Par groupe* / *Élèves spécifiques*
 - En mode groupe : chips des groupes du référentiel (sélection multiple)
 - En mode élèves : chips des élèves de la classe (sélection multiple)
+- Input facultatif `elevesIndisponiblesIds` (vide par défaut) : en mode élèves, le chip d'un élève indisponible **non sélectionné** est désactivé, avec la mention « absent ce jour » (infobulle + texte `sr-only`) ; un élève déjà sélectionné reste retirable. Alimenté par le cahier journal (absences ponctuelles du jour), pas par l'EDT
 - Expose `input()` pour la valeur initiale et `output()` sur changement
 - Utilisé dans : Cahier journal (formulaire séance), Emploi du temps (formulaire créneau)
 

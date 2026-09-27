@@ -38,8 +38,6 @@ Deux zones (une seule colonne empilée sous 768 px) :
 | Bouton **›** (J+1) | Avance d'un jour |
 | Bouton **»** (J+7) | Avance d'une semaine |
 | `mc-mini-calendrier` | Calendrier mensuel miniature ; met en évidence les jours ayant une entrée, les jours fériés et non ouvrés ; clic sur un jour → chargé dans la zone centrale |
-| **INITIALISER UNE JOURNÉE VIDE** | Crée une entrée vide pour ce jour ; **désactivé** si une entrée existe (description `sr-only` associée) |
-| **INITIALISER DEPUIS L'EMPLOI DU TEMPS** | Pré-remplit la journée avec les créneaux de l'EDT applicable (jour de la semaine, parité) ; **désactivé** si une entrée existe |
 | **DUPLIQUER LA JOURNÉE** | Si une journée existe ; ouvre le formulaire inline de duplication |
 | **IMPRIMER** | Si une journée existe ; `window.print()` |
 | **SUPPRIMER LA JOURNÉE** | Si une journée existe ; confirmation via `popin-avertissement` |
@@ -54,48 +52,60 @@ Deux zones (une seule colonne empilée sous 768 px) :
 
 ### Aucune entrée pour ce jour
 
-Message « aucune séance » et bouton **INITIALISER UNE JOURNÉE VIDE** (`btnInitialiserVidePrincipal`).
+Message « aucune séance » et deux boutons, **masqués** dès qu'une entrée existe :
+
+| Bouton | Détail |
+|---|---|
+| **INITIALISER UNE JOURNÉE VIDE** (`btnInitialiserVidePrincipal`) | Crée une entrée vide pour ce jour |
+| **INITIALISER DEPUIS L'EMPLOI DU TEMPS** (`btnInitialiserEdt`) | Pré-remplit la journée avec les créneaux de l'EDT applicable (jour de la semaine, parité) |
 
 ### En-tête
 
-- `<h2 class="cj__titre-journee">` : date formatée (format long), affichée dès qu'une journée existe (même sans séance) — nécessaire à l'impression, la colonne gauche étant masquée en `@media print`
+Une seule ligne (`cj__entete`) :
+- `<h2 class="cj__titre-journee">` : date **en gras au format `JJ/MM/AAAA`** (`dateCourte`, via `DateUtils.formaterDateCourt`), affichée dès qu'une journée existe (même sans séance) — nécessaire à l'impression, la colonne gauche étant masquée en `@media print`
+- Bouton de repli des notes (`btnBasculerNotes`, voir ci-dessous), si la zone de notes est affichable
 
 ### Notes de la journée
 
 - Champ `notes?: string` sur `JourneeJournal` (mémo libre : rappels, événements, effectif…), indépendant des séances
-- `mc-textarea` sous le titre, **au-dessus de la liste des séances**, visible dès qu'une séance existe **ou** que des notes sont déjà enregistrées (`@if (seances().length > 0 || notesJournee())`)
+- `mc-textarea` sous l'en-tête, **au-dessus de la liste des séances**, affichable dès qu'une séance existe **ou** que des notes sont déjà enregistrées (`@if (seances().length > 0 || notesJournee())`)
+- **Repliable** : `<button id="btnBasculerNotes" aria-expanded aria-controls="zoneNotesJournee">` dans l'en-tête (chevron ▸/▾ + « Notes de la journée ») ; signal `notesDepliees`, **déplié à l'ouverture de l'écran**, non mémorisé. Replié, le `mc-textarea` sort du DOM et le bouton affiche en aperçu la première ligne des notes (`apercuNotes`, tronquée par une ellipse). Replier pendant la saisie déclenche d'abord le `focusout`, donc l'enregistrement
 - Enregistrement **au blur** (`(focusout)` sur le `mc-textarea`) via `CahierJournalService.modifierNotesJournee(date, notes)` → `CommandeModification` (UNDO/REDO) ; le service **trim** la valeur (vide → `undefined`) et ignore l'appel si elle est inchangée
 - Champ réactif `notesControl = new FormControl('', { nonNullable: true })` (Reactive Forms — pas de `ngModel`), resynchronisé par un `effect` (`setValue(..., { emitEvent: false })` + `cdr.markForCheck()`) sur `notesJournee()` — jamais pendant la frappe
 - `notesJournee = computed(() => journeeSelectionnee()?.notes ?? '')` : version persistée, utilisée pour le `<p>` d'impression et la condition d'affichage
-- Impression : un `<p class="cj__notes-impression">` (masqué à l'écran) remplace le textarea ; bascule gérée dans le `@media print` de `styles.scss` (`.cj__notes-saisie` masquée, `.cj__notes-impression` affichée `white-space: pre-wrap`)
+- Impression : un `<p class="cj__notes-impression">` (masqué à l'écran, rendu que les notes soient repliées ou non) remplace le textarea ; bascule gérée dans le `@media print` de `styles.scss` (`.cj__notes-saisie` et `.cj__bascule-notes` masqués, `.cj__notes-impression` affichée `white-space: pre-wrap`)
 - `dupliquerJournee` reporte les notes de la source vers la cible (création **et** remplacement) ; `dupliquerSeance` ne les touche pas (notes = niveau journée)
 - Libellés : `cahierJournal.labelNotes`, `cahierJournal.placeholderNotes`, `commandes.modificationNotesJournee`
 
 ### Liste des séances
 
-Séances triées par heure, chacune précédée d'un bouton intercalaire **+**, et suivie en bas de zone d'un bouton **+ AJOUTER UNE SÉANCE** (fin de journée).
+Séances triées par heure. Chaque séance est une ligne (`cj__ligne`, grille `1fr auto`) : sa carte, puis un bouton **+** hors de la carte, à droite.
 
-#### Bouton intercalaire « + »
+#### Boutons « + »
 
-- Visible en permanence avant chaque séance (RGAA : toujours visible), désactivé pendant une création
-- Au clic : ouvre le formulaire de création à cette position ; les heures proposées comblent l'écart entre les séances voisines (bornes de la journée scolaire de `configEmploiDuTemps` à défaut de voisine)
+- **Ligne de tête** (`btnAjouterSeanceDebut`) : ajoute une séance en début de journée (position 0) ; sur une journée sans séance, elle porte le message « aucune séance » et reste le seul moyen d'ajouter une séance
+- **En bout de ligne** (`btnAjouterSeanceApres{id}`) : ajoute une séance **juste après** celle de la ligne (position `i + 1`)
+- Chaque « + » est dans un cadre de même bordure et même arrondi que la carte, avec une infobulle ; visibles en permanence (RGAA), désactivés pendant une création ; masqués à l'impression
+- Les heures proposées comblent l'écart entre les séances voisines (bornes de la journée scolaire de `configEmploiDuTemps` à défaut de voisine)
 
 #### Séance en lecture seule
 
 | Élément | Condition |
 |---|---|
 | Heure début – heure fin | Toujours |
-| Type (valeur brute du modèle) | Toujours |
-| Titre | Si renseigné |
+| Type | Récréation / pause déjeuner uniquement (libellés `LIBELLES.edt.typeRecreation` / `typePauseDejeuner`) |
+| Titre | Séance pédagogique, si renseigné |
 | Icône warning ⚠ | Si `conflitDetecte` (conflit avec une absence récurrente d'un élève concerné) |
-| Pastilles élèves/groupes (`mc-pastilles-eleves-concernes`) | Si des élèves sont concernés |
-| Objectifs | Si renseignés, sous l'en-tête de la carte |
+| Pastilles élèves/groupes (`mc-pastilles-eleves-concernes`) | Séance pédagogique, si des élèves sont concernés |
+| Objectifs | Séance pédagogique, si renseignés, sous l'en-tête de la carte |
 | ↑ monter / ↓ descendre | Toujours ; désactivés respectivement sur la première et la dernière séance ; **échangent les heures** avec la séance voisine |
 | ✎ modifier | Ouvre le formulaire de modification sous la séance ; la carte est surlignée |
 | ⎘ dupliquer | Ouvre le formulaire inline de duplication (colonne gauche) pour cette séance |
 | ✕ supprimer | Suppression immédiate (sans confirmation, annulable par UNDO) |
 
-Les disciplines ne sont pas affichées dans la liste.
+- Boutons ↑ ↓ ✎ ⎘ en `mc-btn-icone` (taille normale) ; ✕ en `mc-btn-icone mc-btn-xs mc-btn-danger` ; les cinq portent une infobulle (`[title]`, même libellé que l'`aria-label`)
+- **Récréation et pause déjeuner** : affichées en **ligne fine** (`cj__seance--fine`) — sans bordure ni fond d'en-tête, « 10:30 – 10:45 · Récréation », actions et « + » conservés
+- Les disciplines ne sont pas affichées dans la liste
 
 #### Icône warning (triangle orange)
 
@@ -118,7 +128,7 @@ Inséré dans la liste : à la position d'insertion pour une création, sous la 
 
 La suppression se fait depuis la liste (✕), pas depuis le formulaire.
 
-Messages d'erreur (`role="alert"`) : champs obligatoires manquants, plage horaire incohérente.
+Messages d'erreur (`role="alert"`, `erreurFormulaireSeance`) : champs obligatoires manquants, plage horaire incohérente, élèves déjà concernés par une séance simultanée (voir Contrainte métier).
 
 ### Champs
 
@@ -136,7 +146,7 @@ Messages d'erreur (`role="alert"`) : champs obligatoires manquants, plage horair
 | Compétences | `mc-selecteur-competences` (multi-sélection) | Type pédagogique |
 | Élèves concernés | `mc-eleves-concernes` | Type pédagogique |
 
-**Non implémenté à ce jour** : désactivation du chip d'un élève ayant une `AbsencePonctuelle` ce jour-là.
+**Élève absent ce jour-là** : en mode élèves, le chip d'un élève ayant une `AbsencePonctuelle` à la date de la journée est **désactivé**, avec la mention « absent ce jour » (`EleveService.listerIdsElevesAbsents` → input `elevesIndisponiblesIds` de `mc-eleves-concernes`). Un élève déjà sélectionné (absence saisie après la séance) reste retirable. Modes classe et groupes non concernés.
 
 ### Navigation avec formulaire modifié
 
@@ -156,10 +166,13 @@ Formulaire inline de la colonne gauche (champ date + CONFIRMER / ANNULER), ouver
 ## Impression
 
 - Bouton IMPRIMER de la colonne gauche → `window.print()`
-- Colonne gauche, contrôles des séances et bouton d'ajout masqués (`@media print`) ; les notes sont imprimées sous forme de paragraphe
+- Colonne gauche, contrôles des séances, boutons « + » (dont la ligne de tête) et bouton de repli des notes masqués (`@media print`) ; les notes sont imprimées sous forme de paragraphe
 
 ---
 
 ## Contrainte métier
 
-- Un élève ne peut pas être affecté à plus d'une séance simultanée (même plage horaire) — **non implémenté à ce jour** : aucune validation dans `CahierJournalService`
+- Un élève ne peut pas être affecté à deux séances pédagogiques dont les plages horaires se chevauchent (chevauchement strict : des séances adjacentes sont autorisées). Mode classe = tous les élèves ; mode groupes = membres d'au moins un groupe sélectionné
+- Contrôle **bloquant** à l'ENREGISTRER du formulaire (`CahierJournalService.detecterElevesSurSeancesSimultanees`) : message listant les élèves en cause, séance non enregistrée ; le message disparaît dès que le formulaire est modifié
+- Récréations et pauses déjeuner ignorées ; la séance modifiée est exclue de la comparaison
+- Non contrôlé : échange d'heures (↑ ↓), duplication de séance ou de journée, initialisation depuis l'EDT

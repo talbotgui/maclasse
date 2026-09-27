@@ -3,7 +3,8 @@ import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { CjFormulaireSeanceComponent } from './cj-formulaire-seance.component';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
 import { DonneesMother } from '../../../tests/donnees.mother';
-import { SeanceMother } from '../../../tests/cahier-journal.mother';
+import { DatesTest, JourneeMother, SeanceMother } from '../../../tests/cahier-journal.mother';
+import { AbsencePonctuelleMother, EleveMother } from '../../../tests/eleve.mother';
 import { LIBELLES } from '../../../libelles';
 import type { Seance } from '../../../modeles/cahier-journal.modele';
 
@@ -265,6 +266,102 @@ describe('CjFormulaireSeanceComponent', () => {
       const spy = vi.spyOn((component as any).annuler, 'emit');
 
       (component as any).onAnnuler();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('élèves absents ce jour', () => {
+    it('elevesAbsentsIds est vide sans journée', () => {
+      expect((component as any).elevesAbsentsIds()).toEqual([]);
+    });
+
+    it('elevesAbsentsIds liste les élèves en absence ponctuelle à la date de la journée', () => {
+      TestBed.inject(DonneesService).charger(
+        DonneesMother.base({
+          classe: {
+            ...DonneesMother.base().classe,
+            eleves: [
+              EleveMother.base('e1', 'MARTIN', 'Paul', {
+                absencesPonctuelles: [AbsencePonctuelleMother.base({ date: DatesTest.lundiPaire })],
+              }),
+              EleveMother.base('e2', 'DUPONT', 'Léa'),
+            ],
+          },
+        }),
+      );
+      fixture.componentRef.setInput('journee', JourneeMother.base({ seances: [] }));
+
+      expect((component as any).elevesAbsentsIds()).toEqual(['e1']);
+    });
+  });
+
+  describe('élèves sur des séances simultanées', () => {
+    beforeEach(() => {
+      const journee = JourneeMother.base({
+        seances: [
+          SeanceMother.pedagogique({
+            id: 'autre',
+            elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e1'] },
+          }),
+        ],
+      });
+      TestBed.inject(DonneesService).charger(
+        DonneesMother.base({
+          classe: {
+            ...DonneesMother.base().classe,
+            eleves: [EleveMother.base('e1', 'MARTIN', 'Paul')],
+          },
+          cahierJournal: [journee],
+        }),
+      );
+      fixture.componentRef.setInput('journee', journee);
+      fixture.componentRef.setInput(
+        'seance',
+        SeanceMother.pedagogique({
+          id: 'candidate',
+          heureDebut: '09:30',
+          heureFin: '10:30',
+          elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e1'] },
+        }),
+      );
+      fixture.detectChanges();
+    });
+
+    it('bloque l’enregistrement et liste les élèves en conflit', () => {
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
+      (component as any).onEnregistrer();
+      fixture.detectChanges();
+
+      expect(spy).not.toHaveBeenCalled();
+      const message = LIBELLES.cahierJournal.erreurEleveSeanceSimultanee + 'MARTIN Paul';
+      expect((component as any).messageErreur()).toBe(message);
+      expect(
+        fixture.nativeElement.querySelector('#erreurFormulaireSeance')?.textContent?.trim(),
+      ).toBe(message);
+    });
+
+    it('efface le message dès que le formulaire est modifié', () => {
+      (component as any).onEnregistrer();
+      (component as any).form.controls.heureDebut.setValue('10:00');
+
+      expect((component as any).messageErreur()).toBeNull();
+    });
+
+    it('efface le message quand une discipline ou une compétence change', () => {
+      (component as any).onEnregistrer();
+      (component as any).basculerDiscipline('d1', true);
+      expect((component as any).messageErreur()).toBeNull();
+
+      (component as any).onEnregistrer();
+      (component as any).surSelectionCompetences(['c1']);
+      expect((component as any).messageErreur()).toBeNull();
+    });
+
+    it('enregistre une fois le conflit levé', () => {
+      (component as any).form.controls.heureDebut.setValue('10:00');
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
+      (component as any).onEnregistrer();
 
       expect(spy).toHaveBeenCalledTimes(1);
     });

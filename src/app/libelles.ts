@@ -290,7 +290,6 @@ export const LIBELLES = {
     labelCompetences: 'Compétences',
     labelEleves: 'Élèves concernés',
     suffixeSeance: 'une séance',
-    boutonAjouterSeance: 'Ajouter une séance',
     tooltipMoins7Jours: '-7 jours',
     ariaMoins7Jours: '7 jours en arrière',
     tooltipMoins1Jour: '-1 jour',
@@ -304,11 +303,13 @@ export const LIBELLES = {
     ariaDescendreSeance: 'Descendre la séance',
     ariaModifierSeance: 'Modifier la séance',
     ariaSupprimerSeance: 'Supprimer la séance',
-    ariaAjouterSeanceAPosition: 'Ajouter une séance à cette position',
-    tooltipJourneeDejaInitialisee: 'Cette journée a déjà été initialisée.',
+    ariaAjouterSeanceDebut: 'Ajouter une séance en début de journée',
+    ariaAjouterSeanceApres: 'Ajouter une séance après celle-ci',
     ariaVoirConflitSeance: 'Voir le conflit avec une absence récurrente',
     erreurPlageHoraire: "L'heure de fin doit être postérieure à l'heure de début.",
     erreurChampsObligatoires: "L'heure de début, l'heure de fin et le type sont obligatoires.",
+    erreurEleveSeanceSimultanee:
+      'Ces élèves sont déjà concernés par une séance sur la même plage horaire : ',
   },
 
   /** Libellés de l'écran Paramétrage. */
@@ -402,6 +403,7 @@ export const LIBELLES = {
     ariaGroupes: 'Groupes',
     ariaEleves: 'Élèves',
     ariaListePastilles: 'Élèves concernés',
+    mentionEleveAbsent: 'absent ce jour',
   },
 
   /** Libellés des actions soumises au mécanisme UNDO/REDO, affichés dans les tooltips. */

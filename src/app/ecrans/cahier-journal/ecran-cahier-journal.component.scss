@@ -39,6 +39,10 @@
     gap: 0.5rem;
     padding: 0.75rem 1rem;
     border-top: 1px solid var(--bordure);
+
+    &:empty {
+      display: none;
+    }
   }
 
   &__duplication {
@@ -89,21 +93,63 @@
     font-style: italic;
   }
 
+  &__initialisation {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    font-style: normal;
+  }
+
+  &__entete {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 0.75rem 1rem 0;
+    flex-shrink: 0;
+  }
+
   &__titre-journee {
     margin: 0;
-    padding: 1rem 1rem 0;
     font-size: 1rem;
     font-weight: 700;
     color: var(--texte-principal);
-    flex-shrink: 0;
+    white-space: nowrap;
+  }
 
-    &::first-letter {
-      text-transform: uppercase;
+  &__bascule-notes {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.375rem;
+    min-width: 0;
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-radius: var(--rayon, 4px);
+    background-color: transparent;
+    color: var(--couleur-primaire);
+    font-family: inherit;
+    font-size: 0.875rem;
+    cursor: pointer;
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--couleur-primaire) 8%, transparent);
     }
   }
 
+  &__bascule-notes-chevron {
+    flex-shrink: 0;
+  }
+
+  &__notes-apercu {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--texte-secondaire);
+  }
+
   &__notes {
-    padding: 0.75rem 1rem 0;
+    padding: 0.5rem 1rem 0;
     flex-shrink: 0;
   }
 
@@ -116,9 +162,25 @@
     gap: 0.75rem;
   }
 
-  &__seances-vide {
+  &__ligne {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem;
+  }
+
+  &__ligne-ajout-debut-texte {
+    align-self: center;
     color: var(--texte-secondaire);
     font-style: italic;
+  }
+
+  &__ajout {
+    justify-content: center;
+    align-self: stretch;
+    min-width: 2.25rem;
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon, 4px);
+    font-size: 1rem;
   }
 
   &__seance {
@@ -128,6 +190,21 @@
 
     &--editee {
       border-color: var(--accent);
+    }
+
+    &--fine {
+      border-color: transparent;
+
+      .cj__seance-entete {
+        padding-block: 0.125rem;
+        background-color: transparent;
+        border-bottom: none;
+      }
+
+      .cj__seance-heures {
+        font-weight: 400;
+        color: var(--texte-secondaire);
+      }
     }
   }
 
@@ -149,9 +226,8 @@
   }
 
   &__seance-type {
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     color: var(--texte-secondaire);
-    text-transform: capitalize;
   }
 
   &__seance-titre {
@@ -177,17 +253,6 @@
     font-size: 0.8125rem;
     color: var(--texte-secondaire);
     white-space: pre-wrap;
-  }
-
-  &__ajouter-seance {
-    padding: 0.75rem 1rem;
-    border-top: 1px solid var(--bordure);
-    flex-shrink: 0;
-  }
-
-  &__intercalaire {
-    justify-content: center;
-    min-height: 1.25rem;
   }
 }
 
@@ -218,9 +283,6 @@
   }
 
   .cj__seance-controles {
-    display: none;
-  }
-  .cj__ajouter-seance {
     display: none;
   }
 }

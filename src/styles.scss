@@ -692,6 +692,13 @@ button {
     display: none;
   }
 
+  // `!important` : les règles du composant, suffixées par Angular d'un attribut
+  // [_ngcontent-xxx], sont plus spécifiques que ces sélecteurs globaux.
+  .cj__bascule-notes,
+  .cj__ligne-ajout-debut {
+    display: none !important;
+  }
+
   .cj__notes-impression {
     display: block;
     margin: 0;

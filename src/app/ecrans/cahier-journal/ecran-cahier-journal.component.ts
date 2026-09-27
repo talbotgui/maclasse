@@ -1,7 +1,7 @@
 /**
  * Écran du cahier journal.
  * Colonne gauche : mini-calendrier et actions journée.
- * Colonne droite : liste des séances et formulaire de saisie.
+ * Zone centrale : notes, liste des séances et formulaire de saisie inséré dans la liste.
  */
 
 import {
@@ -30,7 +30,7 @@ import { CjFormulaireSeanceComponent } from './cj-formulaire-seance/cj-formulair
 import type { AvecNavigationGardee } from '../../gardes/modifications-non-enregistrees.garde';
 import type { Seance, JourneeJournal } from '../../modeles/cahier-journal.modele';
 import type { Competence, JourFerie } from '../../modeles/referentiels.modele';
-import type { JourSemaine } from '../../modeles/emploi-du-temps.modele';
+import type { JourSemaine, TypeCreneau } from '../../modeles/emploi-du-temps.modele';
 
 /**
  * Écran du cahier journal.
@@ -191,6 +191,14 @@ export class EcranCahierJournalComponent implements AvecNavigationGardee {
     DateUtils.formaterDateLong(this.dateSelectionnee()),
   );
 
+  /** Date sélectionnée au format court `JJ/MM/AAAA`, affichée en titre de la zone centrale. */
+  protected readonly dateCourte = computed<string>(() =>
+    DateUtils.formaterDateCourt(this.dateSelectionnee()),
+  );
+
+  /** `true` si la zone de saisie des notes de la journée est dépliée. */
+  protected readonly notesDepliees = signal(true);
+
   /** Heures de début/fin par défaut proposées pour la séance en cours de création. */
   protected readonly heuresCreationParDefaut = computed<{ heureDebut: string; heureFin: string }>(
     () => this.calculerHeuresParDefaut(this.positionCreation()),
@@ -198,6 +206,14 @@ export class EcranCahierJournalComponent implements AvecNavigationGardee {
 
   /** Notes enregistrées de la journée sélectionnée (version persistée, pour l'impression et l'affichage conditionnel). */
   protected readonly notesJournee = computed<string>(() => this.journeeSelectionnee()?.notes ?? '');
+
+  /** `true` si la zone de notes est affichable : la journée a au moins une séance ou des notes. */
+  protected readonly notesAffichables = computed<boolean>(
+    () => this.seances().length > 0 || this.notesJournee() !== '',
+  );
+
+  /** Première ligne des notes enregistrées, affichée en aperçu quand la zone de notes est repliée. */
+  protected readonly apercuNotes = computed<string>(() => this.notesJournee().split('\n')[0]);
 
   /**
    * Resynchronise le champ de saisie des notes sur la journée sélectionnée.
@@ -223,6 +239,20 @@ export class EcranCahierJournalComponent implements AvecNavigationGardee {
       this.dateSelectionnee(),
       this.notesControl.value,
     );
+  }
+
+  /** Replie ou déplie la zone de saisie des notes de la journée. */
+  protected basculerNotes(): void {
+    this.notesDepliees.update((depliees) => !depliees);
+  }
+
+  /**
+   * Retourne le libellé affiché du type d'une séance non pédagogique.
+   * @param type Type de la séance.
+   * @returns Libellé de la pause déjeuner ou de la récréation.
+   */
+  protected obtenirLibelleType(type: TypeCreneau): string {
+    return type === 'pauseDejeuner' ? LIBELLES.edt.typePauseDejeuner : LIBELLES.edt.typeRecreation;
   }
 
   /**

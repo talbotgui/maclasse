@@ -154,6 +154,10 @@ Pistes écartées : séance sur une seule ligne (A), colonnes alignées (B), typ
 - `docs/specification/composants-partages.md` : input `elevesIndisponiblesIds` de `mc-eleves-concernes`.
 - `docs/README.md` : statut du plan.
 
-## Statut
+## Bilan
 
-Proposé le 2026-09-27, en attente de validation.
+Terminé le 2026-09-27.
+
+- Écart au plan : aucun libellé `ariaBasculerNotes` (le bouton porte le libellé visible « Notes de la journée ») ; condition d'affichage des notes centralisée dans un `computed` `notesAffichables` ; `aria-controls` posé seulement quand la zone de notes est dans le DOM.
+- Correctif induit : dans `cj-formulaire-seance`, `formInvalide` (auparavant `toSignal(statusChanges)`) restait « invalide » après le chargement d'une séance par `reset(..., { emitEvent: false })` ; il est désormais resynchronisé après le chargement. Le défaut était masqué tant qu'un formulaire valide se fermait aussitôt à l'ENREGISTRER.
+- Tests E2E existants adaptés à la règle 11 : E2E-69 et E2E-117 créent leur séance à 16:00–17:00 (les séances du lundi de test concernent toute la classe de 08:30 à 15:30). Nouveaux scénarios : E2E-127 (repli des notes), E2E-128 (élève absent), E2E-129 (séances simultanées) ; RGAA-07 contrôle aussi l'écran notes repliées.

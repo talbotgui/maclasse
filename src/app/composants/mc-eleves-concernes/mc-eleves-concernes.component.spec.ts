@@ -5,6 +5,7 @@ import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { EleveMother } from '../../tests/eleve.mother';
 import type { ElevesConcernes } from '../../modeles/emploi-du-temps.modele';
+import { LIBELLES } from '../../libelles';
 
 describe('McElevesConcernesComponent', () => {
   let fixture: ComponentFixture<McElevesConcernesComponent>;
@@ -170,6 +171,51 @@ describe('McElevesConcernesComponent', () => {
 
       expect(onChange).toHaveBeenCalled();
       expect(onTouched).toHaveBeenCalled();
+    });
+  });
+
+  describe('élèves indisponibles', () => {
+    beforeEach(() => {
+      component['surChangementMode']('eleves');
+    });
+
+    it('sans input, aucun chip élève n’est désactivé (cas de l’emploi du temps)', () => {
+      fixture.detectChanges();
+
+      const chips = fixture.nativeElement.querySelectorAll('[id^="elevesConcernes_eleve_"]');
+      expect(Array.from(chips as NodeListOf<HTMLButtonElement>).some((c) => c.disabled)).toBe(
+        false,
+      );
+    });
+
+    it('désactive le chip d’un élève indisponible non sélectionné, avec sa mention', () => {
+      fixture.componentRef.setInput('elevesIndisponiblesIds', ['e2']);
+      fixture.detectChanges();
+
+      const chip = fixture.nativeElement.querySelector(
+        '#elevesConcernes_eleve_e2',
+      ) as HTMLButtonElement;
+      expect(chip.disabled).toBe(true);
+      expect(chip.title).toBe(LIBELLES.elevesConcernes.mentionEleveAbsent);
+      expect(chip.querySelector('.sr-only')?.textContent).toBe(
+        `(${LIBELLES.elevesConcernes.mentionEleveAbsent})`,
+      );
+      expect(
+        (fixture.nativeElement.querySelector('#elevesConcernes_eleve_e1') as HTMLButtonElement)
+          .disabled,
+      ).toBe(false);
+    });
+
+    it('laisse actif le chip d’un élève indisponible déjà sélectionné pour pouvoir le retirer', () => {
+      component['basculerEleve']('e2');
+      fixture.componentRef.setInput('elevesIndisponiblesIds', ['e2']);
+      fixture.detectChanges();
+
+      const chip = fixture.nativeElement.querySelector(
+        '#elevesConcernes_eleve_e2',
+      ) as HTMLButtonElement;
+      expect(chip.disabled).toBe(false);
+      expect(chip.hasAttribute('title')).toBe(false);
     });
   });
 });

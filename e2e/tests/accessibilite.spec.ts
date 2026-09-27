@@ -81,7 +81,15 @@ testAvecDonnees(
     await cj.btnInitialiserVidePrincipal.click();
     expect(await VerificateurAccessibilite.lister(appAvecDonnees)).toEqual([]);
 
-    await cj.btnAjouterSeance.click();
+    await cj.btnAjouterSeanceDebut.click();
+    expect(await VerificateurAccessibilite.lister(appAvecDonnees)).toEqual([]);
+
+    // Une séance enregistrée rend la zone de notes (et son bouton de repli) affichable
+    await cj.champHeureDebutSeance.fill('06:00');
+    await cj.champHeureFinSeance.fill('07:00');
+    await cj.btnEnregistrerSeance.click();
+    await cj.btnBasculerNotes.click();
+    await expect(cj.champNotesJournee).not.toBeVisible();
     expect(await VerificateurAccessibilite.lister(appAvecDonnees)).toEqual([]);
   },
 );

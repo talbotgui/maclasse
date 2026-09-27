@@ -31,6 +31,18 @@ export class EleveMother {
       ...surcharge,
     };
   }
+
+  /**
+   * Retourne trois élèves : MARTIN Paul (e1) et DUPONT Léa (e2) dans le groupe `GA`,
+   * ADAM Zoé (e3) sans groupe. Sert aux tests de résolution du périmètre d'une séance.
+   */
+  static trioAvecGroupeGA(): Eleve[] {
+    return [
+      EleveMother.base('e1', 'MARTIN', 'Paul', { groupes: ['GA'] }),
+      EleveMother.base('e2', 'DUPONT', 'Léa', { groupes: ['GA'] }),
+      EleveMother.base('e3', 'ADAM', 'Zoé'),
+    ];
+  }
 }
 
 /** Fournit des instances de {@link AbsenceRecurrente} prêtes à l'emploi pour les tests. */

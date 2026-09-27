@@ -10,7 +10,7 @@ import {
   AbsenceRecurrenteMother,
   EleveMother,
 } from '../../tests/eleve.mother';
-import { DatesTest, SeanceMother } from '../../tests/cahier-journal.mother';
+import { DatesTest, JourneeMother, SeanceMother } from '../../tests/cahier-journal.mother';
 import { DateUtils } from '../../utilitaires/date.utils';
 import { LIBELLES } from '../../libelles';
 
@@ -904,6 +904,199 @@ describe('CahierJournalService', () => {
       const conflits = service.calculerConflitsPourSeance(lundiTest, seanceNonEnregistree);
 
       expect(conflits).toEqual(['MARTIN Paul — Orthophonie']);
+    });
+  });
+
+  /** Élèves d'une séance pédagogique déjà concernés par une autre séance pédagogique simultanée. */
+  describe('detecterElevesSurSeancesSimultanees', () => {
+    it('retourne tableau vide si aucune donnée chargée', () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({});
+      const s = TestBed.inject(CahierJournalService);
+      expect(
+        s.detecterElevesSurSeancesSimultanees(DatesTest.lundiPaire, SeanceMother.pedagogique()),
+      ).toEqual([]);
+    });
+
+    it('retourne tableau vide si la journée n’existe pas', () => {
+      expect(
+        service.detecterElevesSurSeancesSimultanees(
+          DatesTest.lundiPaire,
+          SeanceMother.pedagogique(),
+        ),
+      ).toEqual([]);
+    });
+
+    it('détecte un conflit via le mode élèves', () => {
+      donneesService.charger(
+        DonneesMother.avecEleves(EleveMother.trioAvecGroupeGA(), {
+          cahierJournal: [
+            JourneeMother.base({
+              seances: [
+                SeanceMother.pedagogique({
+                  id: 'a',
+                  elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e3'] },
+                }),
+              ],
+            }),
+          ],
+        }),
+      );
+      const candidate = SeanceMother.pedagogique({
+        id: 'b',
+        heureDebut: '09:30',
+        heureFin: '10:30',
+        elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e3', 'e1'] },
+      });
+
+      expect(service.detecterElevesSurSeancesSimultanees(DatesTest.lundiPaire, candidate)).toEqual([
+        'ADAM Zoé',
+      ]);
+    });
+
+    it('détecte un conflit via le mode groupes', () => {
+      donneesService.charger(
+        DonneesMother.avecEleves(EleveMother.trioAvecGroupeGA(), {
+          cahierJournal: [
+            JourneeMother.base({
+              seances: [
+                SeanceMother.pedagogique({
+                  id: 'a',
+                  elevesConcernes: { type: 'groupes', groupes: ['GA'], elevesIds: [] },
+                }),
+              ],
+            }),
+          ],
+        }),
+      );
+      const candidate = SeanceMother.pedagogique({
+        id: 'b',
+        elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e2', 'e3'] },
+      });
+
+      expect(service.detecterElevesSurSeancesSimultanees(DatesTest.lundiPaire, candidate)).toEqual([
+        'DUPONT Léa',
+      ]);
+    });
+
+    it('détecte un conflit via le mode classe (tous les élèves, triés)', () => {
+      donneesService.charger(
+        DonneesMother.avecEleves(EleveMother.trioAvecGroupeGA(), {
+          cahierJournal: [
+            JourneeMother.base({
+              seances: [
+                SeanceMother.pedagogique({
+                  id: 'a',
+                  elevesConcernes: { type: 'classe', groupes: [], elevesIds: [] },
+                }),
+              ],
+            }),
+          ],
+        }),
+      );
+      const candidate = SeanceMother.pedagogique({ id: 'b' });
+
+      expect(service.detecterElevesSurSeancesSimultanees(DatesTest.lundiPaire, candidate)).toEqual([
+        'ADAM Zoé',
+        'DUPONT Léa',
+        'MARTIN Paul',
+      ]);
+    });
+
+    it('ignore les séances adjacentes', () => {
+      donneesService.charger(
+        DonneesMother.avecEleves(EleveMother.trioAvecGroupeGA(), {
+          cahierJournal: [
+            JourneeMother.base({
+              seances: [
+                SeanceMother.pedagogique({ id: 'a', heureDebut: '08:00', heureFin: '09:00' }),
+              ],
+            }),
+          ],
+        }),
+      );
+      const candidate = SeanceMother.pedagogique({ id: 'b' });
+
+      expect(service.detecterElevesSurSeancesSimultanees(DatesTest.lundiPaire, candidate)).toEqual(
+        [],
+      );
+    });
+
+    it('ignore les autres séances non pédagogiques', () => {
+      donneesService.charger(
+        DonneesMother.avecEleves(EleveMother.trioAvecGroupeGA(), {
+          cahierJournal: [
+            JourneeMother.base({
+              seances: [
+                SeanceMother.recreation({ id: 'a', heureDebut: '09:00', heureFin: '10:00' }),
+              ],
+            }),
+          ],
+        }),
+      );
+      const candidate = SeanceMother.pedagogique({ id: 'b' });
+
+      expect(service.detecterElevesSurSeancesSimultanees(DatesTest.lundiPaire, candidate)).toEqual(
+        [],
+      );
+    });
+
+    it('ne contrôle pas une séance candidate non pédagogique', () => {
+      donneesService.charger(
+        DonneesMother.avecEleves(EleveMother.trioAvecGroupeGA(), {
+          cahierJournal: [JourneeMother.base({ seances: [SeanceMother.pedagogique({ id: 'a' })] })],
+        }),
+      );
+      const candidate = SeanceMother.recreation({
+        id: 'b',
+        heureDebut: '09:00',
+        heureFin: '10:00',
+      });
+
+      expect(service.detecterElevesSurSeancesSimultanees(DatesTest.lundiPaire, candidate)).toEqual(
+        [],
+      );
+    });
+
+    it('exclut la séance elle-même (modification)', () => {
+      const seance = SeanceMother.pedagogique({ id: 'a' });
+      donneesService.charger(
+        DonneesMother.avecEleves(EleveMother.trioAvecGroupeGA(), {
+          cahierJournal: [JourneeMother.base({ seances: [seance] })],
+        }),
+      );
+
+      expect(
+        service.detecterElevesSurSeancesSimultanees(DatesTest.lundiPaire, {
+          ...seance,
+          heureFin: '10:30',
+        }),
+      ).toEqual([]);
+    });
+
+    it('ne signale rien si les élèves sont disjoints', () => {
+      donneesService.charger(
+        DonneesMother.avecEleves(EleveMother.trioAvecGroupeGA(), {
+          cahierJournal: [
+            JourneeMother.base({
+              seances: [
+                SeanceMother.pedagogique({
+                  id: 'a',
+                  elevesConcernes: { type: 'groupes', groupes: ['GA'], elevesIds: [] },
+                }),
+              ],
+            }),
+          ],
+        }),
+      );
+      const candidate = SeanceMother.pedagogique({
+        id: 'b',
+        elevesConcernes: { type: 'eleves', groupes: [], elevesIds: ['e3'] },
+      });
+
+      expect(service.detecterElevesSurSeancesSimultanees(DatesTest.lundiPaire, candidate)).toEqual(
+        [],
+      );
     });
   });
 });

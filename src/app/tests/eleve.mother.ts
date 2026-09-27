@@ -1,4 +1,10 @@
-import { AbsencePonctuelle, AbsenceRecurrente, CursusAnnee, Eleve } from '../modeles/eleve.modele';
+import {
+  AbsencePonctuelle,
+  AbsenceRecurrente,
+  Contact,
+  CursusAnnee,
+  Eleve,
+} from '../modeles/eleve.modele';
 
 /** Fournit des instances de {@link Eleve} prêtes à l'emploi pour les tests. */
 export class EleveMother {
@@ -89,6 +95,21 @@ export class CursusAnneeMother {
       niveau: 'CE2',
       etablissement: 'École Jean Jaurès',
       accompagnement: '',
+      ...surcharge,
+    };
+  }
+}
+
+/** Fournit des instances de {@link Contact} prêtes à l'emploi pour les tests. */
+export class ContactMother {
+  /** Retourne un contact de type père (`P`), surchargé par {@link surcharge}. */
+  public static base(surcharge: Partial<Contact> = {}): Contact {
+    return {
+      type: 'P',
+      nom: 'Jean MARTIN',
+      email: 'jean.martin@exemple.fr',
+      telephone: '0600000000',
+      adressePostale: '1 rue des Écoles',
       ...surcharge,
     };
   }

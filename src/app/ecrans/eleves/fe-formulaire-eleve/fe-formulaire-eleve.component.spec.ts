@@ -1,7 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { FeFormulaireEleveComponent } from './fe-formulaire-eleve.component';
-import { EleveMother } from '../../../tests/eleve.mother';
+import {
+  AbsencePonctuelleMother,
+  AbsenceRecurrenteMother,
+  ContactMother,
+  CursusAnneeMother,
+  EleveMother,
+} from '../../../tests/eleve.mother';
+import { LIBELLES } from '../../../libelles';
 import type { Eleve } from '../../../modeles/eleve.modele';
 
 describe('FeFormulaireEleveComponent', () => {
@@ -19,47 +26,73 @@ describe('FeFormulaireEleveComponent', () => {
   });
 
   describe('initialisation', () => {
-    it('eleve=null → formEleve créé vide avec id UUID', () => {
+    it('eleve=null → formulaire vide, élève créé avec un nouvel id', () => {
       fixture.componentRef.setInput('eleve', null);
       fixture.detectChanges();
 
-      expect((component as any).formEleve.id).toBeTruthy();
-      expect((component as any).formEleve.nom).toBe('');
-      expect((component as any).formEleve.prenom).toBe('');
+      const valeur = (component as any).form.getRawValue();
+      expect(valeur.nom).toBe('');
+      expect(valeur.prenom).toBe('');
+      expect(valeur.contacts).toEqual([]);
+      expect((component as any).idEleve).toBeTruthy();
     });
 
-    it('eleve existant → formEleve est un clone avec les mêmes données', () => {
-      const eleve = EleveMother.base('e1', 'MARTIN', 'Alice');
+    it('eleve existant → formulaire chargé avec ses valeurs et ses listes', () => {
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Alice', {
+        inclusion: 'ULIS',
+        contacts: [ContactMother.base()],
+        absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+        absencesPonctuelles: [AbsencePonctuelleMother.base()],
+        cursus: [CursusAnneeMother.base()],
+      });
       fixture.componentRef.setInput('eleve', eleve);
       fixture.detectChanges();
 
-      expect((component as any).formEleve.nom).toBe('MARTIN');
-      expect((component as any).formEleve.prenom).toBe('Alice');
-      expect((component as any).formEleve).not.toBe(eleve);
+      const valeur = (component as any).form.getRawValue();
+      expect(valeur.nom).toBe('MARTIN');
+      expect(valeur.prenom).toBe('Alice');
+      expect(valeur.inclusion).toBe('ULIS');
+      expect(valeur.notesPPA).toBe('');
+      expect(valeur.contacts).toEqual([ContactMother.base()]);
+      expect(valeur.absencesRecurrentes).toEqual([AbsenceRecurrenteMother.base()]);
+      expect(valeur.absencesPonctuelles).toEqual([AbsencePonctuelleMother.base()]);
+      expect(valeur.cursus).toEqual([CursusAnneeMother.base()]);
     });
 
-    it("changement d'identité de l'input eleve → formEleve rechargé", () => {
-      const e1 = EleveMother.base('e1', 'MARTIN', 'Alice');
-      const e2 = EleveMother.base('e2', 'DUPONT', 'Bob');
-      fixture.componentRef.setInput('eleve', e1);
+    it("changement d'identité de l'input eleve → formulaire rechargé", () => {
+      fixture.componentRef.setInput(
+        'eleve',
+        EleveMother.base('e1', 'MARTIN', 'Alice', { contacts: [ContactMother.base()] }),
+      );
       fixture.detectChanges();
-      fixture.componentRef.setInput('eleve', e2);
+      fixture.componentRef.setInput('eleve', EleveMother.base('e2', 'DUPONT', 'Bob'));
       fixture.detectChanges();
 
-      expect((component as any).formEleve.nom).toBe('DUPONT');
+      expect((component as any).form.controls.nom.value).toBe('DUPONT');
+      expect((component as any).contactsFormArray.length).toBe(0);
     });
 
-    it('régression SOU-020 : même identité d’élève avec contenu différent → formEleve non écrasé', () => {
-      const e1 = EleveMother.base('e1', 'MARTIN', 'Alice');
-      fixture.componentRef.setInput('eleve', e1);
+    it('régression SOU-020 : même identité d’élève avec contenu différent (UNDO/REDO) → saisie conservée', () => {
+      fixture.componentRef.setInput('eleve', EleveMother.base('e1', 'MARTIN', 'Alice'));
       fixture.detectChanges();
-      (component as any).formEleve.nom = 'Saisie en cours';
+      (component as any).form.controls.nom.setValue('Saisie en cours');
 
-      const e1Modifie = EleveMother.base('e1', 'MARTIN-MODIFIE', 'Alice');
-      fixture.componentRef.setInput('eleve', e1Modifie);
+      fixture.componentRef.setInput('eleve', EleveMother.base('e1', 'MARTIN-MODIFIE', 'Alice'));
       fixture.detectChanges();
 
-      expect((component as any).formEleve.nom).toBe('Saisie en cours');
+      expect((component as any).form.controls.nom.value).toBe('Saisie en cours');
+    });
+  });
+
+  describe('optionsJour', () => {
+    it('libellés des jours issus de LIBELLES.edt.joursLibelles, dans l’ordre de la semaine', () => {
+      expect((component as any).optionsJour).toEqual([
+        { valeur: 'lundi', libelle: LIBELLES.edt.joursLibelles.lundi },
+        { valeur: 'mardi', libelle: LIBELLES.edt.joursLibelles.mardi },
+        { valeur: 'mercredi', libelle: LIBELLES.edt.joursLibelles.mercredi },
+        { valeur: 'jeudi', libelle: LIBELLES.edt.joursLibelles.jeudi },
+        { valeur: 'vendredi', libelle: LIBELLES.edt.joursLibelles.vendredi },
+      ]);
     });
   });
 
@@ -84,52 +117,81 @@ describe('FeFormulaireEleveComponent', () => {
     it('ajoute un groupe absent de la sélection', () => {
       (component as any).ajouterGroupe('GA');
 
-      expect((component as any).formEleve.groupes).toContain('GA');
+      expect((component as any).form.controls.groupes.value).toEqual(['GA']);
+      expect((component as any).estGroupeSelectionne('GA')).toBe(true);
     });
 
     it('retire un groupe présent', () => {
-      (component as any).formEleve.groupes = ['GA'];
+      (component as any).form.controls.groupes.setValue(['GA', 'GB']);
 
       (component as any).retirerGroupe('GA');
 
-      expect((component as any).formEleve.groupes).not.toContain('GA');
+      expect((component as any).form.controls.groupes.value).toEqual(['GB']);
     });
 
     it("n'ajoute pas un groupe déjà présent", () => {
-      (component as any).formEleve.groupes = ['GA'];
+      (component as any).form.controls.groupes.setValue(['GA']);
 
       (component as any).ajouterGroupe('GA');
 
-      expect((component as any).formEleve.groupes.filter((g: string) => g === 'GA')).toHaveLength(
-        1,
-      );
+      expect((component as any).form.controls.groupes.value).toEqual(['GA']);
     });
   });
 
   describe('ajouterContact / supprimerContact', () => {
-    it('ajouterContact ajoute un contact vide', () => {
+    it('ajouterContact ajoute un contact vide et demande le focus sur lui', () => {
       (component as any).ajouterContact();
 
-      expect((component as any).formEleve.contacts).toHaveLength(1);
+      expect((component as any).form.getRawValue().contacts).toEqual([
+        { type: '', nom: '', email: '', telephone: '', adressePostale: '' },
+      ]);
+      expect((component as any).indexAFocaliserContact()).toBe(0);
     });
 
-    it('supprimerContact(0) retire le premier contact', () => {
+    it('supprimerContact(0) retire le premier contact et remet le focus demandé à null', () => {
       (component as any).ajouterContact();
       (component as any).ajouterContact();
 
       (component as any).supprimerContact(0);
 
-      expect((component as any).formEleve.contacts).toHaveLength(1);
+      expect((component as any).contactsFormArray.length).toBe(1);
+      expect((component as any).indexAFocaliserContact()).toBeNull();
+    });
+
+    it('suppression du contact du milieu (sans id) → les contacts restants sont intacts', () => {
+      fixture.componentRef.setInput(
+        'eleve',
+        EleveMother.base('e1', 'MARTIN', 'Alice', {
+          contacts: [
+            ContactMother.base({ nom: 'A' }),
+            ContactMother.base({ nom: 'B' }),
+            ContactMother.base({ nom: 'C' }),
+          ],
+        }),
+      );
+      fixture.detectChanges();
+      const champDernier = fixture.nativeElement.querySelector('#champContactNom2');
+
+      (component as any).supprimerContact(1);
+      (component as any).cdr.markForCheck();
+      fixture.detectChanges();
+
+      expect(
+        (component as any).form.getRawValue().contacts.map((c: { nom: string }) => c.nom),
+      ).toEqual(['A', 'C']);
+      expect(fixture.nativeElement.querySelector('#champContactNom1')).toBe(champDernier);
     });
   });
 
   describe('ajouterAbsenceRecurrente / supprimerAbsenceRecurrente', () => {
-    it('ajouterAbsenceRecurrente ajoute une absence avec id UUID', () => {
+    it('ajouterAbsenceRecurrente ajoute une absence avec id UUID et demande le focus', () => {
       (component as any).ajouterAbsenceRecurrente();
 
-      const absences = (component as any).formEleve.absencesRecurrentes;
+      const absences = (component as any).form.getRawValue().absencesRecurrentes;
       expect(absences).toHaveLength(1);
       expect(absences[0].id).toBeTruthy();
+      expect(absences[0].jour).toBe('lundi');
+      expect((component as any).indexAFocaliserAbsRec()).toBe(0);
     });
 
     it("supprimerAbsenceRecurrente(0) retire à l'index 0", () => {
@@ -138,17 +200,19 @@ describe('FeFormulaireEleveComponent', () => {
 
       (component as any).supprimerAbsenceRecurrente(0);
 
-      expect((component as any).formEleve.absencesRecurrentes).toHaveLength(1);
+      expect((component as any).absencesRecurrentesFormArray.length).toBe(1);
+      expect((component as any).indexAFocaliserAbsRec()).toBeNull();
     });
   });
 
   describe('ajouterAbsencePonctuelle / supprimerAbsencePonctuelle', () => {
-    it('ajouterAbsencePonctuelle ajoute une absence avec id UUID', () => {
+    it('ajouterAbsencePonctuelle ajoute une absence avec id UUID et demande le focus', () => {
       (component as any).ajouterAbsencePonctuelle();
 
-      const absences = (component as any).formEleve.absencesPonctuelles;
+      const absences = (component as any).form.getRawValue().absencesPonctuelles;
       expect(absences).toHaveLength(1);
       expect(absences[0].id).toBeTruthy();
+      expect((component as any).indexAFocaliserAbsPonct()).toBe(0);
     });
 
     it("supprimerAbsencePonctuelle(0) retire à l'index 0", () => {
@@ -157,17 +221,19 @@ describe('FeFormulaireEleveComponent', () => {
 
       (component as any).supprimerAbsencePonctuelle(0);
 
-      expect((component as any).formEleve.absencesPonctuelles).toHaveLength(1);
+      expect((component as any).absencesPonctuellesFormArray.length).toBe(1);
+      expect((component as any).indexAFocaliserAbsPonct()).toBeNull();
     });
   });
 
   describe('ajouterCursus / supprimerCursus', () => {
-    it("ajouterCursus ajoute avec l'année courante", () => {
+    it("ajouterCursus ajoute une entrée sur l'année courante et demande le focus", () => {
       (component as any).ajouterCursus();
 
-      const cursus = (component as any).formEleve.cursus;
+      const cursus = (component as any).form.getRawValue().cursus;
       expect(cursus).toHaveLength(1);
       expect(cursus[0].annee).toBe(new Date().getFullYear());
+      expect((component as any).indexAFocaliserCursus()).toBe(0);
     });
 
     it("supprimerCursus(0) retire à l'index 0", () => {
@@ -176,24 +242,88 @@ describe('FeFormulaireEleveComponent', () => {
 
       (component as any).supprimerCursus(0);
 
-      expect((component as any).formEleve.cursus).toHaveLength(1);
+      expect((component as any).cursusFormArray.length).toBe(1);
+      expect((component as any).indexAFocaliserCursus()).toBeNull();
     });
   });
 
   describe('onEnregistrer', () => {
-    it('émet un clone de formEleve', () => {
-      const eleve = EleveMother.base('e1', 'MARTIN', 'Alice');
+    it("émet l'élève saisi avec son id", () => {
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Alice', {
+        inclusion: 'ULIS',
+        notesPPA: 'PPA en cours',
+        groupes: ['GA'],
+        contacts: [ContactMother.base()],
+        absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+        absencesPonctuelles: [AbsencePonctuelleMother.base()],
+        cursus: [CursusAnneeMother.base()],
+      });
       fixture.componentRef.setInput('eleve', eleve);
       fixture.detectChanges();
-
       const spy = vi.spyOn((component as any).enregistrer, 'emit');
 
       (component as any).onEnregistrer();
 
       expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy.mock.calls[0][0]).toEqual(eleve);
+    });
+
+    it('émet inclusion, notes PPA et ESS vides à null', () => {
+      fixture.componentRef.setInput(
+        'eleve',
+        EleveMother.base('e1', 'MARTIN', 'Alice', { inclusion: 'ULIS', notesESS: 'ESS' }),
+      );
+      fixture.detectChanges();
+      (component as any).form.controls.inclusion.setValue('');
+      (component as any).form.controls.notesESS.setValue('');
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
+
+      (component as any).onEnregistrer();
+
       const emis = spy.mock.calls[0][0] as Eleve;
-      expect(emis.nom).toBe('MARTIN');
-      expect(emis).not.toBe((component as any).formEleve);
+      expect(emis.inclusion).toBeNull();
+      expect(emis.notesPPA).toBeNull();
+      expect(emis.notesESS).toBeNull();
+    });
+
+    it("émet l'année du cursus en nombre", () => {
+      fixture.componentRef.setInput(
+        'eleve',
+        EleveMother.base('e1', 'MARTIN', 'Alice', { cursus: [CursusAnneeMother.base()] }),
+      );
+      fixture.detectChanges();
+      (component as any).cursusFormArray.at(0).controls.annee.setValue(2023);
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
+
+      (component as any).onEnregistrer();
+
+      expect((spy.mock.calls[0][0] as Eleve).cursus[0].annee).toBe(2023);
+    });
+
+    it("émet l'année enregistrée si le champ année a été vidé", () => {
+      fixture.componentRef.setInput(
+        'eleve',
+        EleveMother.base('e1', 'MARTIN', 'Alice', { cursus: [CursusAnneeMother.base()] }),
+      );
+      fixture.detectChanges();
+      (component as any).cursusFormArray.at(0).controls.annee.setValue('');
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
+
+      (component as any).onEnregistrer();
+
+      expect((spy.mock.calls[0][0] as Eleve).cursus[0].annee).toBe(CursusAnneeMother.base().annee);
+    });
+
+    it("émet l'année courante pour une nouvelle entrée dont le champ année a été vidé", () => {
+      fixture.componentRef.setInput('eleve', EleveMother.base('e1', 'MARTIN', 'Alice'));
+      fixture.detectChanges();
+      (component as any).ajouterCursus();
+      (component as any).cursusFormArray.at(0).controls.annee.setValue('');
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
+
+      (component as any).onEnregistrer();
+
+      expect((spy.mock.calls[0][0] as Eleve).cursus[0].annee).toBe(new Date().getFullYear());
     });
 
     it('n’émet rien si le prénom est vide ou blanc', () => {
@@ -234,6 +364,23 @@ describe('FeFormulaireEleveComponent', () => {
         '#btnEnregistrerEleve',
       ) as HTMLButtonElement;
       expect(bouton.disabled).toBe(true);
+    });
+
+    it('bouton désactivé dès que le prénom est vidé, réactivé quand il est ressaisi', () => {
+      fixture.componentRef.setInput('eleve', EleveMother.base('e1', 'MARTIN', 'Alice'));
+      fixture.detectChanges();
+      const bouton = fixture.nativeElement.querySelector(
+        '#btnEnregistrerEleve',
+      ) as HTMLButtonElement;
+      const prenom = (component as any).form.controls.prenom;
+
+      prenom.setValue(' ');
+      fixture.detectChanges();
+      expect(bouton.disabled).toBe(true);
+
+      prenom.setValue('Alice');
+      fixture.detectChanges();
+      expect(bouton.disabled).toBe(false);
     });
   });
 

@@ -6,7 +6,8 @@
 import { Injectable } from '@angular/core';
 import { DonneesApplication } from '../../modeles/donnees-application.modele';
 import { CreneauEdt } from '../../modeles/emploi-du-temps.modele';
-import { CreneauEdtV1, EtapeMigration } from '../../modeles/migration.modele';
+import { Eleve } from '../../modeles/eleve.modele';
+import { CreneauEdtV1, EleveV1, EtapeMigration } from '../../modeles/migration.modele';
 import { SourceEdtCalcule } from '../../modeles/emploi-du-temps-calcule.modele';
 
 /**
@@ -31,6 +32,10 @@ export class MigrationService {
     {
       versionCible: '2026.09.4',
       appliquer: (donnees) => this.regrouperTempsHorsClasse(donnees),
+    },
+    {
+      versionCible: '2026.09.5',
+      appliquer: (donnees) => this.retirerManualiteEtDispositifsMedicaux(donnees),
     },
   ];
 
@@ -76,6 +81,8 @@ export class MigrationService {
   /**
    * Applique en place toutes les étapes de migration dont la version cible est
    * postérieure à `donnees.version`, et met à jour `donnees.version` au fil de la chaîne.
+   * Termine par une normalisation idempotente, appliquée à chaque chargement quelle
+   * que soit la version (attribution des identifiants manquants).
    * @param donnees Données à faire évoluer (mutées en place).
    * @returns Les données passées en paramètre, pour chaînage.
    */
@@ -86,7 +93,38 @@ export class MigrationService {
         donnees.version = etape.versionCible;
       }
     }
+    this.attribuerIdentifiantsManquants(donnees);
     return donnees;
+  }
+
+  /**
+   * Attribue un `id` aux périodes de projet et entrées de cursus élève qui en sont
+   * dépourvues (fichiers créés avant l'introduction de ces champs). Idempotent.
+   * @param donnees Données à muter (déjà clonées par l'appelant).
+   */
+  private attribuerIdentifiantsManquants(donnees: DonneesApplication): void {
+    for (const projet of donnees.projets) {
+      for (const periode of projet.periodes) {
+        if (!periode.id) periode.id = crypto.randomUUID();
+      }
+    }
+    for (const eleve of donnees.classe.eleves) {
+      for (const annee of eleve.cursus) {
+        if (!annee.id) annee.id = crypto.randomUUID();
+      }
+    }
+  }
+
+  /**
+   * Retire des élèves les champs `manualite` et `dispositifsMedicaux`, abandonnés
+   * faute d'être saisissables dans l'application. Idempotent.
+   * @param donnees Données à muter (déjà clonées par l'appelant).
+   */
+  private retirerManualiteEtDispositifsMedicaux(donnees: DonneesApplication): void {
+    for (const eleve of donnees.classe.eleves as (Eleve & Partial<EleveV1>)[]) {
+      delete eleve.manualite;
+      delete eleve.dispositifsMedicaux;
+    }
   }
 
   /**

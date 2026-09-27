@@ -243,26 +243,13 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
     });
   });
 
-  /** Les champs optionnels de Eleve sont null ou absents — jamais des chaînes invalides. */
-  describe('Champs optionnels de Eleve', () => {
-    it('manualite vaut A, D ou G quand elle est définie', () => {
+  /** Les champs retirés du modèle Eleve (migration 2026.09.5) n'apparaissent plus dans le JSON. */
+  describe('Champs retirés de Eleve', () => {
+    it('aucun élève ne porte manualite ni dispositifsMedicaux', () => {
       for (const eleve of donnees.classe.eleves) {
-        if (eleve.manualite !== undefined) {
-          expect(['A', 'D', 'G'], `manualite de ${eleve.nom}`).toContain(eleve.manualite);
-        }
+        expect(Object.keys(eleve), `champs de ${eleve.nom}`).not.toContain('manualite');
+        expect(Object.keys(eleve), `champs de ${eleve.nom}`).not.toContain('dispositifsMedicaux');
       }
-    });
-
-    it('au moins un élève a une manualite renseignée', () => {
-      const avecManualite = donnees.classe.eleves.filter((e) => e.manualite !== undefined);
-      expect(avecManualite.length).toBeGreaterThan(0);
-    });
-
-    it('au moins un élève a des dispositifsMedicaux renseignés', () => {
-      const avecDispositifs = donnees.classe.eleves.filter(
-        (e) => e.dispositifsMedicaux !== undefined,
-      );
-      expect(avecDispositifs.length).toBeGreaterThan(0);
     });
   });
 });

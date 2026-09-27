@@ -1,4 +1,4 @@
-import { AbsencePonctuelle, AbsenceRecurrente, Eleve } from '../modeles/eleve.modele';
+import { AbsencePonctuelle, AbsenceRecurrente, CursusAnnee, Eleve } from '../modeles/eleve.modele';
 
 /** Fournit des instances de {@link Eleve} prêtes à l'emploi pour les tests. */
 export class EleveMother {
@@ -69,6 +69,21 @@ export class AbsencePonctuelleMother {
       id: 'ap1',
       date: '2026-01-05',
       justification: 'Rendez-vous médical',
+      ...surcharge,
+    };
+  }
+}
+
+/** Fournit des instances de {@link CursusAnnee} prêtes à l'emploi pour les tests. */
+export class CursusAnneeMother {
+  /** Retourne une entrée de cursus de CE2 en 2024 (id='cu1'), surchargée par {@link surcharge}. */
+  public static base(surcharge: Partial<CursusAnnee> = {}): CursusAnnee {
+    return {
+      id: 'cu1',
+      annee: 2024,
+      niveau: 'CE2',
+      etablissement: 'École Jean Jaurès',
+      accompagnement: '',
       ...surcharge,
     };
   }

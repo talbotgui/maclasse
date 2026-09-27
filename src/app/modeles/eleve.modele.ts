@@ -5,9 +5,6 @@
 
 import { FrequenceSemaine, JourSemaine } from './emploi-du-temps.modele';
 
-/** Latéralité de l'élève : Droitier, Gaucher ou Ambidextre. */
-export type Manualite = 'D' | 'G' | 'A';
-
 /** Sexe déclaré de l'élève. */
 export type Sexe = 'M' | 'F';
 
@@ -120,10 +117,6 @@ export interface Eleve {
   notesPPA: string | null;
   /** Notes ESS (texte libre), ou `null`. */
   notesESS: string | null;
-  /** Latéralité de l'élève (optionnel). */
-  manualite?: Manualite;
-  /** Dispositifs médicaux ou traitements en cours (texte libre, optionnel). */
-  dispositifsMedicaux?: string;
 }
 
 /**

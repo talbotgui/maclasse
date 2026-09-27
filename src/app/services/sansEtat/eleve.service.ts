@@ -5,7 +5,6 @@
 
 import { Injectable, inject } from '@angular/core';
 import { Eleve } from '../../modeles/eleve.modele';
-import { JourSemaine } from '../../modeles/emploi-du-temps.modele';
 import { CommandeCreation } from '../../commandes/commande-creation';
 import { CommandeModification } from '../../commandes/commande-modification';
 import { CommandeSuppression } from '../../commandes/commande-suppression';

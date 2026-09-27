@@ -56,7 +56,6 @@
         "notesAutorisationBaignade": "Signé par Patricia Martinot (mère) le 05/09/2024.",
         "notesPPA": null,
         "notesESS": null,
-        "manualite": "G",
         "absencesRecurrentes": [],
         "absencesPonctuelles": []
       },
@@ -150,7 +149,6 @@
         "notesAutorisationBaignade": "Non autorisé — allergie cutanée (attestation médicale du Dr Morin, 02/09/2024).",
         "notesPPA": null,
         "notesESS": "ESS du 15/01/2026.",
-        "dispositifsMedicaux": "EpiPen disponible dans le bureau de la directrice. Allergie sévère aux arachides.",
         "absencesRecurrentes": [
           {
             "id": "ar-O-5",

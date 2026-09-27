@@ -28,6 +28,17 @@ export interface CreneauEdtV1 {
 }
 
 /**
+ * Champs d'un élève antérieurs à la version `2026.09.5`, retirés du modèle faute
+ * d'être saisissables dans l'application.
+ */
+export interface EleveV1 {
+  /** Latéralité de l'élève : Droitier, Gaucher ou Ambidextre. */
+  manualite?: 'D' | 'G' | 'A';
+  /** Dispositifs médicaux ou traitements en cours (texte libre). */
+  dispositifsMedicaux?: string;
+}
+
+/**
  * Étape de migration versionnée : amène les données à `versionCible` si leur
  * version courante est antérieure.
  */

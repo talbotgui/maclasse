@@ -4,6 +4,8 @@ import { DonneesMother } from '../../tests/donnees.mother';
 import { DonneesApplication } from '../../modeles/donnees-application.modele';
 import { EdtCalculeMother } from '../../tests/emploi-du-temps-calcule.mother';
 import { CreneauMother, EdtMother, TempsCreneauMother } from '../../tests/emploi-du-temps.mother';
+import { CursusAnneeMother, EleveMother } from '../../tests/eleve.mother';
+import { PeriodeMother, ProjetMother } from '../../tests/projet.mother';
 import { SourceEdtCalcule } from '../../modeles/emploi-du-temps-calcule.modele';
 
 describe('MigrationService', () => {
@@ -11,17 +13,18 @@ describe('MigrationService', () => {
 
   describe('version supportée', () => {
     it('la version courante est celle de la dernière étape de migration', () => {
-      expect(service.obtenirVersionCourante()).toBe('2026.09.4');
+      expect(service.obtenirVersionCourante()).toBe('2026.09.5');
     });
 
     it('accepte la version courante et les versions antérieures', () => {
+      expect(service.estVersionSupportee('2026.09.5')).toBe(true);
       expect(service.estVersionSupportee('2026.09.4')).toBe(true);
       expect(service.estVersionSupportee('2026.09.1')).toBe(true);
       expect(service.estVersionSupportee('2025.12.9')).toBe(true);
     });
 
     it('refuse une version plus récente', () => {
-      expect(service.estVersionSupportee('2026.09.5')).toBe(false);
+      expect(service.estVersionSupportee('2026.09.6')).toBe(false);
       expect(service.estVersionSupportee('2026.10.1')).toBe(false);
       expect(service.estVersionSupportee('2027.01.1')).toBe(false);
     });
@@ -38,7 +41,7 @@ describe('MigrationService', () => {
 
     it('tolère un nombre de segments différent', () => {
       expect(service.estVersionSupportee('2026.09')).toBe(true);
-      expect(service.estVersionSupportee('2026.09.4.1')).toBe(false);
+      expect(service.estVersionSupportee('2026.09.5.1')).toBe(false);
     });
   });
 
@@ -66,7 +69,7 @@ describe('MigrationService', () => {
       delete anciennes.emploisDuTempsCalcules;
       const migrees = service.migrer(anciennes as DonneesApplication);
       expect(migrees.emploisDuTempsCalcules).toEqual([]);
-      expect(migrees.version).toBe('2026.09.4');
+      expect(migrees.version).toBe('2026.09.5');
     });
 
     it('conserve un tableau existant', () => {
@@ -124,7 +127,7 @@ describe('MigrationService', () => {
         'tempsHorsClasse',
         'absencesRegulieres',
       ]);
-      expect(migrees.version).toBe('2026.09.4');
+      expect(migrees.version).toBe('2026.09.5');
     });
 
     it('ne crée pas de doublon si tempsHorsClasse est déjà présent', () => {
@@ -179,6 +182,81 @@ describe('MigrationService', () => {
       expect(pedagogique.temps[0]).toEqual(tempsComplet);
       expect(recreation.temps[0]).toEqual(TempsCreneauMother.base());
       expect(pause.temps[0]).toEqual(TempsCreneauMother.base());
+    });
+  });
+
+  describe('retrait de manualite et dispositifsMedicaux', () => {
+    it('supprime les deux champs des élèves et passe à la dernière version', () => {
+      const eleve = {
+        ...EleveMother.base('e1', 'MARTIN', 'Alice'),
+        manualite: 'G',
+        dispositifsMedicaux: 'EpiPen',
+      };
+      const donnees = DonneesMother.base({
+        version: '2026.09.4',
+        classe: { niveau: 'CM2', annee: 'CM2', eleves: [eleve] },
+      });
+
+      const migrees = service.migrer(donnees);
+
+      expect(Object.keys(migrees.classe.eleves[0])).not.toContain('manualite');
+      expect(Object.keys(migrees.classe.eleves[0])).not.toContain('dispositifsMedicaux');
+      expect(migrees.classe.eleves[0].nom).toBe('MARTIN');
+      expect(migrees.version).toBe('2026.09.5');
+    });
+
+    it('laisse inchangé un élève sans ces champs', () => {
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Alice');
+      const donnees = DonneesMother.base({
+        version: '2026.09.4',
+        classe: { niveau: 'CM2', annee: 'CM2', eleves: [structuredClone(eleve)] },
+      });
+
+      expect(service.migrer(donnees).classe.eleves[0]).toEqual(eleve);
+    });
+  });
+
+  describe('attribution des identifiants manquants', () => {
+    it('attribue un id aux périodes de projet et entrées de cursus qui en sont dépourvues', () => {
+      const donnees = DonneesMother.base({
+        version: '2026.09.5',
+        projets: [ProjetMother.base({ periodes: [PeriodeMother.base({ id: '' })] })],
+        classe: {
+          niveau: 'CM2',
+          annee: 'CM2',
+          eleves: [
+            EleveMother.base('e1', 'MARTIN', 'Alice', {
+              cursus: [CursusAnneeMother.base({ id: '' })],
+            }),
+          ],
+        },
+      });
+
+      const migrees = service.migrer(donnees);
+
+      expect(migrees.projets[0].periodes[0].id).not.toBe('');
+      expect(migrees.classe.eleves[0].cursus[0].id).not.toBe('');
+    });
+
+    it('conserve les identifiants existants (traitement idempotent)', () => {
+      const donnees = DonneesMother.base({
+        version: '2026.09.5',
+        projets: [ProjetMother.base({ periodes: [PeriodeMother.base({ id: 'pp1' })] })],
+        classe: {
+          niveau: 'CM2',
+          annee: 'CM2',
+          eleves: [
+            EleveMother.base('e1', 'MARTIN', 'Alice', {
+              cursus: [CursusAnneeMother.base({ id: 'cu1' })],
+            }),
+          ],
+        },
+      });
+
+      const migrees = service.migrer(service.migrer(donnees));
+
+      expect(migrees.projets[0].periodes[0].id).toBe('pp1');
+      expect(migrees.classe.eleves[0].cursus[0].id).toBe('cu1');
     });
   });
 });

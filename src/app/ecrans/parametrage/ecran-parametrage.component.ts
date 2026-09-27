@@ -784,13 +784,16 @@ export class EcranParametrageComponent {
     const nouveauSet = new Set(this.copieDomainesActifs());
     if (actif) {
       nouveauSet.add(sousDomaine.id);
-    } else if (nouveauSet.has(domaine.id)) {
-      // Décomposer le domaine parent : activer tous les autres sous-domaines sauf celui-ci
-      nouveauSet.delete(domaine.id);
-      domaine.enfants?.forEach((ss) => {
-        if (ss.id !== sousDomaine.id) nouveauSet.add(ss.id);
-      });
     } else {
+      if (nouveauSet.has(domaine.id)) {
+        // Décomposer le domaine parent : activer tous les autres sous-domaines sauf celui-ci
+        nouveauSet.delete(domaine.id);
+        domaine.enfants?.forEach((ss) => {
+          if (ss.id !== sousDomaine.id) nouveauSet.add(ss.id);
+        });
+      }
+      // Retiré même si le domaine parent était actif : son ID peut figurer dans l'ensemble
+      // (tout coché au chargement)
       nouveauSet.delete(sousDomaine.id);
     }
     this.copieDomainesActifs.set(nouveauSet);

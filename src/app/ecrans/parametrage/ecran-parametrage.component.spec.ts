@@ -414,6 +414,14 @@ describe('EcranParametrageComponent', () => {
       expect(actifs.has('d1-2')).toBe(true);
     });
 
+    it('basculerSousDomaine désactive un N2 quand tout est coché au chargement', () => {
+      (component as any).basculerSousDomaine(domaineN1, domaineN1.enfants![0], false);
+
+      expect([...(component as any).copieDomainesActifs()]).toEqual(['d1-2']);
+      expect((component as any).estSousDomaineActif('d1', 'd1-1')).toBe(false);
+      expect((component as any).estSousDomaineActif('d1', 'd1-2')).toBe(true);
+    });
+
     it('enregistrerDomainesCompetences sauvegarde la sélection', () => {
       (component as any).copieDomainesActifs.set(new Set(['d1-1']));
 

@@ -5,6 +5,7 @@ import { SelecteursCahierJournal } from '../selecteurs/selecteurs-cahier-journal
 import { SelecteursDemarrage } from '../selecteurs/selecteurs-demarrage';
 import { SelecteursEleves } from '../selecteurs/selecteurs-eleves';
 import { SelecteursEmploiDuTemps } from '../selecteurs/selecteurs-emploi-du-temps';
+import { SelecteursEntete } from '../selecteurs/selecteurs-entete';
 import { SelecteursParametrage } from '../selecteurs/selecteurs-parametrage';
 import { SelecteursProjets } from '../selecteurs/selecteurs-projets';
 import { VerificateurAccessibilite } from '../utilitaires/verificateur-accessibilite';
@@ -397,5 +398,31 @@ testAvecDonnees(
     await edt.btnPremierEdtCalcule.click();
     await expect(edt.cellulesCalculees.first()).toBeVisible();
     expect(await VerificateurAccessibilite.lister(appAvecDonnees), 'grille calculée').toEqual([]);
+  },
+);
+
+testAvecDonnees(
+  'RGAA-25 — Recherche globale : navigation clavier dans les résultats',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+
+    // "le" : Martinot Boule, Gratin Léonie, Blanche-Oreille Ariol, Spectacle de fin d'année
+    await entete.rechercherEtAttendre('le');
+    await expect(entete.resultatsRecherche).toHaveCount(4);
+    await expect(entete.dernierResultatRecherche).toContainText("Spectacle de fin d'année");
+
+    await entete.premierResultatRecherche.focus();
+
+    await appAvecDonnees.keyboard.press('End');
+    await expect(entete.dernierResultatRecherche).toBeFocused();
+
+    await appAvecDonnees.keyboard.press('Home');
+    await expect(entete.premierResultatRecherche).toBeFocused();
+
+    await appAvecDonnees.keyboard.press('ArrowDown');
+    await expect(entete.deuxiemeResultatRecherche).toBeFocused();
+
+    await appAvecDonnees.keyboard.press('ArrowUp');
+    await expect(entete.premierResultatRecherche).toBeFocused();
   },
 );

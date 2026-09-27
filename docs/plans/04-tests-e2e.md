@@ -18,7 +18,7 @@ related:
 
 # Scénarios de tests End to End — MaClasse
 
-> **Note du 2026-09-19 (plan 14)** : la numérotation ci-dessous n'est plus celle des tests. Les identifiants réels sont ceux de `e2e/tests/*.spec.ts` : E2E-01 à 97 (fonctionnels d'origine, 93/94 supprimés), E2E-98 à 126 (compléments du plan 14 : annuler/refaire, validation, EDT, pastilles, sauvegarde auto, migration), série `RGAA-01` à `RGAA-24` (accessibilité AXE, focus, clavier, mobile) dans `accessibilite.spec.ts` et `responsive.spec.ts`. Les anciens E2E-98 à 104 (mobile, focus, migration, version incompatible) sont couverts par RGAA-11 à 21 et E2E-125/126. Voir `docs/plans/14-completer-tests-e2e.md`.
+> **Note du 2026-09-19 (plan 14)** : la numérotation ci-dessous n'est plus celle des tests. Les identifiants réels sont ceux de `e2e/tests/*.spec.ts` : E2E-01 à 97 (fonctionnels d'origine, 93/94 supprimés), E2E-98 à 126 (compléments du plan 14 : annuler/refaire, validation, EDT, pastilles, sauvegarde auto, migration), série `RGAA-01` à `RGAA-25` (accessibilité AXE, focus, clavier, mobile) dans `accessibilite.spec.ts` et `responsive.spec.ts`. Les anciens E2E-98 à 104 (mobile, focus, migration, version incompatible) sont couverts par RGAA-11 à 21 et E2E-125/126. Voir `docs/plans/14-completer-tests-e2e.md`.
 
 ## Principes de lecture
 
@@ -1534,6 +1534,23 @@ related:
 **Résultat attendu** :
 - La popin se ferme.
 - Le focus retourne à l'élément déclencheur.
+
+---
+
+### RGAA-25 — Recherche globale : navigation clavier dans les résultats
+
+**Prérequis** : données chargées, sur n'importe quel écran.
+
+**Étapes** :
+1. Saisir "le" dans le champ de recherche globale (4 résultats : trois élèves puis le projet « Spectacle de fin d'année »).
+2. Placer le focus sur le premier résultat.
+3. Appuyer successivement sur Fin, Début, ↓, ↑.
+
+**Résultat attendu** :
+- Fin → le dernier résultat a le focus.
+- Début → le premier résultat a le focus.
+- ↓ → le deuxième résultat a le focus.
+- ↑ → le premier résultat a de nouveau le focus.
 
 ---
 

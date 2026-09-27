@@ -11,6 +11,12 @@ export class SelecteursEntete extends SelecteursBase {
   public readonly resultatPotager: Locator;
   /** Type affiché sur le résultat de recherche du projet Potager pédagogique. */
   public readonly typeDuResultatPotager: Locator;
+  /** Ensemble des boutons de résultat de la recherche globale. */
+  public readonly resultatsRecherche: Locator;
+  /** Deuxième résultat de la liste de recherche globale. */
+  public readonly deuxiemeResultatRecherche: Locator;
+  /** Dernier résultat de la liste de recherche globale. */
+  public readonly dernierResultatRecherche: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -31,6 +37,9 @@ export class SelecteursEntete extends SelecteursBase {
       .filter({ hasText: 'Potager' })
       .first()
       .locator('.mc-entete__resultat-type');
+    this.resultatsRecherche = this.listeResultatsRecherche.locator('button');
+    this.deuxiemeResultatRecherche = this.resultatsRecherche.nth(1);
+    this.dernierResultatRecherche = this.resultatsRecherche.last();
   }
 
   /** Recherche un terme et attend l'apparition de la liste de résultats. */

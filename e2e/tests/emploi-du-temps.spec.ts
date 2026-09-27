@@ -309,6 +309,28 @@ testAvecDonnees(
 );
 
 testAvecDonnees(
+  'E2E-131 — Bandeau d’absences régulières : repliable dans la zone centrale',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    await edt.btnEdtSemainePaire.click();
+    await expect(edt.lignesBandeauAbsences).toHaveCount(2);
+    await expect(edt.btnBasculerAbsences).toHaveAttribute('aria-expanded', 'true');
+
+    await edt.btnBasculerAbsences.click();
+    await expect(edt.btnBasculerAbsences).toHaveAttribute('aria-expanded', 'false');
+    await expect(edt.lignesBandeauAbsences).toHaveCount(0);
+    await expect(edt.nombreAbsencesReplie).toHaveText('— 2');
+
+    await edt.btnBasculerAbsences.click();
+    await expect(edt.lignesBandeauAbsences).toHaveCount(2);
+    await expect(edt.nombreAbsencesReplie).toHaveCount(0);
+  },
+);
+
+testAvecDonnees(
   'E2E-109 — Icône ⚠ de conflit : détail de l’absence dans la popin',
   async ({ appAvecDonnees }) => {
     const entete = new SelecteursEntete(appAvecDonnees);

@@ -107,6 +107,10 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
   readonly bandeauAbsences: Locator;
   /** Lignes du bandeau d'absences régulières. */
   readonly lignesBandeauAbsences: Locator;
+  /** Bouton de repli/dépli de la liste du bandeau d'absences régulières. */
+  readonly btnBasculerAbsences: Locator;
+  /** Nombre d'absences affiché dans le bouton de bascule quand la liste est repliée. */
+  readonly nombreAbsencesReplie: Locator;
   /** Icônes ⚠ de conflit d'absence présentes dans la grille. */
   readonly iconesConflit: Locator;
   /** Liste des conflits détaillés dans la popin d'avertissement d'absences. */
@@ -216,6 +220,8 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
     this.inputTitreTemps1 = page.locator('#inputTitreTemps1-input');
     this.bandeauAbsences = page.locator('.edt__bandeau-absences');
     this.lignesBandeauAbsences = page.locator('.edt__bandeau-absences li');
+    this.btnBasculerAbsences = page.locator('#btnBasculerAbsences');
+    this.nombreAbsencesReplie = page.locator('#btnBasculerAbsences .edt__absences-nombre');
     this.iconesConflit = page.locator('[id^="btnConflitCreneau"]');
     this.listeConflitsPopin = page.locator('.mc-popin__liste-conflits');
     this.btnWarningsFermer = page.locator('#btnWarningsFermerAbsences');

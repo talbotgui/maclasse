@@ -509,6 +509,53 @@ describe('EcranEmploiDuTempsComponent', () => {
       expect(bandeau.textContent).toContain('MARTIN Paul');
       expect(bandeau.textContent).toContain('Orthophonie');
     });
+
+    it('place le bandeau dans la zone centrale, entre l’en-tête et la grille', () => {
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Paul', {
+        absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+      });
+      donneesService.charger(DonneesMother.avecEleves([eleve], { emploisDuTemps: [edtBase] }));
+      fixture.detectChanges();
+      (component as any).selectionnerEdt(edtBase);
+      fixture.detectChanges();
+
+      const bandeau = fixture.nativeElement.querySelector('.edt__bandeau-absences');
+      expect(bandeau.parentElement.classList).toContain('edt__grille-conteneur');
+      expect(bandeau.previousElementSibling.classList).toContain('edt__grille-entete');
+      expect(bandeau.nextElementSibling.classList).toContain('edt__grille-defilement');
+    });
+
+    it('replie puis déplie la liste des absences via le bouton de bascule', () => {
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Paul', {
+        absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+      });
+      donneesService.charger(DonneesMother.avecEleves([eleve], { emploisDuTemps: [edtBase] }));
+      fixture.detectChanges();
+      (component as any).selectionnerEdt(edtBase);
+      fixture.detectChanges();
+
+      const bouton: HTMLButtonElement = fixture.nativeElement.querySelector('#btnBasculerAbsences');
+      expect(bouton.getAttribute('aria-expanded')).toBe('true');
+      expect(fixture.nativeElement.querySelector('#zoneAbsencesPertinentes li')).not.toBeNull();
+      expect(fixture.nativeElement.querySelector('.edt__absences-nombre')).toBeNull();
+
+      bouton.click();
+      fixture.detectChanges();
+
+      expect((component as any).absencesDepliees()).toBe(false);
+      expect(bouton.getAttribute('aria-expanded')).toBe('false');
+      expect(fixture.nativeElement.querySelector('#zoneAbsencesPertinentes')).toBeNull();
+      expect(bouton.textContent).toContain(LIBELLES.edt.titreAbsencesPertinentes);
+      expect(fixture.nativeElement.querySelector('.edt__absences-nombre').textContent.trim()).toBe(
+        '— 1',
+      );
+
+      bouton.click();
+      fixture.detectChanges();
+
+      expect((component as any).absencesDepliees()).toBe(true);
+      expect(fixture.nativeElement.querySelector('#zoneAbsencesPertinentes li')).not.toBeNull();
+    });
   });
 
   describe('creneauxAvecConflits / afficherConflitsAbsences / fermerConflitsAbsences', () => {

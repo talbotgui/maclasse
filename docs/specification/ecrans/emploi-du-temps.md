@@ -52,6 +52,20 @@ Trois colonnes — homogène avec les autres écrans :
 
 Affichée uniquement quand un EDT est sélectionné dans la colonne gauche.
 
+### En-tête de la zone centrale
+
+- Nom de l'EDT affiché et bouton **IMPRIMER** (voir plus bas)
+
+### Bandeau des absences régulières
+
+- Placé en tête de la **zone centrale uniquement**, entre l'en-tête (nom + IMPRIMER) et la grille ; les colonnes gauche et droite ne sont pas concernées
+- Affiché si un EDT (non calculé) est sélectionné et qu'au moins une absence récurrente d'élève est pertinente pour lui (jour ouvré utilisé + parité compatible)
+- **Repliable** : le titre « Absences régulières sur cette période » est un bouton (`btnBasculerAbsences`, `aria-expanded`, `aria-controls`) précédé d'un chevron ▾ / ▸
+  - Déplié à l'arrivée sur l'écran ; l'état n'est pas mémorisé
+  - Déplié : une ligne par absence — « NOM Prénom — libellé (Jour hh:mm-hh:mm) »
+  - Replié : la liste est masquée, le bouton affiche le nombre d'absences (« — 3 »)
+- Non imprimé
+
 ### Structure
 
 - **Colonnes** : jours ouvrés (`referentiels.configEmploiDuTemps.joursOuvres`)

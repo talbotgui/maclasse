@@ -236,6 +236,9 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   /** Index de l'EDT actuellement inclus dans l'ordre de tabulation (roving tabindex). */
   protected readonly indexEdtFocalise = signal(0);
 
+  /** Indique si la liste du bandeau des absences régulières est dépliée (dépliée à l'arrivée, non mémorisé). */
+  protected readonly absencesDepliees = signal(true);
+
   /**
    * Demande de focus transmise à `edt-formulaire`, pulsée à chaque changement de sélection.
    * `edt-formulaire` n'étant jamais recréé lors d'un passage d'un créneau/EDT à un autre
@@ -659,6 +662,11 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
     event.stopPropagation();
     this.conflitsAbsences.set(this.emploiDuTempsService.calculerConflitsAbsences(creneau.id));
     this.popinConflitsAbsencesVisible.set(true);
+  }
+
+  /** Replie ou déplie la liste du bandeau des absences régulières. */
+  protected basculerAbsences(): void {
+    this.absencesDepliees.update((depliees) => !depliees);
   }
 
   /** Ferme la popin de détail des conflits créneau/absence élève. */

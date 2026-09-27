@@ -31,6 +31,7 @@
               (focus)="indexEdtFocalise.set(i)"
             >
               <span class="edt__btn-edt-nom">{{ edt.nom }}</span>
+              <span class="edt__btn-edt-detail">{{ obtenirDetailEdt(edt) }}</span>
             </button>
             @if (edtsAvecConflits().has(edt.id)) {
               <button
@@ -68,6 +69,7 @@
               (click)="selectionnerEdtCalcule(edtCalcule)"
             >
               <span class="edt__btn-edt-nom">{{ edtCalcule.nom }}</span>
+              <span class="edt__btn-edt-detail">{{ obtenirDetailEdt(edtCalcule) }}</span>
             </button>
           </li>
         }
@@ -284,7 +286,7 @@
         [existant]="formEdtCalculeExistant()"
         (enregistrer)="onEdtCalculeEnregistre($event)"
         (supprimer)="onEdtCalculeSupprime()"
-        (annuler)="onAnnule()"
+        (annuler)="onEdtCalculeAnnule()"
       />
     } @else if (formEdt() !== null || creneauEdite() !== null) {
       <edt-formulaire
@@ -298,7 +300,8 @@
         (edtSupprime)="onEdtSupprime()"
         (creneauEnregistre)="onCreneauEnregistre($event)"
         (creneauSupprime)="onCreneauSupprime($event)"
-        (edtAnnule)="onAnnule()"
+        (edtAnnule)="onEdtAnnule()"
+        (creneauAnnule)="onCreneauAnnule()"
       />
     } @else if (edtSelectionne() === null) {
       <p class="edt__droite-vide">{{ LIBELLES.edt.aucunEdtSelectionne }}</p>

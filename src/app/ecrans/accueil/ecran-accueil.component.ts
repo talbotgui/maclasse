@@ -51,7 +51,8 @@ export class EcranAccueilComponent {
 
   /**
    * Séances pédagogiques du jour, filtrées (hors récréations et pauses déjeuner),
-   * prêtes à l'affichage avec disciplines résolues et nombre d'élèves calculé.
+   * triées par heure de début et prêtes à l'affichage avec disciplines résolues
+   * et nombre d'élèves calculé.
    */
   protected readonly seancesResumees = computed<SeanceResumee[]>(() => {
     const donnees = this.donneesService.donnees();
@@ -64,6 +65,7 @@ export class EcranAccueilComponent {
 
     return journee.seances
       .filter((s) => s.type === 'pedagogique')
+      .sort((a, b) => a.heureDebut.localeCompare(b.heureDebut))
       .map((s) => {
         const disciplines = (s.disciplinesIds ?? [])
           .map((id) => this.competenceService.obtenirDomaineParId(id)?.libelle ?? '')

@@ -107,17 +107,23 @@
 
   &__btn-edt {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     flex: 1;
     min-width: 0;
     @include bouton-liste;
   }
 
-  &__btn-edt-nom {
-    flex: 1;
+  &__btn-edt-nom,
+  &__btn-edt-detail {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  &__btn-edt-detail {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--texte-secondaire);
   }
 
   &__icone-conflit {

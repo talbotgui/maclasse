@@ -8,10 +8,19 @@ import {
   signal,
 } from '@angular/core';
 import type { InputSignal } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  ControlValueAccessor,
+  FormControl,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ComposantBase } from '../../composant-base';
+import { LIBELLES } from '../../libelles';
+import { McRadioGroupComponent } from '../mc-radio-group/mc-radio-group.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import type { ElevesConcernes } from '../../modeles/emploi-du-temps.modele';
+import type { OptionFormulaire } from '../../modeles/composants.modele';
 
 /**
  * Composant CVA de sélection du périmètre d'élèves concernés par une séance ou un créneau.
@@ -30,6 +39,7 @@ import type { ElevesConcernes } from '../../modeles/emploi-du-temps.modele';
       multi: true,
     },
   ],
+  imports: [ReactiveFormsModule, McRadioGroupComponent],
   templateUrl: './mc-eleves-concernes.component.html',
   styleUrl: './mc-eleves-concernes.component.scss',
 })
@@ -58,6 +68,19 @@ export class McElevesConcernesComponent extends ComposantBase implements Control
     ...McElevesConcernesComponent.VALEUR_DEFAUT,
   });
 
+  /** Modes de sélection proposés par le groupe de boutons radio. */
+  protected readonly optionsMode: OptionFormulaire[] = [
+    { valeur: 'classe', libelle: LIBELLES.elevesConcernes.modeClasse },
+    { valeur: 'groupes', libelle: LIBELLES.elevesConcernes.modeGroupes },
+    { valeur: 'eleves', libelle: LIBELLES.elevesConcernes.modeEleves },
+  ];
+
+  /** Champ du mode de sélection, lié au groupe de boutons radio. */
+  protected readonly controleMode = new FormControl<string>(
+    McElevesConcernesComponent.VALEUR_DEFAUT.type,
+    { nonNullable: true },
+  );
+
   /** Liste des groupes configurés dans les référentiels. */
   protected readonly groupes = computed(
     () => this.donneesService.donnees()?.referentiels.groupes ?? [],
@@ -70,6 +93,14 @@ export class McElevesConcernesComponent extends ComposantBase implements Control
     ),
   );
 
+  /** Bascule de mode à chaque choix d'un bouton radio par l'utilisateur. */
+  public constructor() {
+    super();
+    this.controleMode.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((type) => this.surChangementMode(type as ElevesConcernes['type']));
+  }
+
   /** Callback de notification des changements, fourni par Angular Forms. */
   protected onChange: (valeur: ElevesConcernes) => void = () => {};
 
@@ -81,7 +112,9 @@ export class McElevesConcernesComponent extends ComposantBase implements Control
    * @param valeur Valeur fournie par Angular Forms, `null` si réinitialisation.
    */
   public writeValue(valeur: ElevesConcernes | null): void {
-    this.valeurInterne.set(valeur ?? { ...McElevesConcernesComponent.VALEUR_DEFAUT });
+    const nouvelleValeur = valeur ?? { ...McElevesConcernesComponent.VALEUR_DEFAUT };
+    this.valeurInterne.set(nouvelleValeur);
+    this.controleMode.setValue(nouvelleValeur.type, { emitEvent: false });
   }
 
   /**
@@ -112,9 +145,10 @@ export class McElevesConcernesComponent extends ComposantBase implements Control
    * Bascule vers un nouveau mode de sélection et réinitialise les sélections secondaires.
    * @param type Nouveau mode sélectionné.
    */
-  protected surChangementMode(type: 'classe' | 'groupes' | 'eleves'): void {
+  protected surChangementMode(type: ElevesConcernes['type']): void {
     const nouvelleValeur: ElevesConcernes = { type, groupes: [], elevesIds: [] };
     this.valeurInterne.set(nouvelleValeur);
+    this.controleMode.setValue(type, { emitEvent: false });
     this.onChange(nouvelleValeur);
     this.onTouched();
   }

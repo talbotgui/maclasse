@@ -17,8 +17,6 @@ describe('PopinExportCompetencesComponent', () => {
   let component: PopinExportCompetencesComponent;
   let donneesService: DonneesService;
 
-  const dialogEl = () => fixture.nativeElement.querySelector('dialog') as HTMLDialogElement;
-
   beforeEach(() => {
     vi.clearAllMocks();
     TestBed.configureTestingModule({});
@@ -69,8 +67,8 @@ describe('PopinExportCompetencesComponent', () => {
     });
 
     it('ouverture réinitialise les sélections', () => {
-      (component as any).selectionPrimaire.set('p1');
-      (component as any).selectionSecondaire.set('0');
+      (component as any).controlePrimaire.setValue('p1');
+      (component as any).controleSecondaire.setValue('0');
 
       fixture.componentRef.setInput('visible', true);
       fixture.detectChanges();
@@ -97,7 +95,7 @@ describe('PopinExportCompetencesComponent', () => {
     });
 
     it("sélection d'un projet → optionsSecondaires = périodes", () => {
-      component['surChangementPrimaire']('p1');
+      (component as any).controlePrimaire.setValue('p1');
       fixture.detectChanges();
 
       const options = (component as any).optionsSecondaires() as { valeur: string }[];
@@ -106,9 +104,9 @@ describe('PopinExportCompetencesComponent', () => {
       expect(options[1].valeur).toBe('1');
     });
 
-    it('surChangementPrimaire → réinitialise selectionSecondaire', () => {
-      (component as any).selectionSecondaire.set('1');
-      component['surChangementPrimaire']('p1');
+    it('changer la sélection principale réinitialise la sélection secondaire', () => {
+      (component as any).controleSecondaire.setValue('1');
+      (component as any).controlePrimaire.setValue('p1');
 
       expect((component as any).selectionSecondaire()).toBe('');
     });
@@ -127,8 +125,23 @@ describe('PopinExportCompetencesComponent', () => {
       expect(options[0].valeur).toBe(dateCjSeance);
     });
 
+    it('affiche les journées au format JJ/MM/AAAA', () => {
+      const options = (component as any).optionsPrimaires() as { libelle: string }[];
+      expect(options[0].libelle).toBe(DateUtils.formaterDateCourt(dateCjSeance));
+    });
+
+    it('rend les deux listes avec les identifiants attendus par les E2E', () => {
+      (component as any).controlePrimaire.setValue(dateCjSeance);
+      fixture.detectChanges();
+
+      const primaire = fixture.nativeElement.querySelector('select#exportSelectPrimaire');
+      const secondaire = fixture.nativeElement.querySelector('select#exportSelectSecondaire');
+      expect(primaire).not.toBeNull();
+      expect(secondaire).not.toBeNull();
+    });
+
     it("sélection d'une journée → optionsSecondaires = séances pédago", () => {
-      component['surChangementPrimaire'](dateCjSeance);
+      (component as any).controlePrimaire.setValue(dateCjSeance);
       fixture.detectChanges();
 
       const options = (component as any).optionsSecondaires() as { valeur: string }[];
@@ -139,22 +152,22 @@ describe('PopinExportCompetencesComponent', () => {
 
   describe('peutConfirmer', () => {
     it('false si selectionPrimaire manque', () => {
-      (component as any).selectionPrimaire.set('');
-      (component as any).selectionSecondaire.set('0');
+      (component as any).controlePrimaire.setValue('');
+      (component as any).controleSecondaire.setValue('0');
 
       expect((component as any).peutConfirmer()).toBe(false);
     });
 
     it('false si selectionSecondaire manque', () => {
-      (component as any).selectionPrimaire.set('p1');
-      (component as any).selectionSecondaire.set('');
+      (component as any).controlePrimaire.setValue('p1');
+      (component as any).controleSecondaire.setValue('');
 
       expect((component as any).peutConfirmer()).toBe(false);
     });
 
     it('true si les deux sont renseignées', () => {
-      (component as any).selectionPrimaire.set('p1');
-      (component as any).selectionSecondaire.set('0');
+      (component as any).controlePrimaire.setValue('p1');
+      (component as any).controleSecondaire.setValue('0');
 
       expect((component as any).peutConfirmer()).toBe(true);
     });
@@ -165,8 +178,8 @@ describe('PopinExportCompetencesComponent', () => {
       const spy = vi.spyOn((component as any).confirme, 'emit');
       fixture.componentRef.setInput('mode', 'projet');
       fixture.componentRef.setInput('competencesIds', ['c1']);
-      (component as any).selectionPrimaire.set('p1');
-      (component as any).selectionSecondaire.set('0');
+      (component as any).controlePrimaire.setValue('p1');
+      (component as any).controleSecondaire.setValue('0');
 
       component['surConfirmation']();
 

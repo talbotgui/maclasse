@@ -26,7 +26,7 @@ import { LIBELLES } from '../../libelles';
 @Injectable({ providedIn: 'root' })
 export class EmploiDuTempsService {
   /** Nombre maximal de temps autorisés dans un créneau. */
-  private static readonly NOMBRE_TEMPS_MAX = 4;
+  public static readonly NOMBRE_TEMPS_MAX = 4;
 
   /** Accès aux données de l'application et soumission des commandes. */
   private readonly donneesService = inject(DonneesService);

@@ -304,6 +304,91 @@ describe('EdtFormulaireComponent', () => {
     });
   });
 
+  describe('validation du nom de l’EDT', () => {
+    it("n'émet pas et affiche l'erreur si le nom est vide (espaces seuls)", () => {
+      fixture.componentRef.setInput('edt', EdtMother.base({ nom: '   ' }));
+      fixture.detectChanges();
+      const spy = vi.spyOn((component as any).edtEnregistre, 'emit');
+
+      (component as any).onEnregistrerEdt();
+      fixture.detectChanges();
+
+      expect(spy).not.toHaveBeenCalled();
+      const erreur = fixture.nativeElement.querySelector('#erreurFormulaireEdt') as HTMLElement;
+      expect(erreur.getAttribute('role')).toBe('alert');
+      expect(erreur.textContent?.trim()).toBe(LIBELLES.edt.erreurNomObligatoire);
+    });
+
+    it("n'affiche pas d'erreur avant une tentative d'enregistrement", () => {
+      fixture.componentRef.setInput('edt', EdtMother.base({ nom: '' }));
+      fixture.detectChanges();
+
+      expect((component as any).obtenirErreurNomEdt()).toBeNull();
+      expect(fixture.nativeElement.querySelector('#erreurFormulaireEdt')).toBeNull();
+    });
+
+    it("efface l'erreur au chargement d'un autre EDT", () => {
+      fixture.componentRef.setInput('edt', EdtMother.base({ id: 'a', nom: '' }));
+      fixture.detectChanges();
+      (component as any).onEnregistrerEdt();
+
+      fixture.componentRef.setInput('edt', EdtMother.base({ id: 'b', nom: '' }));
+      fixture.detectChanges();
+
+      expect((component as any).obtenirErreurNomEdt()).toBeNull();
+    });
+  });
+
+  describe('validation des horaires des temps', () => {
+    it("n'émet pas et signale le temps dont la fin précède le début", () => {
+      const creneau = CreneauMother.lundi9h10({
+        temps: [
+          TempsCreneauMother.base({ id: 't1', heureDebut: '09:00', heureFin: '10:00' }),
+          TempsCreneauMother.base({ id: 't2', heureDebut: '11:00', heureFin: '10:30' }),
+        ],
+      });
+      fixture.componentRef.setInput('creneau', creneau);
+      fixture.detectChanges();
+      const spy = vi.spyOn((component as any).creneauEnregistre, 'emit');
+
+      (component as any).onEnregistrerCreneau();
+      fixture.detectChanges();
+
+      expect(spy).not.toHaveBeenCalled();
+      expect(fixture.nativeElement.querySelector('#erreurHeuresTemps0')).toBeNull();
+      const erreur = fixture.nativeElement.querySelector('#erreurHeuresTemps1') as HTMLElement;
+      expect(erreur.getAttribute('role')).toBe('alert');
+      expect(erreur.textContent?.trim()).toBe(LIBELLES.commun.erreurPlageHoraire);
+    });
+
+    it("n'émet pas si l'heure de fin égale l'heure de début", () => {
+      fixture.componentRef.setInput('creneau', CreneauMother.avecHoraire('09:00', '09:00'));
+      fixture.detectChanges();
+      const spy = vi.spyOn((component as any).creneauEnregistre, 'emit');
+
+      (component as any).onEnregistrerCreneau();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it("n'émet pas si une heure est vide", () => {
+      fixture.componentRef.setInput('creneau', CreneauMother.avecHoraire('', '10:00'));
+      fixture.detectChanges();
+      const spy = vi.spyOn((component as any).creneauEnregistre, 'emit');
+
+      (component as any).onEnregistrerCreneau();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it("n'affiche pas d'erreur avant une tentative d'enregistrement", () => {
+      fixture.componentRef.setInput('creneau', CreneauMother.avecHoraire('11:00', '10:00'));
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('#erreurHeuresTemps0')).toBeNull();
+    });
+  });
+
   describe('onEnregistrerCreneau', () => {
     it('émet un clone de formCreneau', () => {
       const creneau = CreneauMother.avecHoraire('09:00', '12:00');
@@ -380,11 +465,32 @@ describe('EdtFormulaireComponent', () => {
     });
   });
 
-  describe('onEdtAnnule / onEdtSupprime / onCreneauSupprime', () => {
+  describe('onEdtAnnule / onCreneauAnnule / onEdtSupprime / onCreneauSupprime', () => {
     it('onEdtAnnule émet edtAnnule', () => {
       const spy = vi.spyOn((component as any).edtAnnule, 'emit');
 
       (component as any).onEdtAnnule();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('onEdtAnnule restaure les valeurs enregistrées et efface les erreurs', () => {
+      fixture.componentRef.setInput('edt', EdtMother.base({ nom: 'Semaine A' }));
+      fixture.detectChanges();
+      (component as any).formEdt.nom = '';
+      (component as any).onEnregistrerEdt();
+
+      (component as any).onEdtAnnule();
+
+      expect((component as any).formEdt.nom).toBe('Semaine A');
+      expect((component as any).estModifie()).toBe(false);
+      expect((component as any).obtenirErreurNomEdt()).toBeNull();
+    });
+
+    it('onCreneauAnnule émet creneauAnnule', () => {
+      const spy = vi.spyOn((component as any).creneauAnnule, 'emit');
+
+      (component as any).onCreneauAnnule();
 
       expect(spy).toHaveBeenCalledTimes(1);
     });

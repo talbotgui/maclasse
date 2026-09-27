@@ -16,7 +16,7 @@ import {
 import { CommandeCreation } from '../../commandes/commande-creation';
 import { CommandeModification } from '../../commandes/commande-modification';
 import { CommandeSuppression } from '../../commandes/commande-suppression';
-import { CommandeRemplacement } from '../../commandes/commande-par-index';
+import { CommandeRemplacement } from '../../commandes/commande-remplacement';
 import { DonneesService } from '../avecEtat/donnees.service';
 import { LIBELLES } from '../../libelles';
 

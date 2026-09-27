@@ -1,16 +1,12 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  output,
-  signal,
-} from '@angular/core';
-import type { InputSignal, OutputEmitterRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import type { InputSignal, OutputEmitterRef, Signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { PopinBase } from '../../../popin-base';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
+import { McSelectComponent } from '../../../composants/mc-select/mc-select.component';
 import { DonneesService } from '../../../services/avecEtat/donnees.service';
+import { DateUtils } from '../../../utilitaires/date.utils';
 import type {
   OptionFormulaire,
   ResultatExportCompetences,
@@ -25,7 +21,7 @@ export type { ResultatExportCompetences };
 @Component({
   selector: 'popin-export-competences',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [McAutoFocusDirective],
+  imports: [ReactiveFormsModule, McAutoFocusDirective, McSelectComponent],
   templateUrl: './popin-export-competences.component.html',
   styleUrl: './popin-export-competences.component.scss',
 })
@@ -46,18 +42,30 @@ export class PopinExportCompetencesComponent extends PopinBase {
   /** Accès aux données de l'application pour construire les listes. */
   private readonly donneesService = inject(DonneesService);
 
-  /** Sélection principale : projet ID (mode projet) ou date ISO (mode séance). */
-  protected readonly selectionPrimaire = signal('');
+  /** Champ de la sélection principale : projet ID (mode projet) ou date ISO (mode séance). */
+  protected readonly controlePrimaire = new FormControl('', { nonNullable: true });
 
-  /** Sélection secondaire : index période en string (mode projet) ou séance ID (mode séance). */
-  protected readonly selectionSecondaire = signal('');
+  /** Champ de la sélection secondaire : index de période (mode projet) ou séance ID (mode séance). */
+  protected readonly controleSecondaire = new FormControl('', { nonNullable: true });
+
+  /** Sélection principale courante, en signal pour le calcul des options dépendantes. */
+  protected readonly selectionPrimaire: Signal<string> = toSignal(
+    this.controlePrimaire.valueChanges,
+    { initialValue: this.controlePrimaire.value },
+  );
+
+  /** Sélection secondaire courante, en signal pour l'activation du bouton de confirmation. */
+  protected readonly selectionSecondaire: Signal<string> = toSignal(
+    this.controleSecondaire.valueChanges,
+    { initialValue: this.controleSecondaire.value },
+  );
 
   /** `true` quand les deux sélections sont renseignées. */
   protected readonly peutConfirmer = computed(
     () => !!this.selectionPrimaire() && !!this.selectionSecondaire(),
   );
 
-  /** Options du premier `<select>` selon le mode courant. */
+  /** Options de la première liste selon le mode courant (journées affichées en JJ/MM/AAAA). */
   protected readonly optionsPrimaires = computed<OptionFormulaire[]>(() => {
     const donnees = this.donneesService.donnees();
     if (!donnees) return [];
@@ -66,10 +74,10 @@ export class PopinExportCompetencesComponent extends PopinBase {
     }
     return donnees.cahierJournal
       .filter((j) => j.seances.some((s) => s.type === 'pedagogique'))
-      .map((j) => ({ valeur: j.date, libelle: j.date }));
+      .map((j) => ({ valeur: j.date, libelle: DateUtils.formaterDateCourt(j.date) }));
   });
 
-  /** Options du second `<select>` dépendant de la sélection primaire. */
+  /** Options de la seconde liste, dépendant de la sélection primaire. */
   protected readonly optionsSecondaires = computed<OptionFormulaire[]>(() => {
     const donnees = this.donneesService.donnees();
     if (!donnees || !this.selectionPrimaire()) return [];
@@ -93,27 +101,18 @@ export class PopinExportCompetencesComponent extends PopinBase {
     );
   });
 
+  /** Vide la sélection secondaire à chaque changement de la sélection principale. */
+  public constructor() {
+    super();
+    this.controlePrimaire.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.controleSecondaire.reset());
+  }
+
   /** Réinitialise les champs de saisie à chaque ouverture. */
   protected override reinitialiserALOuverture(): void {
-    this.selectionPrimaire.set('');
-    this.selectionSecondaire.set('');
-  }
-
-  /**
-   * Met à jour la sélection primaire et réinitialise la secondaire.
-   * @param valeur Identifiant sélectionné dans le premier `<select>`.
-   */
-  protected surChangementPrimaire(valeur: string): void {
-    this.selectionPrimaire.set(valeur);
-    this.selectionSecondaire.set('');
-  }
-
-  /**
-   * Met à jour la sélection secondaire.
-   * @param valeur Identifiant sélectionné dans le second `<select>`.
-   */
-  protected surChangementSecondaire(valeur: string): void {
-    this.selectionSecondaire.set(valeur);
+    this.controlePrimaire.reset();
+    this.controleSecondaire.reset();
   }
 
   /** Émet le résultat de l'export si les deux sélections sont renseignées. */

@@ -13,6 +13,10 @@
         [mcAutoFocus]="focusDemande()"
       />
 
+      @if (obtenirErreurNomEdt(); as message) {
+        <p id="erreurFormulaireEdt" class="edt-formulaire__erreur" role="alert">{{ message }}</p>
+      }
+
       <mc-input
         id="inputDateDebutEdt"
         [(ngModel)]="formEdt.dateDebut"
@@ -100,6 +104,12 @@
             [required]="true"
           />
 
+          @if (obtenirErreurHorairesTemps(temps); as message) {
+            <p [id]="'erreurHeuresTemps' + i" class="edt-formulaire__erreur" role="alert">
+              {{ message }}
+            </p>
+          }
+
           @if (formCreneau.type === 'pedagogique') {
             <fieldset
               class="edt-formulaire__groupe mc-groupe-nu"
@@ -163,7 +173,12 @@
         <button id="btnEnregistrerCreneau" type="submit" class="mc-btn-primaire">
           {{ LIBELLES.commun.enregistrer }}
         </button>
-        <button id="btnAnnulerCreneau" type="button" class="mc-btn-fantome" (click)="onEdtAnnule()">
+        <button
+          id="btnAnnulerCreneau"
+          type="button"
+          class="mc-btn-fantome"
+          (click)="onCreneauAnnule()"
+        >
           {{ LIBELLES.commun.annuler }}
         </button>
         @if (estEditionCreneau()) {

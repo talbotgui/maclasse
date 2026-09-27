@@ -80,8 +80,8 @@ testAvecDonnees(
     await edt.inputNomEdt.fill('Nom modifié temporaire');
     await edt.btnAnnulerEdt.click();
 
-    // Le champ n'existe plus dans le DOM
-    await expect(edt.inputNomEdt).toHaveCount(0);
+    // Le formulaire reste ouvert avec les valeurs enregistrées
+    await expect(edt.inputNomEdt).toHaveValue('Semaine paire — 1ère partie');
 
     // Aucune mutation → ANNULER entête inactif
     await expect(entete.btnAnnuler).toBeDisabled();
@@ -181,9 +181,9 @@ testAvecDonnees("E2E-59 — Annuler la modification d'un créneau", async ({ app
   await edt.inputTitreTemps0.fill('Modifié temporaire');
   await edt.btnAnnulerCreneau.click();
 
-  // ANNULER ferme le formulaire mais l'EDT reste sélectionné et sa grille affichée
+  // ANNULER revient aux propriétés de l'EDT sélectionné, dont la grille reste affichée
   await expect(edt.inputTitreTemps0).toHaveCount(0);
-  await expect(edt.droiteVide).toHaveCount(0);
+  await expect(edt.inputNomEdt).toHaveValue('Semaine paire — 1ère partie');
   await expect(edt.conteneurGrille).toContainText('Lecture – Compréhension de texte');
   // La saisie abandonnée n'a pas modifié le créneau
   await expect(edt.conteneurGrille).not.toContainText('Modifié temporaire');
@@ -599,5 +599,47 @@ testAvecDonnees(
     await edt.btnEnregistrerEdtCalcule.click();
     await edt.btnPremierEdtCalcule.click();
     await expect(edt.cellulesCalculees.filter({ hasText: 'Pause déjeuner' })).not.toHaveCount(0);
+  },
+);
+
+testAvecDonnees(
+  "E2E-133 — Annuler la création d'un EDT vide la colonne droite",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+    await edt.btnCreerEdt.click();
+    await edt.inputNomEdt.fill('Jamais enregistré');
+    await edt.btnAnnulerEdt.click();
+
+    await expect(edt.inputNomEdt).toHaveCount(0);
+    await expect(edt.droiteVide).toBeVisible();
+    await expect(edt.listeEdts).not.toContainText('Jamais enregistré');
+  },
+);
+
+testAvecDonnees(
+  'E2E-134 — Formulaire EDT : nom obligatoire et heure de fin postérieure au début',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const edt = new SelecteursEmploiDuTemps(appAvecDonnees);
+
+    await entete.navEmploiDuTemps.click();
+
+    // Nom vide : message d'erreur, rien n'est créé
+    await edt.btnCreerEdt.click();
+    await edt.btnEnregistrerEdt.click();
+    await expect(edt.erreurFormulaireEdt).toBeVisible();
+    await expect(entete.btnAnnuler).toBeDisabled();
+
+    // Heure de fin antérieure au début : message sur le temps, créneau non modifié
+    await edt.btnEdtSemainePaire.click();
+    await edt.premierCreneauSemainePaire.click();
+    await edt.inputHeureFinTemps0.fill('08:00');
+    await edt.btnEnregistrerCreneau.click();
+    await expect(edt.erreurHeuresTemps0).toBeVisible();
+    await expect(edt.inputHeureFinTemps0).toBeVisible();
+    await expect(entete.btnAnnuler).toBeDisabled();
   },
 );

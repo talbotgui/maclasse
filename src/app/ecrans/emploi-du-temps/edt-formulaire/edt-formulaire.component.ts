@@ -34,6 +34,7 @@ import type {
 } from '../../../modeles/emploi-du-temps.modele';
 import type { Competence } from '../../../modeles/referentiels.modele';
 import type { OptionFormulaire } from '../../../modeles/composants.modele';
+import { EmploiDuTempsService } from '../../../services/sansEtat/emploi-du-temps.service';
 
 /**
  * Formulaire contextuel de l'emploi du temps.
@@ -57,9 +58,6 @@ import type { OptionFormulaire } from '../../../modeles/composants.modele';
   styleUrl: './edt-formulaire.component.scss',
 })
 export class EdtFormulaireComponent {
-  /** Nombre maximal de temps autorisés dans un créneau. */
-  private static readonly NOMBRE_TEMPS_MAX = 4;
-
   /** Constante centralisée des libellés. */
   protected readonly LIBELLES = LIBELLES;
 
@@ -96,8 +94,11 @@ export class EdtFormulaireComponent {
   /** Émis pour déclencher la suppression d'un créneau existant. */
   protected readonly creneauSupprime: OutputEmitterRef<string> = output<string>();
 
-  /** Émis quand l'utilisateur annule. */
+  /** Émis quand l'utilisateur annule la saisie des propriétés de l'EDT (valeurs déjà restaurées). */
   protected readonly edtAnnule: OutputEmitterRef<void> = output<void>();
+
+  /** Émis quand l'utilisateur annule la saisie d'un créneau. */
+  protected readonly creneauAnnule: OutputEmitterRef<void> = output<void>();
 
   /** Options de fréquence pour l'EDT. */
   protected readonly optionsFrequence = [
@@ -147,6 +148,12 @@ export class EdtFormulaireComponent {
     () => this.creneau() !== null && this.creneauExistant(),
   );
 
+  /** `true` après une tentative d'enregistrement des propriétés (déclenche l'affichage des erreurs). */
+  protected readonly soumissionEdtTentee: WritableSignal<boolean> = signal(false);
+
+  /** `true` après une tentative d'enregistrement du créneau (déclenche l'affichage des erreurs). */
+  protected readonly soumissionCreneauTentee: WritableSignal<boolean> = signal(false);
+
   /** Index du bloc temps à focaliser à l'apparition (RGAA), `null` si aucun ajout récent. */
   protected readonly indexAFocaliserTemps: WritableSignal<number | null> = signal(null);
 
@@ -155,7 +162,7 @@ export class EdtFormulaireComponent {
    * @returns `true` si `formCreneau.temps` contient déjà le nombre maximal autorisé.
    */
   protected estNombreTempsMaxAtteint(): boolean {
-    return (this.formCreneau?.temps.length ?? 0) >= EdtFormulaireComponent.NOMBRE_TEMPS_MAX;
+    return (this.formCreneau?.temps.length ?? 0) >= EmploiDuTempsService.NOMBRE_TEMPS_MAX;
   }
 
   /**
@@ -171,6 +178,7 @@ export class EdtFormulaireComponent {
       this.idEdtCharge = id;
       this.formEdt = e ? structuredClone(e) : null;
       this.edtOrigine = e ? structuredClone(e) : null;
+      this.soumissionEdtTentee.set(false);
       this.cdr.markForCheck();
     });
     effect(() => {
@@ -180,6 +188,7 @@ export class EdtFormulaireComponent {
       this.idCreneauCharge = id;
       this.formCreneau = c ? structuredClone(c) : null;
       this.creneauOrigine = c ? structuredClone(c) : null;
+      this.soumissionCreneauTentee.set(false);
       this.cdr.markForCheck();
     });
   }
@@ -194,6 +203,44 @@ export class EdtFormulaireComponent {
       JSON.stringify(this.formEdt) !== JSON.stringify(this.edtOrigine) ||
       JSON.stringify(this.formCreneau) !== JSON.stringify(this.creneauOrigine)
     );
+  }
+
+  /**
+   * Message d'erreur des propriétés de l'EDT, affiché après une tentative d'enregistrement.
+   * @returns Message « nom obligatoire » si le nom est vide après une tentative, `null` sinon.
+   */
+  protected obtenirErreurNomEdt(): string | null {
+    if (!this.soumissionEdtTentee() || this.verifierNomEdtRenseigne()) return null;
+    return LIBELLES.edt.erreurNomObligatoire;
+  }
+
+  /**
+   * Message d'erreur des horaires d'un temps, affiché après une tentative d'enregistrement.
+   * @param temps Temps du créneau à contrôler.
+   * @returns Message « fin postérieure au début » si la plage est invalide après une tentative, `null` sinon.
+   */
+  protected obtenirErreurHorairesTemps(temps: TempsCreneau): string | null {
+    if (!this.soumissionCreneauTentee() || EdtFormulaireComponent.verifierPlageHoraire(temps)) {
+      return null;
+    }
+    return LIBELLES.commun.erreurPlageHoraire;
+  }
+
+  /**
+   * Indique si le nom de l'EDT en cours d'édition est renseigné (hors espaces).
+   * @returns `true` si le nom contient au moins un caractère non blanc.
+   */
+  private verifierNomEdtRenseigne(): boolean {
+    return (this.formEdt?.nom ?? '').trim().length > 0;
+  }
+
+  /**
+   * Indique si les horaires d'un temps sont renseignés et forment une plage non vide.
+   * @param temps Temps à contrôler.
+   * @returns `true` si l'heure de fin est strictement postérieure à l'heure de début.
+   */
+  private static verifierPlageHoraire(temps: TempsCreneau): boolean {
+    return !!temps.heureDebut && !!temps.heureFin && temps.heureFin > temps.heureDebut;
   }
 
   /**
@@ -258,17 +305,25 @@ export class EdtFormulaireComponent {
     };
   }
 
-  /** Enregistre les propriétés de l'EDT. */
+  /** Enregistre les propriétés de l'EDT si le nom est renseigné ; sinon affiche l'erreur. */
   protected onEnregistrerEdt(): void {
-    if (this.formEdt) this.edtEnregistre.emit(structuredClone(this.formEdt));
+    this.soumissionEdtTentee.set(true);
+    if (!this.formEdt || !this.verifierNomEdtRenseigne()) return;
+    this.edtEnregistre.emit(structuredClone(this.formEdt));
   }
 
   /**
-   * Enregistre le créneau. Un créneau hors classe (récréation, pause déjeuner) est émis sans
-   * les champs pédagogiques de ses temps ; le formulaire, lui, conserve les saisies.
+   * Enregistre le créneau si chaque temps a une heure de fin postérieure à son heure de début ;
+   * sinon affiche l'erreur sur les temps concernés. Un créneau hors classe (récréation, pause
+   * déjeuner) est émis sans les champs pédagogiques de ses temps ; le formulaire, lui,
+   * conserve les saisies.
    */
   protected onEnregistrerCreneau(): void {
+    this.soumissionCreneauTentee.set(true);
     if (!this.formCreneau) return;
+    if (!this.formCreneau.temps.every((t) => EdtFormulaireComponent.verifierPlageHoraire(t))) {
+      return;
+    }
     const creneau = structuredClone(this.formCreneau);
     if (creneau.type !== 'pedagogique') {
       creneau.temps = creneau.temps.map(({ id, heureDebut, heureFin }) => ({
@@ -280,9 +335,20 @@ export class EdtFormulaireComponent {
     this.creneauEnregistre.emit(creneau);
   }
 
-  /** Délègue l'annulation de la saisie (EDT ou créneau) au parent. */
+  /**
+   * Restaure les propriétés de l'EDT telles qu'à l'ouverture du formulaire, puis délègue
+   * l'annulation au parent (qui ferme le formulaire si l'EDT n'a jamais été enregistré).
+   */
   protected onEdtAnnule(): void {
+    this.formEdt = this.edtOrigine ? structuredClone(this.edtOrigine) : null;
+    this.soumissionEdtTentee.set(false);
+    this.cdr.markForCheck();
     this.edtAnnule.emit();
+  }
+
+  /** Délègue l'annulation de la saisie du créneau au parent. */
+  protected onCreneauAnnule(): void {
+    this.creneauAnnule.emit();
   }
 
   /** Délègue la demande de suppression de l'EDT au parent. */

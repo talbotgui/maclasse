@@ -131,7 +131,9 @@
                   "
                   (click)="surSelectionResultat(res)"
                 >
-                  <span class="mc-entete__resultat-type">{{ res.type }}</span>
+                  <span class="mc-entete__resultat-type">{{
+                    LIBELLES.entete.typesResultatRecherche[res.type]
+                  }}</span>
                   <span class="mc-entete__resultat-titre">{{ res.titre }}</span>
                 </button>
               </li>

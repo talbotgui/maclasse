@@ -71,14 +71,6 @@ export class ProjetService {
   }
 
   /**
-   * Retourne un projet par son identifiant, ou `undefined` s'il n'existe pas.
-   * @param id UUID du projet.
-   */
-  public obtenirProjet(id: string): Projet | undefined {
-    return this.donneesService.donnees()?.projets.find((p) => p.id === id);
-  }
-
-  /**
    * Retourne la liste des projets filtrée par terme de recherche.
    * La recherche porte sur le nom et la description. Insensible à la casse et aux accents.
    * @param terme Terme de recherche (vide = liste complète).
@@ -93,20 +85,6 @@ export class ProjetService {
         TexteUtils.normaliserPourRecherche(p.nom).includes(t) ||
         TexteUtils.normaliserPourRecherche(p.description).includes(t),
     );
-  }
-
-  /**
-   * Ajoute une période à un projet existant.
-   * Le projet est remplacé dans son intégralité (UNDO/REDO au niveau du projet).
-   * Sans effet si le projet n'existe pas ou si aucune donnée n'est chargée.
-   * @param projetId UUID du projet.
-   * @param periode Période à ajouter.
-   */
-  public ajouterPeriode(projetId: string, periode: ProjetPeriode): void {
-    this.modifierProjetExistant(projetId, LIBELLES.commandes.ajoutPeriodeProjet, (projet) => ({
-      ...projet,
-      periodes: [...projet.periodes, periode],
-    }));
   }
 
   /**
@@ -129,23 +107,6 @@ export class ProjetService {
         periodes: projet.periodes.map((pp) =>
           pp.id === anciennePeriode.id ? nouvellePeriode : pp,
         ),
-      }),
-    );
-  }
-
-  /**
-   * Supprime une période d'un projet (retrouvée par `id`).
-   * Sans effet si le projet ou la période n'existe pas.
-   * @param projetId UUID du projet.
-   * @param periodeId UUID de la période à supprimer.
-   */
-  public supprimerPeriode(projetId: string, periodeId: string): void {
-    this.modifierProjetExistant(
-      projetId,
-      LIBELLES.commandes.suppressionPeriodeProjet,
-      (projet) => ({
-        ...projet,
-        periodes: projet.periodes.filter((pp) => pp.id !== periodeId),
       }),
     );
   }

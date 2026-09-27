@@ -5,40 +5,9 @@
 
 import { Injectable } from '@angular/core';
 import { DonneesApplication } from '../../modeles/donnees-application.modele';
-import { CreneauEdt, ElevesConcernes, TypeCreneau } from '../../modeles/emploi-du-temps.modele';
+import { CreneauEdt } from '../../modeles/emploi-du-temps.modele';
+import { CreneauEdtV1, EtapeMigration } from '../../modeles/migration.modele';
 import { SourceEdtCalcule } from '../../modeles/emploi-du-temps-calcule.modele';
-
-/**
- * Forme d'un créneau EDT antérieure à l'introduction des temps multiples (`temps[]`) :
- * horaire et champs pédagogiques portés directement par le créneau.
- */
-interface CreneauEdtV1 {
-  /** Identifiant unique du créneau. */
-  id: string;
-  /** Heure de début au format `HH:MM`. */
-  heureDebut: string;
-  /** Heure de fin au format `HH:MM`. */
-  heureFin: string;
-  /** Nature du créneau. */
-  type: TypeCreneau;
-  /** Identifiants des disciplines traitées (type pédagogique uniquement). */
-  disciplinesIds?: string[];
-  /** Titre libre du créneau (type pédagogique uniquement). */
-  titre?: string;
-  /** Périmètre des élèves concernés (type pédagogique uniquement). */
-  elevesConcernes?: ElevesConcernes;
-}
-
-/**
- * Étape de migration versionnée : amène les données à `versionCible` si leur
- * version courante est antérieure.
- */
-interface EtapeMigration {
-  /** Version du format de données obtenue une fois cette étape appliquée. */
-  versionCible: string;
-  /** Applique la transformation aux données, en place. */
-  appliquer: (donnees: DonneesApplication) => void;
-}
 
 /**
  * Fait progresser les données chargées d'une version de format à l'autre via une

@@ -208,7 +208,7 @@ export class CjFormulaireSeanceComponent {
   protected readonly messageErreur = computed<string | null>(() => {
     if (this.soumissionTentee() && this.formInvalide()) {
       if (this.form.hasError('plageHoraireInvalide')) {
-        return LIBELLES.cahierJournal.erreurPlageHoraire;
+        return LIBELLES.commun.erreurPlageHoraire;
       }
       return LIBELLES.cahierJournal.erreurChampsObligatoires;
     }

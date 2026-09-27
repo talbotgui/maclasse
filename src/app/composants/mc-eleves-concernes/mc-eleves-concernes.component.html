@@ -1,43 +1,10 @@
 <div class="mc-eleves-concernes">
-  <fieldset class="mc-groupe-radio">
-    <legend>{{ LIBELLES.elevesConcernes.legende }}</legend>
-
-    <div class="mc-radio-option">
-      <input
-        [id]="id() + '_classe'"
-        [name]="id() + '_mode'"
-        type="radio"
-        value="classe"
-        [checked]="valeurInterne().type === 'classe'"
-        (change)="surChangementMode('classe')"
-      />
-      <label [for]="id() + '_classe'">{{ LIBELLES.elevesConcernes.modeClasse }}</label>
-    </div>
-
-    <div class="mc-radio-option">
-      <input
-        [id]="id() + '_groupes'"
-        [name]="id() + '_mode'"
-        type="radio"
-        value="groupes"
-        [checked]="valeurInterne().type === 'groupes'"
-        (change)="surChangementMode('groupes')"
-      />
-      <label [for]="id() + '_groupes'">{{ LIBELLES.elevesConcernes.modeGroupes }}</label>
-    </div>
-
-    <div class="mc-radio-option">
-      <input
-        [id]="id() + '_eleves'"
-        [name]="id() + '_mode'"
-        type="radio"
-        value="eleves"
-        [checked]="valeurInterne().type === 'eleves'"
-        (change)="surChangementMode('eleves')"
-      />
-      <label [for]="id() + '_eleves'">{{ LIBELLES.elevesConcernes.modeEleves }}</label>
-    </div>
-  </fieldset>
+  <mc-radio-group
+    [id]="id()"
+    [formControl]="controleMode"
+    [label]="LIBELLES.elevesConcernes.legende"
+    [options]="optionsMode"
+  />
 
   @if (valeurInterne().type === 'groupes') {
     <fieldset

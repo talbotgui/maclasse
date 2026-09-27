@@ -4,7 +4,7 @@ import { SauvegardeAutoService } from './sauvegarde-auto.service';
 import { DonneesService } from '../avecEtat/donnees.service';
 import { ContexteService } from '../avecEtat/contexte.service';
 import { DonneesMother } from '../../tests/donnees.mother';
-import { CommandeRemplacement } from '../../commandes/commande-par-index';
+import { CommandeRemplacement } from '../../commandes/commande-remplacement';
 
 /** Référence réelle capturée avant tout `vi.useFakeTimers()`, pour franchir un vrai macro-tick. */
 const setTimeoutReel = globalThis.setTimeout;

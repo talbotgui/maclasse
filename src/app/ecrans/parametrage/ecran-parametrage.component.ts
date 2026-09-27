@@ -16,7 +16,7 @@ import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ReferentielService } from '../../services/sansEtat/referentiel.service';
 import { SauvegardeAutoService } from '../../services/sansEtat/sauvegarde-auto.service';
-import { CommandeRemplacement } from '../../commandes/commande-par-index';
+import { CommandeRemplacement } from '../../commandes/commande-remplacement';
 import { McAutoFocusDirective } from '../../directives/mc-auto-focus.directive';
 import { McInputComponent } from '../../composants/mc-input/mc-input.component';
 import { McChampHeureComponent } from '../../composants/mc-champ-heure/mc-champ-heure.component';

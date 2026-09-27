@@ -74,18 +74,6 @@ describe('ProjetService', () => {
     });
   });
 
-  /** Retourne le projet si l'id existe, undefined sinon. */
-  describe('obtenirProjet', () => {
-    it("retourne le projet si l'id existe", () => {
-      service.creerProjet(ProjetMother.base());
-      expect(service.obtenirProjet('p1')?.nom).toBe('Compostage');
-    });
-
-    it("retourne undefined si l'id n'existe pas", () => {
-      expect(service.obtenirProjet('inconnu')).toBeUndefined();
-    });
-  });
-
   /** Filtre par nom et description, insensible à la casse et aux accents ; retourne tout si terme vide. */
   describe('rechercherProjets', () => {
     beforeEach(() => {
@@ -123,40 +111,10 @@ describe('ProjetService', () => {
     });
   });
 
-  /** Vérifie l'ajout, la modification et la suppression de périodes dans un projet. */
-  describe('ajouterPeriode', () => {
-    it('ajoute une période au projet', () => {
-      service.creerProjet(ProjetMother.base());
-      service.ajouterPeriode('p1', PeriodeMother.base());
-      expect(donneesService.donnees()?.projets[0].periodes).toHaveLength(1);
-    });
-
-    it('sans effet si projet inexistant', () => {
-      service.creerProjet(ProjetMother.base());
-      service.ajouterPeriode('inconnu', PeriodeMother.base());
-      expect(donneesService.donnees()?.projets[0].periodes).toHaveLength(0);
-    });
-
-    it('sans effet si aucune donnée chargée', () => {
-      TestBed.resetTestingModule();
-      TestBed.configureTestingModule({});
-      const s = TestBed.inject(ProjetService);
-      expect(() => s.ajouterPeriode('p1', PeriodeMother.base())).not.toThrow();
-    });
-
-    it('supporte le UNDO', () => {
-      service.creerProjet(ProjetMother.base());
-      service.ajouterPeriode('p1', PeriodeMother.base());
-      donneesService.annuler();
-      expect(donneesService.donnees()?.projets[0].periodes).toHaveLength(0);
-    });
-  });
-
   /** Modifie une période existante dans un projet ; sans effet si le projet est introuvable ou sans données. */
   describe('modifierPeriode', () => {
     it('modifie une période existante', () => {
-      service.creerProjet(ProjetMother.base());
-      service.ajouterPeriode('p1', PeriodeMother.base());
+      service.creerProjet(ProjetMother.base({ periodes: [PeriodeMother.base()] }));
       service.modifierPeriode('p1', PeriodeMother.base(), {
         ...PeriodeMother.base(),
         debut: '2025-09-02',
@@ -165,8 +123,7 @@ describe('ProjetService', () => {
     });
 
     it('sans effet si projet inexistant', () => {
-      service.creerProjet(ProjetMother.base());
-      service.ajouterPeriode('p1', PeriodeMother.base());
+      service.creerProjet(ProjetMother.base({ periodes: [PeriodeMother.base()] }));
       service.modifierPeriode('inconnu', PeriodeMother.base(), {
         ...PeriodeMother.base(),
         debut: '2025-09-02',
@@ -184,39 +141,20 @@ describe('ProjetService', () => {
     });
   });
 
-  /** Supprime une période d'un projet par son id ; sans effet si le projet ou la période est introuvable. */
-  describe('supprimerPeriode', () => {
-    it('supprime une période existante', () => {
-      service.creerProjet(ProjetMother.base());
-      service.ajouterPeriode('p1', PeriodeMother.base());
-      service.supprimerPeriode('p1', 'pp1');
-      expect(donneesService.donnees()?.projets[0].periodes).toHaveLength(0);
-    });
-
-    it('sans effet si projet inexistant', () => {
-      service.creerProjet(ProjetMother.base());
-      service.ajouterPeriode('p1', PeriodeMother.base());
-      service.supprimerPeriode('inconnu', 'pp1');
-      expect(donneesService.donnees()?.projets[0].periodes).toHaveLength(1);
-    });
-
-    it('sans effet si aucune donnée chargée', () => {
-      TestBed.resetTestingModule();
-      TestBed.configureTestingModule({});
-      const s = TestBed.inject(ProjetService);
-      expect(() => s.supprimerPeriode('p1', 'pp1')).not.toThrow();
-    });
-  });
-
   /**
    * Régression SOU-018 : deux périodes homonymes ne doivent plus être confondues,
-   * `modifierPeriode`/`supprimerPeriode` matchent désormais par `id` et non par `periodeNom`.
+   * `modifierPeriode` retrouve la période par `id` et non par `periodeNom`.
    */
   describe('périodes homonymes (régression SOU-018)', () => {
     it('modifierPeriode ne modifie que la période ciblée, pas son homonyme', () => {
-      service.creerProjet(ProjetMother.base());
-      service.ajouterPeriode('p1', PeriodeMother.base({ id: 'pp1', periodeNom: '' }));
-      service.ajouterPeriode('p1', PeriodeMother.base({ id: 'pp2', periodeNom: '' }));
+      service.creerProjet(
+        ProjetMother.base({
+          periodes: [
+            PeriodeMother.base({ id: 'pp1', periodeNom: '' }),
+            PeriodeMother.base({ id: 'pp2', periodeNom: '' }),
+          ],
+        }),
+      );
 
       const cible = donneesService.donnees()!.projets[0].periodes[0];
       service.modifierPeriode('p1', cible, { ...cible, competencesIds: ['c1'] });
@@ -224,18 +162,6 @@ describe('ProjetService', () => {
       const periodes = donneesService.donnees()!.projets[0].periodes;
       expect(periodes[0].competencesIds).toEqual(['c1']);
       expect(periodes[1].competencesIds).toEqual([]);
-    });
-
-    it('supprimerPeriode ne supprime que la période ciblée, pas son homonyme', () => {
-      service.creerProjet(ProjetMother.base());
-      service.ajouterPeriode('p1', PeriodeMother.base({ id: 'pp1', periodeNom: '' }));
-      service.ajouterPeriode('p1', PeriodeMother.base({ id: 'pp2', periodeNom: '' }));
-
-      service.supprimerPeriode('p1', 'pp1');
-
-      const periodes = donneesService.donnees()!.projets[0].periodes;
-      expect(periodes).toHaveLength(1);
-      expect(periodes[0].id).toBe('pp2');
     });
   });
 });

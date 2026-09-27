@@ -4,7 +4,7 @@ import { EcranAccueilComponent } from './ecran-accueil.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { CahierJournalService } from '../../services/sansEtat/cahier-journal.service';
 import { DonneesMother } from '../../tests/donnees.mother';
-import { SeanceMother } from '../../tests/cahier-journal.mother';
+import { JourneeMother, SeanceMother } from '../../tests/cahier-journal.mother';
 import { EleveMother } from '../../tests/eleve.mother';
 import { DateUtils } from '../../utilitaires/date.utils';
 
@@ -51,6 +51,31 @@ describe('EcranAccueilComponent', () => {
 
       const seances = (component as any).seancesResumees();
       expect(seances).toHaveLength(1);
+    });
+
+    it("trie les séances par heure de début, quel que soit l'ordre de stockage", () => {
+      donneesService.charger(
+        DonneesMother.base({
+          cahierJournal: [
+            JourneeMother.base({
+              date: dateAujourdhui,
+              seances: [
+                SeanceMother.pedagogique({
+                  id: 'apresMidi',
+                  heureDebut: '13:30',
+                  heureFin: '14:30',
+                }),
+                SeanceMother.pedagogique({ id: 'matin', heureDebut: '08:30', heureFin: '09:30' }),
+                SeanceMother.pedagogique({ id: 'milieu', heureDebut: '10:15', heureFin: '11:00' }),
+              ],
+            }),
+          ],
+        }),
+      );
+      fixture.detectChanges();
+
+      const ids = (component as any).seancesResumees().map((s: { id: string }) => s.id);
+      expect(ids).toEqual(['matin', 'milieu', 'apresMidi']);
     });
 
     it('calcule nbEleves = total de la classe si type=classe', () => {

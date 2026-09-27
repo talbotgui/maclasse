@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { McEnteteComponent } from './mc-entete.component';
 
@@ -13,8 +13,10 @@ import { SauvegardeAutoService } from '../../services/sansEtat/sauvegarde-auto.s
 import { DonneesMother } from '../../tests/donnees.mother';
 import { EleveMother } from '../../tests/eleve.mother';
 import { ResultatRechercheMother } from '../../tests/recherche.mother';
+import { LIBELLES } from '../../libelles';
 
 describe('McEnteteComponent', () => {
+  let fixture: ComponentFixture<McEnteteComponent>;
   let component: McEnteteComponent;
   let donneesService: DonneesService;
   let contexteService: ContexteService;
@@ -36,7 +38,7 @@ describe('McEnteteComponent', () => {
         },
       }),
     );
-    const fixture = TestBed.createComponent(McEnteteComponent);
+    fixture = TestBed.createComponent(McEnteteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -118,6 +120,23 @@ describe('McEnteteComponent', () => {
       component['surRecherche']('zzz');
 
       expect((component as any).listeResultatsVisible()).toBe(false);
+    });
+
+    it('affiche le libellé accentué du type « Élève »', () => {
+      component['surRecherche']('Martin');
+      fixture.detectChanges();
+
+      const type = fixture.nativeElement.querySelector('.mc-entete__resultat-type') as HTMLElement;
+      expect(type.textContent?.trim()).toBe(LIBELLES.entete.typesResultatRecherche.eleve);
+    });
+
+    it('affiche le libellé du type « Projet »', () => {
+      (component as any).resultatsRecherche.set([ResultatRechercheMother.projet()]);
+      (component as any).listeResultatsVisible.set(true);
+      fixture.detectChanges();
+
+      const type = fixture.nativeElement.querySelector('.mc-entete__resultat-type') as HTMLElement;
+      expect(type.textContent?.trim()).toBe(LIBELLES.entete.typesResultatRecherche.projet);
     });
   });
 

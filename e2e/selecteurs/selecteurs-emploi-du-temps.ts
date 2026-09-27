@@ -137,6 +137,10 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
   readonly chipSourceAbsencesRegulieres: Locator;
   /** Message d'erreur du formulaire d'EDT calculé. */
   readonly erreurEdtCalcule: Locator;
+  /** Message d'erreur « nom obligatoire » du formulaire des propriétés d'un EDT. */
+  readonly erreurFormulaireEdt: Locator;
+  /** Message d'erreur des horaires du premier temps du formulaire créneau. */
+  readonly erreurHeuresTemps0: Locator;
   /** Bouton ENREGISTRER l'EDT calculé. */
   readonly btnEnregistrerEdtCalcule: Locator;
   /** Bouton ANNULER le formulaire d'EDT calculé. */
@@ -205,8 +209,7 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
     this.typesCreneauGrille = page.locator('.edt__creneau-type');
     this.inputTitreTemps0 = page.locator('#inputTitreTemps0-input');
     this.btnEdtPastilles = this.listeEdts.getByRole('button', {
-      name: 'EDT pastilles',
-      exact: true,
+      name: /^EDT pastilles\b/,
     });
     this.pastillesGrille = page.locator(
       '.edt__grille .mc-pastilles-eleves-concernes .mc-disc-pill',
@@ -238,6 +241,8 @@ export class SelecteursEmploiDuTemps extends SelecteursBase {
     this.chipSourceTempsClasse = page.locator('#chipSourceEdtCalculetempsClasse');
     this.chipSourceAbsencesRegulieres = page.locator('#chipSourceEdtCalculeabsencesRegulieres');
     this.erreurEdtCalcule = page.locator('#erreurFormulaireEdtCalcule');
+    this.erreurFormulaireEdt = page.locator('#erreurFormulaireEdt');
+    this.erreurHeuresTemps0 = page.locator('#erreurHeuresTemps0');
     this.btnEnregistrerEdtCalcule = page.locator('#btnEnregistrerEdtCalcule');
     this.btnAnnulerEdtCalcule = page.locator('#btnAnnulerEdtCalcule');
     this.btnSupprimerEdtCalcule = page.locator('#btnSupprimerEdtCalcule');

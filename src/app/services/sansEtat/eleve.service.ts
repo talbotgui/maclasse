@@ -73,14 +73,6 @@ export class EleveService {
   }
 
   /**
-   * Retourne un élève par son identifiant, ou `undefined` s'il n'existe pas.
-   * @param id UUID de l'élève.
-   */
-  public obtenirEleve(id: string): Eleve | undefined {
-    return this.donneesService.donnees()?.classe.eleves.find((e) => e.id === id);
-  }
-
-  /**
    * Retourne la liste des élèves triée NOM Prénom, filtrée si un terme est fourni.
    * La recherche est insensible à la casse et aux accents.
    * @param terme Terme de recherche (vide = liste complète triée).
@@ -98,35 +90,6 @@ export class EleveService {
         TexteUtils.normaliserPourRecherche(`${e.nom} ${e.prenom}`).includes(t) ||
         TexteUtils.normaliserPourRecherche(`${e.prenom} ${e.nom}`).includes(t),
     );
-  }
-
-  /**
-   * Calcule les conflits entre un créneau horaire et les absences récurrentes d'un élève.
-   * Retourne les libellés des absences récurrentes qui chevauchent le créneau sur le jour donné.
-   * La parité de la semaine n'est pas vérifiée ici — c'est la responsabilité de l'appelant.
-   * @param eleveId UUID de l'élève.
-   * @param heureDebut Heure de début du créneau (`HH:MM`).
-   * @param heureFin Heure de fin du créneau (`HH:MM`).
-   * @param jour Jour de la semaine.
-   * @returns Liste des libellés d'absences en conflit.
-   */
-  public calculerConflitsAbsences(
-    eleveId: string,
-    heureDebut: string,
-    heureFin: string,
-    jour: JourSemaine,
-  ): string[] {
-    const donnees = this.donneesService.donnees();
-    if (!donnees) return [];
-    const eleve = donnees.classe.eleves.find((e) => e.id === eleveId);
-    if (!eleve) return [];
-    return eleve.absencesRecurrentes
-      .filter(
-        (a) =>
-          a.jour === jour &&
-          DateUtils.chevauchementHoraire(a.heureDebut, a.heureFin, heureDebut, heureFin),
-      )
-      .map((a) => a.libelle);
   }
 
   /**

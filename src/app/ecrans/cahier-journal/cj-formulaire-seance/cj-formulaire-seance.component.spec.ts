@@ -249,7 +249,7 @@ describe('CjFormulaireSeanceComponent', () => {
       (component as any).onEnregistrer();
 
       expect(spy).not.toHaveBeenCalled();
-      expect((component as any).messageErreur()).toBe(LIBELLES.cahierJournal.erreurPlageHoraire);
+      expect((component as any).messageErreur()).toBe(LIBELLES.commun.erreurPlageHoraire);
     });
   });
 

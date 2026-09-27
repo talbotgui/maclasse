@@ -31,6 +31,7 @@ export const LIBELLES = {
     aucunResultat: 'Aucun résultat',
     avertissementModifications:
       'Des modifications non enregistrées seront perdues. Voulez-vous continuer ?',
+    erreurPlageHoraire: "L'heure de fin doit être postérieure à l'heure de début.",
   },
 
   /** Libellés de la barre d'en-tête. */
@@ -45,6 +46,7 @@ export const LIBELLES = {
     tooltipPrefixeRefaire: 'Refaire : ',
     rechercheLabel: 'Recherche globale',
     rechercheAria: 'Résultats de recherche',
+    typesResultatRecherche: { eleve: 'Élève', projet: 'Projet' },
     boutonTheme: 'Changer de thème',
     tooltipNavRestreinte:
       'Pour accéder à ces fonctionnalités, créer un jeu de données après avoir recharger la page',
@@ -208,13 +210,16 @@ export const LIBELLES = {
     sourceTempsClasse: 'Temps de classe',
     sourceAbsencesRegulieres: 'Absences régulières',
     erreurEdtCalculeObligatoire: 'Le nom et au moins une source sont obligatoires.',
+    erreurNomObligatoire: 'Le nom est obligatoire.',
     aucunCreneauCalcule: 'Aucun créneau pour cette définition.',
     libelleTempsClasseSansTitre: 'Temps de classe',
     ariaGrilleCalculee: 'Grille hebdomadaire calculée (lecture seule)',
     boutonCreer: 'Créer un emploi du temps',
     boutonImprimer: 'Imprimer',
-    prefixeImpressionDepuis: 'à partir du ',
-    prefixeImpressionJusquau: "jusqu'au ",
+    prefixeDateDepuis: 'à partir du ',
+    prefixeDateJusquau: "jusqu'au ",
+    separateurPlageDates: ' → ',
+    separateurDetailEdt: ' · ',
     aucunEdtSelectionne: 'Sélectionnez un emploi du temps ou créez-en un.',
     avertissementChevauchementEdt: 'Cet emploi du temps chevauche un autre emploi du temps.',
     ariaVoirConflitEdt: 'Voir les emplois du temps en conflit',
@@ -309,7 +314,6 @@ export const LIBELLES = {
     ariaAjouterSeanceDebut: 'Ajouter une séance en début de journée',
     ariaAjouterSeanceApres: 'Ajouter une séance après celle-ci',
     ariaVoirConflitSeance: 'Voir le conflit avec une absence récurrente',
-    erreurPlageHoraire: "L'heure de fin doit être postérieure à l'heure de début.",
     erreurChampsObligatoires: "L'heure de début, l'heure de fin et le type sont obligatoires.",
     erreurEleveSeanceSimultanee:
       'Ces élèves sont déjà concernés par une séance sur la même plage horaire : ',
@@ -417,9 +421,7 @@ export const LIBELLES = {
     ajoutProjet: "Ajout d'un projet",
     modificationProjet: "Modification d'un projet",
     suppressionProjet: "Suppression d'un projet",
-    ajoutPeriodeProjet: "Ajout d'une période",
     modificationPeriodeProjet: "Modification d'une période",
-    suppressionPeriodeProjet: "Suppression d'une période",
     ajoutEdt: "Ajout d'un emploi du temps",
     modificationEdt: "Modification d'un emploi du temps",
     suppressionEdt: "Suppression d'un emploi du temps",

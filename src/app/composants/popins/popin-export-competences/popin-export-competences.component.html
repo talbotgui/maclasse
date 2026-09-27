@@ -13,47 +13,31 @@
     </div>
 
     <div class="mc-popin__corps">
-      <div class="mc-champ">
-        <label for="exportSelectPrimaire">
-          @if (mode() === 'projet') {
-            {{ LIBELLES.popins.exportCompetences.choixProjet }}
-          } @else {
-            {{ LIBELLES.popins.exportCompetences.choixJour }}
-          }
-        </label>
-        <select
-          id="exportSelectPrimaire"
-          [value]="selectionPrimaire()"
-          [mcAutoFocus]="visible()"
-          (change)="surChangementPrimaire($any($event.target).value)"
-        >
-          <option value="">—</option>
-          @for (opt of optionsPrimaires(); track opt.valeur) {
-            <option [value]="opt.valeur">{{ opt.libelle }}</option>
-          }
-        </select>
-      </div>
+      <mc-select
+        [id]="'exportSelectPrimaire'"
+        [formControl]="controlePrimaire"
+        [options]="optionsPrimaires()"
+        [label]="
+          mode() === 'projet'
+            ? LIBELLES.popins.exportCompetences.choixProjet
+            : LIBELLES.popins.exportCompetences.choixJour
+        "
+        [avecOptionVide]="true"
+        [mcAutoFocus]="visible()"
+      />
 
       @if (selectionPrimaire()) {
-        <div class="mc-champ">
-          <label for="exportSelectSecondaire">
-            @if (mode() === 'projet') {
-              {{ LIBELLES.popins.exportCompetences.choixPeriode }}
-            } @else {
-              {{ LIBELLES.popins.exportCompetences.choixSeance }}
-            }
-          </label>
-          <select
-            id="exportSelectSecondaire"
-            [value]="selectionSecondaire()"
-            (change)="surChangementSecondaire($any($event.target).value)"
-          >
-            <option value="">—</option>
-            @for (opt of optionsSecondaires(); track opt.valeur) {
-              <option [value]="opt.valeur">{{ opt.libelle }}</option>
-            }
-          </select>
-        </div>
+        <mc-select
+          [id]="'exportSelectSecondaire'"
+          [formControl]="controleSecondaire"
+          [options]="optionsSecondaires()"
+          [label]="
+            mode() === 'projet'
+              ? LIBELLES.popins.exportCompetences.choixPeriode
+              : LIBELLES.popins.exportCompetences.choixSeance
+          "
+          [avecOptionVide]="true"
+        />
       }
     </div>
 

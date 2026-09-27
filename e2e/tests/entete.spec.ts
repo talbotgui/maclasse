@@ -46,7 +46,7 @@ testAvecDonnees('E2E-09 — Recherche globale : trouver un élève', async ({ ap
   await entete.rechercherEtAttendre('martinot');
 
   await expect(entete.listeResultatsRecherche).toBeVisible();
-  await expect(entete.typeDuPremierResultat).toHaveText('eleve');
+  await expect(entete.typeDuPremierResultat).toHaveText('Élève');
   await expect(entete.titreDuPremierResultat).toContainText('Martinot');
 });
 
@@ -72,7 +72,7 @@ testAvecDonnees(
 
     await entete.rechercherEtAttendre('potager');
 
-    await expect(entete.typeDuResultatPotager).toHaveText('projet');
+    await expect(entete.typeDuResultatPotager).toHaveText('Projet');
     await entete.resultatPotager.click();
 
     await expect(appAvecDonnees).toHaveURL(/\/projets/);

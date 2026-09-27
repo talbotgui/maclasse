@@ -154,9 +154,7 @@ describe('EcranEmploiDuTempsComponent', () => {
   describe('temps hors classe', () => {
     const edtAvecPause = EdtMother.base({
       id: 'edt2',
-      creneaux: [
-        CreneauMother.avecHoraire('12:00', '13:30', { id: 'd1', type: 'pauseDejeuner' }),
-      ],
+      creneaux: [CreneauMother.avecHoraire('12:00', '13:30', { id: 'd1', type: 'pauseDejeuner' })],
     });
 
     beforeEach(() => {
@@ -346,26 +344,34 @@ describe('EcranEmploiDuTempsComponent', () => {
     });
   });
 
-  describe('onAnnule', () => {
-    it('ferme le formulaire créneau sans désélectionner l’EDT', () => {
-      (component as any).edtSelectionne.set(edtBase);
-      (component as any).creneauEdite.set(creneauLundi);
-      (component as any).formEdt.set(null);
+  describe('annulation', () => {
+    it('ANNULER sur un créneau revient aux propriétés de l’EDT sélectionné', () => {
+      (component as any).selectionnerEdt(edtBase);
+      (component as any).selectionnerCreneau(creneauLundi);
 
-      (component as any).onAnnule();
+      (component as any).onCreneauAnnule();
 
       expect((component as any).creneauEdite()).toBeNull();
-      expect((component as any).formEdt()).toBeNull();
+      expect((component as any).formEdt()).toBe(edtBase);
       expect((component as any).edtSelectionne()).toBe(edtBase);
     });
 
-    it('ferme le formulaire de propriétés sans désélectionner l’EDT', () => {
+    it('ANNULER sur les propriétés d’un EDT enregistré garde le formulaire ouvert', () => {
       (component as any).selectionnerEdt(edtBase);
 
-      (component as any).onAnnule();
+      (component as any).onEdtAnnule();
+
+      expect((component as any).formEdt()).toBe(edtBase);
+      expect((component as any).edtSelectionne()).toBe(edtBase);
+    });
+
+    it('ANNULER sur les propriétés d’un EDT jamais enregistré vide la colonne droite', () => {
+      (component as any).creerEdt();
+
+      (component as any).onEdtAnnule();
 
       expect((component as any).formEdt()).toBeNull();
-      expect((component as any).edtSelectionne()).toBe(edtBase);
+      expect((component as any).edtSelectionne()).toBeNull();
     });
   });
 
@@ -827,7 +833,7 @@ describe('EcranEmploiDuTempsComponent', () => {
 
     it("annuler ferme le formulaire d'EDT calculé", () => {
       (component as any).selectionnerEdtCalcule(edtCalcule);
-      (component as any).onAnnule();
+      (component as any).onEdtCalculeAnnule();
       expect((component as any).formEdtCalcule()).toBeNull();
     });
 
@@ -868,7 +874,7 @@ describe('EcranEmploiDuTempsComponent', () => {
         EdtMother.base({ nom: 'Période 1', dateDebut: '2026-09-01', frequence: 'impaire' }),
       );
       expect((component as any).titreImpression()).toBe(
-        `Période 1 (${LIBELLES.edt.prefixeImpressionDepuis}01/09/2026 / ${LIBELLES.edt.frequenceImpaire})`,
+        `Période 1 (${LIBELLES.edt.prefixeDateDepuis}01/09/2026 / ${LIBELLES.edt.frequenceImpaire})`,
       );
     });
 
@@ -877,7 +883,7 @@ describe('EcranEmploiDuTempsComponent', () => {
         EdtMother.base({ nom: 'Période 1', dateFin: '2026-10-18' }),
       );
       expect((component as any).titreImpression()).toBe(
-        `Période 1 (${LIBELLES.edt.prefixeImpressionJusquau}18/10/2026 / ${LIBELLES.edt.frequenceLesDeux})`,
+        `Période 1 (${LIBELLES.edt.prefixeDateJusquau}18/10/2026 / ${LIBELLES.edt.frequenceLesDeux})`,
       );
     });
 
@@ -943,6 +949,65 @@ describe('EcranEmploiDuTempsComponent', () => {
 
       (component as any).terminerImpression();
       expect(conteneur.style.getPropertyValue('--edt-echelle-impression')).toBe('');
+    });
+  });
+
+  describe('ligne de détail de la colonne gauche', () => {
+    it('affiche la fréquence et la plage complète', () => {
+      expect(
+        (component as any).obtenirDetailEdt(
+          EdtMother.base({ dateDebut: '2026-09-01', dateFin: '2026-10-18', frequence: 'paire' }),
+        ),
+      ).toBe(
+        LIBELLES.edt.frequencePaire +
+          LIBELLES.edt.separateurDetailEdt +
+          '01/09/2026' +
+          LIBELLES.edt.separateurPlageDates +
+          '18/10/2026',
+      );
+    });
+
+    it('affiche « à partir du » avec une date de début seule', () => {
+      expect(
+        (component as any).obtenirDetailEdt(
+          EdtMother.base({ dateDebut: '2026-09-01', frequence: 'impaire' }),
+        ),
+      ).toBe(
+        LIBELLES.edt.frequenceImpaire +
+          LIBELLES.edt.separateurDetailEdt +
+          LIBELLES.edt.prefixeDateDepuis +
+          '01/09/2026',
+      );
+    });
+
+    it("affiche « jusqu'au » avec une date de fin seule", () => {
+      expect((component as any).obtenirDetailEdt(EdtMother.base({ dateFin: '2026-10-18' }))).toBe(
+        LIBELLES.edt.frequenceLesDeux +
+          LIBELLES.edt.separateurDetailEdt +
+          LIBELLES.edt.prefixeDateJusquau +
+          '18/10/2026',
+      );
+    });
+
+    it('affiche la fréquence seule sans date', () => {
+      expect((component as any).obtenirDetailEdt(EdtMother.base())).toBe(
+        LIBELLES.edt.frequenceLesDeux,
+      );
+    });
+
+    it('affiche le détail sous le nom des EDT et des EDT calculés', () => {
+      donneesService.charger(
+        DonneesMother.base({
+          emploisDuTemps: [EdtMother.base({ id: 'edt1', frequence: 'paire' })],
+          emploisDuTempsCalcules: [EdtCalculeMother.base({ id: 'edtc1', frequence: 'impaire' })],
+        }),
+      );
+      fixture.detectChanges();
+
+      const details = Array.from(
+        fixture.nativeElement.querySelectorAll('.edt__btn-edt-detail') as NodeListOf<HTMLElement>,
+      ).map((el) => el.textContent?.trim());
+      expect(details).toEqual([LIBELLES.edt.frequencePaire, LIBELLES.edt.frequenceImpaire]);
     });
   });
 });

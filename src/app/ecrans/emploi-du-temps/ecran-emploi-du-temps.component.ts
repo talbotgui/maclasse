@@ -72,7 +72,7 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
     'vendredi',
   ];
 
-  /** Libellé affiché pour chaque fréquence dans le titre d'impression. */
+  /** Libellé affiché pour chaque fréquence (liste des EDT et titre d'impression). */
   private static readonly LIBELLES_FREQUENCE: Record<FrequenceSemaine, string> = {
     paire: LIBELLES.edt.frequencePaire,
     impaire: LIBELLES.edt.frequenceImpaire,
@@ -99,6 +99,25 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   }
 
   /**
+   * Formate la plage de validité d'un EDT : `début<séparateur>fin`, ou `à partir du …` /
+   * `jusqu'au …` si une seule date est connue.
+   * @param edt EDT ou EDT calculé dont on formate les dates.
+   * @param separateur Texte placé entre les deux dates quand elles sont toutes deux connues.
+   * @returns Plage formatée, ou `null` si aucune date n'est renseignée.
+   */
+  private static formaterPlageDates(
+    edt: Pick<EmploiDuTemps, 'dateDebut' | 'dateFin'>,
+    separateur: string,
+  ): string | null {
+    const debut = edt.dateDebut ? DateUtils.formaterDateCourt(edt.dateDebut) : null;
+    const fin = edt.dateFin ? DateUtils.formaterDateCourt(edt.dateFin) : null;
+    if (debut && fin) return `${debut}${separateur}${fin}`;
+    if (debut) return LIBELLES.edt.prefixeDateDepuis + debut;
+    if (fin) return LIBELLES.edt.prefixeDateJusquau + fin;
+    return null;
+  }
+
+  /**
    * Formate le titre d'impression d'un EDT : `nom (début-fin / fréquence)`.
    * La partie dates devient `à partir du …` ou `jusqu'au …` si une seule date est connue,
    * et disparaît si aucune ne l'est.
@@ -109,12 +128,7 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
     edt: Pick<EmploiDuTemps, 'nom' | 'dateDebut' | 'dateFin' | 'frequence'>,
   ): string {
     const frequence = EcranEmploiDuTempsComponent.LIBELLES_FREQUENCE[edt.frequence];
-    const debut = edt.dateDebut ? DateUtils.formaterDateCourt(edt.dateDebut) : null;
-    const fin = edt.dateFin ? DateUtils.formaterDateCourt(edt.dateFin) : null;
-    let dates: string | null = null;
-    if (debut && fin) dates = `${debut}-${fin}`;
-    else if (debut) dates = LIBELLES.edt.prefixeImpressionDepuis + debut;
-    else if (fin) dates = LIBELLES.edt.prefixeImpressionJusquau + fin;
+    const dates = EcranEmploiDuTempsComponent.formaterPlageDates(edt, '-');
     return dates ? `${edt.nom} (${dates} / ${frequence})` : `${edt.nom} (${frequence})`;
   }
 
@@ -583,11 +597,40 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
     this.formEdt.set(this.edtSelectionne());
   }
 
-  /** Ferme le formulaire en cours (EDT, créneau ou EDT calculé) sans désélectionner l'EDT affiché. */
-  protected onAnnule(): void {
+  /** Ferme le formulaire d'EDT calculé et efface sa grille. */
+  protected onEdtCalculeAnnule(): void {
     this.effacerEdtCalcule();
+  }
+
+  /**
+   * Annule la saisie des propriétés de l'EDT. Le formulaire a déjà restauré les valeurs
+   * enregistrées ; pour un EDT jamais enregistré, la colonne droite est vidée.
+   */
+  protected onEdtAnnule(): void {
+    if (this.edtSelectionne() === null) this.formEdt.set(null);
+  }
+
+  /** Annule la saisie d'un créneau et revient aux propriétés de l'EDT sélectionné. */
+  protected onCreneauAnnule(): void {
     this.creneauEdite.set(null);
-    this.formEdt.set(null);
+    this.formEdt.set(this.edtSelectionne());
+  }
+
+  /**
+   * Construit la ligne secondaire d'un EDT dans la colonne gauche : fréquence puis plage
+   * de validité (ex. `Semaines paires · 01/09/2026 → 18/10/2026`).
+   * @param edt EDT ou EDT calculé de la liste.
+   * @returns Fréquence seule si aucune date n'est renseignée, sinon fréquence et dates.
+   */
+  protected obtenirDetailEdt(
+    edt: Pick<EmploiDuTemps, 'dateDebut' | 'dateFin' | 'frequence'>,
+  ): string {
+    const frequence = EcranEmploiDuTempsComponent.LIBELLES_FREQUENCE[edt.frequence];
+    const dates = EcranEmploiDuTempsComponent.formaterPlageDates(
+      edt,
+      LIBELLES.edt.separateurPlageDates,
+    );
+    return dates ? frequence + LIBELLES.edt.separateurDetailEdt + dates : frequence;
   }
 
   /** Lance l'impression de la grille de l'EDT sélectionné. */

@@ -16,4 +16,14 @@ export class TexteUtils {
   public static normaliserPourRecherche(texte: string): string {
     return texte.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   }
+
+  /**
+   * Normalise un identifiant de référentiel pour une comparaison d'unicité : espaces en
+   * bordure retirés, minuscules. Les accents sont conservés.
+   * @param identifiant Identifiant saisi.
+   * @returns Identifiant normalisé.
+   */
+  public static normaliserIdentifiant(identifiant: string): string {
+    return identifiant.trim().toLocaleLowerCase('fr');
+  }
 }

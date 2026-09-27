@@ -34,6 +34,7 @@ import { McChipFiltreComponent } from '../../composants/mc-chip-filtre/mc-chip-f
 import { McBoutonDestructionComponent } from '../../composants/mc-bouton-destruction/mc-bouton-destruction.component';
 import { McBadgeStatutComponent } from '../../composants/mc-badge-statut/mc-badge-statut.component';
 import { ObjetUtils } from '../../utilitaires/objet.utils';
+import { TexteUtils } from '../../utilitaires/texte.utils';
 import type { DonneesApplication, Enseignant } from '../../modeles/donnees-application.modele';
 import type {
   Competence,
@@ -59,6 +60,9 @@ type SectionId =
   | 'joursFeries'
   | 'preferences'
   | 'domainesCompetences';
+
+/** Erreur de saisie de l'identifiant d'une ligne non enregistrée. */
+type ErreurIdentifiant = 'obligatoire' | 'dejaUtilise';
 
 /** Entrée de navigation de la colonne gauche. */
 interface EntreeSection {
@@ -558,7 +562,8 @@ export class EcranParametrageComponent {
   protected enregistrerStatutAcquisition(index: number): void {
     const d = this.donneesService.donnees();
     const ligne = this.lignesBareme.at(index);
-    if (!d || !ligne) return;
+    if (!d || !ligne || this.obtenirErreurIdentifiantBareme(index) !== null) return;
+    EcranParametrageComponent.retirerEspacesIdentifiant(ligne);
     const statut = EcranParametrageComponent.marquerLigneEnregistree(ligne);
     const existant = d.referentiels.statutsAcquisition.find((s) => s.id === statut.id);
     if (existant) {
@@ -604,7 +609,8 @@ export class EcranParametrageComponent {
   protected enregistrerStatutEleve(index: number): void {
     const d = this.donneesService.donnees();
     const ligne = this.lignesStatutsEleve.at(index);
-    if (!d || !ligne) return;
+    if (!d || !ligne || this.obtenirErreurIdentifiantStatutEleve(index) !== null) return;
+    EcranParametrageComponent.retirerEspacesIdentifiant(ligne);
     const statut = EcranParametrageComponent.marquerLigneEnregistree(ligne);
     const existant = d.referentiels.statutsEleve.find((s) => s.id === statut.id);
     if (existant) {
@@ -650,7 +656,8 @@ export class EcranParametrageComponent {
   protected enregistrerTypeContact(index: number): void {
     const d = this.donneesService.donnees();
     const ligne = this.lignesTypesContact.at(index);
-    if (!d || !ligne) return;
+    if (!d || !ligne || this.obtenirErreurIdentifiantTypeContact(index) !== null) return;
+    EcranParametrageComponent.retirerEspacesIdentifiant(ligne);
     const type = EcranParametrageComponent.marquerLigneEnregistree(ligne);
     const existant = d.referentiels.typesContact.find((t) => t.id === type.id);
     if (existant) {
@@ -719,6 +726,71 @@ export class EcranParametrageComponent {
     this.referentielService.supprimerJourFerie(ligne.controls.valeur.getRawValue());
     this.lignesJoursFeries.removeAt(index);
     this.indexAFocaliserJourFerie.set(null);
+  }
+
+  /**
+   * @param index Index de la ligne dans la section Barème.
+   * @returns Erreur de l'identifiant saisi, `null` s'il est valide ou si la ligne est enregistrée.
+   */
+  protected obtenirErreurIdentifiantBareme(index: number): ErreurIdentifiant | null {
+    return EcranParametrageComponent.obtenirErreurIdentifiant(
+      this.lignesBareme,
+      index,
+      this.donneesService.donnees()?.referentiels.statutsAcquisition ?? [],
+    );
+  }
+
+  /**
+   * @param index Index de la ligne dans la section Statuts élève.
+   * @returns Erreur de l'identifiant saisi, `null` s'il est valide ou si la ligne est enregistrée.
+   */
+  protected obtenirErreurIdentifiantStatutEleve(index: number): ErreurIdentifiant | null {
+    return EcranParametrageComponent.obtenirErreurIdentifiant(
+      this.lignesStatutsEleve,
+      index,
+      this.donneesService.donnees()?.referentiels.statutsEleve ?? [],
+    );
+  }
+
+  /**
+   * @param index Index de la ligne dans la section Types de contact.
+   * @returns Erreur de l'identifiant saisi, `null` s'il est valide ou si la ligne est enregistrée.
+   */
+  protected obtenirErreurIdentifiantTypeContact(index: number): ErreurIdentifiant | null {
+    return EcranParametrageComponent.obtenirErreurIdentifiant(
+      this.lignesTypesContact,
+      index,
+      this.donneesService.donnees()?.referentiels.typesContact ?? [],
+    );
+  }
+
+  /**
+   * Message à afficher sous l'identifiant d'une ligne. Un doublon est signalé immédiatement ;
+   * un identifiant vide seulement une fois le champ modifié ou quitté, pour ne pas afficher
+   * d'erreur sur une ligne tout juste ajoutée.
+   * @param ligne Ligne d'une section liste.
+   * @param erreur Erreur de l'identifiant de la ligne (`null` si aucune).
+   * @returns Message d'erreur, `null` si rien n'est à afficher.
+   */
+  protected obtenirMessageErreurIdentifiant<T>(
+    ligne: FormGroup<LigneFormulaire<T>>,
+    erreur: ErreurIdentifiant | null,
+  ): string | null {
+    if (erreur === 'dejaUtilise') return LIBELLES.parametrage.erreurIdentifiantDejaUtilise;
+    const controleId = ligne.controls.valeur.get('id');
+    if (erreur === 'obligatoire' && (controleId?.dirty || controleId?.touched)) {
+      return LIBELLES.parametrage.erreurIdentifiantObligatoire;
+    }
+    return null;
+  }
+
+  /**
+   * Indique si une ligne représente une entrée enregistrée : son identifiant est alors figé.
+   * @param ligne Ligne d'une section liste.
+   * @returns `true` si la ligne est rattachée à une entrée enregistrée.
+   */
+  protected verifierLigneEnregistree<T>(ligne: FormGroup<LigneFormulaire<T>>): boolean {
+    return ligne.controls.idOrigine.value !== null;
   }
 
   /**
@@ -1164,6 +1236,54 @@ export class EcranParametrageComponent {
     return (
       reference === null || !ObjetUtils.sontEgaux(ligne.controls.valeur.getRawValue(), reference)
     );
+  }
+
+  /**
+   * Contrôle l'identifiant d'une ligne non enregistrée : obligatoire, et unique dans la section
+   * (sans tenir compte de la casse ni des espaces en bordure) face aux entrées enregistrées et
+   * aux autres lignes. Deux nouvelles lignes au même identifiant sont toutes deux en erreur :
+   * sinon, enregistrer la seconde remplacerait la première.
+   * @param lignes Lignes de la section.
+   * @param index Index de la ligne contrôlée.
+   * @param entrees Entrées enregistrées de la section.
+   * @returns Erreur de l'identifiant, `null` s'il est valide, si la ligne est enregistrée
+   *   (identifiant figé) ou si l'index est hors bornes.
+   */
+  private static obtenirErreurIdentifiant<T extends { id: string }>(
+    lignes: FormArray<FormGroup<LigneFormulaire<T>>>,
+    index: number,
+    entrees: readonly T[],
+  ): ErreurIdentifiant | null {
+    const ligne = lignes.at(index);
+    if (!ligne || ligne.controls.idOrigine.value !== null) return null;
+    const identifiant = TexteUtils.normaliserIdentifiant(
+      (ligne.controls.valeur.getRawValue() as T).id,
+    );
+    if (identifiant === '') return 'obligatoire';
+    const autresIdentifiants = [
+      ...entrees.map((entree) => entree.id),
+      ...lignes.controls
+        .filter((autre) => autre !== ligne)
+        .map((autre) => (autre.controls.valeur.getRawValue() as T).id),
+    ];
+    return autresIdentifiants.some(
+      (autre) => TexteUtils.normaliserIdentifiant(autre) === identifiant,
+    )
+      ? 'dejaUtilise'
+      : null;
+  }
+
+  /**
+   * Retire les espaces en bordure de l'identifiant d'une ligne non enregistrée, avant son
+   * enregistrement. L'identifiant d'une ligne enregistrée, figé, n'est pas touché.
+   * @param ligne Ligne à enregistrer.
+   */
+  private static retirerEspacesIdentifiant<T extends { id: string }>(
+    ligne: FormGroup<LigneFormulaire<T>>,
+  ): void {
+    if (ligne.controls.idOrigine.value !== null) return;
+    const controleId = ligne.controls.valeur.controls.id;
+    controleId.setValue(controleId.value.trim() as T['id']);
   }
 
   /**

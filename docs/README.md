@@ -56,7 +56,7 @@ Un plan par évolution ou chantier. La numérotation est historique ; le 13 est 
 | [20](plans/20-edt-pause-meridienne.md) | EDT : pause méridienne (libellé, couleur, source « Temps hors classe », conflits limités au pédagogique, migration 2026.09.4) | terminé le 2026-09-27 |
 | [21](plans/21-edt-formulaire-reactive-forms.md) | EDT : `edt-formulaire` en Reactive Forms (FormGroup des propriétés, FormArray des temps, validateurs partagés `FormulaireUtils`) | terminé le 2026-09-27 |
 | [22](plans/22-formulaires-reactive-forms.md) | Formulaires Élèves, Projets et Paramétrage en Reactive Forms (3 incréments, suivi des lignes par instance de `FormGroup`) | terminé le 2026-09-27 |
-| [23](plans/23-parametrage-saisies-identifiants-absences.md) | Paramétrage : saisies conservées au rechargement, identifiants figés et uniques, avertissement de navigation ; plage horaire des absences récurrentes | en cours : incrément 1 sur 4 terminé le 2026-09-27 |
+| [23](plans/23-parametrage-saisies-identifiants-absences.md) | Paramétrage : saisies conservées au rechargement, identifiants figés et uniques, avertissement de navigation ; plage horaire des absences récurrentes | en cours : incréments 1 et 2 sur 4 terminés le 2026-09-27 |
 
 ## Audits
 

@@ -361,6 +361,9 @@ export const LIBELLES = {
     labelDelaiSauvegarde: 'Délai de sauvegarde automatique (minutes)',
     erreurDelaiSauvegardeHorsBornes: 'Le délai doit être compris entre 1 et 60 minutes.',
     tooltipValeurUtilisee: 'Cette valeur est utilisée et ne peut pas être supprimée',
+    erreurIdentifiantObligatoire: "L'identifiant est obligatoire.",
+    erreurIdentifiantDejaUtilise: 'Cet identifiant est déjà utilisé.',
+    tooltipIdentifiantFige: "L'identifiant d'une valeur enregistrée ne peut pas être modifié.",
     pastilleNonEnregistre: 'Non enregistré',
     labelDomainesInfo:
       'Cochez les domaines et sous-domaines à utiliser dans votre classe. Décochez tout pour tout afficher.',

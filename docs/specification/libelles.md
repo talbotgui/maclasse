@@ -40,7 +40,7 @@ related:
 | `selecteurCompetences` | Composant `mc-selecteur-competences` | `placeholder`, `ariaSuggestions`, `ariaSupprimer` |
 | `edt` | Écran Emploi du temps : listes, grille, formulaires d'EDT, de créneau et d'EDT calculé, types de créneau, sources, impression, conflits | `typesCreneau`, `joursLibelles`, `colonneHeure`, `boutonAjouterTemps`, `erreurNomObligatoire`, `prefixeDateDepuis`, `separateurPlageDates` |
 | `cahierJournal` | Écran Cahier journal : navigation, journée, notes, séances, formulaire, duplication | `boutonInitialiserVide`, `labelNotes`, `enteteAbsencesJour`, `erreurChampsObligatoires` |
-| `parametrage` | Écran Paramétrage : sections, champs, bornes du délai, pastille « Non enregistré », domaines de compétences | `sections`, `erreurDelaiSauvegardeHorsBornes`, `pastilleNonEnregistre`, `labelDomainesInfo` |
+| `parametrage` | Écran Paramétrage : sections, champs, bornes du délai, pastille « Non enregistré », domaines de compétences | `sections`, `erreurDelaiSauvegardeHorsBornes`, `erreurIdentifiantObligatoire`, `erreurIdentifiantDejaUtilise`, `tooltipIdentifiantFige`, `pastilleNonEnregistre`, `labelDomainesInfo` |
 | `popins` | Titres et boutons des popins (avertissement, sauvegarde, conflits, export de compétences) | `avertissement.confirmer`, `sauvegarde.labelMotDePasse`, `exportCompetences.choixSeance` |
 | `elevesConcernes` | Composants `mc-eleves-concernes` et `mc-pastilles-eleves-concernes` | `modeClasse`, `modeGroupes`, `modeEleves`, `mentionEleveAbsent` |
 | `commandes` | Libellés des commandes UNDO/REDO, affichés dans les tooltips ANNULER / REFAIRE | `ajoutEleve`, `initialisationDepuisEdt`, `modificationDomainesActifs` |

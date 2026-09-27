@@ -44,6 +44,21 @@ export class McInputComponent extends ChampBase {
   public readonly max: InputSignal<number | null> = input<number | null>(null);
 
   /**
+   * Indique si le champ est en lecture seule (attribut `readonly` natif) : contrairement à
+   * un champ désactivé, il reste focalisable et lisible par les lecteurs d'écran.
+   */
+  public readonly lectureSeule: InputSignal<boolean> = input(false);
+
+  /** Infobulle du champ (attribut `title` natif), vide pour ne pas en afficher. */
+  public readonly infobulle: InputSignal<string> = input('');
+
+  /**
+   * Identifiants, séparés par des espaces, des éléments décrivant le champ (attribut
+   * `aria-describedby` du champ natif : message d'erreur, explication), `null` si aucun.
+   */
+  public readonly descriptionIds: InputSignal<string | null> = input<string | null>(null);
+
+  /**
    * Notifie Angular Forms de la nouvelle valeur saisie.
    * Pour un champ `type="number"`, la valeur transmise au modèle est convertie en nombre,
    * afin qu'une comparaison `!==` avec la valeur enregistrée reste cohérente.

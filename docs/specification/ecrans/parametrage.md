@@ -120,6 +120,16 @@ Ces sections affichent une liste d'éléments éditables inline.
     - Message masqué visuellement relié par `aria-describedby` (conformité RGAA)
   - **Si la valeur n'est pas utilisée** : comportement standard `mc-bouton-destruction` (ANNULER + CONFIRMER)
 
+### Identifiant saisi (Barème, Statuts élève, Types de contact)
+
+Ces trois sections ont un champ « Identifiant » saisi par l'utilisateur, clé de référence des élèves (`Eleve.statut`), des contacts (`Contact.type`) et, à terme, des PPI et bulletins.
+
+- **Ligne enregistrée** : identifiant en **lecture seule** (`mc-input` `lectureSeule`, fond distinct), infobulle *« L'identifiant d'une valeur enregistrée ne peut pas être modifié. »* et même texte masqué visuellement (`desc{Champ}{i}`, relié par `aria-describedby`). Le libellé, le glyphe et les couleurs restent modifiables. Un identifiant mal saisi se corrige en supprimant l'entrée tant qu'elle n'est pas utilisée. Une ligne dont l'entrée disparaît des données en restant modifiée (voir Comportement commun) redevient non enregistrée : son identifiant redevient éditable
+- **Ligne non enregistrée** : identifiant **obligatoire** et **unique** dans la section, sans tenir compte de la casse ni des espaces en bordure, face aux entrées enregistrées **et** aux autres lignes de la section (deux nouvelles lignes « X » et « x » sont toutes deux en erreur)
+  - Message `role="alert"` sous la ligne (`erreur{Champ}{i}`, relié au champ par `aria-describedby`) : *« Cet identifiant est déjà utilisé. »* immédiatement, *« L'identifiant est obligatoire. »* une fois le champ modifié ou quitté
+  - ENREGISTRER de la ligne désactivé tant que l'identifiant est en erreur
+  - À l'ENREGISTRER, les espaces en bordure de l'identifiant sont retirés
+
 ### Section "Périodes scolaires"
 
 | Champ | Composant |

@@ -55,6 +55,17 @@ Ces composants encapsulent les éléments natifs HTML pour centraliser le style 
 | `mc-radio-group` | `<input type="radio">` groupés | Choix exclusifs : sexe de l'élève, mode de `mc-eleves-concernes` |
 | `mc-champ-heure` | `<input type="time">` | Saisie HH:MM (séances, temps de créneau, absences récurrentes, journée scolaire) |
 
+### Inputs de `mc-input`
+
+| Input | Défaut | Rôle |
+|---|---|---|
+| `id`, `label` | requis | `id` du champ natif (suffixé `-input`) et libellé du `<label>` associé |
+| `type` | `'text'` | Type HTML ; pour `number`, la valeur transmise au modèle est un nombre |
+| `placeholder`, `required`, `min`, `max` | `''`, `false`, `null`, `null` | Attributs natifs correspondants (astérisque visuel si `required`) |
+| `lectureSeule` | `false` | Attribut `readonly` : le champ reste focalisable et lisible par les lecteurs d'écran (contrairement à `disabled`), avec un fond distinct. Utilisé pour l'identifiant d'une valeur enregistrée du Paramétrage |
+| `infobulle` | `''` | Attribut `title` du champ natif (aucun si vide) |
+| `descriptionIds` | `null` | `aria-describedby` du champ natif : identifiants, séparés par des espaces, du message d'erreur ou du texte explicatif placé par le parent |
+
 ---
 
 ## Composants simples unitaires — Affichage

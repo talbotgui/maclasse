@@ -261,13 +261,32 @@
           <ul class="parametrage__liste-items">
             @for (ligne of lignesBareme.controls; track ligne; let i = $index) {
               @let statutModifie = estStatutAcquisitionLigneModifiee(i);
+              @let erreurStatutId = obtenirErreurIdentifiantBareme(i);
+              @let messageStatutId = obtenirMessageErreurIdentifiant(ligne, erreurStatutId);
+              @let enregistreStatutId = verifierLigneEnregistree(ligne);
               <li class="parametrage__item parametrage__item--bareme">
                 <mc-input
                   [id]="'champStatutId' + i"
                   [label]="LIBELLES.parametrage.labelStatutId"
                   [formControl]="ligne.controls.valeur.controls.id"
                   [mcAutoFocus]="i === indexAFocaliserBareme()"
+                  [lectureSeule]="enregistreStatutId"
+                  [infobulle]="
+                    enregistreStatutId ? LIBELLES.parametrage.tooltipIdentifiantFige : ''
+                  "
+                  [descriptionIds]="
+                    enregistreStatutId
+                      ? 'descStatutId' + i
+                      : messageStatutId
+                        ? 'erreurStatutId' + i
+                        : null
+                  "
                 />
+                @if (enregistreStatutId) {
+                  <span [id]="'descStatutId' + i" class="sr-only">{{
+                    LIBELLES.parametrage.tooltipIdentifiantFige
+                  }}</span>
+                }
                 <mc-input
                   [id]="'champStatutGlyphe' + i"
                   [label]="LIBELLES.parametrage.labelStatutGlyphe"
@@ -300,7 +319,7 @@
                   <button
                     [id]="'btnEnregistrerStatut' + i"
                     class="mc-btn-primaire mc-btn-sm"
-                    [disabled]="!statutModifie"
+                    [disabled]="!statutModifie || erreurStatutId !== null"
                     (click)="enregistrerStatutAcquisition(i)"
                   >
                     {{ statutModifie ? LIBELLES.commun.enregistrer : LIBELLES.commun.enregistre }}
@@ -318,6 +337,15 @@
                     (confirme)="supprimerStatutAcquisition(i)"
                   />
                 </div>
+                @if (messageStatutId) {
+                  <p
+                    [id]="'erreurStatutId' + i"
+                    class="parametrage__erreur parametrage__erreur--ligne"
+                    role="alert"
+                  >
+                    {{ messageStatutId }}
+                  </p>
+                }
               </li>
             }
           </ul>
@@ -342,13 +370,33 @@
           <ul class="parametrage__liste-items">
             @for (ligne of lignesStatutsEleve.controls; track ligne; let i = $index) {
               @let statutEleveModifie = estStatutEleveLigneModifiee(i);
+              @let erreurStatutEleveId = obtenirErreurIdentifiantStatutEleve(i);
+              @let messageStatutEleveId =
+                obtenirMessageErreurIdentifiant(ligne, erreurStatutEleveId);
+              @let enregistreStatutEleveId = verifierLigneEnregistree(ligne);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champStatutEleveId' + i"
                   [label]="LIBELLES.parametrage.labelStatutEleveId"
                   [formControl]="ligne.controls.valeur.controls.id"
                   [mcAutoFocus]="i === indexAFocaliserStatutEleve()"
+                  [lectureSeule]="enregistreStatutEleveId"
+                  [infobulle]="
+                    enregistreStatutEleveId ? LIBELLES.parametrage.tooltipIdentifiantFige : ''
+                  "
+                  [descriptionIds]="
+                    enregistreStatutEleveId
+                      ? 'descStatutEleveId' + i
+                      : messageStatutEleveId
+                        ? 'erreurStatutEleveId' + i
+                        : null
+                  "
                 />
+                @if (enregistreStatutEleveId) {
+                  <span [id]="'descStatutEleveId' + i" class="sr-only">{{
+                    LIBELLES.parametrage.tooltipIdentifiantFige
+                  }}</span>
+                }
                 <mc-input
                   [id]="'champStatutEleveLibelle' + i"
                   [label]="LIBELLES.parametrage.labelStatutEleveLibelle"
@@ -358,7 +406,7 @@
                   <button
                     [id]="'btnEnregistrerStatutEleve' + i"
                     class="mc-btn-primaire mc-btn-sm"
-                    [disabled]="!statutEleveModifie"
+                    [disabled]="!statutEleveModifie || erreurStatutEleveId !== null"
                     (click)="enregistrerStatutEleve(i)"
                   >
                     {{
@@ -378,6 +426,15 @@
                     (confirme)="supprimerStatutEleve(i)"
                   />
                 </div>
+                @if (messageStatutEleveId) {
+                  <p
+                    [id]="'erreurStatutEleveId' + i"
+                    class="parametrage__erreur parametrage__erreur--ligne"
+                    role="alert"
+                  >
+                    {{ messageStatutEleveId }}
+                  </p>
+                }
               </li>
             }
           </ul>
@@ -402,13 +459,33 @@
           <ul class="parametrage__liste-items">
             @for (ligne of lignesTypesContact.controls; track ligne; let i = $index) {
               @let typeContactModifie = estTypeContactLigneModifiee(i);
+              @let erreurTypeContactId = obtenirErreurIdentifiantTypeContact(i);
+              @let messageTypeContactId =
+                obtenirMessageErreurIdentifiant(ligne, erreurTypeContactId);
+              @let enregistreTypeContactId = verifierLigneEnregistree(ligne);
               <li class="parametrage__item">
                 <mc-input
                   [id]="'champTypeContactId' + i"
                   [label]="LIBELLES.parametrage.labelTypeContactId"
                   [formControl]="ligne.controls.valeur.controls.id"
                   [mcAutoFocus]="i === indexAFocaliserTypeContact()"
+                  [lectureSeule]="enregistreTypeContactId"
+                  [infobulle]="
+                    enregistreTypeContactId ? LIBELLES.parametrage.tooltipIdentifiantFige : ''
+                  "
+                  [descriptionIds]="
+                    enregistreTypeContactId
+                      ? 'descTypeContactId' + i
+                      : messageTypeContactId
+                        ? 'erreurTypeContactId' + i
+                        : null
+                  "
                 />
+                @if (enregistreTypeContactId) {
+                  <span [id]="'descTypeContactId' + i" class="sr-only">{{
+                    LIBELLES.parametrage.tooltipIdentifiantFige
+                  }}</span>
+                }
                 <mc-input
                   [id]="'champTypeContactLibelle' + i"
                   [label]="LIBELLES.parametrage.labelTypeContactLibelle"
@@ -418,7 +495,7 @@
                   <button
                     [id]="'btnEnregistrerTypeContact' + i"
                     class="mc-btn-primaire mc-btn-sm"
-                    [disabled]="!typeContactModifie"
+                    [disabled]="!typeContactModifie || erreurTypeContactId !== null"
                     (click)="enregistrerTypeContact(i)"
                   >
                     {{
@@ -438,6 +515,15 @@
                     (confirme)="supprimerTypeContact(i)"
                   />
                 </div>
+                @if (messageTypeContactId) {
+                  <p
+                    [id]="'erreurTypeContactId' + i"
+                    class="parametrage__erreur parametrage__erreur--ligne"
+                    role="alert"
+                  >
+                    {{ messageTypeContactId }}
+                  </p>
+                }
               </li>
             }
           </ul>

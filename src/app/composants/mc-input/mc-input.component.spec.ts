@@ -116,6 +116,36 @@ describe('McInputComponent', () => {
     });
   });
 
+  describe('lecture seule, infobulle et description', () => {
+    it('par défaut → ni readonly, ni title, ni aria-describedby', () => {
+      expect(inputEl().readOnly).toBe(false);
+      expect(inputEl().hasAttribute('title')).toBe(false);
+      expect(inputEl().hasAttribute('aria-describedby')).toBe(false);
+    });
+
+    it('lectureSeule → attribut readonly, champ toujours actif', () => {
+      fixture.componentRef.setInput('lectureSeule', true);
+      fixture.detectChanges();
+
+      expect(inputEl().readOnly).toBe(true);
+      expect(inputEl().disabled).toBe(false);
+    });
+
+    it('infobulle → attribut title', () => {
+      fixture.componentRef.setInput('infobulle', 'Explication');
+      fixture.detectChanges();
+
+      expect(inputEl().getAttribute('title')).toBe('Explication');
+    });
+
+    it('descriptionIds → attribut aria-describedby', () => {
+      fixture.componentRef.setInput('descriptionIds', 'descA erreurA');
+      fixture.detectChanges();
+
+      expect(inputEl().getAttribute('aria-describedby')).toBe('descA erreurA');
+    });
+  });
+
   describe('rendu', () => {
     it('le label affiche le libellé', () => {
       expect(labelEl().textContent).toContain('Prénom');

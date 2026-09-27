@@ -404,3 +404,28 @@ testAvecDonnees(
     await expect(param.champTypeContactId5).toBeFocused();
   },
 );
+
+testAvecDonnees(
+  'E2E-136 — Identifiant de statut élève : figé une fois enregistré, unique pour une nouvelle ligne',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const param = new SelecteursParametrage(appAvecDonnees);
+
+    await entete.navParametrage.click();
+    await param.btnSectionStatutsEleve.click();
+
+    // Statut enregistré : identifiant en lecture seule
+    await expect(param.champStatutEleveId0Natif).toHaveAttribute('readonly', '');
+
+    // 3 statuts existants → nouvelle ligne à l'index 3, identifiant « dc » déjà utilisé (DC)
+    await param.btnAjouterStatutEleve.click();
+    await param.champStatutEleveId3.fill('dc');
+    await param.champStatutEleveLibelle3.fill('Doublon');
+    await expect(param.erreurStatutEleveId3).toHaveText('Cet identifiant est déjà utilisé.');
+    await expect(param.btnEnregistrerStatutEleve3).toBeDisabled();
+
+    await param.champStatutEleveId3.fill('ST');
+    await expect(param.erreurStatutEleveId3).toHaveCount(0);
+    await expect(param.btnEnregistrerStatutEleve3).toBeEnabled();
+  },
+);

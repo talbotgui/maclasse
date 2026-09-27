@@ -160,6 +160,10 @@
     font-size: 0.8125rem;
     font-weight: 600;
     color: var(--erreur);
+    // Message sous les champs d'une ligne de liste (retour à la ligne dans le flex)
+    &--ligne {
+      flex-basis: 100%;
+    }
   }
 
   &__apercu {

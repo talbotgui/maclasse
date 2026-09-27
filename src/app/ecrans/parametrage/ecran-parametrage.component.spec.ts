@@ -807,6 +807,17 @@ describe('EcranParametrageComponent', () => {
       it(`${section} : saisir dans l'identifiant ne recrée pas la ligne et garde le focus`, () => {
         (component as any).activerSection(section);
         fixture.detectChanges();
+        // Ligne enregistrée rendue non enregistrée : son identifiant redevient éditable
+        (component as any)[
+          {
+            bareme: 'lignesBareme',
+            statutsEleve: 'lignesStatutsEleve',
+            typesContact: 'lignesTypesContact',
+          }[section]!
+        ]
+          .at(0)
+          .controls.idOrigine.setValue(null);
+        fixture.detectChanges();
         const input = fixture.nativeElement.querySelector(champ) as HTMLInputElement;
         input.focus();
 
@@ -871,6 +882,211 @@ describe('EcranParametrageComponent', () => {
         expect(lignes.at(0)).toBe(premiere);
         expect(premiere.controls.valeur.controls.libelle.value).toBe('Maîtrisé');
       });
+    });
+  });
+
+  describe('identifiants des référentiels', () => {
+    const cas: {
+      section: string;
+      lignes: string;
+      ajouter: string;
+      enregistrer: string;
+      erreur: string;
+      champ: string;
+      liste: 'statutsAcquisition' | 'statutsEleve' | 'typesContact';
+      existant: string;
+    }[] = [
+      {
+        section: 'bareme',
+        lignes: 'lignesBareme',
+        ajouter: 'ajouterStatutAcquisition',
+        enregistrer: 'enregistrerStatutAcquisition',
+        erreur: 'obtenirErreurIdentifiantBareme',
+        champ: 'StatutId',
+        liste: 'statutsAcquisition',
+        existant: 'A',
+      },
+      {
+        section: 'statutsEleve',
+        lignes: 'lignesStatutsEleve',
+        ajouter: 'ajouterStatutEleve',
+        enregistrer: 'enregistrerStatutEleve',
+        erreur: 'obtenirErreurIdentifiantStatutEleve',
+        champ: 'StatutEleveId',
+        liste: 'statutsEleve',
+        existant: 'DC',
+      },
+      {
+        section: 'typesContact',
+        lignes: 'lignesTypesContact',
+        ajouter: 'ajouterTypeContact',
+        enregistrer: 'enregistrerTypeContact',
+        erreur: 'obtenirErreurIdentifiantTypeContact',
+        champ: 'TypeContactId',
+        liste: 'typesContact',
+        existant: 'P',
+      },
+    ];
+
+    for (const c of cas) {
+      describe(c.section, () => {
+        const lignes = () => (component as any)[c.lignes];
+        const champId = (i: number) =>
+          fixture.nativeElement.querySelector(`#champ${c.champ}${i}-input`) as HTMLInputElement;
+        const boutonEnregistrer = (i: number) =>
+          fixture.nativeElement.querySelector(
+            `[id^="btnEnregistrer"][id$="${i}"]`,
+          ) as HTMLButtonElement;
+        const message = (i: number) =>
+          fixture.nativeElement.querySelector(`#erreur${c.champ}${i}`) as HTMLElement | null;
+        const ajouterLigne = (id: string) => {
+          (component as any)[c.ajouter]();
+          const ligne = lignes().at(lignes().length - 1);
+          ligne.controls.valeur.controls.id.setValue(id);
+          ligne.controls.valeur.controls.id.markAsDirty();
+          ligne.controls.valeur.controls.libelle.setValue('Libellé');
+          fixture.detectChanges();
+          return lignes().length - 1;
+        };
+
+        beforeEach(() => {
+          (component as any).activerSection(c.section);
+          fixture.detectChanges();
+        });
+
+        it('ligne enregistrée → identifiant en lecture seule, infobulle et description', () => {
+          expect(champId(0).readOnly).toBe(true);
+          expect(champId(0).getAttribute('title')).toBe(
+            LIBELLES.parametrage.tooltipIdentifiantFige,
+          );
+          expect(champId(0).getAttribute('aria-describedby')).toBe(`desc${c.champ}0`);
+          expect(fixture.nativeElement.querySelector(`#desc${c.champ}0`).textContent.trim()).toBe(
+            LIBELLES.parametrage.tooltipIdentifiantFige,
+          );
+          expect((component as any)[c.erreur](0)).toBeNull();
+        });
+
+        it('nouvelle ligne → identifiant éditable, sans infobulle', () => {
+          const i = ajouterLigne('NV');
+
+          expect(champId(i).readOnly).toBe(false);
+          expect(champId(i).hasAttribute('title')).toBe(false);
+          expect(fixture.nativeElement.querySelector(`#desc${c.champ}${i}`)).toBeNull();
+        });
+
+        it('nouvelle ligne vierge → erreur obligatoire sans message, ENREGISTRER désactivé', () => {
+          (component as any)[c.ajouter]();
+          fixture.detectChanges();
+          const i = lignes().length - 1;
+
+          expect((component as any)[c.erreur](i)).toBe('obligatoire');
+          expect(message(i)).toBeNull();
+          expect(boutonEnregistrer(i).disabled).toBe(true);
+        });
+
+        it('identifiant vidé après saisie → message obligatoire relié au champ', () => {
+          const i = ajouterLigne('  ');
+
+          expect(message(i)?.textContent?.trim()).toBe(
+            LIBELLES.parametrage.erreurIdentifiantObligatoire,
+          );
+          expect(message(i)?.getAttribute('role')).toBe('alert');
+          expect(champId(i).getAttribute('aria-describedby')).toBe(`erreur${c.champ}${i}`);
+          expect(boutonEnregistrer(i).disabled).toBe(true);
+        });
+
+        it('identifiant vide quitté sans saisie (touched) → message obligatoire', () => {
+          (component as any)[c.ajouter]();
+          const i = lignes().length - 1;
+          lignes().at(i).controls.valeur.controls.id.markAsTouched();
+          fixture.detectChanges();
+
+          expect(message(i)?.textContent?.trim()).toBe(
+            LIBELLES.parametrage.erreurIdentifiantObligatoire,
+          );
+        });
+
+        const doublons = [
+          { libelle: 'même casse', saisie: c.existant },
+          { libelle: 'casse différente', saisie: c.existant.toLowerCase() },
+          { libelle: 'espace en bordure', saisie: `${c.existant} ` },
+        ];
+        for (const { libelle, saisie } of doublons) {
+          it(`doublon d'une entrée enregistrée (${libelle}) → message, ENREGISTRER désactivé`, () => {
+            const i = ajouterLigne(saisie);
+
+            expect((component as any)[c.erreur](i)).toBe('dejaUtilise');
+            expect(message(i)?.textContent?.trim()).toBe(
+              LIBELLES.parametrage.erreurIdentifiantDejaUtilise,
+            );
+            expect(boutonEnregistrer(i).disabled).toBe(true);
+          });
+        }
+
+        it('doublon entre deux nouvelles lignes → les deux sont en erreur', () => {
+          const i = ajouterLigne('NV');
+          const j = ajouterLigne('nv');
+
+          expect((component as any)[c.erreur](i)).toBe('dejaUtilise');
+          expect((component as any)[c.erreur](j)).toBe('dejaUtilise');
+        });
+
+        it('identifiant unique → aucune erreur, ENREGISTRER actif', () => {
+          const i = ajouterLigne('NV');
+
+          expect((component as any)[c.erreur](i)).toBeNull();
+          expect(message(i)).toBeNull();
+          expect(boutonEnregistrer(i).disabled).toBe(false);
+        });
+
+        it("enregistrer une ligne en doublon ne remplace pas l'entrée existante", () => {
+          const avant = structuredClone(donneesService.donnees()!.referentiels[c.liste]);
+          const i = ajouterLigne(c.existant);
+
+          (component as any)[c.enregistrer](i);
+
+          expect(donneesService.donnees()!.referentiels[c.liste]).toEqual(avant);
+          expect(lignes().at(i).controls.idOrigine.value).toBeNull();
+        });
+
+        it("enregistrer une ligne sans identifiant ne crée pas d'entrée", () => {
+          (component as any)[c.ajouter]();
+          const i = lignes().length - 1;
+
+          (component as any)[c.enregistrer](i);
+
+          expect(donneesService.donnees()!.referentiels[c.liste].length).toBe(1);
+        });
+
+        it('enregistrer un identifiant unique → espaces en bordure retirés, ligne non modifiée', () => {
+          const i = ajouterLigne('  NV ');
+
+          (component as any)[c.enregistrer](i);
+          fixture.detectChanges();
+
+          const ids = donneesService.donnees()!.referentiels[c.liste].map((e) => e.id);
+          expect(ids).toEqual([c.existant, 'NV']);
+          expect(lignes().at(i).controls.valeur.controls.id.value).toBe('NV');
+          expect(champId(i).readOnly).toBe(true);
+          expect(boutonEnregistrer(i).disabled).toBe(true);
+        });
+
+        it('index hors bornes → aucune erreur', () => {
+          expect((component as any)[c.erreur](99)).toBeNull();
+        });
+      });
+    }
+
+    it('sans données chargées → contrôle face aux seules lignes', () => {
+      (component as any).activerSection('statutsEleve');
+      fixture.detectChanges();
+      (component as any).ajouterStatutEleve();
+      (component as any).lignesStatutsEleve.at(1).controls.valeur.controls.id.setValue('NV');
+      donneesService['donneesModifiables'].set(null);
+
+      expect((component as any).obtenirErreurIdentifiantBareme(0)).toBeNull();
+      expect((component as any).obtenirErreurIdentifiantStatutEleve(1)).toBeNull();
+      expect((component as any).obtenirErreurIdentifiantTypeContact(0)).toBeNull();
     });
   });
 

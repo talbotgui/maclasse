@@ -566,6 +566,12 @@ button {
       cursor: not-allowed;
       background-color: var(--fond-colonne);
     }
+
+    // Lecture seule : fond distinct, sans l'opacité réduite d'un champ désactivé (contraste conservé)
+    &[readonly] {
+      cursor: default;
+      background-color: var(--fond-colonne);
+    }
   }
 }
 

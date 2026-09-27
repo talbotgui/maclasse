@@ -169,6 +169,10 @@ export class SelecteursParametrage extends SelecteursBase {
   public readonly btnSupprimerStatutEleve3: Locator;
   /** Bouton CONFIRMER la suppression du quatrième statut élève (index 3). */
   public readonly btnSupprimerStatutEleve3Confirmer: Locator;
+  /** Champ natif Identifiant du premier statut élève (enregistré : lecture seule). */
+  public readonly champStatutEleveId0Natif: Locator;
+  /** Message d'erreur de l'identifiant du quatrième statut élève (index 3). */
+  public readonly erreurStatutEleveId3: Locator;
 
   // --- Section : Types de contact (5 dans le jeu de données — index 0 à 4) ---
   /** Bouton AJOUTER un nouveau type de contact. */
@@ -309,6 +313,8 @@ export class SelecteursParametrage extends SelecteursBase {
     this.btnEnregistrerStatutEleve3 = page.locator('#btnEnregistrerStatutEleve3');
     this.btnSupprimerStatutEleve3 = page.locator('#btnSupprimerStatutEleve3');
     this.btnSupprimerStatutEleve3Confirmer = page.locator('#btnSupprimerStatutEleve3_confirmer');
+    this.champStatutEleveId0Natif = page.locator('#champStatutEleveId0-input');
+    this.erreurStatutEleveId3 = page.locator('#erreurStatutEleveId3');
 
     this.btnAjouterTypeContact = page.locator('#btnAjouterTypeContact');
     this.champTypeContactId0 = page.locator('#champTypeContactId0-input');

@@ -5,107 +5,107 @@ import { SelecteursBase } from './selecteurs-base';
 export class SelecteursCahierJournal extends SelecteursBase {
   // --- Mini-calendrier ---
   /** Bouton "Mois précédent" dans le mini-calendrier. */
-  readonly btnMoisPrecedent: Locator;
+  public readonly btnMoisPrecedent: Locator;
   /** Bouton "Mois suivant" dans le mini-calendrier. */
-  readonly btnMoisSuivant: Locator;
+  public readonly btnMoisSuivant: Locator;
 
   // --- Navigation journée (flèches en haut de l'écran) ---
   /** Bouton « (−7 jours). */
-  readonly btnMoins7Jours: Locator;
+  public readonly btnMoins7Jours: Locator;
   /** Bouton ‹ (−1 jour). */
-  readonly btnMoins1Jour: Locator;
+  public readonly btnMoins1Jour: Locator;
   /** Bouton › (+1 jour). */
-  readonly btnPlus1Jour: Locator;
+  public readonly btnPlus1Jour: Locator;
   /** Bouton » (+7 jours). */
-  readonly btnPlus7Jours: Locator;
+  public readonly btnPlus7Jours: Locator;
 
   // --- Actions sur la journée affichée ---
   /** Bouton "Initialiser depuis l'EDT" (zone centrale, journée non initialisée). */
-  readonly btnInitialiserEdt: Locator;
+  public readonly btnInitialiserEdt: Locator;
   /** Bouton "Initialiser une journée vide" (zone centrale, journée vide). */
-  readonly btnInitialiserVidePrincipal: Locator;
+  public readonly btnInitialiserVidePrincipal: Locator;
   /** Bouton DUPLIQUER JOURNÉE. */
-  readonly btnDupliquerJournee: Locator;
+  public readonly btnDupliquerJournee: Locator;
   /** Bouton IMPRIMER dans le bandeau de la journée. */
-  readonly btnImprimerCj: Locator;
+  public readonly btnImprimerCj: Locator;
   /** Bouton SUPPRIMER JOURNÉE. */
-  readonly btnSupprimerJournee: Locator;
+  public readonly btnSupprimerJournee: Locator;
 
   // --- Mini-formulaire de duplication de journée ---
   /** Champ date cible dans le mini-formulaire de duplication. */
-  readonly inputDateDuplication: Locator;
+  public readonly inputDateDuplication: Locator;
   /** Bouton DUPLIQUER (confirmer) dans le mini-formulaire. */
-  readonly btnConfirmerDuplication: Locator;
+  public readonly btnConfirmerDuplication: Locator;
   /** Bouton ANNULER dans le mini-formulaire de duplication. */
-  readonly btnAnnulerDuplication: Locator;
+  public readonly btnAnnulerDuplication: Locator;
 
   // --- Contrôles par séance (premier élément de la liste) ---
   /** Bouton ↑ "Monter" de la première séance. */
-  readonly btnMonterPremierSeance: Locator;
+  public readonly btnMonterPremierSeance: Locator;
   /** Bouton ↓ "Descendre" de la première séance. */
-  readonly btnDescendrePremierSeance: Locator;
+  public readonly btnDescendrePremierSeance: Locator;
   /** Bouton ✎ "Modifier" de la première séance. */
-  readonly btnModifierPremierSeance: Locator;
+  public readonly btnModifierPremierSeance: Locator;
   /** Bouton ⎘ "Dupliquer" de la première séance. */
-  readonly btnDupliquerPremierSeance: Locator;
+  public readonly btnDupliquerPremierSeance: Locator;
   /** Bouton ✕ "Supprimer" de la première séance. */
-  readonly btnSupprimerPremierSeance: Locator;
+  public readonly btnSupprimerPremierSeance: Locator;
 
   // --- Bouton d'ajout ---
   /** Bouton « + » de la ligne de tête : ajoute une séance en début de journée. */
-  readonly btnAjouterSeanceDebut: Locator;
+  public readonly btnAjouterSeanceDebut: Locator;
   /** Zone de notes de la journée (textarea interne de mc-textarea). */
-  readonly champNotesJournee: Locator;
+  public readonly champNotesJournee: Locator;
   /** Bouton de repli / dépli des notes de la journée. */
-  readonly btnBasculerNotes: Locator;
+  public readonly btnBasculerNotes: Locator;
   /** Aperçu de la première ligne des notes, affiché quand elles sont repliées. */
-  readonly apercuNotes: Locator;
+  public readonly apercuNotes: Locator;
   /** Bouton CONTINUER de la popin d'avertissement de navigation (modifications non enregistrées). */
-  readonly btnAvertissementNavigationConfirmer: Locator;
+  public readonly btnAvertissementNavigationConfirmer: Locator;
   /** Bouton ANNULER de la popin d'avertissement de navigation. */
-  readonly btnAvertissementNavigationAnnuler: Locator;
+  public readonly btnAvertissementNavigationAnnuler: Locator;
   /** Liste des conflits d'absences affichée à l'enregistrement d'une séance. */
-  readonly listeConflitsAbsences: Locator;
+  public readonly listeConflitsAbsences: Locator;
   /** Pastilles d'élèves concernés affichées dans la liste des séances. */
-  readonly pastillesSeances: Locator;
+  public readonly pastillesSeances: Locator;
   /** Bouton radio « Groupes » du périmètre de la séance en cours d'édition. */
-  readonly radioGroupesSeance: Locator;
+  public readonly radioGroupesSeance: Locator;
   /** Chip du groupe A dans le périmètre de la séance en cours d'édition. */
-  readonly chipGroupeASeance: Locator;
+  public readonly chipGroupeASeance: Locator;
   /** Chip du groupe B dans le périmètre de la séance en cours d'édition. */
-  readonly chipGroupeBSeance: Locator;
+  public readonly chipGroupeBSeance: Locator;
   /** Bouton radio « Élèves spécifiques » du périmètre de la séance en cours d'édition. */
-  readonly radioElevesSeance: Locator;
+  public readonly radioElevesSeance: Locator;
   /** Chip de l'élève Jean Ducobu dans le périmètre de la séance en cours d'édition. */
-  readonly chipEleveDucobuSeance: Locator;
+  public readonly chipEleveDucobuSeance: Locator;
   /** Message d'erreur du formulaire de séance. */
-  readonly erreurFormulaireSeance: Locator;
+  public readonly erreurFormulaireSeance: Locator;
 
   // --- Formulaire de séance ---
   /** Champ Heure de début de séance (mc-champ-heure). */
-  readonly champHeureDebutSeance: Locator;
+  public readonly champHeureDebutSeance: Locator;
   /** Champ Heure de fin de séance (mc-champ-heure). */
-  readonly champHeureFinSeance: Locator;
+  public readonly champHeureFinSeance: Locator;
   /** Select Type de séance (pédagogique / récréation / pause). */
-  readonly selectTypeSeance: Locator;
+  public readonly selectTypeSeance: Locator;
   /** Champ Titre de la séance (mc-input). */
-  readonly champTitreSeance: Locator;
+  public readonly champTitreSeance: Locator;
   /** Champ Objectifs de la séance (mc-textarea). */
-  readonly textareaObjectifsSeance: Locator;
+  public readonly textareaObjectifsSeance: Locator;
   /** Champ Déroulement de la séance (mc-textarea). */
-  readonly textareaDeroulementSeance: Locator;
+  public readonly textareaDeroulementSeance: Locator;
   /** Champ Ressources de la séance (mc-textarea). */
-  readonly textareaRessourcesSeance: Locator;
+  public readonly textareaRessourcesSeance: Locator;
   /** Champ Description de la séance (mc-textarea). */
-  readonly textareaDescriptionSeance: Locator;
+  public readonly textareaDescriptionSeance: Locator;
   /** Bouton ENREGISTRER dans le formulaire de séance. */
-  readonly btnEnregistrerSeance: Locator;
+  public readonly btnEnregistrerSeance: Locator;
   /** Bouton ANNULER dans le formulaire de séance. */
-  readonly btnAnnulerSeance: Locator;
+  public readonly btnAnnulerSeance: Locator;
 
   // --- Popin d'avertissements d'absences ---
   /** Bouton FERMER de la popin d'avertissements d'absences récurrentes. */
-  readonly btnWarningsFermer: Locator;
+  public readonly btnWarningsFermer: Locator;
 
   constructor(page: Page) {
     super(page);

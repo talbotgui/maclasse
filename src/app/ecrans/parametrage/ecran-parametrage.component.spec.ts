@@ -529,12 +529,12 @@ describe('EcranParametrageComponent', () => {
     });
 
     describe('sections liste', () => {
-      const cas: Array<{
+      const cas: {
         section: string;
         detection: string;
         ajout: string;
         muter: () => void;
-      }> = [
+      }[] = [
         {
           section: 'periodes',
           detection: 'estPeriodeLigneModifiee',
@@ -654,14 +654,14 @@ describe('EcranParametrageComponent', () => {
   });
 
   describe('CRUD des sections liste', () => {
-    const cas: Array<{
+    const cas: {
       section: string;
       copie: string;
       liste: string;
       enregistrer: string;
       supprimer: string;
       champ: string;
-    }> = [
+    }[] = [
       {
         section: 'bareme',
         copie: 'copieBareme',

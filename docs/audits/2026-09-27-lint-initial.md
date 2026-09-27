@@ -15,6 +15,8 @@ Le lint est **bloquant** : toutes les règles sont en `error`. Tant que ces cons
 
 Les corrections n'ont pas été faites lors de la mise en place : `src/` et `e2e/` étaient en cours de modification par une autre session.
 
+**Statut : traité le 2026-09-27.** Après les commits de réalignement doc/code, il restait 385 erreurs : l'import inutilisé d'`eleve.service.ts` et la variable inutilisée de `popin-export-competences.component.spec.ts` avaient déjà disparu. Toutes ont été corrigées, et `npm run lint` passe sans erreur (voir « Corrections apportées »).
+
 ## Synthèse
 
 **387 erreurs dans 33 fichiers**, dont 12 corrigeables automatiquement (`npm run lint:corriger`).
@@ -40,3 +42,13 @@ Les corrections n'ont pas été faites lors de la mise en place : `src/` et `e2e
 - Méthodes et fonctions fléchées vides autorisées : callbacks no-op de `ControlValueAccessor`, points d'extension de `PopinBase`, `mockImplementation(() => {})` dans les specs.
 - Specs : `any` autorisé (`(component as any)`), composants hôtes en `ChangeDetectionStrategy.Eager` autorisés (voir `tests-code.md`).
 - `e2e/fixtures/` : motif `({}, use)` autorisé, car imposé par Playwright.
+
+## Corrections apportées
+
+- **Visibilité explicite** : ajout de `public` aux propriétés des classes de sélecteurs E2E et des composants hôtes de test, et de `public static` aux méthodes des Object Mothers.
+- **`prefer-signals`** : les 7 signaux `copie*` d'`ecran-parametrage` sont déclarés `readonly` (ils ne sont jamais réassignés, seulement mis à jour par `set()`/`update()`).
+- **`interactive-supports-focus`** : le `(keydown)` de navigation clavier est déplacé du `<ul>` vers chaque `<button>` de la liste (résultats de recherche de l'entête, liste des EDT). Le comportement ne change pas, car les gestionnaires s'appuient sur l'index focalisé. Les specs envoient désormais l'événement sur le bouton focalisé.
+- **`no-unused-vars`** : suppression de l'import `Eleve` d'`emploi-du-temps.service.ts` et de l'accesseur inutilisé `btnReinitialiser` dans le spec de `mc-champ-recherche`.
+- **Corrections automatiques** : `interface` au lieu de `type` dans les fixtures E2E, `T[]` au lieu d'`Array<T>` dans le spec du paramétrage.
+
+Vérifications : `npm run lint` sans erreur, 1204 tests unitaires et 154 E2E verts.

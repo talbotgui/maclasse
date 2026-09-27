@@ -4,10 +4,10 @@ import { addCoverageReport } from 'monocart-reporter';
 /** Active lorsque `npm run e2e:couverture` est utilisé — voir playwright.config.ts. */
 const couvertureActivee = process.env['COUVERTURE_E2E'] === '1';
 
-type FixtureCouverture = {
+interface FixtureCouverture {
   /** Fixture interne — collecte la couverture V8 de chaque test quand `COUVERTURE_E2E=1`. */
   _couverture: void;
-};
+}
 
 /**
  * Fixture de base : démarre la couverture JS (V8/Chromium) au début de chaque test

@@ -63,4 +63,4 @@ Un plan par évolution ou chantier. La numérotation est historique ; le 13 est 
 | Audit | Statut |
 |---|---|
 | [2026-09-17 — inventaire des soucis SOU-XXX](audits/2026-09-17-inventaire-soucis.md) | 43 constats, traité le 2026-09-17 (SOU-028 et SOU-030 volontairement écartés) |
-| [2026-09-27 — lint initial](audits/2026-09-27-lint-initial.md) | 387 erreurs ESLint à la mise en place du lint, non traité |
+| [2026-09-27 — lint initial](audits/2026-09-27-lint-initial.md) | 387 erreurs ESLint à la mise en place du lint, traité le 2026-09-27 |

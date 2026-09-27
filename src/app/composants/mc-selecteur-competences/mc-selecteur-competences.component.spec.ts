@@ -24,9 +24,9 @@ import { CompetenceMother } from '../../tests/competence.mother';
 })
 class ComposantHote {
   /** Identifiants des compétences sélectionnées, mis à jour lors de `selectionChange`. */
-  selectionnes: string[] = [];
+  public selectionnes: string[] = [];
   /** Mode de sélection. */
-  multi = true;
+  public multi = true;
 }
 
 describe('McSelecteurCompetencesComponent', () => {

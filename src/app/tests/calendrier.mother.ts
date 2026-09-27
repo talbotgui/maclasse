@@ -7,7 +7,7 @@ import type { JourSemaine } from '../modeles/emploi-du-temps.modele';
  */
 export class CalendrierMother {
   /** Retourne les cinq jours ouvrés standards (lundi à vendredi). */
-  static joursOuvresComplets(): JourSemaine[] {
+  public static joursOuvresComplets(): JourSemaine[] {
     return ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'];
   }
 
@@ -17,7 +17,7 @@ export class CalendrierMother {
    * @param nom Libellé du jour férié (défaut : 'Jour férié').
    * @returns Un JourFerie utilisable comme entrée du composant.
    */
-  static jourFerie(date: string, nom = 'Jour férié'): JourFerie {
+  public static jourFerie(date: string, nom = 'Jour férié'): JourFerie {
     return { id: `ferie-${date}`, nom, date };
   }
 }

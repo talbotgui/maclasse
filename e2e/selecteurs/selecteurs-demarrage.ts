@@ -4,15 +4,15 @@ import { SelecteursBase } from './selecteurs-base';
 /** Sélecteurs de la popin de démarrage. */
 export class SelecteursDemarrage extends SelecteursBase {
   /** Bouton "Créer ma classe à partir d'un jeu de données d'exemple". */
-  readonly btnCreer: Locator;
+  public readonly btnCreer: Locator;
   /** Input de sélection du fichier ZIP. */
-  readonly inputFichierZip: Locator;
+  public readonly inputFichierZip: Locator;
   /** Input du mot de passe de chargement. */
-  readonly champMotDePasse: Locator;
+  public readonly champMotDePasse: Locator;
   /** Bouton CHARGER. */
-  readonly btnCharger: Locator;
+  public readonly btnCharger: Locator;
   /** Message d'erreur affiché en cas d'échec. */
-  readonly messageErreur: Locator;
+  public readonly messageErreur: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -24,7 +24,7 @@ export class SelecteursDemarrage extends SelecteursBase {
   }
 
   /** Charge un fichier ZIP avec le mot de passe donné. */
-  async chargerZip(cheminFichier: string, motDePasse: string): Promise<void> {
+  public async chargerZip(cheminFichier: string, motDePasse: string): Promise<void> {
     await this.inputFichierZip.setInputFiles(cheminFichier);
     await this.champMotDePasse.fill(motDePasse);
     await this.btnCharger.click();

@@ -115,7 +115,6 @@
             id="listeResultatsRecherche"
             class="mc-entete__resultats"
             [attr.aria-label]="LIBELLES.entete.rechercheAria"
-            (keydown)="naviguerResultats($event)"
           >
             @for (res of resultatsRecherche(); track res.id; let i = $index) {
               <li>
@@ -130,6 +129,7 @@
                       : -1
                   "
                   (click)="surSelectionResultat(res)"
+                  (keydown)="naviguerResultats($event)"
                 >
                   <span class="mc-entete__resultat-type">{{
                     LIBELLES.entete.typesResultatRecherche[res.type]

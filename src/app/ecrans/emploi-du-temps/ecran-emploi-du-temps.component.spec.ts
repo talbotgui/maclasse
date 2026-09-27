@@ -681,12 +681,14 @@ describe('EcranEmploiDuTempsComponent', () => {
     const boutonsEdt = () =>
       Array.from(fixture.nativeElement.querySelectorAll('.edt__btn-edt')) as HTMLButtonElement[];
 
-    const liste = () => fixture.nativeElement.querySelector('.edt__liste') as HTMLUListElement;
+    const elementFocalise = () => document.activeElement as HTMLElement;
 
     it('ArrowDown déplace le focus sur l’EDT suivant', () => {
       boutonsEdt()[0].focus();
 
-      liste().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+      elementFocalise().dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
+      );
       fixture.detectChanges();
 
       expect(document.activeElement).toBe(boutonsEdt()[1]);
@@ -695,11 +697,11 @@ describe('EcranEmploiDuTempsComponent', () => {
 
     it('End puis Home ramène au premier EDT', () => {
       boutonsEdt()[0].focus();
-      liste().dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
+      elementFocalise().dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
       fixture.detectChanges();
       expect(document.activeElement).toBe(boutonsEdt()[1]);
 
-      liste().dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+      elementFocalise().dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
       fixture.detectChanges();
 
       expect(document.activeElement).toBe(boutonsEdt()[0]);
@@ -708,7 +710,9 @@ describe('EcranEmploiDuTempsComponent', () => {
     it('ArrowUp depuis le premier EDT ne déplace pas le focus', () => {
       boutonsEdt()[0].focus();
 
-      liste().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+      elementFocalise().dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }),
+      );
       fixture.detectChanges();
 
       expect(document.activeElement).toBe(boutonsEdt()[0]);

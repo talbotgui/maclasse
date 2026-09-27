@@ -4,93 +4,93 @@ import { SelecteursBase } from './selecteurs-base';
 /** Sélecteurs de l'écran Élèves. */
 export class SelecteursEleves extends SelecteursBase {
   /** Bouton CRÉER un élève (colonne gauche). */
-  readonly btnCreerEleve: Locator;
+  public readonly btnCreerEleve: Locator;
   /** Champ de recherche/filtre sur la liste des élèves. */
-  readonly champRecherche: Locator;
+  public readonly champRecherche: Locator;
   /** Liste des élèves affichés. */
-  readonly listeEleves: Locator;
+  public readonly listeEleves: Locator;
   /** Message affiché quand la liste est vide. */
-  readonly messageListeVide: Locator;
+  public readonly messageListeVide: Locator;
 
   // --- Formulaire élève ---
   /** Champ Prénom dans le bandeau du formulaire. */
-  readonly champPrenom: Locator;
+  public readonly champPrenom: Locator;
   /** Champ Nom dans le bandeau du formulaire. */
-  readonly champNom: Locator;
+  public readonly champNom: Locator;
   /** Bouton ENREGISTRER dans le bandeau du formulaire. */
-  readonly btnEnregistrer: Locator;
+  public readonly btnEnregistrer: Locator;
   /** Bouton ANNULER dans le bandeau du formulaire. */
-  readonly btnAnnulerFormulaire: Locator;
+  public readonly btnAnnulerFormulaire: Locator;
 
   // --- Fiche élève (lecture seule) ---
   /** Titre de la fiche (NOM Prénom). */
-  readonly titreFiche: Locator;
+  public readonly titreFiche: Locator;
   /** Bouton MODIFIER sur la fiche. */
-  readonly btnModifier: Locator;
+  public readonly btnModifier: Locator;
   /** Bouton SUPPRIMER (premier état) sur la fiche. */
-  readonly btnSupprimer: Locator;
+  public readonly btnSupprimer: Locator;
   /** Bouton IMPRIMER sur la fiche. */
-  readonly btnImprimer: Locator;
+  public readonly btnImprimer: Locator;
   /** Bouton CONFIRMER du bouton-destruction SUPPRIMER élève. */
-  readonly btnSupprimerConfirmer: Locator;
+  public readonly btnSupprimerConfirmer: Locator;
   /** Message quand aucun élève n'est sélectionné. */
-  readonly messageAucunEleveSelectionne: Locator;
+  public readonly messageAucunEleveSelectionne: Locator;
 
   // --- Sous-formulaires ---
   /** Bouton AJOUTER dans la section Contacts. */
-  readonly btnAjouterContact: Locator;
+  public readonly btnAjouterContact: Locator;
   /** Bouton AJOUTER dans la section Absences récurrentes. */
-  readonly btnAjouterAbsenceRecurrente: Locator;
+  public readonly btnAjouterAbsenceRecurrente: Locator;
   /** Bouton AJOUTER dans la section Absences ponctuelles. */
-  readonly btnAjouterAbsencePonctuelle: Locator;
+  public readonly btnAjouterAbsencePonctuelle: Locator;
   /** Bouton AJOUTER dans la section Cursus. */
-  readonly btnAjouterCursus: Locator;
+  public readonly btnAjouterCursus: Locator;
 
   // --- Sous-formulaire contact (index fixe : DUCOBU a déjà 2 contacts dans le jeu de données) ---
   /** Champ Nom du nouveau contact ajouté (index 2). */
-  readonly champNouveauContactNom: Locator;
+  public readonly champNouveauContactNom: Locator;
   /** Champ Téléphone du nouveau contact ajouté (index 2). */
-  readonly champNouveauContactTel: Locator;
+  public readonly champNouveauContactTel: Locator;
 
   // --- Sous-formulaire absence récurrente (index fixe : DUCOBU a déjà 1 absence récurrente) ---
   /** Champ Libellé de la nouvelle absence récurrente ajoutée (index 1). */
-  readonly champNouvelleAbsenceRecurrenteLibelle: Locator;
+  public readonly champNouvelleAbsenceRecurrenteLibelle: Locator;
 
   // --- Sous-formulaire absence ponctuelle (index fixe : DUCOBU n'a aucune absence ponctuelle) ---
   /** Champ Date de la nouvelle absence ponctuelle ajoutée (index 0). */
-  readonly champNouvelleAbsencePonctuelleDate: Locator;
+  public readonly champNouvelleAbsencePonctuelleDate: Locator;
   /** Champ Justification de la nouvelle absence ponctuelle ajoutée (index 0). */
-  readonly champNouvelleAbsencePonctuelleJustification: Locator;
+  public readonly champNouvelleAbsencePonctuelleJustification: Locator;
 
   // --- Sous-formulaire cursus (index fixe : MARTINOT a déjà 2 cursus) ---
   /** Champ Niveau du nouveau cursus ajouté (index 2). */
-  readonly champNouveauCursusNiveau: Locator;
+  public readonly champNouveauCursusNiveau: Locator;
 
   // --- Lecture seule ---
   /** Liste résumée affichant contacts en mode lecture. */
-  readonly listeResumeeContacts: Locator;
+  public readonly listeResumeeContacts: Locator;
   /** Liste résumée affichant les absences récurrentes en mode lecture. */
-  readonly listeResumeeAbsencesRec: Locator;
+  public readonly listeResumeeAbsencesRec: Locator;
   /** Liste résumée affichant les absences ponctuelles en mode lecture. */
-  readonly listeResumeeAbsencesPonct: Locator;
+  public readonly listeResumeeAbsencesPonct: Locator;
   /** Liste résumée affichant les cursus en mode lecture. */
-  readonly listeResumeeCursus: Locator;
+  public readonly listeResumeeCursus: Locator;
   /** Colonne gauche de l'écran (masquée à l'impression). */
-  readonly colonneGauche: Locator;
+  public readonly colonneGauche: Locator;
 
   // --- Chips de filtre par groupe ---
   /** Chip de filtre Groupe A. */
-  readonly chipGroupeA: Locator;
+  public readonly chipGroupeA: Locator;
   /** Chip de filtre Groupe B. */
-  readonly chipGroupeB: Locator;
+  public readonly chipGroupeB: Locator;
 
   // --- Boutons d'élèves du jeu de données fixture ---
   /** Bouton de l'élève MARTINOT Boule dans la liste. */
-  readonly btnEleveMartinot: Locator;
+  public readonly btnEleveMartinot: Locator;
   /** Bouton de l'élève GRATIN Léonie dans la liste. */
-  readonly btnEleveGratin: Locator;
+  public readonly btnEleveGratin: Locator;
   /** Bouton de l'élève DUCOBU Jean dans la liste. */
-  readonly btnEleveDucobu: Locator;
+  public readonly btnEleveDucobu: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -137,22 +137,22 @@ export class SelecteursEleves extends SelecteursBase {
   }
 
   /** Sélectionne MARTINOT Boule dans la liste. */
-  async selectionnerMartinot(): Promise<void> {
+  public async selectionnerMartinot(): Promise<void> {
     await this.btnEleveMartinot.click();
   }
 
   /** Sélectionne GRATIN Léonie dans la liste. */
-  async selectionnerGratin(): Promise<void> {
+  public async selectionnerGratin(): Promise<void> {
     await this.btnEleveGratin.click();
   }
 
   /** Sélectionne DUCOBU Jean dans la liste. */
-  async selectionnerDucobu(): Promise<void> {
+  public async selectionnerDucobu(): Promise<void> {
     await this.btnEleveDucobu.click();
   }
 
   /** Crée un élève avec prénom et nom dans le bandeau du formulaire. */
-  async remplirBandeau(prenom: string, nom: string): Promise<void> {
+  public async remplirBandeau(prenom: string, nom: string): Promise<void> {
     await this.champPrenom.fill(prenom);
     await this.champNom.fill(nom);
   }

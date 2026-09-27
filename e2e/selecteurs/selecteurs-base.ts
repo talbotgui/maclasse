@@ -3,56 +3,56 @@ import { type Page, type Locator } from '@playwright/test';
 /** Sélecteurs communs à toutes les pages : entête, navigation, popins transverses. */
 export class SelecteursBase {
   /** Bouton de sauvegarde manuelle dans l'entête. */
-  readonly btnSauvegarder: Locator;
+  public readonly btnSauvegarder: Locator;
   /** Bouton ANNULER (undo) dans l'entête. */
-  readonly btnAnnuler: Locator;
+  public readonly btnAnnuler: Locator;
   /** Bouton REFAIRE (redo) dans l'entête. */
-  readonly btnRefaire: Locator;
+  public readonly btnRefaire: Locator;
   /** Bouton de changement de thème. */
-  readonly btnTheme: Locator;
+  public readonly btnTheme: Locator;
   /** Boîte de dialogue modale actuellement ouverte. */
-  readonly dialogueOuvert: Locator;
+  public readonly dialogueOuvert: Locator;
 
   /** Lien de navigation vers l'accueil. */
-  readonly navAccueil: Locator;
+  public readonly navAccueil: Locator;
   /** Lien de navigation vers les élèves. */
-  readonly navEleves: Locator;
+  public readonly navEleves: Locator;
   /** Lien de navigation vers les projets. */
-  readonly navProjets: Locator;
+  public readonly navProjets: Locator;
   /** Lien de navigation vers les compétences. */
-  readonly navCompetences: Locator;
+  public readonly navCompetences: Locator;
   /** Lien de navigation vers l'emploi du temps. */
-  readonly navEmploiDuTemps: Locator;
+  public readonly navEmploiDuTemps: Locator;
   /** Lien de navigation vers le cahier journal. */
-  readonly navCahierJournal: Locator;
+  public readonly navCahierJournal: Locator;
   /** Lien de navigation vers le paramétrage. */
-  readonly navParametrage: Locator;
+  public readonly navParametrage: Locator;
 
   /** Champ de recherche globale dans l'entête. */
-  readonly champRechercheGlobale: Locator;
+  public readonly champRechercheGlobale: Locator;
   /** Liste des résultats de la recherche globale. */
-  readonly listeResultatsRecherche: Locator;
+  public readonly listeResultatsRecherche: Locator;
 
   /** Bouton ANNULER de la popin d'avertissement. */
-  readonly btnAvertissementAnnuler: Locator;
+  public readonly btnAvertissementAnnuler: Locator;
   /** Bouton CONFIRMER de la popin d'avertissement. */
-  readonly btnAvertissementConfirmer: Locator;
+  public readonly btnAvertissementConfirmer: Locator;
 
   /** Bouton MOT DE PASSE de la popin de sauvegarde. */
-  readonly champMotDePasseSauvegarde: Locator;
+  public readonly champMotDePasseSauvegarde: Locator;
   /** Bouton CONFIRMER de la popin de sauvegarde. */
-  readonly btnSauvegardeConfirmer: Locator;
+  public readonly btnSauvegardeConfirmer: Locator;
   /** Bouton ANNULER de la popin de sauvegarde. */
-  readonly btnSauvegardeAnnuler: Locator;
+  public readonly btnSauvegardeAnnuler: Locator;
 
   /** Select de destination principale dans la popin d'export de compétences (projet ou séance). */
-  readonly exportSelectPrimaire: Locator;
+  public readonly exportSelectPrimaire: Locator;
   /** Select de destination secondaire dans la popin d'export de compétences. */
-  readonly exportSelectSecondaire: Locator;
+  public readonly exportSelectSecondaire: Locator;
   /** Bouton ANNULER de la popin d'export de compétences. */
-  readonly btnExportAnnuler: Locator;
+  public readonly btnExportAnnuler: Locator;
   /** Bouton EXPORTER (confirmer) de la popin d'export de compétences. */
-  readonly btnExportConfirmer: Locator;
+  public readonly btnExportConfirmer: Locator;
 
   constructor(protected readonly page: Page) {
     this.btnSauvegarder = page.locator('#btnSauvegarder');
@@ -86,7 +86,7 @@ export class SelecteursBase {
   }
 
   /** Retourne le premier résultat de la liste de recherche globale. */
-  get premierResultatRecherche(): Locator {
+  public get premierResultatRecherche(): Locator {
     return this.listeResultatsRecherche.locator('button').first();
   }
 }

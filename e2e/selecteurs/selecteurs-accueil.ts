@@ -4,11 +4,11 @@ import { SelecteursBase } from './selecteurs-base';
 /** Sélecteurs de l'écran Accueil. */
 export class SelecteursAccueil extends SelecteursBase {
   /** Titre affichant la date du jour. */
-  readonly titreDateJour: Locator;
+  public readonly titreDateJour: Locator;
   /** Message affiché quand aucun journal n'existe pour aujourd'hui. */
-  readonly messageAucunJournal: Locator;
+  public readonly messageAucunJournal: Locator;
   /** Liste des séances du jour dans le résumé. */
-  readonly listeSeances: Locator;
+  public readonly listeSeances: Locator;
 
   constructor(page: Page) {
     super(page);

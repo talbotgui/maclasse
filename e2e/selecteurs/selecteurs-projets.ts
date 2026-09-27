@@ -13,79 +13,79 @@ import { SelecteursBase } from './selecteurs-base';
 export class SelecteursProjets extends SelecteursBase {
   // --- Colonne gauche : liste ---
   /** Bouton CRÉER un nouveau projet. */
-  readonly btnCreerProjet: Locator;
+  public readonly btnCreerProjet: Locator;
   /** Liste des projets (colonne gauche). */
-  readonly listeProjets: Locator;
+  public readonly listeProjets: Locator;
   /** Champ de recherche dans la liste des projets. */
-  readonly champRechercheProjet: Locator;
+  public readonly champRechercheProjet: Locator;
 
   // --- Chips de filtre par domaine ---
   /** Chip de filtre domaine Français (FR — présent dans Journal). */
-  readonly chipDomaineFR: Locator;
+  public readonly chipDomaineFR: Locator;
   /** Chip de filtre domaine Mathématiques (MAT — présent dans Potager). */
-  readonly chipDomaineMAT: Locator;
+  public readonly chipDomaineMAT: Locator;
 
   // --- Boutons de sélection des projets du jeu de données ---
   /** Bouton de sélection du projet "Journal de la classe". */
-  readonly btnProjetJournal: Locator;
+  public readonly btnProjetJournal: Locator;
   /** Bouton de sélection du projet "Potager pédagogique". */
-  readonly btnProjetPotager: Locator;
+  public readonly btnProjetPotager: Locator;
   /** Bouton de sélection du projet "Spectacle de fin d'année". */
-  readonly btnProjetSpectacle: Locator;
+  public readonly btnProjetSpectacle: Locator;
 
   // --- Fiche projet (lecture seule) ---
   /** Titre du projet (h2.fiche-projet__titre) en mode lecture seule. */
-  readonly titreFiche: Locator;
+  public readonly titreFiche: Locator;
   /** Description du projet en mode lecture seule. */
-  readonly descriptionFiche: Locator;
+  public readonly descriptionFiche: Locator;
   /** Liste des périodes en mode lecture seule. */
-  readonly listePeriodesFiche: Locator;
+  public readonly listePeriodesFiche: Locator;
   /** Message affiché quand aucun projet n'est sélectionné. */
-  readonly messageAucunProjetSelectionne: Locator;
+  public readonly messageAucunProjetSelectionne: Locator;
   /** Bouton MODIFIER sur la fiche projet. */
-  readonly btnModifierProjet: Locator;
+  public readonly btnModifierProjet: Locator;
   /** Bouton IMPRIMER sur la fiche projet. */
-  readonly btnImprimerProjet: Locator;
+  public readonly btnImprimerProjet: Locator;
   /** Bouton SUPPRIMER (premier état du mc-bouton-destruction). */
-  readonly btnSupprimerProjet: Locator;
+  public readonly btnSupprimerProjet: Locator;
   /** Bouton CONFIRMER la suppression du projet. */
-  readonly btnSupprimerProjetConfirmer: Locator;
+  public readonly btnSupprimerProjetConfirmer: Locator;
 
   // --- Formulaire projet ---
   /** Champ Nom du projet (mc-input). */
-  readonly champFormNomProjet: Locator;
+  public readonly champFormNomProjet: Locator;
   /** Champ Description du projet (mc-textarea). */
-  readonly champFormDescProjet: Locator;
+  public readonly champFormDescProjet: Locator;
   /** Bouton ENREGISTRER le projet. */
-  readonly btnEnregistrerProjet: Locator;
+  public readonly btnEnregistrerProjet: Locator;
   /** Bouton ANNULER la saisie projet. */
-  readonly btnAnnulerProjet: Locator;
+  public readonly btnAnnulerProjet: Locator;
 
   // --- Section élèves concernés (mc-chip-filtre par élève — index dynamique) ---
   /** Premier chip d'élève dans le sélecteur "Élèves concernés" (index 0). */
-  readonly premierChipEleveProjet: Locator;
+  public readonly premierChipEleveProjet: Locator;
 
   // --- Section périodes du projet ---
   /** Bouton AJOUTER PÉRIODE. */
-  readonly btnAjouterPeriodeProjet: Locator;
+  public readonly btnAjouterPeriodeProjet: Locator;
 
   // --- Première période (index 0) ---
   /** Champ Nom de la première période (mc-input, index 0). */
-  readonly champPeriodeNomProjet0: Locator;
+  public readonly champPeriodeNomProjet0: Locator;
   /** Champ Date de début de la première période (mc-input type date, index 0). */
-  readonly champPeriodeDebutProjet0: Locator;
+  public readonly champPeriodeDebutProjet0: Locator;
   /** Champ Date de fin de la première période (mc-input type date, index 0). */
-  readonly champPeriodeFinProjet0: Locator;
+  public readonly champPeriodeFinProjet0: Locator;
   /** Champ Description de la première période (mc-textarea, index 0). */
-  readonly champPeriodeDescProjet0: Locator;
+  public readonly champPeriodeDescProjet0: Locator;
   /** Bouton SUPPRIMER de la première période (premier état, index 0). */
-  readonly btnSupprimerPeriodeProjet0: Locator;
+  public readonly btnSupprimerPeriodeProjet0: Locator;
   /** Bouton CONFIRMER la suppression de la première période (index 0). */
-  readonly btnSupprimerPeriodeProjet0Confirmer: Locator;
+  public readonly btnSupprimerPeriodeProjet0Confirmer: Locator;
 
   // --- Troisième période (index 2 — Spectacle a 2 périodes, la nouvelle ajoutée est en index 2) ---
   /** Champ Nom de la troisième période (mc-input, index 2). */
-  readonly champPeriodeNomProjet2: Locator;
+  public readonly champPeriodeNomProjet2: Locator;
 
   constructor(page: Page) {
     super(page);

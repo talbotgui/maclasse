@@ -7,7 +7,7 @@ export class DonneesMother {
    * Retourne un objet {@link DonneesApplication} minimal valide avec des valeurs neutres.
    * Passer un `Partial` pour surcharger uniquement les champs pertinents au test.
    */
-  static base(surcharge: Partial<DonneesApplication> = {}): DonneesApplication {
+  public static base(surcharge: Partial<DonneesApplication> = {}): DonneesApplication {
     return {
       version: '1.0',
       configuration: { delaiSauvegardeAutoMinutes: 5 },
@@ -42,7 +42,7 @@ export class DonneesMother {
    * @param eleves Élèves à placer dans `classe.eleves`.
    * @param surcharge Surcharge additionnelle des autres champs.
    */
-  static avecEleves(
+  public static avecEleves(
     eleves: Eleve[],
     surcharge: Partial<DonneesApplication> = {},
   ): DonneesApplication {

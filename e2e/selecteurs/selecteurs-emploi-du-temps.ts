@@ -13,157 +13,157 @@ import { SelecteursBase } from './selecteurs-base';
 export class SelecteursEmploiDuTemps extends SelecteursBase {
   // --- Colonne gauche : liste des EDT ---
   /** Bouton CRÉER un nouvel EDT. */
-  readonly btnCreerEdt: Locator;
+  public readonly btnCreerEdt: Locator;
   /** Liste `<ul>` des EDT (pour vérifier qu'un nouvel EDT y apparaît). */
-  readonly listeEdts: Locator;
+  public readonly listeEdts: Locator;
   /** Bouton de sélection de l'EDT "Semaine paire" (jeu de données). */
-  readonly btnEdtSemainePaire: Locator;
+  public readonly btnEdtSemainePaire: Locator;
   /** Bouton de sélection de l'EDT "Semaine impaire" (jeu de données). */
-  readonly btnEdtSemaineImpaire: Locator;
+  public readonly btnEdtSemaineImpaire: Locator;
   /** Bouton de sélection de l'EDT "Semaine complète" (jeu de données). */
-  readonly btnEdtSemaineComplete: Locator;
+  public readonly btnEdtSemaineComplete: Locator;
 
   // --- Grille hebdomadaire ---
   /** En-tête de la grille hebdomadaire (contient les noms des colonnes jour). */
-  readonly grilleEntete: Locator;
+  public readonly grilleEntete: Locator;
   /** Tableau complet de la grille (pour vérifier le texte des créneaux). */
-  readonly conteneurGrille: Locator;
+  public readonly conteneurGrille: Locator;
   /** Message affiché dans la zone grille quand aucun EDT n'est sélectionné. */
-  readonly grilleVide: Locator;
+  public readonly grilleVide: Locator;
   /** Message affiché dans la zone droite quand aucun formulaire n'est ouvert. */
-  readonly droiteVide: Locator;
+  public readonly droiteVide: Locator;
   /** Bouton IMPRIMER l'EDT sélectionné. */
-  readonly btnImprimerEdt: Locator;
+  public readonly btnImprimerEdt: Locator;
   /** Colonne gauche (listes des EDT), masquée à l'impression. */
-  readonly colonneGauche: Locator;
+  public readonly colonneGauche: Locator;
   /** Colonne droite (formulaire contextuel), masquée à l'impression. */
-  readonly colonneDroite: Locator;
+  public readonly colonneDroite: Locator;
   /** Premier créneau existant dans la grille (index 0 — tout EDT confondu). */
-  readonly premierCreneauGrille: Locator;
+  public readonly premierCreneauGrille: Locator;
   /**
    * Premier créneau de l'EDT "Semaine paire" dans la grille.
    * id=cr000001-0000-4000-8000-000000000001 (lundi 08:30-09:15).
    */
-  readonly premierCreneauSemainePaire: Locator;
+  public readonly premierCreneauSemainePaire: Locator;
   /** Premier bouton "+" d'ajout de créneau dans une cellule vide de la grille. */
-  readonly btnAjouterCreneauCelluleVide: Locator;
+  public readonly btnAjouterCreneauCelluleVide: Locator;
   /** Premier bouton "AJOUTER" en ligne basse de la grille (par jour). */
-  readonly btnNouveauCreneauLigne: Locator;
+  public readonly btnNouveauCreneauLigne: Locator;
 
   // --- Formulaire EDT (colonne droite, onglet EDT) ---
   /** Champ Nom de l'EDT (mc-input). */
-  readonly inputNomEdt: Locator;
+  public readonly inputNomEdt: Locator;
   /** Champ Date de début de l'EDT (mc-input type date). */
-  readonly inputDateDebutEdt: Locator;
+  public readonly inputDateDebutEdt: Locator;
   /** Champ Date de fin de l'EDT (mc-input type date). */
-  readonly inputDateFinEdt: Locator;
+  public readonly inputDateFinEdt: Locator;
   /** Select Fréquence de l'EDT (mc-select). */
-  readonly selectFrequenceEdt: Locator;
+  public readonly selectFrequenceEdt: Locator;
   /** Bouton ENREGISTRER le formulaire EDT. */
-  readonly btnEnregistrerEdt: Locator;
+  public readonly btnEnregistrerEdt: Locator;
   /** Bouton ANNULER la saisie EDT. */
-  readonly btnAnnulerEdt: Locator;
+  public readonly btnAnnulerEdt: Locator;
   /** Bouton SUPPRIMER l'EDT (premier état du mc-bouton-destruction). */
-  readonly btnSupprimerEdt: Locator;
+  public readonly btnSupprimerEdt: Locator;
   /** Bouton CONFIRMER la suppression de l'EDT. */
-  readonly btnSupprimerEdtConfirmer: Locator;
+  public readonly btnSupprimerEdtConfirmer: Locator;
 
   // --- Formulaire créneau (colonne droite, onglet créneau) ---
   /** Champ Heure de début du premier temps du créneau (mc-champ-heure). */
-  readonly inputHeureDebutTemps0: Locator;
+  public readonly inputHeureDebutTemps0: Locator;
   /** Champ Heure de fin du premier temps du créneau (mc-champ-heure). */
-  readonly inputHeureFinTemps0: Locator;
+  public readonly inputHeureFinTemps0: Locator;
   /** Select Type du créneau (pédagogique / récréation / pause). */
-  readonly selectTypeCreneau: Locator;
+  public readonly selectTypeCreneau: Locator;
   /** Champ Titre du premier temps du créneau (input interne de mc-input, id suffixé `-input`, visible pour le type pédagogique). */
-  readonly inputTitreTemps0: Locator;
+  public readonly inputTitreTemps0: Locator;
   /** Libellés du type de créneau affichés dans les cellules de la grille. */
-  readonly typesCreneauGrille: Locator;
+  public readonly typesCreneauGrille: Locator;
   /** Titre (h2) du formulaire de créneau : « Créer créneau » ou « Modifier créneau ». */
-  readonly titreFormulaireCreneau: Locator;
+  public readonly titreFormulaireCreneau: Locator;
   /** Bouton de la liste sélectionnant l'EDT nommé « EDT pastilles » (créé par les tests). */
-  readonly btnEdtPastilles: Locator;
+  public readonly btnEdtPastilles: Locator;
   /** Pastilles d'élèves concernés affichées dans la grille. */
-  readonly pastillesGrille: Locator;
+  public readonly pastillesGrille: Locator;
   /** Bouton radio « Groupes » du périmètre du premier temps. */
-  readonly radioGroupesTemps0: Locator;
+  public readonly radioGroupesTemps0: Locator;
   /** Chip du groupe A dans le périmètre du premier temps. */
-  readonly chipGroupeATemps0: Locator;
+  public readonly chipGroupeATemps0: Locator;
   /** Select Jour du formulaire créneau. */
-  readonly selectJourCreneau: Locator;
+  public readonly selectJourCreneau: Locator;
   /** Cellule du lundi de la première ligne de la grille. */
-  readonly celluleLundiPremiereLigne: Locator;
+  public readonly celluleLundiPremiereLigne: Locator;
   /** Cellule du mardi de la première ligne de la grille. */
-  readonly celluleMardiPremiereLigne: Locator;
+  public readonly celluleMardiPremiereLigne: Locator;
   /** Bouton AJOUTER UN TEMPS au créneau en cours d'édition. */
-  readonly btnAjouterTemps: Locator;
+  public readonly btnAjouterTemps: Locator;
   /** Blocs « Temps n » du formulaire créneau. */
-  readonly blocsTemps: Locator;
+  public readonly blocsTemps: Locator;
   /** Bouton SUPPRIMER (premier état) du quatrième temps (index 3). */
-  readonly btnSupprimerTemps3: Locator;
+  public readonly btnSupprimerTemps3: Locator;
   /** Bouton CONFIRMER la suppression du quatrième temps (index 3). */
-  readonly btnSupprimerTemps3Confirmer: Locator;
+  public readonly btnSupprimerTemps3Confirmer: Locator;
   /** Champ Titre du deuxième temps du créneau (index 1). */
-  readonly inputTitreTemps1: Locator;
+  public readonly inputTitreTemps1: Locator;
   /** Bandeau des absences régulières pertinentes pour l'EDT sélectionné. */
-  readonly bandeauAbsences: Locator;
+  public readonly bandeauAbsences: Locator;
   /** Lignes du bandeau d'absences régulières. */
-  readonly lignesBandeauAbsences: Locator;
+  public readonly lignesBandeauAbsences: Locator;
   /** Bouton de repli/dépli de la liste du bandeau d'absences régulières. */
-  readonly btnBasculerAbsences: Locator;
+  public readonly btnBasculerAbsences: Locator;
   /** Nombre d'absences affiché dans le bouton de bascule quand la liste est repliée. */
-  readonly nombreAbsencesReplie: Locator;
+  public readonly nombreAbsencesReplie: Locator;
   /** Icônes ⚠ de conflit d'absence présentes dans la grille. */
-  readonly iconesConflit: Locator;
+  public readonly iconesConflit: Locator;
   /** Liste des conflits détaillés dans la popin d'avertissement d'absences. */
-  readonly listeConflitsPopin: Locator;
+  public readonly listeConflitsPopin: Locator;
   /** Bouton FERMER de la popin d'avertissement d'absences. */
-  readonly btnWarningsFermer: Locator;
+  public readonly btnWarningsFermer: Locator;
 
   // --- EDT calculés ---
   /** Bouton CRÉER UN EMPLOI DU TEMPS CALCULÉ. */
-  readonly btnCreerEdtCalcule: Locator;
+  public readonly btnCreerEdtCalcule: Locator;
   /** Liste des EDT calculés (colonne gauche). */
-  readonly listeEdtsCalcules: Locator;
+  public readonly listeEdtsCalcules: Locator;
   /** Bouton de sélection du premier EDT calculé de la liste. */
-  readonly btnPremierEdtCalcule: Locator;
+  public readonly btnPremierEdtCalcule: Locator;
   /** Champ Nom du formulaire d'EDT calculé (input interne de mc-input). */
-  readonly inputNomEdtCalcule: Locator;
+  public readonly inputNomEdtCalcule: Locator;
   /** Chip source « Temps hors classe » (récréations et pauses déjeuner). */
-  readonly chipSourceTempsHorsClasse: Locator;
+  public readonly chipSourceTempsHorsClasse: Locator;
   /** Chip source « Temps de classe ». */
-  readonly chipSourceTempsClasse: Locator;
+  public readonly chipSourceTempsClasse: Locator;
   /** Chip source « Absences régulières ». */
-  readonly chipSourceAbsencesRegulieres: Locator;
+  public readonly chipSourceAbsencesRegulieres: Locator;
   /** Message d'erreur du formulaire d'EDT calculé. */
-  readonly erreurEdtCalcule: Locator;
+  public readonly erreurEdtCalcule: Locator;
   /** Message d'erreur « nom obligatoire » du formulaire des propriétés d'un EDT. */
-  readonly erreurFormulaireEdt: Locator;
+  public readonly erreurFormulaireEdt: Locator;
   /** Message d'erreur des horaires du premier temps du formulaire créneau. */
-  readonly erreurHeuresTemps0: Locator;
+  public readonly erreurHeuresTemps0: Locator;
   /** Bouton ENREGISTRER l'EDT calculé. */
-  readonly btnEnregistrerEdtCalcule: Locator;
+  public readonly btnEnregistrerEdtCalcule: Locator;
   /** Bouton ANNULER le formulaire d'EDT calculé. */
-  readonly btnAnnulerEdtCalcule: Locator;
+  public readonly btnAnnulerEdtCalcule: Locator;
   /** Bouton SUPPRIMER (premier état) l'EDT calculé. */
-  readonly btnSupprimerEdtCalcule: Locator;
+  public readonly btnSupprimerEdtCalcule: Locator;
   /** Bouton CONFIRMER la suppression de l'EDT calculé. */
-  readonly btnSupprimerEdtCalculeConfirmer: Locator;
+  public readonly btnSupprimerEdtCalculeConfirmer: Locator;
   /** Cellules de la grille issues d'un calcul. */
-  readonly cellulesCalculees: Locator;
+  public readonly cellulesCalculees: Locator;
   /** Boutons de créneau éditable de la grille (absents en lecture seule). */
-  readonly boutonsCreneauEditable: Locator;
+  public readonly boutonsCreneauEditable: Locator;
   /** Boutons d'ajout de créneau de la grille (absents en lecture seule). */
-  readonly boutonsAjoutCreneau: Locator;
+  public readonly boutonsAjoutCreneau: Locator;
 
   /** Bouton ENREGISTRER le créneau. */
-  readonly btnEnregistrerCreneau: Locator;
+  public readonly btnEnregistrerCreneau: Locator;
   /** Bouton ANNULER la saisie créneau. */
-  readonly btnAnnulerCreneau: Locator;
+  public readonly btnAnnulerCreneau: Locator;
   /** Bouton SUPPRIMER le créneau (premier état du mc-bouton-destruction). */
-  readonly btnSupprimerCreneau: Locator;
+  public readonly btnSupprimerCreneau: Locator;
   /** Bouton CONFIRMER la suppression du créneau. */
-  readonly btnSupprimerCreneauConfirmer: Locator;
+  public readonly btnSupprimerCreneauConfirmer: Locator;
 
   constructor(page: Page) {
     super(page);

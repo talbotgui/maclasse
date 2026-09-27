@@ -6,7 +6,7 @@ import { Projet, ProjetPeriode } from '../modeles/projet.modele';
  */
 export class ProjetMother {
   /** Retourne un projet avec les valeurs par défaut, surchargées par {@link surcharge}. */
-  static base(surcharge: Partial<Projet> = {}): Projet {
+  public static base(surcharge: Partial<Projet> = {}): Projet {
     return {
       id: 'p1',
       nom: 'Compostage',
@@ -24,7 +24,7 @@ export class ProjetMother {
  */
 export class PeriodeMother {
   /** Retourne une période avec les valeurs par défaut, surchargées par {@link surcharge}. */
-  static base(surcharge: Partial<ProjetPeriode> = {}): ProjetPeriode {
+  public static base(surcharge: Partial<ProjetPeriode> = {}): ProjetPeriode {
     return {
       id: 'pp1',
       periodeNom: 'Période 1',

@@ -159,17 +159,17 @@ export class EcranParametrageComponent {
   protected readonly delaiSauvegardeMax = EcranParametrageComponent.DELAI_SAUVEGARDE_MAX;
 
   /** Copies locales des listes éditables inline. */
-  protected copiePeriodes = signal<Periode[]>([]);
+  protected readonly copiePeriodes = signal<Periode[]>([]);
   /** Copies locales des groupes. */
-  protected copieGroupes = signal<Groupe[]>([]);
+  protected readonly copieGroupes = signal<Groupe[]>([]);
   /** Copies locales du barème. */
-  protected copieBareme = signal<StatutAcquisition[]>([]);
+  protected readonly copieBareme = signal<StatutAcquisition[]>([]);
   /** Copies locales des statuts élève. */
-  protected copieStatutsEleve = signal<StatutEleve[]>([]);
+  protected readonly copieStatutsEleve = signal<StatutEleve[]>([]);
   /** Copies locales des types de contact. */
-  protected copieTypesContact = signal<TypeContact[]>([]);
+  protected readonly copieTypesContact = signal<TypeContact[]>([]);
   /** Copies locales des jours fériés. */
-  protected copieJoursFeries = signal<JourFerie[]>([]);
+  protected readonly copieJoursFeries = signal<JourFerie[]>([]);
 
   /** Index de la ligne venant d'être ajoutée à focaliser, par section (`null` si aucune). */
   protected readonly indexAFocaliserPeriode = signal<number | null>(null);
@@ -188,7 +188,7 @@ export class EcranParametrageComponent {
    * Ensemble des IDs de domaines (N1) et sous-domaines (N2) actifs dans le formulaire.
    * Vide = tous actifs (comportement par défaut).
    */
-  protected copieDomainesActifs = signal<Set<string>>(new Set());
+  protected readonly copieDomainesActifs = signal<Set<string>>(new Set());
 
   /** Tous les domaines N1 de l'arbre complet (non filtré), pour affichage dans le paramétrage. */
   protected readonly tousDomaines = computed<Competence[]>(

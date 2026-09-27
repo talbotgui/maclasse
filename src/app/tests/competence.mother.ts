@@ -12,7 +12,7 @@ export class CompetenceMother {
    * (`d1-1` Lecture, `d1-2` Écriture). Adapté à l'écran paramétrage qui n'affiche
    * que deux niveaux de profondeur.
    */
-  static domaineAvecSousDomaines(): Competence {
+  public static domaineAvecSousDomaines(): Competence {
     return {
       id: 'd1',
       libelle: 'Français',
@@ -23,7 +23,7 @@ export class CompetenceMother {
     };
   }
 
-  static arbreSimple(): Competence[] {
+  public static arbreSimple(): Competence[] {
     return [
       {
         id: 'FR',

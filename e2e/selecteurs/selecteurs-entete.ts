@@ -4,13 +4,13 @@ import { SelecteursBase } from './selecteurs-base';
 /** Sélecteurs de l'entête — identiques à SelecteursBase, exposés via un alias dédié. */
 export class SelecteursEntete extends SelecteursBase {
   /** Type affiché sur le premier résultat de la liste de recherche globale. */
-  readonly typeDuPremierResultat: Locator;
+  public readonly typeDuPremierResultat: Locator;
   /** Titre affiché sur le premier résultat de la liste de recherche globale. */
-  readonly titreDuPremierResultat: Locator;
+  public readonly titreDuPremierResultat: Locator;
   /** Résultat de recherche correspondant au projet Potager pédagogique. */
-  readonly resultatPotager: Locator;
+  public readonly resultatPotager: Locator;
   /** Type affiché sur le résultat de recherche du projet Potager pédagogique. */
-  readonly typeDuResultatPotager: Locator;
+  public readonly typeDuResultatPotager: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -34,7 +34,7 @@ export class SelecteursEntete extends SelecteursBase {
   }
 
   /** Recherche un terme et attend l'apparition de la liste de résultats. */
-  async rechercherEtAttendre(terme: string): Promise<void> {
+  public async rechercherEtAttendre(terme: string): Promise<void> {
     await this.champRechercheGlobale.fill(terme);
     await this.listeResultatsRecherche.waitFor({ state: 'visible' });
   }

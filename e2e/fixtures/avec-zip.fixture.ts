@@ -2,12 +2,12 @@ import { test as avecScreenshots } from './avec-screenshots.fixture';
 import { CHEMIN_ZIP_TEST, CHEMIN_ZIP_VERSION_FUTURE, MOT_DE_PASSE_TEST } from './global-setup';
 import type { Page } from '@playwright/test';
 
-type FixturesZip = {
+interface FixturesZip {
   cheminZip: string;
   cheminZipVersionFuture: string;
   motDePasseTest: string;
   appVersDemanrage: Page;
-};
+}
 
 export const test = avecScreenshots.extend<FixturesZip>({
   cheminZip: async ({}, use) => {

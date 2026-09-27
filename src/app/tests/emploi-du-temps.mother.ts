@@ -6,7 +6,7 @@ import { CreneauEdt, EmploiDuTemps, TempsCreneau } from '../modeles/emploi-du-te
  */
 export class EdtMother {
   /** Retourne un EDT avec les valeurs par défaut, surchargées par {@link surcharge}. */
-  static base(surcharge: Partial<EmploiDuTemps> = {}): EmploiDuTemps {
+  public static base(surcharge: Partial<EmploiDuTemps> = {}): EmploiDuTemps {
     return {
       id: 'edt1',
       nom: 'Semaine complète',
@@ -24,7 +24,7 @@ export class EdtMother {
  */
 export class TempsCreneauMother {
   /** Retourne un temps de 9h à 10h, surchargé par {@link surcharge}. */
-  static base(surcharge: Partial<TempsCreneau> = {}): TempsCreneau {
+  public static base(surcharge: Partial<TempsCreneau> = {}): TempsCreneau {
     return {
       id: 't1',
       heureDebut: '09:00',
@@ -39,7 +39,7 @@ export class TempsCreneauMother {
  */
 export class CreneauMother {
   /** Retourne un créneau pédagogique le lundi de 9h à 10h (un seul temps), surchargé par {@link surcharge}. */
-  static lundi9h10(surcharge: Partial<CreneauEdt> = {}): CreneauEdt {
+  public static lundi9h10(surcharge: Partial<CreneauEdt> = {}): CreneauEdt {
     return {
       id: 'c1',
       jour: 'lundi',
@@ -56,7 +56,7 @@ export class CreneauMother {
    * @param surcharge Propriétés du créneau à surcharger (ex. `id`, `jour`, `type`).
    * @returns Le créneau construit.
    */
-  static avecHoraire(
+  public static avecHoraire(
     heureDebut: string,
     heureFin: string,
     surcharge: Partial<CreneauEdt> = {},

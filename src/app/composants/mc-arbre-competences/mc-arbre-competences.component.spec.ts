@@ -19,7 +19,7 @@ import { LIBELLES } from '../../libelles';
 })
 class ComposantHote {
   /** Dernière valeur émise par `selectionChange`, capturée pour assertion dans les tests. */
-  derniereSelection: string[] | null = null;
+  public derniereSelection: string[] | null = null;
 }
 
 describe('McArbreCompetencesComponent', () => {

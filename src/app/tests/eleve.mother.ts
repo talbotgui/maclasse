@@ -6,7 +6,12 @@ export class EleveMother {
    * Retourne un {@link Eleve} minimal valide avec des valeurs neutres.
    * Passer un `Partial` pour surcharger uniquement les champs pertinents au test.
    */
-  static base(id: string, nom: string, prenom: string, surcharge: Partial<Eleve> = {}): Eleve {
+  public static base(
+    id: string,
+    nom: string,
+    prenom: string,
+    surcharge: Partial<Eleve> = {},
+  ): Eleve {
     return {
       id,
       prenom,
@@ -36,7 +41,7 @@ export class EleveMother {
    * Retourne trois élèves : MARTIN Paul (e1) et DUPONT Léa (e2) dans le groupe `GA`,
    * ADAM Zoé (e3) sans groupe. Sert aux tests de résolution du périmètre d'une séance.
    */
-  static trioAvecGroupeGA(): Eleve[] {
+  public static trioAvecGroupeGA(): Eleve[] {
     return [
       EleveMother.base('e1', 'MARTIN', 'Paul', { groupes: ['GA'] }),
       EleveMother.base('e2', 'DUPONT', 'Léa', { groupes: ['GA'] }),
@@ -48,7 +53,7 @@ export class EleveMother {
 /** Fournit des instances de {@link AbsenceRecurrente} prêtes à l'emploi pour les tests. */
 export class AbsenceRecurrenteMother {
   /** Retourne une absence récurrente le lundi de 9h à 10h (id='ar1'), surchargée par {@link surcharge}. */
-  static base(surcharge: Partial<AbsenceRecurrente> = {}): AbsenceRecurrente {
+  public static base(surcharge: Partial<AbsenceRecurrente> = {}): AbsenceRecurrente {
     return {
       id: 'ar1',
       libelle: 'Orthophonie',
@@ -64,7 +69,7 @@ export class AbsenceRecurrenteMother {
 /** Fournit des instances de {@link AbsencePonctuelle} prêtes à l'emploi pour les tests. */
 export class AbsencePonctuelleMother {
   /** Retourne une absence ponctuelle datée du 5 janvier 2026 (id='ap1'), surchargée par {@link surcharge}. */
-  static base(surcharge: Partial<AbsencePonctuelle> = {}): AbsencePonctuelle {
+  public static base(surcharge: Partial<AbsencePonctuelle> = {}): AbsencePonctuelle {
     return {
       id: 'ap1',
       date: '2026-01-05',

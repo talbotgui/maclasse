@@ -10,7 +10,7 @@ import {
   FrequenceSemaine,
   TempsCreneau,
 } from '../../modeles/emploi-du-temps.modele';
-import { AbsencePertinente, Eleve } from '../../modeles/eleve.modele';
+import { AbsencePertinente } from '../../modeles/eleve.modele';
 import { CommandeCreation } from '../../commandes/commande-creation';
 import { CommandeModification } from '../../commandes/commande-modification';
 import { CommandeSuppression } from '../../commandes/commande-suppression';

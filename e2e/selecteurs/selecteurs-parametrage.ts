@@ -22,211 +22,211 @@ import { SelecteursBase } from './selecteurs-base';
 export class SelecteursParametrage extends SelecteursBase {
   // --- Navigation par section (colonne gauche) ---
   /** Bouton de navigation vers la section "Enseignant & classe". */
-  readonly btnSectionEnseignantClasse: Locator;
+  public readonly btnSectionEnseignantClasse: Locator;
   /** Bouton de navigation vers la section "Périodes". */
-  readonly btnSectionPeriodes: Locator;
+  public readonly btnSectionPeriodes: Locator;
   /** Bouton de navigation vers la section "Semaine & horaires". */
-  readonly btnSectionSemaineHoraires: Locator;
+  public readonly btnSectionSemaineHoraires: Locator;
   /** Bouton de navigation vers la section "Groupes". */
-  readonly btnSectionGroupes: Locator;
+  public readonly btnSectionGroupes: Locator;
   /** Bouton de navigation vers la section "Barème d'acquisition". */
-  readonly btnSectionBareme: Locator;
+  public readonly btnSectionBareme: Locator;
   /** Bouton de navigation vers la section "Statuts élève". */
-  readonly btnSectionStatutsEleve: Locator;
+  public readonly btnSectionStatutsEleve: Locator;
   /** Bouton de navigation vers la section "Types de contact". */
-  readonly btnSectionTypesContact: Locator;
+  public readonly btnSectionTypesContact: Locator;
   /** Bouton de navigation vers la section "Jours fériés". */
-  readonly btnSectionJoursFeries: Locator;
+  public readonly btnSectionJoursFeries: Locator;
   /** Bouton de navigation vers la section "Préférences". */
-  readonly btnSectionPreferences: Locator;
+  public readonly btnSectionPreferences: Locator;
   /** Bouton de navigation vers la section "Domaines de compétences". */
-  readonly btnSectionDomainesCompetences: Locator;
+  public readonly btnSectionDomainesCompetences: Locator;
 
   // --- Section : Enseignant & classe (id statiques → suffixe "input" correct) ---
   /** Champ Prénom de l'enseignant (mc-input, id statique). */
-  readonly champPrenomEnseignant: Locator;
+  public readonly champPrenomEnseignant: Locator;
   /** Champ Nom de l'enseignant (mc-input, id statique). */
-  readonly champNomEnseignant: Locator;
+  public readonly champNomEnseignant: Locator;
   /** Champ Année scolaire (mc-input, id statique). */
-  readonly champAnneeEnseignant: Locator;
+  public readonly champAnneeEnseignant: Locator;
   /** Champ Niveau de classe (mc-input, id statique). */
-  readonly champNiveauClasse: Locator;
+  public readonly champNiveauClasse: Locator;
   /** Bouton ENREGISTRER les informations enseignant & classe. */
-  readonly btnEnregistrerEnseignantClasse: Locator;
+  public readonly btnEnregistrerEnseignantClasse: Locator;
   /** Bouton ANNULER les modifications enseignant & classe. */
-  readonly btnAnnulerEnseignantClasse: Locator;
+  public readonly btnAnnulerEnseignantClasse: Locator;
 
   // --- Section : Périodes scolaires (5 dans le jeu de données — la nouvelle créée = index 5) ---
   /** Bouton AJOUTER une nouvelle période. */
-  readonly btnAjouterPeriode: Locator;
+  public readonly btnAjouterPeriode: Locator;
   /** Champ Nom de la première période existante (mc-input, [id] dynamique → pas de suffixe). */
-  readonly champPeriodeNom0: Locator;
+  public readonly champPeriodeNom0: Locator;
   /** Champ Nom de la sixième période (index 5 — après AJOUTER sur 5 existantes). */
-  readonly champPeriodeNom5: Locator;
+  public readonly champPeriodeNom5: Locator;
   /** Champ Date de début de la sixième période (mc-input type date, [id] dynamique). */
-  readonly champPeriodeDebut5: Locator;
+  public readonly champPeriodeDebut5: Locator;
   /** Champ Date de fin de la sixième période (mc-input type date, [id] dynamique). */
-  readonly champPeriodeFin5: Locator;
+  public readonly champPeriodeFin5: Locator;
   /** Bouton ENREGISTRER la sixième période (index 5). */
-  readonly btnEnregistrerPeriode5: Locator;
+  public readonly btnEnregistrerPeriode5: Locator;
   /** Bouton SUPPRIMER la sixième période (premier état, index 5). */
-  readonly btnSupprimerPeriode5: Locator;
+  public readonly btnSupprimerPeriode5: Locator;
   /** Bouton CONFIRMER la suppression de la sixième période (index 5). */
-  readonly btnSupprimerPeriode5Confirmer: Locator;
+  public readonly btnSupprimerPeriode5Confirmer: Locator;
 
   // --- Section : Semaine & horaires (id statiques sur mc-champ-heure) ---
   /** Champ Heure de début de journée (mc-champ-heure, id statique). */
-  readonly champHeureDebutJournee: Locator;
+  public readonly champHeureDebutJournee: Locator;
   /** Champ Heure de fin de journée (mc-champ-heure, id statique). */
-  readonly champHeureFinJournee: Locator;
+  public readonly champHeureFinJournee: Locator;
   /** Chip "Lundi" dans la sélection des jours ouvrés ([id] dynamique → pas de suffixe). */
-  readonly chipJourLundi: Locator;
+  public readonly chipJourLundi: Locator;
   /** Chip "Mardi" dans la sélection des jours ouvrés ([id] dynamique → pas de suffixe). */
-  readonly chipJourMardi: Locator;
+  public readonly chipJourMardi: Locator;
   /** Chip "Mercredi" dans la sélection des jours ouvrés ([id] dynamique → pas de suffixe). */
-  readonly chipJourMercredi: Locator;
+  public readonly chipJourMercredi: Locator;
   /** Chip "Jeudi" dans la sélection des jours ouvrés ([id] dynamique → pas de suffixe). */
-  readonly chipJourJeudi: Locator;
+  public readonly chipJourJeudi: Locator;
   /** Chip "Vendredi" dans la sélection des jours ouvrés ([id] dynamique → pas de suffixe). */
-  readonly chipJourVendredi: Locator;
+  public readonly chipJourVendredi: Locator;
   /** Bouton ENREGISTRER la configuration semaine & horaires. */
-  readonly btnEnregistrerSemaineHoraires: Locator;
+  public readonly btnEnregistrerSemaineHoraires: Locator;
   /** Bouton ANNULER les modifications semaine & horaires. */
-  readonly btnAnnulerSemaineHoraires: Locator;
+  public readonly btnAnnulerSemaineHoraires: Locator;
 
   // --- Section : Groupes (3 dans le jeu de données : A (0), B (1), C (2)) ---
   /** Bouton AJOUTER un nouveau groupe. */
-  readonly btnAjouterGroupe: Locator;
+  public readonly btnAjouterGroupe: Locator;
   /** Champ Libellé du premier groupe (mc-input, [id] dynamique → pas de suffixe). */
-  readonly champGroupeLibelle0: Locator;
+  public readonly champGroupeLibelle0: Locator;
   /** Bouton ENREGISTRER le premier groupe (index 0). */
-  readonly btnEnregistrerGroupe0: Locator;
+  public readonly btnEnregistrerGroupe0: Locator;
   /** Bouton SUPPRIMER le premier groupe (premier état, index 0). */
-  readonly btnSupprimerGroupe0: Locator;
+  public readonly btnSupprimerGroupe0: Locator;
   /** Bouton CONFIRMER la suppression du premier groupe (index 0). */
-  readonly btnSupprimerGroupe0Confirmer: Locator;
+  public readonly btnSupprimerGroupe0Confirmer: Locator;
   /** Champ Libellé du quatrième groupe (index 3 — après AJOUTER sur 3 existants). */
-  readonly champGroupeLibelle3: Locator;
+  public readonly champGroupeLibelle3: Locator;
   /** Bouton ENREGISTRER le quatrième groupe (index 3). */
-  readonly btnEnregistrerGroupe3: Locator;
+  public readonly btnEnregistrerGroupe3: Locator;
   /** Bouton SUPPRIMER le quatrième groupe (premier état, index 3). */
-  readonly btnSupprimerGroupe3: Locator;
+  public readonly btnSupprimerGroupe3: Locator;
   /** Bouton CONFIRMER la suppression du quatrième groupe (index 3). */
-  readonly btnSupprimerGroupe3Confirmer: Locator;
+  public readonly btnSupprimerGroupe3Confirmer: Locator;
 
   // --- Section : Barème d'acquisition (4 dans le jeu de données — index 0 à 3) ---
   /** Bouton AJOUTER un nouveau statut d'acquisition. */
-  readonly btnAjouterStatut: Locator;
+  public readonly btnAjouterStatut: Locator;
   /** Champ Identifiant du premier statut ([id] dynamique). */
-  readonly champStatutId0: Locator;
+  public readonly champStatutId0: Locator;
   /** Champ Glyphe du premier statut ([id] dynamique). */
-  readonly champStatutGlyphe0: Locator;
+  public readonly champStatutGlyphe0: Locator;
   /** Champ Libellé du premier statut ([id] dynamique). */
-  readonly champStatutLibelle0: Locator;
+  public readonly champStatutLibelle0: Locator;
   /** Champ Couleur du premier statut ([id] dynamique). */
-  readonly champStatutCouleur0: Locator;
+  public readonly champStatutCouleur0: Locator;
   /** Champ Fond du premier statut ([id] dynamique). */
-  readonly champStatutFond0: Locator;
+  public readonly champStatutFond0: Locator;
   /** Bouton ENREGISTRER le premier statut d'acquisition (index 0). */
-  readonly btnEnregistrerStatut0: Locator;
+  public readonly btnEnregistrerStatut0: Locator;
   /** Bouton SUPPRIMER le premier statut d'acquisition (premier état, index 0). */
-  readonly btnSupprimerStatut0: Locator;
+  public readonly btnSupprimerStatut0: Locator;
   /** Bouton CONFIRMER la suppression du premier statut (index 0). */
-  readonly btnSupprimerStatut0Confirmer: Locator;
+  public readonly btnSupprimerStatut0Confirmer: Locator;
   /** Champ Identifiant du cinquième statut (index 4 — après AJOUTER sur 4 existants). */
-  readonly champStatutId4: Locator;
+  public readonly champStatutId4: Locator;
   /** Champ Glyphe du cinquième statut (index 4). */
-  readonly champStatutGlyphe4: Locator;
+  public readonly champStatutGlyphe4: Locator;
   /** Champ Libellé du cinquième statut (index 4). */
-  readonly champStatutLibelle4: Locator;
+  public readonly champStatutLibelle4: Locator;
   /** Bouton ENREGISTRER le cinquième statut (index 4). */
-  readonly btnEnregistrerStatut4: Locator;
+  public readonly btnEnregistrerStatut4: Locator;
   /** Bouton SUPPRIMER le cinquième statut (index 4). */
-  readonly btnSupprimerStatut4: Locator;
+  public readonly btnSupprimerStatut4: Locator;
   /** Bouton CONFIRMER la suppression du cinquième statut (index 4). */
-  readonly btnSupprimerStatut4Confirmer: Locator;
+  public readonly btnSupprimerStatut4Confirmer: Locator;
 
   // --- Section : Statuts élève (3 dans le jeu de données — index 0 à 2) ---
   /** Bouton AJOUTER un nouveau statut élève. */
-  readonly btnAjouterStatutEleve: Locator;
+  public readonly btnAjouterStatutEleve: Locator;
   /** Champ Identifiant du premier statut élève ([id] dynamique). */
-  readonly champStatutEleveId0: Locator;
+  public readonly champStatutEleveId0: Locator;
   /** Champ Libellé du premier statut élève ([id] dynamique). */
-  readonly champStatutEleveLibelle0: Locator;
+  public readonly champStatutEleveLibelle0: Locator;
   /** Bouton ENREGISTRER le premier statut élève (index 0). */
-  readonly btnEnregistrerStatutEleve0: Locator;
+  public readonly btnEnregistrerStatutEleve0: Locator;
   /** Bouton SUPPRIMER le premier statut élève (premier état, index 0). */
-  readonly btnSupprimerStatutEleve0: Locator;
+  public readonly btnSupprimerStatutEleve0: Locator;
   /** Bouton CONFIRMER la suppression du premier statut élève (index 0). */
-  readonly btnSupprimerStatutEleve0Confirmer: Locator;
+  public readonly btnSupprimerStatutEleve0Confirmer: Locator;
   /** Champ Identifiant du quatrième statut élève (index 3 — après AJOUTER sur 3 existants). */
-  readonly champStatutEleveId3: Locator;
+  public readonly champStatutEleveId3: Locator;
   /** Champ Libellé du quatrième statut élève (index 3). */
-  readonly champStatutEleveLibelle3: Locator;
+  public readonly champStatutEleveLibelle3: Locator;
   /** Bouton ENREGISTRER le quatrième statut élève (index 3). */
-  readonly btnEnregistrerStatutEleve3: Locator;
+  public readonly btnEnregistrerStatutEleve3: Locator;
   /** Bouton SUPPRIMER le quatrième statut élève (index 3). */
-  readonly btnSupprimerStatutEleve3: Locator;
+  public readonly btnSupprimerStatutEleve3: Locator;
   /** Bouton CONFIRMER la suppression du quatrième statut élève (index 3). */
-  readonly btnSupprimerStatutEleve3Confirmer: Locator;
+  public readonly btnSupprimerStatutEleve3Confirmer: Locator;
 
   // --- Section : Types de contact (5 dans le jeu de données — index 0 à 4) ---
   /** Bouton AJOUTER un nouveau type de contact. */
-  readonly btnAjouterTypeContact: Locator;
+  public readonly btnAjouterTypeContact: Locator;
   /** Champ Identifiant du premier type de contact ([id] dynamique). */
-  readonly champTypeContactId0: Locator;
+  public readonly champTypeContactId0: Locator;
   /** Champ Libellé du premier type de contact ([id] dynamique). */
-  readonly champTypeContactLibelle0: Locator;
+  public readonly champTypeContactLibelle0: Locator;
   /** Bouton ENREGISTRER le premier type de contact (index 0). */
-  readonly btnEnregistrerTypeContact0: Locator;
+  public readonly btnEnregistrerTypeContact0: Locator;
   /** Bouton SUPPRIMER le premier type de contact (premier état, index 0). */
-  readonly btnSupprimerTypeContact0: Locator;
+  public readonly btnSupprimerTypeContact0: Locator;
   /** Bouton CONFIRMER la suppression du premier type de contact (index 0). */
-  readonly btnSupprimerTypeContact0Confirmer: Locator;
+  public readonly btnSupprimerTypeContact0Confirmer: Locator;
   /** Champ Identifiant du sixième type de contact (index 5 — après AJOUTER sur 5 existants). */
-  readonly champTypeContactId5: Locator;
+  public readonly champTypeContactId5: Locator;
   /** Champ Libellé du sixième type de contact (index 5). */
-  readonly champTypeContactLibelle5: Locator;
+  public readonly champTypeContactLibelle5: Locator;
   /** Bouton ENREGISTRER le sixième type de contact (index 5). */
-  readonly btnEnregistrerTypeContact5: Locator;
+  public readonly btnEnregistrerTypeContact5: Locator;
 
   // --- Section : Jours fériés (10 dans le jeu de données par défaut — le premier créé = index 10) ---
   /** Bouton AJOUTER un nouveau jour férié. */
-  readonly btnAjouterJourFerie: Locator;
+  public readonly btnAjouterJourFerie: Locator;
   /** Champ Nom du premier jour férié ([id] dynamique → pas de suffixe). */
-  readonly champJourFerieNom0: Locator;
+  public readonly champJourFerieNom0: Locator;
   /** Champ Date du premier jour férié ([id] dynamique → pas de suffixe). */
-  readonly champJourFerieDate0: Locator;
+  public readonly champJourFerieDate0: Locator;
   /** Bouton ENREGISTRER le premier jour férié (index 0). */
-  readonly btnEnregistrerJourFerie0: Locator;
+  public readonly btnEnregistrerJourFerie0: Locator;
   /** Champ Nom du jour férié créé par AJOUTER (index 10, après les 10 jours fériés par défaut). */
-  readonly champJourFerieNom10: Locator;
+  public readonly champJourFerieNom10: Locator;
   /** Champ Date du jour férié créé par AJOUTER (index 10). */
-  readonly champJourFerieDate10: Locator;
+  public readonly champJourFerieDate10: Locator;
   /** Bouton ENREGISTRER le jour férié créé par AJOUTER (index 10). */
-  readonly btnEnregistrerJourFerie10: Locator;
+  public readonly btnEnregistrerJourFerie10: Locator;
   /** Bouton SUPPRIMER le premier jour férié (premier état, index 0). */
-  readonly btnSupprimerJourFerie0: Locator;
+  public readonly btnSupprimerJourFerie0: Locator;
   /** Bouton CONFIRMER la suppression du premier jour férié (index 0). */
-  readonly btnSupprimerJourFerie0Confirmer: Locator;
+  public readonly btnSupprimerJourFerie0Confirmer: Locator;
 
   // --- Section : Préférences (id statique sur mc-input) ---
   /** Champ Délai de sauvegarde automatique en minutes (mc-input, id statique). */
-  readonly champDelaiSauvegarde: Locator;
+  public readonly champDelaiSauvegarde: Locator;
   /** Bouton ENREGISTRER les préférences. */
-  readonly btnEnregistrerPreferences: Locator;
+  public readonly btnEnregistrerPreferences: Locator;
   /** Bouton ANNULER les modifications de préférences. */
-  readonly btnAnnulerPreferences: Locator;
+  public readonly btnAnnulerPreferences: Locator;
   /** Message d'erreur affiché quand le délai de sauvegarde est hors bornes. */
-  readonly erreurDelaiSauvegarde: Locator;
+  public readonly erreurDelaiSauvegarde: Locator;
 
   // --- Section : Domaines de compétences (18 domaines, APS = index 0, actuellement inactif) ---
   /** Case à cocher du premier domaine de compétences (APS, index 0, [id] dynamique sur <input> natif). */
-  readonly checkDomaine0: Locator;
+  public readonly checkDomaine0: Locator;
   /** Bouton ENREGISTRER les domaines de compétences. */
-  readonly btnEnregistrerDomaines: Locator;
+  public readonly btnEnregistrerDomaines: Locator;
   /** Bouton ANNULER les modifications des domaines. */
-  readonly btnAnnulerDomaines: Locator;
+  public readonly btnAnnulerDomaines: Locator;
 
   constructor(page: Page) {
     super(page);

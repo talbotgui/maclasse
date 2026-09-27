@@ -6,7 +6,7 @@ import { EmploiDuTempsCalcule } from '../modeles/emploi-du-temps-calcule.modele'
  */
 export class EdtCalculeMother {
   /** Retourne un EDT calculé avec les valeurs par défaut, surchargées par {@link surcharge}. */
-  static base(surcharge: Partial<EmploiDuTempsCalcule> = {}): EmploiDuTempsCalcule {
+  public static base(surcharge: Partial<EmploiDuTempsCalcule> = {}): EmploiDuTempsCalcule {
     return {
       id: 'edtc1',
       nom: 'Vue calculée',

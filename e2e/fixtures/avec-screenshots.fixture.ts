@@ -11,10 +11,10 @@ const HORODATAGE = `${now.getFullYear()}${pad2(now.getMonth() + 1)}${pad2(now.ge
 /** Répertoire racine de l'exécution courante. */
 export const REP_EXECUTION = resolve(join('.e2e', 'screenshotsMetiers', `execution-${HORODATAGE}`));
 
-type FixtureScreenshots = {
+interface FixtureScreenshots {
   /** Fixture interne — active automatiquement la capture de screenshots pour chaque test. */
   _screenshots: void;
-};
+}
 
 /**
  * Fixture de base enrichie : capture automatiquement un screenshot après chaque

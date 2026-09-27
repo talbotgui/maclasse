@@ -8,8 +8,6 @@ describe('McChampRechercheComponent', () => {
   let component: McChampRechercheComponent;
 
   const input = () => fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
-  const btnReinitialiser = () =>
-    fixture.debugElement.query(By.css('button'))?.nativeElement as HTMLButtonElement | null;
 
   const saisir = (valeur: string) => {
     input().value = valeur;

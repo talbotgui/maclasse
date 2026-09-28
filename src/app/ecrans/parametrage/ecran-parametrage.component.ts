@@ -33,6 +33,8 @@ import { McChampHeureComponent } from '../../composants/mc-champ-heure/mc-champ-
 import { McChipFiltreComponent } from '../../composants/mc-chip-filtre/mc-chip-filtre.component';
 import { McBoutonDestructionComponent } from '../../composants/mc-bouton-destruction/mc-bouton-destruction.component';
 import { McBadgeStatutComponent } from '../../composants/mc-badge-statut/mc-badge-statut.component';
+import { PopinAvertissementComponent } from '../../composants/popins/popin-avertissement/popin-avertissement.component';
+import type { AvecNavigationGardee } from '../../gardes/modifications-non-enregistrees.garde';
 import { ObjetUtils } from '../../utilitaires/objet.utils';
 import { TexteUtils } from '../../utilitaires/texte.utils';
 import type { DonneesApplication, Enseignant } from '../../modeles/donnees-application.modele';
@@ -127,6 +129,8 @@ type ValeursDe<C extends { [K in keyof C]: AbstractControl }> = ReturnType<
 /**
  * Écran de paramétrage de l'application.
  * Deux colonnes : navigation par section à gauche, formulaire à droite.
+ * Implémente `AvecNavigationGardee` : quitter l'écran ou changer de section avec des
+ * modifications non enregistrées dans la section active demande confirmation.
  */
 @Component({
   selector: 'ecran-parametrage',
@@ -139,11 +143,12 @@ type ValeursDe<C extends { [K in keyof C]: AbstractControl }> = ReturnType<
     McChipFiltreComponent,
     McBoutonDestructionComponent,
     McBadgeStatutComponent,
+    PopinAvertissementComponent,
   ],
   templateUrl: './ecran-parametrage.component.html',
   styleUrl: './ecran-parametrage.component.scss',
 })
-export class EcranParametrageComponent {
+export class EcranParametrageComponent implements AvecNavigationGardee {
   /** Constante centralisée des libellés. */
   protected readonly LIBELLES = LIBELLES;
 
@@ -193,6 +198,15 @@ export class EcranParametrageComponent {
 
   /** Section actuellement affichée. */
   protected readonly sectionActive = signal<SectionId>('enseignantClasse');
+
+  /** `true` si la popin d'avertissement de modifications non enregistrées est visible. */
+  protected readonly popinAvertissementVisible = signal(false);
+
+  /** Résolution de la promesse de navigation hors de l'écran (garde CanDeactivate). */
+  private resolveGarde: ((result: boolean) => void) | null = null;
+
+  /** Section demandée, en attente de la confirmation de l'abandon des saisies (`null` si aucune). */
+  private sectionEnAttente: SectionId | null = null;
 
   /** Borne minimale acceptée pour le délai de sauvegarde automatique, en minutes. */
   private static readonly DELAI_SAUVEGARDE_MIN = 1;
@@ -328,11 +342,84 @@ export class EcranParametrageComponent {
   }
 
   /**
-   * Active la section cliquée et réinitialise les copies locales.
+   * Active la section cliquée, qui est rechargée depuis les données. Si la section active
+   * porte des modifications non enregistrées, la popin d'avertissement est ouverte et le
+   * changement n'a lieu qu'à la confirmation.
    * @param id Identifiant de la section à afficher.
    */
   protected activerSection(id: SectionId): void {
+    if (id === this.sectionActive()) return;
+    if (this.verifierSectionActiveModifiee()) {
+      this.sectionEnAttente = id;
+      this.popinAvertissementVisible.set(true);
+      return;
+    }
     this.sectionActive.set(id);
+  }
+
+  /**
+   * Implémentation de `AvecNavigationGardee`.
+   * Retourne `true` immédiatement si la section active n'a aucune modification non enregistrée,
+   * sinon ouvre la popin d'avertissement et attend la décision de l'utilisateur.
+   * @returns Promesse résolue à `true` pour autoriser la navigation.
+   */
+  public confirmerNavigation(): Promise<boolean> {
+    if (!this.verifierSectionActiveModifiee()) return Promise.resolve(true);
+    return new Promise<boolean>((resolve) => {
+      this.resolveGarde = resolve;
+      this.popinAvertissementVisible.set(true);
+    });
+  }
+
+  /** Confirme l'abandon des saisies : autorise la navigation ou change de section. */
+  protected confirmerAvertissement(): void {
+    this.popinAvertissementVisible.set(false);
+    if (this.resolveGarde) {
+      this.resolveGarde(true);
+      this.resolveGarde = null;
+    } else if (this.sectionEnAttente !== null) {
+      this.sectionActive.set(this.sectionEnAttente);
+    }
+    this.sectionEnAttente = null;
+  }
+
+  /** Annule l'abandon : reste sur l'écran et la section active, saisies conservées. */
+  protected annulerAvertissement(): void {
+    this.popinAvertissementVisible.set(false);
+    this.resolveGarde?.(false);
+    this.resolveGarde = null;
+    this.sectionEnAttente = null;
+  }
+
+  /**
+   * Indique si la section active porte des modifications non enregistrées : formulaire
+   * différent des données, ou ligne de liste modifiée ou jamais enregistrée
+   * (mêmes critères que les pastilles « Non enregistré »).
+   * @returns `true` si quitter la section ferait perdre des saisies.
+   */
+  private verifierSectionActiveModifiee(): boolean {
+    switch (this.sectionActive()) {
+      case 'enseignantClasse':
+        return this.estEnseignantClasseModifie();
+      case 'semaineHoraires':
+        return this.estSemaineHorairesModifie();
+      case 'preferences':
+        return this.estPreferencesModifie();
+      case 'domainesCompetences':
+        return this.estDomainesCompetencesModifie();
+      case 'periodes':
+        return this.lignesPeriodes.controls.some((_, i) => this.estPeriodeLigneModifiee(i));
+      case 'groupes':
+        return this.lignesGroupes.controls.some((_, i) => this.estGroupeLigneModifiee(i));
+      case 'bareme':
+        return this.lignesBareme.controls.some((_, i) => this.estStatutAcquisitionLigneModifiee(i));
+      case 'statutsEleve':
+        return this.lignesStatutsEleve.controls.some((_, i) => this.estStatutEleveLigneModifiee(i));
+      case 'typesContact':
+        return this.lignesTypesContact.controls.some((_, i) => this.estTypeContactLigneModifiee(i));
+      case 'joursFeries':
+        return this.lignesJoursFeries.controls.some((_, i) => this.estJourFerieLigneModifiee(i));
+    }
   }
 
   /** Enregistre les modifications de la section Enseignant & Classe. */

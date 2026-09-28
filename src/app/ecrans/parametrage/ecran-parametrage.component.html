@@ -718,3 +718,10 @@
     }
   </div>
 </div>
+
+<popin-avertissement
+  [visible]="popinAvertissementVisible()"
+  [message]="LIBELLES.commun.avertissementModifications"
+  (confirme)="confirmerAvertissement()"
+  (annule)="annulerAvertissement()"
+/>

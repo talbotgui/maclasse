@@ -28,7 +28,7 @@ Les gardes sont des fonctions (`CanActivateFn`, `CanDeactivateFn`) dans `gardes/
 
 - Appelle `confirmerNavigation()` du composant d'écran, qui implémente l'interface `AvecNavigationGardee` (déclarée dans le fichier de la garde)
 - `confirmerNavigation()` résout `true` s'il n'y a pas de modification en cours ; sinon il ouvre une `popin-avertissement` et résout selon le choix de l'utilisateur (abandonner ou rester)
-- Posée sur Élèves, Projets, Emploi du temps et Cahier journal
+- Posée sur Élèves, Projets, Emploi du temps, Cahier journal et Paramétrage
 
 ---
 
@@ -212,7 +212,7 @@ Tous les composants d'écran sont chargés en **lazy loading** via `loadComponen
 | `/projets` | `EcranProjetsComponent` | `donneesChargeesGarde`, `referentielSeulGarde` | `modificationsNonEnregistreesGarde` |
 | `/emploi-du-temps` | `EcranEmploiDuTempsComponent` | `donneesChargeesGarde`, `referentielSeulGarde` | `modificationsNonEnregistreesGarde` |
 | `/cahier-journal` | `EcranCahierJournalComponent` | `donneesChargeesGarde`, `referentielSeulGarde` | `modificationsNonEnregistreesGarde` |
-| `/parametrage` | `EcranParametrageComponent` | `donneesChargeesGarde`, `referentielSeulGarde` | — |
+| `/parametrage` | `EcranParametrageComponent` | `donneesChargeesGarde`, `referentielSeulGarde` | `modificationsNonEnregistreesGarde` |
 
 ---
 

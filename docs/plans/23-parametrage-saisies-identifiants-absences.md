@@ -13,7 +13,7 @@ related:
 
 # Plan 23 — Paramétrage : saisies, identifiants, navigation ; absences récurrentes
 
-**Statut : en cours.** Décisions 3, 4, 8 et 9 arbitrées le 2026-09-27 (la 9 passe par une migration de nettoyage). Incréments 1 (conservation des saisies) et 2 (identifiants) terminés le 2026-09-27.
+**Statut : en cours.** Décisions 3, 4, 8 et 9 arbitrées le 2026-09-27 (la 9 passe par une migration de nettoyage). Incréments 1 (conservation des saisies) et 2 (identifiants) terminés le 2026-09-27, incrément 3 (avertissement de navigation) le 2026-09-28.
 
 ## Contexte
 

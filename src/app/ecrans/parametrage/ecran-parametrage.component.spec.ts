@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { EcranParametrageComponent } from './ecran-parametrage.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
@@ -35,6 +35,11 @@ describe('EcranParametrageComponent', () => {
       },
     },
     configuration: { delaiSauvegardeAutoMinutes: 5 },
+  });
+
+  beforeAll(() => {
+    HTMLDialogElement.prototype.showModal = vi.fn();
+    HTMLDialogElement.prototype.close = vi.fn();
   });
 
   beforeEach(() => {
@@ -1090,6 +1095,147 @@ describe('EcranParametrageComponent', () => {
     });
   });
 
+  describe('avertissement de modifications non enregistrées', () => {
+    it('confirmerNavigation sans modification → true, sans popin', async () => {
+      await expect((component as any).confirmerNavigation()).resolves.toBe(true);
+      expect((component as any).popinAvertissementVisible()).toBe(false);
+    });
+
+    it('confirmerNavigation avec un formulaire modifié → popin, CONFIRMER autorise', async () => {
+      (component as any).formEnseignantClasse.controls.prenom.setValue('Sophie');
+
+      const promesse = (component as any).confirmerNavigation();
+      expect((component as any).popinAvertissementVisible()).toBe(true);
+      (component as any).confirmerAvertissement();
+
+      await expect(promesse).resolves.toBe(true);
+      expect((component as any).popinAvertissementVisible()).toBe(false);
+    });
+
+    it('confirmerNavigation avec une ligne modifiée → popin, ANNULER refuse et garde la saisie', async () => {
+      (component as any).activerSection('groupes');
+      fixture.detectChanges();
+      (component as any).lignesGroupes.at(0).controls.valeur.controls.libelle.setValue('Saisie');
+
+      const promesse = (component as any).confirmerNavigation();
+      (component as any).annulerAvertissement();
+
+      await expect(promesse).resolves.toBe(false);
+      expect((component as any).popinAvertissementVisible()).toBe(false);
+      expect((component as any).lignesGroupes.at(0).controls.valeur.controls.libelle.value).toBe(
+        'Saisie',
+      );
+    });
+
+    it('rendu : la popin est liée à popinAvertissementVisible', () => {
+      (component as any).formEnseignantClasse.controls.prenom.setValue('Sophie');
+      void (component as any).confirmerNavigation();
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('#btnAvertissementConfirmer')).not.toBeNull();
+      (
+        fixture.nativeElement.querySelector('#btnAvertissementConfirmer') as HTMLButtonElement
+      ).click();
+      expect((component as any).popinAvertissementVisible()).toBe(false);
+    });
+
+    it('changement de section sans modification → section changée sans popin', () => {
+      (component as any).activerSection('groupes');
+
+      expect((component as any).sectionActive()).toBe('groupes');
+      expect((component as any).popinAvertissementVisible()).toBe(false);
+    });
+
+    it('clic sur la section active → aucun effet, même modifiée', () => {
+      (component as any).formEnseignantClasse.controls.prenom.setValue('Sophie');
+
+      (component as any).activerSection('enseignantClasse');
+
+      expect((component as any).popinAvertissementVisible()).toBe(false);
+    });
+
+    it('changement de section avec modification → popin ; ANNULER reste sur la section', () => {
+      (component as any).formEnseignantClasse.controls.prenom.setValue('Sophie');
+
+      (component as any).activerSection('groupes');
+      expect((component as any).popinAvertissementVisible()).toBe(true);
+      expect((component as any).sectionActive()).toBe('enseignantClasse');
+
+      (component as any).annulerAvertissement();
+      fixture.detectChanges();
+      expect((component as any).sectionActive()).toBe('enseignantClasse');
+      expect((component as any).formEnseignantClasse.controls.prenom.value).toBe('Sophie');
+    });
+
+    it('changement de section avec modification → CONFIRMER change de section, saisie abandonnée', () => {
+      (component as any).formEnseignantClasse.controls.prenom.setValue('Sophie');
+
+      (component as any).activerSection('groupes');
+      (component as any).confirmerAvertissement();
+      fixture.detectChanges();
+      expect((component as any).sectionActive()).toBe('groupes');
+
+      (component as any).activerSection('enseignantClasse');
+      fixture.detectChanges();
+      expect((component as any).formEnseignantClasse.controls.prenom.value).toBe('Marie');
+    });
+
+    it('confirmerAvertissement sans action en attente → ne change rien', () => {
+      (component as any).confirmerAvertissement();
+
+      expect((component as any).sectionActive()).toBe('enseignantClasse');
+    });
+
+    const casSections: { section: string; modifier: () => void }[] = [
+      {
+        section: 'semaineHoraires',
+        modifier: () =>
+          (component as any).formSemaineHoraires.controls.heureDebutJournee.setValue('07:00'),
+      },
+      {
+        section: 'preferences',
+        modifier: () =>
+          (component as any).formPreferences.controls.delaiSauvegardeAutoMinutes.setValue(12),
+      },
+      { section: 'periodes', modifier: () => (component as any).ajouterPeriode() },
+      { section: 'groupes', modifier: () => (component as any).ajouterGroupe() },
+      { section: 'bareme', modifier: () => (component as any).ajouterStatutAcquisition() },
+      { section: 'statutsEleve', modifier: () => (component as any).ajouterStatutEleve() },
+      { section: 'typesContact', modifier: () => (component as any).ajouterTypeContact() },
+      { section: 'joursFeries', modifier: () => (component as any).ajouterJourFerie() },
+    ];
+    it('section domainesCompetences : sélection modifiée → popin', () => {
+      const domaineN1 = CompetenceMother.domaineAvecSousDomaines();
+      donneesService.charger(
+        DonneesMother.base({
+          ...donnees,
+          referentiels: { ...donnees.referentiels, competences: [domaineN1] },
+        }),
+      );
+      fixture.detectChanges();
+      (component as any).activerSection('domainesCompetences');
+      fixture.detectChanges();
+
+      (component as any).basculerSousDomaine(domaineN1, domaineN1.enfants![0], false);
+      void (component as any).confirmerNavigation();
+
+      expect((component as any).popinAvertissementVisible()).toBe(true);
+    });
+
+    for (const { section, modifier } of casSections) {
+      it(`section ${section} : sans modification → pas de popin ; modifiée → popin`, async () => {
+        (component as any).activerSection(section);
+        fixture.detectChanges();
+        await expect((component as any).confirmerNavigation()).resolves.toBe(true);
+
+        modifier();
+        void (component as any).confirmerNavigation();
+
+        expect((component as any).popinAvertissementVisible()).toBe(true);
+      });
+    }
+  });
+
   describe('conservation des saisies au rechargement des données', () => {
     const groupeA = GroupeMother.base('GA', 'Groupe A');
     const groupeB = GroupeMother.base('GB', 'Groupe B');
@@ -1217,6 +1363,7 @@ describe('EcranParametrageComponent', () => {
         (component as any).ajouterGroupe();
 
         (component as any).activerSection('periodes');
+        (component as any).confirmerAvertissement();
         fixture.detectChanges();
         (component as any).activerSection('groupes');
         fixture.detectChanges();

@@ -397,7 +397,9 @@ testAvecDonnees(
     await expect(param.champStatutId4).toBeFocused();
 
     // Types de contact : 5 types existants → nouvelle ligne à l'index 5
+    // (la ligne du barème non enregistrée déclenche l'avertissement de changement de section)
     await param.btnSectionTypesContact.click();
+    await param.btnAvertissementConfirmer.click();
     await param.btnAjouterTypeContact.click();
     await param.champTypeContactId5.pressSequentially('TUT');
     await expect(param.champTypeContactId5).toHaveValue('TUT');
@@ -427,5 +429,40 @@ testAvecDonnees(
     await param.champStatutEleveId3.fill('ST');
     await expect(param.erreurStatutEleveId3).toHaveCount(0);
     await expect(param.btnEnregistrerStatutEleve3).toBeEnabled();
+  },
+);
+
+testAvecDonnees(
+  "E2E-137 — Saisie non enregistrée : avertissement au changement de section et à la sortie de l'écran",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const param = new SelecteursParametrage(appAvecDonnees);
+
+    await entete.navParametrage.click();
+    await param.champPrenomEnseignant.fill('Albus');
+
+    // Changement de section : ANNULER reste sur la section, saisie conservée
+    await param.btnSectionGroupes.click();
+    await expect(param.btnAvertissementConfirmer).toBeVisible();
+    await param.btnAvertissementAnnuler.click();
+    await expect(param.champPrenomEnseignant).toHaveValue('Albus');
+
+    // Sortie de l'écran : ANNULER reste sur le paramétrage
+    await entete.navEleves.click();
+    await expect(param.btnAvertissementConfirmer).toBeVisible();
+    await param.btnAvertissementAnnuler.click();
+    await expect(appAvecDonnees).toHaveURL(/\/parametrage/);
+    await expect(param.champPrenomEnseignant).toHaveValue('Albus');
+
+    // Changement de section : CONFIRMER change de section
+    await param.btnSectionGroupes.click();
+    await param.btnAvertissementConfirmer.click();
+    await expect(param.btnAjouterGroupe).toBeVisible();
+
+    // Section Groupes : ligne ajoutée non enregistrée, sortie de l'écran confirmée
+    await param.btnAjouterGroupe.click();
+    await entete.navEleves.click();
+    await param.btnAvertissementConfirmer.click();
+    await expect(appAvecDonnees).toHaveURL(/\/eleves/);
   },
 );

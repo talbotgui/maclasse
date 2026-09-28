@@ -24,6 +24,7 @@ export const routes: Routes = [
         (m) => m.EcranParametrageComponent,
       ),
     canActivate: [donneesChargeesGarde, referentielSeulGarde],
+    canDeactivate: [modificationsNonEnregistreesGarde],
   },
   {
     path: 'eleves',

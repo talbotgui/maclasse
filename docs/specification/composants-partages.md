@@ -155,7 +155,7 @@ Le focus initial reste à la charge de chaque popin : `[mcAutoFocus]="visible()"
 | `popin-demarrage` | Écran de démarrage | Trois zones : nouvelle classe depuis les données d'exemple / charger un ZIP + mot de passe / consulter le référentiel (voir [démarrage](ecrans/demarrage.md)) |
 | `popin-sauvegarde` | Clic SAUVEGARDER sans mot de passe connu | Saisie du mot de passe de chiffrement |
 | `popin-warnings-absences` | Clic sur un triangle ⚠ (EDT : créneau ou EDT en conflit ; CJ : séance), ou ENREGISTRER d'une séance en conflit | Liste des conflits (non bloquant, bouton Fermer) |
-| `popin-avertissement` | Action qui ferait perdre des saisies ou des données | Message d'avertissement + ANNULER / CONFIRMER. Élèves et Projets : formulaire non enregistré (autre élément, CRÉER, changement d'écran). Emploi du temps : formulaire modifié au changement d'écran. Cahier journal : formulaire de séance modifié au changement d'écran, et confirmation de SUPPRIMER LA JOURNÉE |
+| `popin-avertissement` | Action qui ferait perdre des saisies ou des données | Message d'avertissement + ANNULER / CONFIRMER. Élèves et Projets : formulaire non enregistré (autre élément, CRÉER, changement d'écran). Emploi du temps : formulaire modifié au changement d'écran. Cahier journal : formulaire de séance modifié au changement d'écran, et confirmation de SUPPRIMER LA JOURNÉE. Paramétrage : section active modifiée au changement de section ou d'écran |
 | `popin-export-competences` | Clic « Envoyer vers un projet » ou « Envoyer vers une séance » (écran Compétences) | Deux `mc-select` en cascade + ANNULER / CONFIRMER (voir ci-dessous) |
 
 ### `popin-export-competences`

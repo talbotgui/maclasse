@@ -57,6 +57,7 @@ Un plan par évolution ou chantier. La numérotation est historique ; le 13 est 
 | [21](plans/21-edt-formulaire-reactive-forms.md) | EDT : `edt-formulaire` en Reactive Forms (FormGroup des propriétés, FormArray des temps, validateurs partagés `FormulaireUtils`) | terminé le 2026-09-27 |
 | [22](plans/22-formulaires-reactive-forms.md) | Formulaires Élèves, Projets et Paramétrage en Reactive Forms (3 incréments, suivi des lignes par instance de `FormGroup`) | terminé le 2026-09-27 |
 | [23](plans/23-parametrage-saisies-identifiants-absences.md) | Paramétrage : saisies conservées au rechargement, identifiants figés et uniques, avertissement de navigation ; plage horaire des absences récurrentes | terminé le 2026-09-28 |
+| [24](plans/24-eleves-autorisations-informations-utiles.md) | Élèves : autorisations structurées (droit à l'image, baignade, sortie régulière) et section « Informations utiles » (lunettes, AESH, latéralité) | en cours : incrément 1 sur 2 terminé le 2026-09-28 |
 
 ## Audits
 

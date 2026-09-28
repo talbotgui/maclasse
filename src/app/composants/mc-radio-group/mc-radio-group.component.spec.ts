@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { McRadioGroupComponent } from './mc-radio-group.component';
+import { LIBELLES } from '../../libelles';
 
 const OPTIONS = [
   { valeur: 'M', libelle: 'Masculin' },
@@ -94,6 +95,57 @@ describe('McRadioGroupComponent', () => {
       const fieldset = fixture.debugElement.query(By.css('fieldset'))
         .nativeElement as HTMLFieldSetElement;
       expect(fieldset.disabled).toBe(false);
+    });
+  });
+
+  describe('effacement de la réponse', () => {
+    const boutonEffacer = () =>
+      fixture.debugElement.query(By.css('#btnEffacer_sexe'))?.nativeElement as
+        | HTMLButtonElement
+        | undefined;
+
+    it('sans effacable → aucun bouton EFFACER, même avec une valeur', () => {
+      component.writeValue('M');
+      fixture.detectChanges();
+
+      expect(boutonEffacer()).toBeUndefined();
+    });
+
+    it('effacable sans valeur → aucun bouton EFFACER', () => {
+      fixture.componentRef.setInput('effacable', true);
+      component.writeValue(null);
+      fixture.detectChanges();
+
+      expect(boutonEffacer()).toBeUndefined();
+    });
+
+    it('effacable avec une valeur → bouton EFFACER nommé avec le libellé du groupe', () => {
+      fixture.componentRef.setInput('effacable', true);
+      component.writeValue('M');
+      fixture.detectChanges();
+
+      expect(boutonEffacer()?.getAttribute('aria-label')).toBe(
+        LIBELLES.commun.ariaEffacerReponse + 'Sexe',
+      );
+    });
+
+    it('clic sur EFFACER → null émis, options décochées, focus sur la 1re option, bouton retiré', () => {
+      const surChangement = vi.fn();
+      const surTouche = vi.fn();
+      component.registerOnChange(surChangement);
+      component.registerOnTouched(surTouche);
+      fixture.componentRef.setInput('effacable', true);
+      component.writeValue('F');
+      fixture.detectChanges();
+
+      boutonEffacer()?.click();
+      fixture.detectChanges();
+
+      expect(surChangement).toHaveBeenCalledWith(null);
+      expect(surTouche).toHaveBeenCalled();
+      expect(radios().every((r) => !r.checked)).toBe(true);
+      expect(document.activeElement).toBe(radios()[0]);
+      expect(boutonEffacer()).toBeUndefined();
     });
   });
 

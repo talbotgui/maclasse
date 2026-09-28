@@ -1,5 +1,12 @@
-import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/core';
-import type { InputSignal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  forwardRef,
+  input,
+  viewChildren,
+} from '@angular/core';
+import type { InputSignal, Signal } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ChampBase } from '../../champ-base';
 import type { OptionFormulaire } from '../../modeles/composants.modele';
@@ -37,4 +44,25 @@ export class McRadioGroupComponent extends ChampBase {
 
   /** Indique si une sélection est obligatoire. */
   public readonly required: InputSignal<boolean> = input(false);
+
+  /**
+   * Indique si la réponse peut être remise à « non renseignée » : un bouton EFFACER
+   * est alors affiché tant qu'une option est cochée.
+   */
+  public readonly effacable: InputSignal<boolean> = input(false);
+
+  /** Boutons radio du groupe, dans l'ordre des options. */
+  private readonly radios: Signal<readonly ElementRef<HTMLInputElement>[]> =
+    viewChildren<ElementRef<HTMLInputElement>>('radio');
+
+  /**
+   * Décoche toutes les options, notifie Angular Forms d'une valeur `null`
+   * et rend le focus à la première option (le bouton EFFACER disparaît).
+   */
+  protected effacer(): void {
+    this.writeValue(null);
+    this.onChange(null);
+    this.onTouched();
+    this.radios()[0]?.nativeElement.focus();
+  }
 }

@@ -37,7 +37,7 @@ Classe abstraite (`champ-base.ts`, étend `ComposantBase`) portant l'implémenta
 |---|---|
 | `valeur` | Signal de la valeur courante (chaîne ; `null`/`undefined` reçus deviennent `''`) |
 | `estDesactive` | Signal de l'état désactivé, piloté par le `FormControl` parent (`setDisabledState`) |
-| `writeValue`, `registerOnChange`, `registerOnTouched`, `setDisabledState` | Interface `ControlValueAccessor` |
+| `writeValue`, `registerOnChange`, `registerOnTouched`, `setDisabledState` | Interface `ControlValueAccessor` ; `onChange` accepte `null` pour une valeur vidée (EFFACER de `mc-radio-group`) |
 | `surChangement(valeur)` | Lié à `(input)` : mémorise la valeur et notifie Angular Forms en temps réel |
 | `surBlur()` | Lié à `(blur)` : notifie Angular Forms que le champ a été touché |
 
@@ -65,6 +65,15 @@ Ces composants encapsulent les éléments natifs HTML pour centraliser le style 
 | `lectureSeule` | `false` | Attribut `readonly` : le champ reste focalisable et lisible par les lecteurs d'écran (contrairement à `disabled`), avec un fond distinct. Utilisé pour l'identifiant d'une valeur enregistrée du Paramétrage |
 | `infobulle` | `''` | Attribut `title` du champ natif (aucun si vide) |
 | `descriptionIds` | `null` | `aria-describedby` du champ natif : identifiants, séparés par des espaces, du message d'erreur ou du texte explicatif placé par le parent |
+
+### Inputs de `mc-radio-group`
+
+| Input | Défaut | Rôle |
+|---|---|---|
+| `id`, `label` | requis | `name` commun des radios et préfixe de leurs `id` (`<id>_<valeur>`) ; libellé du `<legend>` |
+| `options` | `[]` | Options `{ valeur, libelle }` |
+| `required` | `false` | Attribut `required` des radios (astérisque visuel) |
+| `effacable` | `false` | Réponse remise à « non renseignée » possible : tant qu'une option est cochée, un bouton **EFFACER** (`btnEffacer_<id>`, `mc-btn-fantome mc-btn-xs`, `aria-label` « Effacer la réponse : *libellé* ») décoche toutes les options, transmet `null` au `FormControl` et rend le focus à la première option. Un radio natif ne peut pas être décoché autrement |
 
 ---
 

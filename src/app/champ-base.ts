@@ -15,8 +15,11 @@ export abstract class ChampBase extends ComposantBase implements ControlValueAcc
   /** Indique si le champ est désactivé par le FormControl parent. */
   protected readonly estDesactive = signal(false);
 
-  /** Callback de notification des changements, fourni par Angular Forms. */
-  protected onChange: (valeur: string | number) => void = () => {};
+  /**
+   * Callback de notification des changements, fourni par Angular Forms.
+   * `null` signale une valeur vidée (ex. : réponse effacée d'un `mc-radio-group`).
+   */
+  protected onChange: (valeur: string | number | null) => void = () => {};
 
   /** Callback de notification du touché, fourni par Angular Forms. */
   protected onTouched: () => void = () => {};
@@ -34,7 +37,7 @@ export abstract class ChampBase extends ComposantBase implements ControlValueAcc
    * Enregistre le callback appelé lors de chaque changement de valeur.
    * @param fn Fonction fournie par Angular Forms.
    */
-  public registerOnChange(fn: (valeur: string | number) => void): void {
+  public registerOnChange(fn: (valeur: string | number | null) => void): void {
     this.onChange = fn;
   }
 

@@ -32,6 +32,8 @@ export const LIBELLES = {
     avertissementModifications:
       'Des modifications non enregistrées seront perdues. Voulez-vous continuer ?',
     erreurPlageHoraire: "L'heure de fin doit être postérieure à l'heure de début.",
+    effacer: 'Effacer',
+    ariaEffacerReponse: 'Effacer la réponse : ',
   },
 
   /** Libellés de la barre d'en-tête. */

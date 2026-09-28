@@ -8,6 +8,7 @@
   @for (opt of options(); track opt.valeur) {
     <div class="mc-radio-option">
       <input
+        #radio
         type="radio"
         [id]="id() + '_' + opt.valeur"
         [name]="id()"
@@ -19,5 +20,16 @@
       />
       <label [for]="id() + '_' + opt.valeur">{{ opt.libelle }}</label>
     </div>
+  }
+  @if (effacable() && valeur()) {
+    <button
+      type="button"
+      [id]="'btnEffacer_' + id()"
+      class="mc-btn-fantome mc-btn-xs effacer-reponse"
+      [attr.aria-label]="LIBELLES.commun.ariaEffacerReponse + label()"
+      (click)="effacer()"
+    >
+      {{ LIBELLES.commun.effacer }}
+    </button>
   }
 </fieldset>

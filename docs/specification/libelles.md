@@ -3,7 +3,7 @@ name: libelles
 description: Structure du fichier libelles.ts — constante LIBELLES centralisée, organisée par domaine fonctionnel, rôle de chaque section
 metadata:
   type: project
-  updated: 2026-09-27
+  updated: 2026-09-28
 related:
   - specification/architecture-applicative
 ---
@@ -34,7 +34,7 @@ related:
 | `navigation` | Libellés des liens de navigation vers chaque écran | `accueil`, `eleves`, `competences`, `parametrage` |
 | `demarrage` | Popin de démarrage : bienvenue, trois zones (nouveau, charger, référentiel), erreurs de chargement | `bienvenue`, `titreNouveau`, `texteNouveau`, `boutonCreer`, `titreCharger`, `titreReferentiel`, `boutonReferentiel`, `erreurMotDePasse`, `erreurVersionIncompatible` |
 | `accueil` | Écran d'accueil | `labelAujourdhui`, `aucunJournal`, `labelNbEleves` |
-| `eleve` | Écran Élèves : liste, fiche, formulaire (sections, champs, contacts, absences, cursus) | `sectionIdentite`, `sectionAbsencesRecurrentes`, `aucunEleve` |
+| `eleve` | Écran Élèves : liste, fiche, formulaire (sections, champs, contacts, absences, cursus) | `sectionIdentite`, `sectionAbsencesRecurrentes`, `erreurHeuresAbsenceObligatoires`, `aucunEleve` |
 | `projet` | Écran Projets : liste, fiche, formulaire, périodes | `sectionInfos`, `sectionPeriodes`, `aucunProjet` |
 | `competences` | Écran Compétences : panier, export, information sur les domaines actifs, arbre | `panierVide`, `boutonEnvoyerProjet`, `infoDomainesParametrage`, `erreurExport` |
 | `selecteurCompetences` | Composant `mc-selecteur-competences` | `placeholder`, `ariaSuggestions`, `ariaSupprimer` |

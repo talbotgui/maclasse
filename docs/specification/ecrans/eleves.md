@@ -3,7 +3,7 @@ name: eleves
 description: Spécification détaillée de l'écran Élèves — liste filtrée, lecture seule, formulaire de création/modification
 metadata:
   type: project
-  updated: 2026-09-27
+  updated: 2026-09-28
 related:
   - specification/ecrans/vue-ensemble
   - specification/modeles-donnees
@@ -110,6 +110,11 @@ Même organisation en lecture et en modification. Chaque section est séparée p
 
 - **Lecture** : chaque absence sur **une ligne résumée** (ex. "Orthophonie — Mardi 10h00–11h00 — Toutes les semaines")
 - **Formulaire** : chaque absence éditable inline (libellé, jour, heure début, heure fin, parité semaine)
+- **Plage horaire obligatoire** : heure de début et heure de fin requises (astérisque), fin **strictement postérieure** au début. Message `role="alert"` sous l'absence (`erreurAbsRec{i}`, relié aux deux champs horaires par `aria-describedby`) :
+  - *« L'heure de fin doit être postérieure à l'heure de début. »* dès que les deux heures sont saisies et incohérentes (égales ou inversées)
+  - *« L'heure de début et l'heure de fin sont obligatoires. »* quand une heure manque, une fois l'un des deux champs horaires modifié ou quitté (pas sur une absence tout juste ajoutée)
+  - ENREGISTRER de la fiche est désactivé tant qu'une absence est invalide
+  - Les absences invalides des fichiers antérieurs sont corrigées au chargement (migration `2026.09.6`, voir [éléments techniques](../elements-techniques.md#gestion-des-versions-du-json))
 - Bouton **AJOUTER** : crée une nouvelle absence vide
 - Chaque absence dispose d'un bouton **SUPPRIMER** (`mc-bouton-destruction`)
 

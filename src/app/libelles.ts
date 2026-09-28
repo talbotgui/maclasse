@@ -129,6 +129,7 @@ export const LIBELLES = {
     labelAbsenceJour: 'Jour',
     labelAbsenceHeureDebut: 'Heure de début',
     labelAbsenceHeureFin: 'Heure de fin',
+    erreurHeuresAbsenceObligatoires: "L'heure de début et l'heure de fin sont obligatoires.",
     labelAbsenceParite: 'Fréquence',
     boutonAjouterAbsenceRec: 'Ajouter une absence récurrente',
     labelAbsenceDate: 'Date',

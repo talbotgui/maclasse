@@ -3,7 +3,7 @@ name: 23-parametrage-saisies-identifiants-absences
 description: Plan d'évolution — Paramétrage (conservation des saisies non enregistrées au rechargement, identifiants des référentiels figés et uniques, avertissement avant de quitter une section modifiée) et contrôle de la plage horaire des absences récurrentes d'un élève
 metadata:
   type: project
-  updated: 2026-09-27
+  updated: 2026-09-28
 related:
   - specification/ecrans/parametrage
   - specification/ecrans/eleves
@@ -13,7 +13,7 @@ related:
 
 # Plan 23 — Paramétrage : saisies, identifiants, navigation ; absences récurrentes
 
-**Statut : en cours.** Décisions 3, 4, 8 et 9 arbitrées le 2026-09-27 (la 9 passe par une migration de nettoyage). Incréments 1 (conservation des saisies) et 2 (identifiants) terminés le 2026-09-27, incrément 3 (avertissement de navigation) le 2026-09-28.
+**Statut : terminé le 2026-09-28.** Décisions 3, 4, 8 et 9 arbitrées le 2026-09-27 (la 9 passe par une migration de nettoyage). Incréments 1 et 2 réalisés le 2026-09-27, incréments 3 et 4 le 2026-09-28.
 
 ## Contexte
 
@@ -41,7 +41,7 @@ Le **plan 22** est réalisé : le Paramétrage et `fe-formulaire-eleve` sont en 
 | 5 | Navigation hors de l'écran (point C) | `EcranParametrageComponent` implémente `AvecNavigationGardee` et la route `/parametrage` reçoit `canDeactivate: [modificationsNonEnregistreesGarde]`. `confirmerNavigation()` résout `true` si la section active n'a ni modification de formulaire ni ligne modifiée ou non enregistrée ; sinon il ouvre `popin-avertissement` (`LIBELLES.commun.avertissementModifications`), comme l'écran Emploi du temps. |
 | 6 | Changement de section (point C) | Même avertissement au clic sur une autre section de la colonne gauche quand la section active est modifiée ; CONFIRMER change de section (les saisies sont abandonnées), ANNULER reste sur la section. Seule la section active peut donc porter des saisies non enregistrées. |
 | 7 | Mode de détection | « Section modifiée » réutilise les méthodes existantes `estXxxModifie()` et `estXxxLigneModifiee(i)` (pastilles « Non enregistré »), regroupées dans une méthode `verifierSectionActiveModifiee()`. La section « Domaines de compétences » est incluse (`estDomainesCompetencesModifie()`). |
-| 8 | Plage horaire des absences récurrentes (point D) — **validé le 2026-09-27** | Dans `fe-formulaire-eleve`, chaque absence récurrente exige une heure de début et une heure de fin (`Validators.required`) et une fin **strictement postérieure** au début (`FormulaireUtils.validerPlageHoraire`). Message `LIBELLES.commun.erreurPlageHoraire` (`role="alert"`) sous l'absence concernée, affiché dès que les deux heures sont saisies et incohérentes, ou après une tentative d'enregistrement pour les heures manquantes. ENREGISTRER de la fiche est désactivé tant qu'une absence est invalide, comme pour un prénom ou un nom vide. |
+| 8 | Plage horaire des absences récurrentes (point D) — **validé le 2026-09-27** | Dans `fe-formulaire-eleve`, chaque absence récurrente exige une heure de début et une heure de fin (`Validators.required`) et une fin **strictement postérieure** au début (`FormulaireUtils.validerPlageHoraire`). Message `LIBELLES.commun.erreurPlageHoraire` (`role="alert"`) sous l'absence concernée, affiché dès que les deux heures sont saisies et incohérentes, ou après une tentative d'enregistrement pour les heures manquantes. ENREGISTRER de la fiche est désactivé tant qu'une absence est invalide, comme pour un prénom ou un nom vide. **Réalisation** : ENREGISTRER étant désactivé, aucune tentative d'enregistrement n'est possible ; le message d'heure manquante s'affiche donc une fois l'un des champs horaires modifié ou quitté, avec un libellé dédié (`LIBELLES.eleve.erreurHeuresAbsenceObligatoires`), `erreurPlageHoraire` restant réservé aux deux heures saisies mais égales ou inversées. `mc-champ-heure` reçoit un input `descriptionIds` pour relier le message aux champs. |
 | 9 | Données existantes (point D) — **validé le 2026-09-27 : migration** | Étape de migration `2026.09.6` dans `MigrationService` : pour chaque absence récurrente de chaque élève, si les deux heures sont saisies et que la fin est **antérieure** au début, elles sont **inversées** ; si une heure manque ou si les deux sont **égales**, l'absence est **supprimée**. Une absence valide n'est pas modifiée. Chaque fichier ne passe l'étape qu'une fois (version) et la validation de la décision 8 empêche ensuite toute nouvelle absence invalide : aucune fiche n'est donc bloquée à l'ouverture. Les calculs de conflits ne changent pas. **Option écartée** : pas de migration, la fiche étant bloquée à l'enregistrement tant que l'absence n'est pas corrigée (gênant pour une modification sans rapport, un numéro de téléphone par exemple). |
 | 10 | Libellés | Nouvelles clés dans `LIBELLES.parametrage` : `erreurIdentifiantObligatoire`, `erreurIdentifiantDejaUtilise`, `tooltipIdentifiantFige`. Réutilisation de `commun.avertissementModifications` et `commun.erreurPlageHoraire`. |
 

@@ -4,7 +4,8 @@ import { DonneesMother } from '../../tests/donnees.mother';
 import { DonneesApplication } from '../../modeles/donnees-application.modele';
 import { EdtCalculeMother } from '../../tests/emploi-du-temps-calcule.mother';
 import { CreneauMother, EdtMother, TempsCreneauMother } from '../../tests/emploi-du-temps.mother';
-import { CursusAnneeMother, EleveMother } from '../../tests/eleve.mother';
+import { AbsenceRecurrenteMother, CursusAnneeMother, EleveMother } from '../../tests/eleve.mother';
+import type { AbsenceRecurrente } from '../../modeles/eleve.modele';
 import { PeriodeMother, ProjetMother } from '../../tests/projet.mother';
 import { SourceEdtCalcule } from '../../modeles/emploi-du-temps-calcule.modele';
 
@@ -13,18 +14,18 @@ describe('MigrationService', () => {
 
   describe('version supportée', () => {
     it('la version courante est celle de la dernière étape de migration', () => {
-      expect(service.obtenirVersionCourante()).toBe('2026.09.5');
+      expect(service.obtenirVersionCourante()).toBe('2026.09.6');
     });
 
     it('accepte la version courante et les versions antérieures', () => {
+      expect(service.estVersionSupportee('2026.09.6')).toBe(true);
       expect(service.estVersionSupportee('2026.09.5')).toBe(true);
-      expect(service.estVersionSupportee('2026.09.4')).toBe(true);
       expect(service.estVersionSupportee('2026.09.1')).toBe(true);
       expect(service.estVersionSupportee('2025.12.9')).toBe(true);
     });
 
     it('refuse une version plus récente', () => {
-      expect(service.estVersionSupportee('2026.09.6')).toBe(false);
+      expect(service.estVersionSupportee('2026.09.7')).toBe(false);
       expect(service.estVersionSupportee('2026.10.1')).toBe(false);
       expect(service.estVersionSupportee('2027.01.1')).toBe(false);
     });
@@ -41,7 +42,7 @@ describe('MigrationService', () => {
 
     it('tolère un nombre de segments différent', () => {
       expect(service.estVersionSupportee('2026.09')).toBe(true);
-      expect(service.estVersionSupportee('2026.09.5.1')).toBe(false);
+      expect(service.estVersionSupportee('2026.09.6.1')).toBe(false);
     });
   });
 
@@ -69,7 +70,7 @@ describe('MigrationService', () => {
       delete anciennes.emploisDuTempsCalcules;
       const migrees = service.migrer(anciennes as DonneesApplication);
       expect(migrees.emploisDuTempsCalcules).toEqual([]);
-      expect(migrees.version).toBe('2026.09.5');
+      expect(migrees.version).toBe(service.obtenirVersionCourante());
     });
 
     it('conserve un tableau existant', () => {
@@ -127,7 +128,7 @@ describe('MigrationService', () => {
         'tempsHorsClasse',
         'absencesRegulieres',
       ]);
-      expect(migrees.version).toBe('2026.09.5');
+      expect(migrees.version).toBe(service.obtenirVersionCourante());
     });
 
     it('ne crée pas de doublon si tempsHorsClasse est déjà présent', () => {
@@ -202,7 +203,7 @@ describe('MigrationService', () => {
       expect(Object.keys(migrees.classe.eleves[0])).not.toContain('manualite');
       expect(Object.keys(migrees.classe.eleves[0])).not.toContain('dispositifsMedicaux');
       expect(migrees.classe.eleves[0].nom).toBe('MARTIN');
-      expect(migrees.version).toBe('2026.09.5');
+      expect(migrees.version).toBe(service.obtenirVersionCourante());
     });
 
     it('laisse inchangé un élève sans ces champs', () => {
@@ -213,6 +214,66 @@ describe('MigrationService', () => {
       });
 
       expect(service.migrer(donnees).classe.eleves[0]).toEqual(eleve);
+    });
+  });
+
+  describe('nettoyage des absences récurrentes', () => {
+    const migrerAbsences = (absences: AbsenceRecurrente[]): AbsenceRecurrente[] => {
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Alice', { absencesRecurrentes: absences });
+      const donnees = DonneesMother.base({
+        version: '2026.09.5',
+        classe: { niveau: 'CM2', annee: 'CM2', eleves: [eleve] },
+      });
+      const migrees = service.migrer(donnees);
+      expect(migrees.version).toBe('2026.09.6');
+      return migrees.classe.eleves[0].absencesRecurrentes;
+    };
+
+    it('heure de fin antérieure au début → heures inversées', () => {
+      const absence = AbsenceRecurrenteMother.base({ heureDebut: '10:00', heureFin: '09:00' });
+
+      expect(migrerAbsences([absence])).toEqual([
+        { ...absence, heureDebut: '09:00', heureFin: '10:00' },
+      ]);
+    });
+
+    it('heure de début manquante → absence supprimée', () => {
+      expect(migrerAbsences([AbsenceRecurrenteMother.base({ heureDebut: '' })])).toEqual([]);
+    });
+
+    it('heure de fin manquante → absence supprimée', () => {
+      expect(migrerAbsences([AbsenceRecurrenteMother.base({ heureFin: '' })])).toEqual([]);
+    });
+
+    it('heures égales → absence supprimée', () => {
+      const absence = AbsenceRecurrenteMother.base({ heureDebut: '09:00', heureFin: '09:00' });
+
+      expect(migrerAbsences([absence])).toEqual([]);
+    });
+
+    it('absence valide → inchangée, parmi des absences nettoyées', () => {
+      const valide = AbsenceRecurrenteMother.base({ id: 'ar2' });
+
+      expect(migrerAbsences([AbsenceRecurrenteMother.base({ heureFin: '' }), valide])).toEqual([
+        valide,
+      ]);
+    });
+
+    it('élève sans absence récurrente → inchangé', () => {
+      expect(migrerAbsences([])).toEqual([]);
+    });
+
+    it('fichier déjà en 2026.09.6 → absences non modifiées', () => {
+      const invalide = AbsenceRecurrenteMother.base({ heureFin: '' });
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Alice', {
+        absencesRecurrentes: [invalide],
+      });
+      const donnees = DonneesMother.base({
+        version: '2026.09.6',
+        classe: { niveau: 'CM2', annee: 'CM2', eleves: [eleve] },
+      });
+
+      expect(service.migrer(donnees).classe.eleves[0].absencesRecurrentes).toEqual([invalide]);
     });
   });
 

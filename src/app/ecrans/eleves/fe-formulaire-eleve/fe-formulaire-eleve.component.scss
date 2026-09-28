@@ -43,6 +43,15 @@
     gap: 0.875rem;
   }
 
+  // Message d'erreur sous les champs d'un sous-élément (retour à la ligne dans le flex)
+  &__erreur {
+    flex-basis: 100%;
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--erreur);
+  }
+
   &__sous-item {
     display: flex;
     flex-wrap: wrap;

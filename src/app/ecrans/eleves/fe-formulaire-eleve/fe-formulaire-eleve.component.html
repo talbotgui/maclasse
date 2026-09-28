@@ -168,6 +168,7 @@
     </button>
     <ul class="form-eleve__liste-sous-items">
       @for (abs of absencesRecurrentesFormArray.controls; track abs; let i = $index) {
+        @let erreurAbsRec = obtenirErreurAbsenceRecurrente(abs);
         <li class="form-eleve__sous-item">
           <mc-input
             [id]="'champAbsRecLibelle' + i"
@@ -184,12 +185,16 @@
           <mc-champ-heure
             [id]="'champAbsRecDebut' + i"
             [label]="LIBELLES.eleve.labelAbsenceHeureDebut"
+            [required]="true"
             [formControl]="abs.controls.heureDebut"
+            [descriptionIds]="erreurAbsRec ? 'erreurAbsRec' + i : null"
           />
           <mc-champ-heure
             [id]="'champAbsRecFin' + i"
             [label]="LIBELLES.eleve.labelAbsenceHeureFin"
+            [required]="true"
             [formControl]="abs.controls.heureFin"
+            [descriptionIds]="erreurAbsRec ? 'erreurAbsRec' + i : null"
           />
           <mc-select
             [id]="'champAbsRecParite' + i"
@@ -204,6 +209,11 @@
             [petit]="true"
             (confirme)="supprimerAbsenceRecurrente(i)"
           />
+          @if (erreurAbsRec) {
+            <p [id]="'erreurAbsRec' + i" class="form-eleve__erreur" role="alert">
+              {{ erreurAbsRec }}
+            </p>
+          }
         </li>
       }
     </ul>

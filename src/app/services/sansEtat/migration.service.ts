@@ -37,6 +37,10 @@ export class MigrationService {
       versionCible: '2026.09.5',
       appliquer: (donnees) => this.retirerManualiteEtDispositifsMedicaux(donnees),
     },
+    {
+      versionCible: '2026.09.6',
+      appliquer: (donnees) => this.nettoyerAbsencesRecurrentes(donnees),
+    },
   ];
 
   /**
@@ -112,6 +116,25 @@ export class MigrationService {
       for (const annee of eleve.cursus) {
         if (!annee.id) annee.id = crypto.randomUUID();
       }
+    }
+  }
+
+  /**
+   * Rend valide la plage horaire des absences récurrentes, devenue obligatoire (heure de
+   * fin strictement postérieure à l'heure de début) : des heures saisies à l'envers sont
+   * inversées ; une absence sans heure de début ou de fin, ou aux heures égales, est
+   * supprimée. Une absence valide est laissée inchangée. Idempotent.
+   * @param donnees Données à muter (déjà clonées par l'appelant).
+   */
+  private nettoyerAbsencesRecurrentes(donnees: DonneesApplication): void {
+    for (const eleve of donnees.classe.eleves) {
+      eleve.absencesRecurrentes = eleve.absencesRecurrentes.flatMap((absence) => {
+        const { heureDebut, heureFin } = absence;
+        if (!heureDebut || !heureFin || heureDebut === heureFin) return [];
+        return heureFin < heureDebut
+          ? [{ ...absence, heureDebut: heureFin, heureFin: heureDebut }]
+          : [absence];
+      });
     }
   }
 

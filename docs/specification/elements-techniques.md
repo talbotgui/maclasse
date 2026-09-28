@@ -3,7 +3,7 @@ name: elements-techniques
 description: Éléments purement techniques de MaClasse — gardes, classes de base, directives, utilitaires, pattern commande, versions du JSON, persistance, routing
 metadata:
   type: project
-  updated: 2026-09-27
+  updated: 2026-09-28
 related:
   - specification/services
   - specification/architecture-applicative
@@ -162,6 +162,7 @@ Chaîne ordonnée d'étapes dans `MigrationService` ; chaque étape amène les d
 | `2026.09.3` | Ajout du tableau `emploisDuTempsCalcules` |
 | `2026.09.4` | Source `recreation` des EDT calculés renommée `tempsHorsClasse` (sans doublon) ; champs pédagogiques retirés des temps des créneaux récréation et pause déjeuner |
 | `2026.09.5` | Champs `manualite` et `dispositifsMedicaux` retirés des élèves (abandonnés : aucun écran ne permettait de les saisir) |
+| `2026.09.6` | Absences récurrentes des élèves rendues valides (plage horaire désormais obligatoire) : heures inversées si la fin précède le début ; absence supprimée si une heure manque ou si les deux sont égales |
 
 Les migrations sont appliquées dans l'ordre jusqu'à atteindre la version courante de l'application.
 

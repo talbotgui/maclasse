@@ -6,6 +6,7 @@ import { EcranDemarrageComponent } from './ecran-demarrage.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
 import { SauvegardeAutoService } from '../../services/sansEtat/sauvegarde-auto.service';
+import { MigrationService } from '../../services/sansEtat/migration.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import type { DonneesApplication } from '../../modeles/donnees-application.modele';
 
@@ -47,7 +48,9 @@ describe('EcranDemarrageComponent', () => {
 
       await (component as any).surCreationDemandee(donnees);
 
-      expect(donneesService.donnees()?.version).toBe('2026.09.5');
+      expect(donneesService.donnees()?.version).toBe(
+        TestBed.inject(MigrationService).obtenirVersionCourante(),
+      );
       spy.mockRestore();
     });
 
@@ -101,7 +104,9 @@ describe('EcranDemarrageComponent', () => {
 
       await (component as any).surDemarrageTermine(donnees);
 
-      expect(donneesService.donnees()?.version).toBe('2026.09.5');
+      expect(donneesService.donnees()?.version).toBe(
+        TestBed.inject(MigrationService).obtenirVersionCourante(),
+      );
       spy.mockRestore();
     });
 
@@ -155,7 +160,9 @@ describe('EcranDemarrageComponent', () => {
 
       await (component as any).surReferentielDemande(donnees);
 
-      expect(donneesService.donnees()?.version).toBe('2026.09.5');
+      expect(donneesService.donnees()?.version).toBe(
+        TestBed.inject(MigrationService).obtenirVersionCourante(),
+      );
       spy.mockRestore();
     });
 

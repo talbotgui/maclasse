@@ -55,6 +55,12 @@ export class SelecteursEleves extends SelecteursBase {
   // --- Sous-formulaire absence récurrente (index fixe : DUCOBU a déjà 1 absence récurrente) ---
   /** Champ Libellé de la nouvelle absence récurrente ajoutée (index 1). */
   public readonly champNouvelleAbsenceRecurrenteLibelle: Locator;
+  /** Champ Heure de début de la nouvelle absence récurrente (index 1). */
+  public readonly champNouvelleAbsenceRecurrenteDebut: Locator;
+  /** Champ Heure de fin de la nouvelle absence récurrente (index 1). */
+  public readonly champNouvelleAbsenceRecurrenteFin: Locator;
+  /** Message d'erreur de la plage horaire de la nouvelle absence récurrente (index 1). */
+  public readonly erreurNouvelleAbsenceRecurrente: Locator;
 
   // --- Sous-formulaire absence ponctuelle (index fixe : DUCOBU n'a aucune absence ponctuelle) ---
   /** Champ Date de la nouvelle absence ponctuelle ajoutée (index 0). */
@@ -119,6 +125,9 @@ export class SelecteursEleves extends SelecteursBase {
     this.champNouveauContactNom = page.locator('#champContactNom2-input');
     this.champNouveauContactTel = page.locator('#champContactTel2-input');
     this.champNouvelleAbsenceRecurrenteLibelle = page.locator('#champAbsRecLibelle1-input');
+    this.champNouvelleAbsenceRecurrenteDebut = page.locator('#champAbsRecDebut1');
+    this.champNouvelleAbsenceRecurrenteFin = page.locator('#champAbsRecFin1');
+    this.erreurNouvelleAbsenceRecurrente = page.locator('#erreurAbsRec1');
     this.champNouvelleAbsencePonctuelleDate = page.locator('#champAbsPonctDate0-input');
     this.champNouvelleAbsencePonctuelleJustification = page.locator('#champAbsPonctJustif0');
     this.champNouveauCursusNiveau = page.locator('#champCursusNiveau2-input');

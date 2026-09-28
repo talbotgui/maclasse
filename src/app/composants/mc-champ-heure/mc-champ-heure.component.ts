@@ -31,4 +31,10 @@ export class McChampHeureComponent extends ChampBase {
 
   /** Indique si le champ est obligatoire. Ajoute `required` et un astérisque visuel. */
   public readonly required: InputSignal<boolean> = input(false);
+
+  /**
+   * Identifiants, séparés par des espaces, des éléments décrivant le champ (attribut
+   * `aria-describedby` du champ natif, ex. message d'erreur), `null` si aucun.
+   */
+  public readonly descriptionIds: InputSignal<string | null> = input<string | null>(null);
 }

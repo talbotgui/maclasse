@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import type { InputSignal, OutputEmitterRef, WritableSignal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { LIBELLES } from '../../../libelles';
 import { FormulaireUtils } from '../../../utilitaires/formulaire.utils';
@@ -451,8 +451,26 @@ export class FeFormulaireEleveComponent {
   }
 
   /**
-   * Indique si le formulaire peut être enregistré : le prénom et le nom sont obligatoires.
-   * @returns `true` si le prénom et le nom contiennent au moins un caractère non blanc.
+   * Message d'erreur de la plage horaire d'une absence récurrente. Une plage vide ou inversée
+   * est signalée dès que les deux heures sont saisies ; une heure manquante, une fois l'un des
+   * deux champs horaires modifié ou quitté (pas sur une absence tout juste ajoutée).
+   * @param groupe Groupe de contrôles de l'absence récurrente.
+   * @returns Message à afficher sous l'absence, `null` si rien n'est à signaler.
+   */
+  protected obtenirErreurAbsenceRecurrente(
+    groupe: FormGroup<FormulaireAbsenceRecurrente>,
+  ): string | null {
+    if (groupe.hasError('plageHoraireInvalide')) return LIBELLES.commun.erreurPlageHoraire;
+    const heures = [groupe.controls.heureDebut, groupe.controls.heureFin];
+    const heureManquante = heures.some((controle) => controle.invalid);
+    const heuresTouchees = heures.some((controle) => controle.touched || controle.dirty);
+    return heureManquante && heuresTouchees ? LIBELLES.eleve.erreurHeuresAbsenceObligatoires : null;
+  }
+
+  /**
+   * Indique si le formulaire peut être enregistré : le prénom et le nom sont obligatoires,
+   * et chaque absence récurrente doit avoir une plage horaire valide.
+   * @returns `true` si le formulaire est valide.
    */
   protected estFormulaireValide(): boolean {
     return this.statutForm() === 'VALID';
@@ -579,16 +597,25 @@ export class FeFormulaireEleveComponent {
   private static creerGroupeAbsenceRecurrente(
     absence: AbsenceRecurrente,
   ): FormGroup<FormulaireAbsenceRecurrente> {
-    return new FormGroup<FormulaireAbsenceRecurrente>({
-      id: new FormControl(absence.id, { nonNullable: true }),
-      libelle: new FormControl(absence.libelle, { nonNullable: true }),
-      jour: new FormControl<JourSemaine>(absence.jour, { nonNullable: true }),
-      heureDebut: new FormControl(absence.heureDebut, { nonNullable: true }),
-      heureFin: new FormControl(absence.heureFin, { nonNullable: true }),
-      paritesSemaine: new FormControl<FrequenceSemaine>(absence.paritesSemaine, {
-        nonNullable: true,
-      }),
-    });
+    return new FormGroup<FormulaireAbsenceRecurrente>(
+      {
+        id: new FormControl(absence.id, { nonNullable: true }),
+        libelle: new FormControl(absence.libelle, { nonNullable: true }),
+        jour: new FormControl<JourSemaine>(absence.jour, { nonNullable: true }),
+        heureDebut: new FormControl(absence.heureDebut, {
+          nonNullable: true,
+          validators: Validators.required,
+        }),
+        heureFin: new FormControl(absence.heureFin, {
+          nonNullable: true,
+          validators: Validators.required,
+        }),
+        paritesSemaine: new FormControl<FrequenceSemaine>(absence.paritesSemaine, {
+          nonNullable: true,
+        }),
+      },
+      { validators: FormulaireUtils.validerPlageHoraire },
+    );
   }
 
   /**

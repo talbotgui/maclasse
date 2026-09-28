@@ -3,7 +3,7 @@ name: composants-partages
 description: Inventaire des composants mutualisés de MaClasse — classes de base, composants de formulaire et d'affichage, composants riches, popins, entête
 metadata:
   type: project
-  updated: 2026-09-27
+  updated: 2026-09-28
 related:
   - specification/ecrans/vue-ensemble
   - specification/elements-techniques
@@ -53,7 +53,7 @@ Ces composants encapsulent les éléments natifs HTML pour centraliser le style 
 | `mc-textarea` | `<textarea>` | Saisies libres longues (fiche élève, projet, séance, notes de la journée) |
 | `mc-select` | `<select>` | Listes déroulantes : type de créneau et de séance, jour d'un créneau, **fréquence d'un EDT et d'un EDT calculé**, **parité d'une absence récurrente**, champs de la fiche élève, popin d'export |
 | `mc-radio-group` | `<input type="radio">` groupés | Choix exclusifs : sexe de l'élève, mode de `mc-eleves-concernes` |
-| `mc-champ-heure` | `<input type="time">` | Saisie HH:MM (séances, temps de créneau, absences récurrentes, journée scolaire) |
+| `mc-champ-heure` | `<input type="time">` | Saisie HH:MM (séances, temps de créneau, absences récurrentes, journée scolaire). Input `descriptionIds` (`aria-describedby` du champ natif, ex. message d'erreur de plage horaire) |
 
 ### Inputs de `mc-input`
 

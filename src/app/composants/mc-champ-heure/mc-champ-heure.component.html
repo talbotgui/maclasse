@@ -9,6 +9,7 @@
     type="time"
     [id]="id()"
     [required]="required()"
+    [attr.aria-describedby]="descriptionIds()"
     [disabled]="estDesactive()"
     [value]="valeur()"
     (input)="surChangement($any($event.target).value)"

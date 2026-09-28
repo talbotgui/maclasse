@@ -205,6 +205,101 @@ describe('FeFormulaireEleveComponent', () => {
     });
   });
 
+  describe('plage horaire des absences récurrentes', () => {
+    const groupe = (i: number) => (component as any).absencesRecurrentesFormArray.at(i);
+    const message = (i: number) =>
+      fixture.nativeElement.querySelector(`#erreurAbsRec${i}`) as HTMLElement | null;
+    const champDebut = (i: number) =>
+      fixture.nativeElement.querySelector(`#champAbsRecDebut${i}`) as HTMLInputElement;
+
+    beforeEach(() => {
+      fixture.componentRef.setInput(
+        'eleve',
+        EleveMother.base('e1', 'MARTIN', 'Alice', {
+          absencesRecurrentes: [AbsenceRecurrenteMother.base()],
+        }),
+      );
+      fixture.detectChanges();
+    });
+
+    it('absence valide → aucun message, formulaire valide', () => {
+      expect(message(0)).toBeNull();
+      expect(champDebut(0).hasAttribute('aria-describedby')).toBe(false);
+      expect((component as any).estFormulaireValide()).toBe(true);
+    });
+
+    it('heure de fin antérieure au début → message immédiat relié aux champs, formulaire invalide', () => {
+      groupe(0).controls.heureFin.setValue('08:00');
+      fixture.detectChanges();
+
+      expect(message(0)?.textContent?.trim()).toBe(LIBELLES.commun.erreurPlageHoraire);
+      expect(message(0)?.getAttribute('role')).toBe('alert');
+      expect(champDebut(0).getAttribute('aria-describedby')).toBe('erreurAbsRec0');
+      expect((component as any).estFormulaireValide()).toBe(false);
+    });
+
+    it('heure de fin égale au début → message plage horaire', () => {
+      groupe(0).controls.heureFin.setValue('09:00');
+      fixture.detectChanges();
+
+      expect(message(0)?.textContent?.trim()).toBe(LIBELLES.commun.erreurPlageHoraire);
+    });
+
+    it('absence ajoutée sans heures → pas de message, formulaire invalide', () => {
+      (component as any).ajouterAbsenceRecurrente();
+      fixture.detectChanges();
+
+      expect(message(1)).toBeNull();
+      expect((component as any).estFormulaireValide()).toBe(false);
+    });
+
+    it('heure manquante après saisie → message heures obligatoires', () => {
+      (component as any).ajouterAbsenceRecurrente();
+      groupe(1).controls.heureDebut.setValue('09:00');
+      groupe(1).controls.heureDebut.markAsDirty();
+      fixture.detectChanges();
+
+      expect(message(1)?.textContent?.trim()).toBe(LIBELLES.eleve.erreurHeuresAbsenceObligatoires);
+    });
+
+    it('champ horaire quitté vide (touched) → message heures obligatoires', () => {
+      (component as any).ajouterAbsenceRecurrente();
+      groupe(1).controls.heureFin.markAsTouched();
+      fixture.detectChanges();
+
+      expect(message(1)?.textContent?.trim()).toBe(LIBELLES.eleve.erreurHeuresAbsenceObligatoires);
+    });
+
+    it('bouton ENREGISTRER désactivé tant que la plage est invalide, réactivé après correction', () => {
+      const bouton = () =>
+        fixture.nativeElement.querySelector('#btnEnregistrerEleve') as HTMLButtonElement;
+      groupe(0).controls.heureFin.setValue('08:00');
+      fixture.detectChanges();
+      expect(bouton().disabled).toBe(true);
+
+      groupe(0).controls.heureFin.setValue('11:00');
+      fixture.detectChanges();
+      expect(bouton().disabled).toBe(false);
+    });
+
+    it("suppression de l'absence invalide → formulaire de nouveau valide", () => {
+      groupe(0).controls.heureFin.setValue('08:00');
+
+      (component as any).supprimerAbsenceRecurrente(0);
+
+      expect((component as any).estFormulaireValide()).toBe(true);
+    });
+
+    it("onEnregistrer n'émet pas tant qu'une absence est invalide", () => {
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
+      groupe(0).controls.heureFin.setValue('08:00');
+
+      (component as any).onEnregistrer();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
+
   describe('ajouterAbsencePonctuelle / supprimerAbsencePonctuelle', () => {
     it('ajouterAbsencePonctuelle ajoute une absence avec id UUID et demande le focus', () => {
       (component as any).ajouterAbsencePonctuelle();

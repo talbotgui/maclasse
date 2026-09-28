@@ -242,6 +242,8 @@ testAvecDonnees(
     await eleves.btnAjouterAbsenceRecurrente.click();
 
     await eleves.champNouvelleAbsenceRecurrenteLibelle.fill('Orthophonie');
+    await eleves.champNouvelleAbsenceRecurrenteDebut.fill('09:00');
+    await eleves.champNouvelleAbsenceRecurrenteFin.fill('10:00');
 
     await eleves.btnEnregistrer.click();
 
@@ -337,6 +339,34 @@ testAvecDonnees(
     await expect(eleves.btnEnregistrer).toBeDisabled();
 
     await eleves.champNom.fill('ZEBULON');
+    await expect(eleves.btnEnregistrer).toBeEnabled();
+  },
+);
+
+testAvecDonnees(
+  "E2E-138 — Absence récurrente : plage horaire contrôlée avant l'enregistrement",
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
+
+    await entete.navEleves.click();
+    await eleves.selectionnerDucobu();
+    await eleves.btnModifier.click();
+
+    // DUCOBU a déjà 1 absence récurrente → nouvelle absence à l'index 1
+    await eleves.btnAjouterAbsenceRecurrente.click();
+    await eleves.champNouvelleAbsenceRecurrenteLibelle.fill('Orthophonie');
+    await expect(eleves.btnEnregistrer).toBeDisabled();
+
+    await eleves.champNouvelleAbsenceRecurrenteDebut.fill('10:00');
+    await eleves.champNouvelleAbsenceRecurrenteFin.fill('09:00');
+    await expect(eleves.erreurNouvelleAbsenceRecurrente).toHaveText(
+      "L'heure de fin doit être postérieure à l'heure de début.",
+    );
+    await expect(eleves.btnEnregistrer).toBeDisabled();
+
+    await eleves.champNouvelleAbsenceRecurrenteFin.fill('11:00');
+    await expect(eleves.erreurNouvelleAbsenceRecurrente).toHaveCount(0);
     await expect(eleves.btnEnregistrer).toBeEnabled();
   },
 );

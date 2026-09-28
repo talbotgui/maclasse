@@ -83,6 +83,19 @@ describe('McChampHeureComponent', () => {
     });
   });
 
+  describe('description accessible', () => {
+    it('par défaut → pas d’aria-describedby', () => {
+      expect(inputEl().hasAttribute('aria-describedby')).toBe(false);
+    });
+
+    it('descriptionIds → attribut aria-describedby', () => {
+      fixture.componentRef.setInput('descriptionIds', 'erreurA');
+      fixture.detectChanges();
+
+      expect(inputEl().getAttribute('aria-describedby')).toBe('erreurA');
+    });
+  });
+
   describe('rendu', () => {
     it('le label affiche le libellé', () => {
       expect(labelEl().textContent).toContain('Heure de début');

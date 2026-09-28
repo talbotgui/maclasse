@@ -8,6 +8,9 @@ const now = new Date();
 const pad2 = (n: number): string => String(n).padStart(2, '0');
 const HORODATAGE = `${now.getFullYear()}${pad2(now.getMonth() + 1)}${pad2(now.getDate())}-${pad2(now.getHours())}${pad2(now.getMinutes())}`;
 
+/** Durée maximale d'une capture : au-delà, elle est abandonnée plutôt que de bloquer le test. */
+const DELAI_MAX_CAPTURE_MS = 5_000;
+
 /** Répertoire racine de l'exécution courante. */
 export const REP_EXECUTION = resolve(join('.e2e', 'screenshotsMetiers', `execution-${HORODATAGE}`));
 
@@ -35,16 +38,23 @@ export const test = base.extend<FixtureScreenshots>({
       mkdirSync(repTest, { recursive: true });
 
       let compteur = 0;
-      const capturer = async (label: string): Promise<void> => {
-        try {
-          const num = String(++compteur).padStart(3, '0');
-          await page.screenshot({
-            path: join(repTest, `${num}-${label}.png`),
-            fullPage: true,
-          });
-        } catch {
-          // Ignore si la page est fermée ou en cours de transition.
-        }
+      // Captures enchaînées : deux `page.screenshot` concurrents (ex. navigation déclenchée par
+      // un rechargement puis capture de fin) peuvent se bloquer jusqu'au timeout du test.
+      let captures: Promise<void> = Promise.resolve();
+      const capturer = (label: string): Promise<void> => {
+        captures = captures.then(async () => {
+          try {
+            const num = String(++compteur).padStart(3, '0');
+            await page.screenshot({
+              path: join(repTest, `${num}-${label}.png`),
+              fullPage: true,
+              timeout: DELAI_MAX_CAPTURE_MS,
+            });
+          } catch {
+            // Ignore si la page est fermée, en cours de transition ou si la capture expire.
+          }
+        });
+        return captures;
       };
 
       // Capture après chaque navigation SPA (Angular Router utilise l'API History).

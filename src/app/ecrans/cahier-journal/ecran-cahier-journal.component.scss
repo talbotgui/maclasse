@@ -132,8 +132,10 @@
     font-size: 0.875rem;
     cursor: pointer;
 
+    // Texte assombri au survol : le primaire sur le fond de survol teinté passe sous 4,5:1
     &:hover {
       background-color: color-mix(in srgb, var(--couleur-primaire) 8%, transparent);
+      color: var(--couleur-primaire-sombre);
     }
   }
 

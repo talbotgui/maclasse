@@ -137,22 +137,13 @@
   }
 
   <!-- Section : Notes administratives -->
-  @if (
-    eleve().notesDroitImage ||
-    eleve().notesAutorisationBaignade ||
-    eleve().notesPPA ||
-    eleve().notesESS
-  ) {
+  @if (autorisationsRenseignees().length > 0 || eleve().notesPPA || eleve().notesESS) {
     <section class="fiche-eleve__section" aria-labelledby="titreNotes">
       <h3 id="titreNotes" class="fiche-eleve__titre-section">{{ LIBELLES.eleve.sectionNotes }}</h3>
       <dl class="fiche-eleve__dl">
-        @if (eleve().notesDroitImage) {
-          <dt>{{ LIBELLES.eleve.labelDroitImage }}</dt>
-          <dd class="fiche-eleve__texte-long">{{ eleve().notesDroitImage }}</dd>
-        }
-        @if (eleve().notesAutorisationBaignade) {
-          <dt>{{ LIBELLES.eleve.labelAutorisationBaignade }}</dt>
-          <dd class="fiche-eleve__texte-long">{{ eleve().notesAutorisationBaignade }}</dd>
+        @for (ligne of autorisationsRenseignees(); track ligne.libelle) {
+          <dt>{{ ligne.libelle }}</dt>
+          <dd class="fiche-eleve__texte-long">{{ ligne.valeur }}</dd>
         }
         @if (eleve().notesPPA) {
           <dt>{{ LIBELLES.eleve.labelPPA }}</dt>
@@ -163,6 +154,20 @@
           <dd class="fiche-eleve__texte-long">{{ eleve().notesESS }}</dd>
         }
       </dl>
+    </section>
+  }
+
+  <!-- Section : Informations utiles -->
+  @if (informationsUtiles().length > 0) {
+    <section class="fiche-eleve__section" aria-labelledby="titreInfosUtiles">
+      <h3 id="titreInfosUtiles" class="fiche-eleve__titre-section">
+        {{ LIBELLES.eleve.sectionInformationsUtiles }}
+      </h3>
+      <ul class="fiche-eleve__liste-resumee">
+        @for (information of informationsUtiles(); track information) {
+          <li>{{ information }}</li>
+        }
+      </ul>
     </section>
   }
 </div>

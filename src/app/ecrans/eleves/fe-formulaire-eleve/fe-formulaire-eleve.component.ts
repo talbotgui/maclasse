@@ -29,8 +29,11 @@ import type {
   Eleve,
   AbsenceRecurrente,
   AbsencePonctuelle,
+  Autorisation,
   Contact,
   CursusAnnee,
+  Lateralite,
+  ReponseAutorisation,
   Sexe,
 } from '../../../modeles/eleve.modele';
 import type { FrequenceSemaine, JourSemaine } from '../../../modeles/emploi-du-temps.modele';
@@ -91,6 +94,27 @@ interface FormulaireCursus {
   accompagnement: FormControl<string>;
 }
 
+/** Structure typée du formulaire d'une autorisation (droit à l'image, baignade…). */
+interface FormulaireAutorisation {
+  /** Réponse de la famille, `null` si non renseignée. */
+  reponse: FormControl<ReponseAutorisation | null>;
+  /** Précision libre sur une ligne. */
+  precision: FormControl<string>;
+}
+
+/** Clé d'une autorisation dans le formulaire (et dans le modèle `Eleve`). */
+type CleAutorisation = 'droitImage' | 'autorisationBaignade' | 'autorisationSortieReguliere';
+
+/** Descripteur d'une ligne d'autorisation affichée par le formulaire. */
+interface DescripteurAutorisation {
+  /** Clé du `FormGroup` de l'autorisation. */
+  cle: CleAutorisation;
+  /** Libellé de l'autorisation (légende du groupe). */
+  libelle: string;
+  /** Identifiant HTML du groupe radio, préfixe de l'identifiant du champ de précision. */
+  id: string;
+}
+
 /** Structure typée du formulaire d'un élève. */
 interface FormulaireEleve {
   /** Prénom (obligatoire). */
@@ -123,14 +147,22 @@ interface FormulaireEleve {
   absencesPonctuelles: FormArray<FormGroup<FormulaireAbsencePonctuelle>>;
   /** Cursus. */
   cursus: FormArray<FormGroup<FormulaireCursus>>;
-  /** Notes sur le droit à l'image. */
-  notesDroitImage: FormControl<string>;
-  /** Notes sur l'autorisation de baignade. */
-  notesAutorisationBaignade: FormControl<string>;
+  /** Autorisation de droit à l'image. */
+  droitImage: FormGroup<FormulaireAutorisation>;
+  /** Autorisation de baignade. */
+  autorisationBaignade: FormGroup<FormulaireAutorisation>;
+  /** Autorisation de sortie régulière. */
+  autorisationSortieReguliere: FormGroup<FormulaireAutorisation>;
   /** Notes PPA, chaîne vide si non renseignées. */
   notesPPA: FormControl<string>;
   /** Notes ESS, chaîne vide si non renseignées. */
   notesESS: FormControl<string>;
+  /** Port de lunettes. */
+  portLunettes: FormControl<boolean>;
+  /** Notification AESH. */
+  notificationAesh: FormControl<boolean>;
+  /** Latéralité, `null` si non renseignée. */
+  lateralite: FormControl<Lateralite | null>;
 }
 
 /**
@@ -188,6 +220,31 @@ export class FeFormulaireEleveComponent {
     { valeur: 'F', libelle: LIBELLES.eleve.labelSexeF },
   ];
 
+  /** Options des réponses à une autorisation, dans l'ordre de `LIBELLES`. */
+  protected readonly optionsReponseAutorisation: OptionFormulaire[] = Object.entries(
+    LIBELLES.eleve.reponsesAutorisation,
+  ).map(([valeur, libelle]) => ({ valeur, libelle }));
+
+  /** Options de la latéralité, dans l'ordre de `LIBELLES`. */
+  protected readonly optionsLateralite: OptionFormulaire[] = Object.entries(
+    LIBELLES.eleve.lateralites,
+  ).map(([valeur, libelle]) => ({ valeur, libelle }));
+
+  /** Autorisations affichées dans la section Notes administratives, dans l'ordre d'affichage. */
+  protected readonly autorisations: readonly DescripteurAutorisation[] = [
+    { cle: 'droitImage', libelle: LIBELLES.eleve.labelDroitImage, id: 'champFormDroitImage' },
+    {
+      cle: 'autorisationBaignade',
+      libelle: LIBELLES.eleve.labelAutorisationBaignade,
+      id: 'champFormBaignade',
+    },
+    {
+      cle: 'autorisationSortieReguliere',
+      libelle: LIBELLES.eleve.labelAutorisationSortieReguliere,
+      id: 'champFormSortieReguliere',
+    },
+  ];
+
   /** Options pour la fréquence des absences récurrentes. */
   protected readonly optionsFrequence = [
     { valeur: 'paire', libelle: LIBELLES.edt.frequencePaire },
@@ -223,10 +280,14 @@ export class FeFormulaireEleveComponent {
     absencesRecurrentes: new FormArray<FormGroup<FormulaireAbsenceRecurrente>>([]),
     absencesPonctuelles: new FormArray<FormGroup<FormulaireAbsencePonctuelle>>([]),
     cursus: new FormArray<FormGroup<FormulaireCursus>>([]),
-    notesDroitImage: new FormControl('', { nonNullable: true }),
-    notesAutorisationBaignade: new FormControl('', { nonNullable: true }),
+    droitImage: FeFormulaireEleveComponent.creerGroupeAutorisation(),
+    autorisationBaignade: FeFormulaireEleveComponent.creerGroupeAutorisation(),
+    autorisationSortieReguliere: FeFormulaireEleveComponent.creerGroupeAutorisation(),
     notesPPA: new FormControl('', { nonNullable: true }),
     notesESS: new FormControl('', { nonNullable: true }),
+    portLunettes: new FormControl(false, { nonNullable: true }),
+    notificationAesh: new FormControl(false, { nonNullable: true }),
+    lateralite: new FormControl<Lateralite | null>(null),
   });
 
   /** Identifiant de l'élève édité (ou créé), non modifiable par le formulaire et recopié à l'émission. */
@@ -503,10 +564,14 @@ export class FeFormulaireEleveComponent {
             ? entree.annee
             : (this.anneesCursusOrigine.get(entree.id) ?? new Date().getFullYear()),
       })),
-      notesDroitImage: valeurs.notesDroitImage,
-      notesAutorisationBaignade: valeurs.notesAutorisationBaignade,
+      droitImage: { ...valeurs.droitImage },
+      autorisationBaignade: { ...valeurs.autorisationBaignade },
+      autorisationSortieReguliere: { ...valeurs.autorisationSortieReguliere },
       notesPPA: valeurs.notesPPA || null,
       notesESS: valeurs.notesESS || null,
+      portLunettes: valeurs.portLunettes,
+      notificationAesh: valeurs.notificationAesh,
+      lateralite: valeurs.lateralite,
     });
   }
 
@@ -561,10 +626,14 @@ export class FeFormulaireEleveComponent {
     c.bilans.reset(eleve.bilans, sansEmission);
     c.accueil.reset(eleve.accueil, sansEmission);
     c.inclusion.reset(eleve.inclusion ?? '', sansEmission);
-    c.notesDroitImage.reset(eleve.notesDroitImage, sansEmission);
-    c.notesAutorisationBaignade.reset(eleve.notesAutorisationBaignade, sansEmission);
+    c.droitImage.reset({ ...eleve.droitImage }, sansEmission);
+    c.autorisationBaignade.reset({ ...eleve.autorisationBaignade }, sansEmission);
+    c.autorisationSortieReguliere.reset({ ...eleve.autorisationSortieReguliere }, sansEmission);
     c.notesPPA.reset(eleve.notesPPA ?? '', sansEmission);
     c.notesESS.reset(eleve.notesESS ?? '', sansEmission);
+    c.portLunettes.reset(eleve.portLunettes, sansEmission);
+    c.notificationAesh.reset(eleve.notificationAesh, sansEmission);
+    c.lateralite.reset(eleve.lateralite, sansEmission);
     this.form.updateValueAndValidity(sansEmission);
     this.statutForm.set(this.form.status);
     this.indexAFocaliserContact.set(null);
@@ -572,6 +641,26 @@ export class FeFormulaireEleveComponent {
     this.indexAFocaliserAbsPonct.set(null);
     this.indexAFocaliserCursus.set(null);
     this.cdr.markForCheck();
+  }
+
+  /**
+   * Crée le groupe de contrôles d'une autorisation, non renseignée et sans précision
+   * (les valeurs de l'élève sont posées par `chargerEleve`).
+   * @returns Groupe de contrôles initialisé.
+   */
+  private static creerGroupeAutorisation(): FormGroup<FormulaireAutorisation> {
+    return new FormGroup<FormulaireAutorisation>({
+      reponse: new FormControl<ReponseAutorisation | null>(null),
+      precision: new FormControl('', { nonNullable: true }),
+    });
+  }
+
+  /**
+   * Crée une autorisation non renseignée et sans précision.
+   * @returns Autorisation vide.
+   */
+  private static creerAutorisationVide(): Autorisation {
+    return { reponse: null, precision: '' };
   }
 
   /**
@@ -670,10 +759,14 @@ export class FeFormulaireEleveComponent {
       absencesRecurrentes: [],
       absencesPonctuelles: [],
       cursus: [],
-      notesDroitImage: '',
-      notesAutorisationBaignade: '',
+      droitImage: FeFormulaireEleveComponent.creerAutorisationVide(),
+      autorisationBaignade: FeFormulaireEleveComponent.creerAutorisationVide(),
+      autorisationSortieReguliere: FeFormulaireEleveComponent.creerAutorisationVide(),
       notesPPA: null,
       notesESS: null,
+      portLunettes: false,
+      notificationAesh: false,
+      lateralite: null,
     };
   }
 }

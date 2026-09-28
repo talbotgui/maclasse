@@ -13,6 +13,14 @@ export interface OptionFormulaire {
   libelle: string;
 }
 
+/** Ligne « libellé : valeur » d'une liste de définitions en mode lecture. */
+export interface LigneLecture {
+  /** Libellé du terme (`<dt>`). */
+  libelle: string;
+  /** Valeur affichée (`<dd>`). */
+  valeur: string;
+}
+
 /**
  * Case de la grille du calendrier mensuel miniature (`mc-mini-calendrier`).
  * Une case est soit vide (avant le 1er du mois) soit associée à un jour précis.

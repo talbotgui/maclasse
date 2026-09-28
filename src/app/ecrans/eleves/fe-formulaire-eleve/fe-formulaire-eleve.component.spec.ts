@@ -4,6 +4,7 @@ import { FeFormulaireEleveComponent } from './fe-formulaire-eleve.component';
 import {
   AbsencePonctuelleMother,
   AbsenceRecurrenteMother,
+  AutorisationMother,
   ContactMother,
   CursusAnneeMother,
   EleveMother,
@@ -347,6 +348,12 @@ describe('FeFormulaireEleveComponent', () => {
       const eleve = EleveMother.base('e1', 'MARTIN', 'Alice', {
         inclusion: 'ULIS',
         notesPPA: 'PPA en cours',
+        droitImage: AutorisationMother.vide({ reponse: 'refuse', precision: 'Sauf presse' }),
+        autorisationBaignade: AutorisationMother.vide({ reponse: 'accepte' }),
+        autorisationSortieReguliere: AutorisationMother.vide({ reponse: 'sansReponse' }),
+        portLunettes: true,
+        notificationAesh: true,
+        lateralite: 'gaucher',
         groupes: ['GA'],
         contacts: [ContactMother.base()],
         absencesRecurrentes: [AbsenceRecurrenteMother.base()],
@@ -476,6 +483,107 @@ describe('FeFormulaireEleveComponent', () => {
       prenom.setValue('Alice');
       fixture.detectChanges();
       expect(bouton.disabled).toBe(false);
+    });
+  });
+
+  describe('autorisations et informations utiles', () => {
+    const element = (selecteur: string): HTMLInputElement =>
+      fixture.nativeElement.querySelector(selecteur) as HTMLInputElement;
+    const radiosCoches = (): HTMLInputElement[] =>
+      Array.from(
+        fixture.nativeElement.querySelectorAll('input[type="radio"]:checked'),
+      ) as HTMLInputElement[];
+
+    it('options des réponses et de la latéralité issues de LIBELLES, dans l’ordre', () => {
+      expect((component as any).optionsReponseAutorisation).toEqual([
+        { valeur: 'accepte', libelle: LIBELLES.eleve.reponsesAutorisation.accepte },
+        { valeur: 'refuse', libelle: LIBELLES.eleve.reponsesAutorisation.refuse },
+        { valeur: 'sansReponse', libelle: LIBELLES.eleve.reponsesAutorisation.sansReponse },
+      ]);
+      expect((component as any).optionsLateralite).toEqual([
+        { valeur: 'gaucher', libelle: LIBELLES.eleve.lateralites.gaucher },
+        { valeur: 'droitier', libelle: LIBELLES.eleve.lateralites.droitier },
+      ]);
+    });
+
+    it('création → aucune réponse cochée (sexe excepté), cases décochées, latéralité vide', () => {
+      fixture.componentRef.setInput('eleve', null);
+      fixture.detectChanges();
+
+      const valeur = (component as any).form.getRawValue();
+      expect(valeur.droitImage).toEqual(AutorisationMother.vide());
+      expect(valeur.autorisationBaignade).toEqual(AutorisationMother.vide());
+      expect(valeur.autorisationSortieReguliere).toEqual(AutorisationMother.vide());
+      expect(valeur.portLunettes).toBe(false);
+      expect(valeur.notificationAesh).toBe(false);
+      expect(valeur.lateralite).toBeNull();
+      expect(radiosCoches().map((r) => r.name)).toEqual(['champFormSexe']);
+    });
+
+    it('élève existant → réponses, précisions, cases et latéralité affichées', () => {
+      fixture.componentRef.setInput(
+        'eleve',
+        EleveMother.base('e1', 'MARTIN', 'Alice', {
+          autorisationBaignade: AutorisationMother.vide({
+            reponse: 'refuse',
+            precision: 'Certificat',
+          }),
+          notificationAesh: true,
+          lateralite: 'droitier',
+        }),
+      );
+      fixture.detectChanges();
+
+      expect(element('#champFormBaignade_refuse').checked).toBe(true);
+      expect(element('#champFormBaignadePrecision-input').value).toBe('Certificat');
+      expect(element('#champFormPortLunettes').checked).toBe(false);
+      expect(element('#champFormNotificationAesh').checked).toBe(true);
+      expect(element('#champFormLateralite_droitier').checked).toBe(true);
+    });
+
+    it('saisie dans le formulaire → émise à l’enregistrement', () => {
+      fixture.componentRef.setInput('eleve', EleveMother.base('e1', 'MARTIN', 'Alice'));
+      fixture.detectChanges();
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
+
+      element('#champFormSortieReguliere_accepte').click();
+      const precision = element('#champFormSortieRegulierePrecision-input');
+      precision.value = 'Le mardi avec sa mère';
+      precision.dispatchEvent(new Event('input'));
+      element('#champFormPortLunettes').click();
+      element('#champFormLateralite_gaucher').click();
+      (component as any).onEnregistrer();
+
+      const emis = spy.mock.calls[0][0] as Eleve;
+      expect(emis.autorisationSortieReguliere).toEqual({
+        reponse: 'accepte',
+        precision: 'Le mardi avec sa mère',
+      });
+      expect(emis.droitImage).toEqual(AutorisationMother.vide());
+      expect(emis.portLunettes).toBe(true);
+      expect(emis.notificationAesh).toBe(false);
+      expect(emis.lateralite).toBe('gaucher');
+    });
+
+    it('EFFACER → réponse remise à null et formulaire modifié', () => {
+      fixture.componentRef.setInput(
+        'eleve',
+        EleveMother.base('e1', 'MARTIN', 'Alice', {
+          droitImage: AutorisationMother.vide({ reponse: 'accepte' }),
+          lateralite: 'gaucher',
+        }),
+      );
+      fixture.detectChanges();
+
+      element('#btnEffacer_champFormDroitImage').click();
+      element('#btnEffacer_champFormLateralite').click();
+      fixture.detectChanges();
+
+      const form = (component as any).form;
+      expect(form.controls.droitImage.controls.reponse.value).toBeNull();
+      expect(form.controls.lateralite.value).toBeNull();
+      expect(form.dirty).toBe(true);
+      expect(radiosCoches().map((r) => r.name)).toEqual(['champFormSexe']);
     });
   });
 

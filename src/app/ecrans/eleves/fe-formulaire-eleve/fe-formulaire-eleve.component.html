@@ -308,17 +308,24 @@
   <!-- Section : Notes administratives -->
   <section class="form-eleve__section" aria-labelledby="titreFormNotes">
     <h3 id="titreFormNotes" class="form-eleve__titre-section">{{ LIBELLES.eleve.sectionNotes }}</h3>
+    @for (autorisation of autorisations; track autorisation.cle) {
+      <fieldset class="form-eleve__groupes form-eleve__autorisation">
+        <legend>{{ autorisation.libelle }}</legend>
+        <mc-radio-group
+          [id]="autorisation.id"
+          [label]="LIBELLES.eleve.labelReponse"
+          [options]="optionsReponseAutorisation"
+          [effacable]="true"
+          [formControl]="form.controls[autorisation.cle].controls.reponse"
+        />
+        <mc-input
+          [id]="autorisation.id + 'Precision'"
+          [label]="LIBELLES.eleve.labelPrecision"
+          [formControl]="form.controls[autorisation.cle].controls.precision"
+        />
+      </fieldset>
+    }
     <div class="form-eleve__grille">
-      <mc-textarea
-        id="champFormDroitImage"
-        [label]="LIBELLES.eleve.labelDroitImage"
-        [formControl]="form.controls.notesDroitImage"
-      />
-      <mc-textarea
-        id="champFormBaignade"
-        [label]="LIBELLES.eleve.labelAutorisationBaignade"
-        [formControl]="form.controls.notesAutorisationBaignade"
-      />
       <mc-textarea
         id="champFormPPA"
         [label]="LIBELLES.eleve.labelPPA"
@@ -328,6 +335,38 @@
         id="champFormESS"
         [label]="LIBELLES.eleve.labelESS"
         [formControl]="form.controls.notesESS"
+      />
+    </div>
+  </section>
+
+  <!-- Section : Informations utiles -->
+  <section class="form-eleve__section" aria-labelledby="titreFormInfosUtiles">
+    <h3 id="titreFormInfosUtiles" class="form-eleve__titre-section">
+      {{ LIBELLES.eleve.sectionInformationsUtiles }}
+    </h3>
+    <div class="form-eleve__grille">
+      <div class="mc-champ mc-champ--checkbox">
+        <input
+          id="champFormPortLunettes"
+          type="checkbox"
+          [formControl]="form.controls.portLunettes"
+        />
+        <label for="champFormPortLunettes">{{ LIBELLES.eleve.labelPortLunettes }}</label>
+      </div>
+      <div class="mc-champ mc-champ--checkbox">
+        <input
+          id="champFormNotificationAesh"
+          type="checkbox"
+          [formControl]="form.controls.notificationAesh"
+        />
+        <label for="champFormNotificationAesh">{{ LIBELLES.eleve.labelNotificationAesh }}</label>
+      </div>
+      <mc-radio-group
+        id="champFormLateralite"
+        [label]="LIBELLES.eleve.labelLateralite"
+        [options]="optionsLateralite"
+        [effacable]="true"
+        [formControl]="form.controls.lateralite"
       />
     </div>
   </section>

@@ -3,7 +3,7 @@ name: modeles-donnees
 description: Modèles de données de l'application MaClasse — structure du fichier JSON, entités et leurs propriétés
 metadata:
   type: project
-  updated: 2026-09-27
+  updated: 2026-09-28
 related:
   - specification/description-generale
 ---
@@ -93,10 +93,23 @@ ElevesConcernes {
   absencesRecurrentes: AbsenceRecurrente[],
   absencesPonctuelles: AbsencePonctuelle[],
   cursus: CursusAnnee[],
-  notesDroitImage: string,      // texte libre
-  notesAutorisationBaignade: string, // texte libre
+  droitImage: Autorisation,
+  autorisationBaignade: Autorisation,
+  autorisationSortieReguliere: Autorisation,
   notesPPA: string | null,      // texte libre
-  notesESS: string | null       // texte libre
+  notesESS: string | null,      // texte libre
+  portLunettes: boolean,
+  notificationAesh: boolean,
+  lateralite: 'gaucher' | 'droitier' | null   // null = non renseignée
+}
+```
+
+## Autorisation
+
+```
+{
+  reponse: 'accepte' | 'refuse' | 'sansReponse' | null,  // null = non renseignée (≠ 'sansReponse' : la famille n'a pas répondu)
+  precision: string                                      // texte libre sur une ligne
 }
 ```
 

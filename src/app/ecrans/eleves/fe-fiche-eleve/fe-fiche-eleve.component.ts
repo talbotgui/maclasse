@@ -2,14 +2,15 @@
  * Sous-composant d'affichage en lecture seule de la fiche d'un élève.
  */
 
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import type { InputSignal, OutputEmitterRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import type { InputSignal, OutputEmitterRef, Signal } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { LIBELLES } from '../../../libelles';
 import { McAutoFocusDirective } from '../../../directives/mc-auto-focus.directive';
 import { McBoutonDestructionComponent } from '../../../composants/mc-bouton-destruction/mc-bouton-destruction.component';
 import { DateUtils } from '../../../utilitaires/date.utils';
-import type { Eleve } from '../../../modeles/eleve.modele';
+import type { Autorisation, Eleve } from '../../../modeles/eleve.modele';
+import type { LigneLecture } from '../../../modeles/composants.modele';
 import type { Groupe, StatutEleve, TypeContact } from '../../../modeles/referentiels.modele';
 
 /**
@@ -45,6 +46,41 @@ export class FeFicheEleveComponent {
   /** Types de contact pour résolution des libellés. */
   public readonly typesContact: InputSignal<TypeContact[]> = input<TypeContact[]>([]);
 
+  /**
+   * Autorisations renseignées de l'élève (réponse ou précision), dans l'ordre d'affichage,
+   * avec leur texte de lecture (« Accepté — précision »).
+   */
+  protected readonly autorisationsRenseignees: Signal<LigneLecture[]> = computed(() => {
+    const e = this.eleve();
+    return [
+      { libelle: LIBELLES.eleve.labelDroitImage, autorisation: e.droitImage },
+      { libelle: LIBELLES.eleve.labelAutorisationBaignade, autorisation: e.autorisationBaignade },
+      {
+        libelle: LIBELLES.eleve.labelAutorisationSortieReguliere,
+        autorisation: e.autorisationSortieReguliere,
+      },
+    ]
+      .map(({ libelle, autorisation }) => ({
+        libelle,
+        valeur: FeFicheEleveComponent.formaterAutorisation(autorisation),
+      }))
+      .filter((ligne) => ligne.valeur !== '');
+  });
+
+  /** Informations utiles de l'élève à afficher : cases cochées puis latéralité renseignée. */
+  protected readonly informationsUtiles: Signal<string[]> = computed(() => {
+    const e = this.eleve();
+    const informations: string[] = [];
+    if (e.portLunettes) informations.push(LIBELLES.eleve.labelPortLunettes);
+    if (e.notificationAesh) informations.push(LIBELLES.eleve.labelNotificationAesh);
+    if (e.lateralite) {
+      informations.push(
+        LIBELLES.eleve.labelLateralite + ' : ' + LIBELLES.eleve.lateralites[e.lateralite],
+      );
+    }
+    return informations;
+  });
+
   /** Émis quand l'utilisateur clique sur MODIFIER. */
   protected readonly modifier: OutputEmitterRef<void> = output<void>();
 
@@ -53,6 +89,19 @@ export class FeFicheEleveComponent {
 
   /** Émis quand l'utilisateur clique sur IMPRIMER. */
   protected readonly imprimer: OutputEmitterRef<void> = output<void>();
+
+  /**
+   * Texte de lecture d'une autorisation : « Réponse — précision », la réponse seule, la
+   * précision seule si la réponse n'est pas renseignée, ou une chaîne vide.
+   * @param autorisation Autorisation à formater.
+   * @returns Texte à afficher, vide si l'autorisation n'est pas renseignée.
+   */
+  private static formaterAutorisation(autorisation: Autorisation): string {
+    const reponse = autorisation.reponse
+      ? LIBELLES.eleve.reponsesAutorisation[autorisation.reponse]
+      : '';
+    return [reponse, autorisation.precision].filter((texte) => texte !== '').join(' — ');
+  }
 
   /**
    * Résout le libellé d'un statut élève depuis son identifiant.

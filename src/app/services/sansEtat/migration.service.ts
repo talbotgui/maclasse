@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 import { DonneesApplication } from '../../modeles/donnees-application.modele';
 import { CreneauEdt } from '../../modeles/emploi-du-temps.modele';
 import { Eleve } from '../../modeles/eleve.modele';
-import { CreneauEdtV1, EleveV1, EtapeMigration } from '../../modeles/migration.modele';
+import { CreneauEdtV1, EleveV1, EleveV2, EtapeMigration } from '../../modeles/migration.modele';
 import { SourceEdtCalcule } from '../../modeles/emploi-du-temps-calcule.modele';
 
 /**
@@ -40,6 +40,10 @@ export class MigrationService {
     {
       versionCible: '2026.09.6',
       appliquer: (donnees) => this.nettoyerAbsencesRecurrentes(donnees),
+    },
+    {
+      versionCible: '2026.09.7',
+      appliquer: (donnees) => this.structurerAutorisationsEtInformationsUtiles(donnees),
     },
   ];
 
@@ -116,6 +120,30 @@ export class MigrationService {
       for (const annee of eleve.cursus) {
         if (!annee.id) annee.id = crypto.randomUUID();
       }
+    }
+  }
+
+  /**
+   * Remplace les notes libres de droit à l'image et d'autorisation de baignade par des
+   * autorisations structurées : l'ancien texte devient la précision, la réponse n'est pas
+   * renseignée (`null`). Ajoute l'autorisation de sortie régulière et les informations
+   * utiles (port de lunettes, notification AESH, latéralité) à leur valeur vide.
+   * Un champ déjà présent est conservé. Idempotent.
+   * @param donnees Données à muter (déjà clonées par l'appelant).
+   */
+  private structurerAutorisationsEtInformationsUtiles(donnees: DonneesApplication): void {
+    for (const eleve of donnees.classe.eleves as (Eleve & EleveV2)[]) {
+      eleve.droitImage ??= { reponse: null, precision: eleve.notesDroitImage ?? '' };
+      eleve.autorisationBaignade ??= {
+        reponse: null,
+        precision: eleve.notesAutorisationBaignade ?? '',
+      };
+      eleve.autorisationSortieReguliere ??= { reponse: null, precision: '' };
+      eleve.portLunettes ??= false;
+      eleve.notificationAesh ??= false;
+      eleve.lateralite ??= null;
+      delete eleve.notesDroitImage;
+      delete eleve.notesAutorisationBaignade;
     }
   }
 

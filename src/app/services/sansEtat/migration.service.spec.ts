@@ -4,8 +4,14 @@ import { DonneesMother } from '../../tests/donnees.mother';
 import { DonneesApplication } from '../../modeles/donnees-application.modele';
 import { EdtCalculeMother } from '../../tests/emploi-du-temps-calcule.mother';
 import { CreneauMother, EdtMother, TempsCreneauMother } from '../../tests/emploi-du-temps.mother';
-import { AbsenceRecurrenteMother, CursusAnneeMother, EleveMother } from '../../tests/eleve.mother';
-import type { AbsenceRecurrente } from '../../modeles/eleve.modele';
+import {
+  AbsenceRecurrenteMother,
+  AutorisationMother,
+  CursusAnneeMother,
+  EleveMother,
+} from '../../tests/eleve.mother';
+import type { AbsenceRecurrente, Eleve } from '../../modeles/eleve.modele';
+import type { EleveV2 } from '../../modeles/migration.modele';
 import { PeriodeMother, ProjetMother } from '../../tests/projet.mother';
 import { SourceEdtCalcule } from '../../modeles/emploi-du-temps-calcule.modele';
 
@@ -14,18 +20,18 @@ describe('MigrationService', () => {
 
   describe('version supportée', () => {
     it('la version courante est celle de la dernière étape de migration', () => {
-      expect(service.obtenirVersionCourante()).toBe('2026.09.6');
+      expect(service.obtenirVersionCourante()).toBe('2026.09.7');
     });
 
     it('accepte la version courante et les versions antérieures', () => {
+      expect(service.estVersionSupportee('2026.09.7')).toBe(true);
       expect(service.estVersionSupportee('2026.09.6')).toBe(true);
-      expect(service.estVersionSupportee('2026.09.5')).toBe(true);
       expect(service.estVersionSupportee('2026.09.1')).toBe(true);
       expect(service.estVersionSupportee('2025.12.9')).toBe(true);
     });
 
     it('refuse une version plus récente', () => {
-      expect(service.estVersionSupportee('2026.09.7')).toBe(false);
+      expect(service.estVersionSupportee('2026.09.8')).toBe(false);
       expect(service.estVersionSupportee('2026.10.1')).toBe(false);
       expect(service.estVersionSupportee('2027.01.1')).toBe(false);
     });
@@ -42,7 +48,7 @@ describe('MigrationService', () => {
 
     it('tolère un nombre de segments différent', () => {
       expect(service.estVersionSupportee('2026.09')).toBe(true);
-      expect(service.estVersionSupportee('2026.09.6.1')).toBe(false);
+      expect(service.estVersionSupportee('2026.09.7.1')).toBe(false);
     });
   });
 
@@ -225,7 +231,7 @@ describe('MigrationService', () => {
         classe: { niveau: 'CM2', annee: 'CM2', eleves: [eleve] },
       });
       const migrees = service.migrer(donnees);
-      expect(migrees.version).toBe('2026.09.6');
+      expect(migrees.version).toBe(service.obtenirVersionCourante());
       return migrees.classe.eleves[0].absencesRecurrentes;
     };
 
@@ -274,6 +280,79 @@ describe('MigrationService', () => {
       });
 
       expect(service.migrer(donnees).classe.eleves[0].absencesRecurrentes).toEqual([invalide]);
+    });
+  });
+
+  describe('autorisations structurées et informations utiles', () => {
+    const migrerEleve = (anciensChamps: object): Eleve => {
+      const eleve = { ...EleveMother.base('e1', 'MARTIN', 'Alice'), ...anciensChamps } as Partial<
+        Eleve & EleveV2
+      >;
+      delete eleve.droitImage;
+      delete eleve.autorisationBaignade;
+      delete eleve.autorisationSortieReguliere;
+      delete eleve.portLunettes;
+      delete eleve.notificationAesh;
+      delete eleve.lateralite;
+      const donnees = DonneesMother.base({
+        version: '2026.09.6',
+        classe: { niveau: 'CM2', annee: 'CM2', eleves: [eleve as Eleve] },
+      });
+      const migrees = service.migrer(donnees);
+      expect(migrees.version).toBe('2026.09.7');
+      return migrees.classe.eleves[0];
+    };
+
+    it('anciennes notes → précisions des autorisations, réponses non renseignées', () => {
+      const migre = migrerEleve({
+        notesDroitImage: 'Pas de réseaux sociaux',
+        notesAutorisationBaignade: 'Certificat\nmédical',
+      });
+
+      expect(migre.droitImage).toEqual({ reponse: null, precision: 'Pas de réseaux sociaux' });
+      expect(migre.autorisationBaignade).toEqual({
+        reponse: null,
+        precision: 'Certificat\nmédical',
+      });
+      expect(Object.keys(migre)).not.toContain('notesDroitImage');
+      expect(Object.keys(migre)).not.toContain('notesAutorisationBaignade');
+    });
+
+    it('anciennes notes vides → autorisations vides', () => {
+      const migre = migrerEleve({ notesDroitImage: '', notesAutorisationBaignade: '' });
+
+      expect(migre.droitImage).toEqual(AutorisationMother.vide());
+      expect(migre.autorisationBaignade).toEqual(AutorisationMother.vide());
+    });
+
+    it('élève sans les anciens champs → autorisations vides', () => {
+      const migre = migrerEleve({});
+
+      expect(migre.droitImage).toEqual(AutorisationMother.vide());
+      expect(migre.autorisationBaignade).toEqual(AutorisationMother.vide());
+    });
+
+    it('nouveaux champs initialisés à leur valeur vide', () => {
+      const migre = migrerEleve({ notesDroitImage: 'x' });
+
+      expect(migre.autorisationSortieReguliere).toEqual(AutorisationMother.vide());
+      expect(migre.portLunettes).toBe(false);
+      expect(migre.notificationAesh).toBe(false);
+      expect(migre.lateralite).toBeNull();
+    });
+
+    it('fichier déjà en 2026.09.7 → élève non modifié', () => {
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Alice', {
+        droitImage: AutorisationMother.vide({ reponse: 'accepte', precision: 'ok' }),
+        portLunettes: true,
+        lateralite: 'gaucher',
+      });
+      const donnees = DonneesMother.base({
+        version: '2026.09.7',
+        classe: { niveau: 'CM2', annee: 'CM2', eleves: [structuredClone(eleve)] },
+      });
+
+      expect(service.migrer(donnees).classe.eleves[0]).toEqual(eleve);
     });
   });
 

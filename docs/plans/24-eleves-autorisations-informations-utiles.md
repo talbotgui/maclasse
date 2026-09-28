@@ -13,7 +13,7 @@ related:
 
 # Plan 24 — Élèves : autorisations structurées et informations utiles
 
-**Statut : en cours.** Besoin reformulé, décisions 1 à 4 et plan validés le 2026-09-28. Incrément 1 terminé le 2026-09-28.
+**Statut : terminé le 2026-09-28.** Besoin reformulé, décisions 1 à 4 et plan validés le 2026-09-28. Incréments 1 et 2 réalisés le 2026-09-28 : `ng test` 1390/1390 (couverture ≥ 91 % sur les quatre métriques), E2E Élèves et Accessibilité 40/40 (nouveau scénario E2E-139).
 
 ## Contexte
 
@@ -39,9 +39,9 @@ Point d'historique : l'étape de migration `2026.09.5` a retiré le champ `manua
 | 4 | Revenir à « non renseigné » — **validé le 2026-09-28** | Un groupe radio coché peut être remis à « non renseigné ». Un radio natif ne permet pas de décocher. `mc-radio-group` reçoit donc un nouvel `input()` optionnel, `effacable` (faux par défaut), qui affiche un bouton **EFFACER** (`mc-btn-fantome mc-btn-xs`) dans le `fieldset`. Ce bouton n'est présent que si une option est cochée. Il remet la valeur à `null` et rend le focus à la première option. Son `aria-label` est « Effacer la réponse : *libellé du groupe* ». L'option est activée sur les trois autorisations et sur la latéralité. Le sexe et `mc-eleves-concernes` ne changent pas. |
 | 5 | Modèle | Nouveaux types dans `eleve.modele.ts` : `ReponseAutorisation = 'accepte' \| 'refuse' \| 'sansReponse'`, `Autorisation { reponse: ReponseAutorisation \| null; precision: string }` et `Lateralite = 'gaucher' \| 'droitier'`. Dans `Eleve`, `notesDroitImage` et `notesAutorisationBaignade` sont remplacés par `droitImage: Autorisation`, `autorisationBaignade: Autorisation` et `autorisationSortieReguliere: Autorisation`. Trois champs sont ajoutés : `portLunettes: boolean`, `notificationAesh: boolean` et `lateralite: Lateralite \| null`. |
 | 6 | Migration des données existantes | Nouvelle étape dans `MigrationService`, qui prend la version suivant la dernière étape au moment de l'implémentation (`2026.09.7` à ce jour). Pour chaque élève, l'ancien texte `notesDroitImage` devient `droitImage.precision` et l'ancien texte `notesAutorisationBaignade` devient `autorisationBaignade.precision`, avec une réponse `null`. Les anciens champs sont supprimés. `autorisationSortieReguliere` est créée vide, `portLunettes` et `notificationAesh` valent `false`, `lateralite` vaut `null`. **Limite acceptée** : un ancien texte sur plusieurs lignes est conservé tel quel dans les données, mais un `input` l'affiche sur une seule ligne. Les retours à la ligne sont conservés tant que le champ n'est pas modifié. |
-| 7 | Disposition du formulaire | Chaque autorisation est une ligne de la grille : le groupe radio à gauche, puis l'`input` de précision (`mc-input`). Le libellé de l'autorisation est la `legend` du `fieldset`. L'`input` porte le libellé visible « Précision » et le nom complet de l'autorisation via `aria-label` (« Précision : Droit à l'image »). Les trois lignes sont produites par un `@for` sur un tableau `static readonly` de descripteurs (clé du `FormGroup`, libellé, préfixe d'`id`), ce qui évite de répéter le bloc trois fois. Cet ensemble reste dans `fe-formulaire-eleve` : aucun autre écran ne l'utilise, il ne devient donc pas un composant partagé. |
+| 7 | Disposition du formulaire | Chaque autorisation est un `fieldset` (style de `form-eleve__groupes`) dont la `legend` est le nom de l'autorisation. Il contient le groupe radio « Réponse » à gauche, puis l'`input` de précision (`mc-input`, « Précision »). **Ajusté à la réalisation** : `mc-input` n'a pas d'`aria-label`. Au lieu d'un `aria-label` « Précision : Droit à l'image », c'est le `fieldset` englobant qui donne le contexte aux lecteurs d'écran (« Droit à l'image, groupe » puis « Précision »), sans modifier le composant partagé. Les trois lignes sont produites par un `@for` sur un tableau `readonly` de descripteurs (clé du `FormGroup`, libellé, préfixe d'`id`), déclaré comme les autres options du composant (`optionsSexe`), ce qui évite de répéter le bloc trois fois. Cet ensemble reste dans `fe-formulaire-eleve` : aucun autre écran ne l'utilise, il ne devient donc pas un composant partagé. |
 | 8 | Cases à cocher | `<input type="checkbox">` natif lié par `[formControl]`, avec la classe globale existante `mc-champ mc-champ--checkbox` (`styles.scss`). Aucun nouveau composant partagé n'est créé, car un seul écran s'en sert. |
-| 9 | Libellés | Nouvelles clés dans `LIBELLES.eleve` : `labelAutorisationSortieReguliere` (« Autorisation de sortie régulière »), `labelPrecision` (« Précision »), `sectionInformationsUtiles` (« Informations utiles »), `labelPortLunettes` (« Port de lunettes »), `labelNotificationAesh` (« Notification AESH »), `labelLateralite` (« Latéralité »), `reponsesAutorisation` (Accepté / Refusé / Sans réponse) et `lateralites` (Gaucher / Droitier). Nouvelles clés dans `LIBELLES.commun` : `effacer` (« EFFACER ») et `ariaEffacerReponse` (« Effacer la réponse : »). |
+| 9 | Libellés | Nouvelles clés dans `LIBELLES.eleve` : `labelAutorisationSortieReguliere` (« Autorisation de sortie régulière »), `labelReponse` (« Réponse »), `labelPrecision` (« Précision »), `sectionInformationsUtiles` (« Informations utiles »), `labelPortLunettes` (« Port de lunettes »), `labelNotificationAesh` (« Notification AESH »), `labelLateralite` (« Latéralité »), `reponsesAutorisation` (Accepté / Refusé / Sans réponse) et `lateralites` (Gaucher / Droitier). Nouvelles clés dans `LIBELLES.commun` : `effacer` (« EFFACER ») et `ariaEffacerReponse` (« Effacer la réponse : »). |
 
 ## Modifications
 
@@ -65,16 +65,16 @@ Deux incréments, chacun relu par `revue-increment` puis committé séparément.
 
 - `eleve.modele.ts` : types et champs de la décision 5, avec JSDoc.
 - `migration.service.ts` : étape de la décision 6.
-- `eleve.mother.ts` : nouveaux champs à leur valeur vide. Ajout d'une variante `EleveMother.avecAutorisations(...)` si plusieurs tests en ont besoin.
+- `eleve.mother.ts` : nouveaux champs à leur valeur vide. Ajout d'`AutorisationMother.vide(surcharge?)`.
 - `fe-formulaire-eleve.component.ts` :
   - un `FormGroup` `{ reponse, precision }` par autorisation ;
   - trois `FormControl` : `portLunettes`, `notificationAesh` et `lateralite` ;
-  - un descripteur `static readonly` des trois autorisations ;
+  - un descripteur `readonly` des trois autorisations (membre d'instance, comme `optionsSexe`, pour être lu par le template) ;
   - des options de radio construites depuis `LIBELLES` ;
   - la prise en compte des nouveaux champs par `construireEleve`, `chargerEleve` et la création d'un élève vide.
 - `fe-formulaire-eleve.component.html` : section *Notes administratives* réorganisée (décision 7), avec PPA et ESS inchangés. Nouvelle section *Informations utiles* en dernier (`aria-labelledby="titreFormInfosUtiles"`). IDs : `champFormDroitImage`, `champFormDroitImagePrecision`, `champFormBaignade`, `champFormBaignadePrecision`, `champFormSortieReguliere`, `champFormSortieRegulierePrecision`, `champFormPortLunettes`, `champFormNotificationAesh` et `champFormLateralite`.
 - `fe-formulaire-eleve.component.scss` : ligne « radio + précision », qui passe en colonne sur un écran étroit.
-- `fe-fiche-eleve.component.ts` / `.html` : affichage en lecture (décision 3), avec une méthode de formatage d'une autorisation et une nouvelle section *Informations utiles*.
+- `fe-fiche-eleve.component.ts` / `.html` : affichage en lecture (décision 3). Deux `computed` (`autorisationsRenseignees`, `informationsUtiles`), une méthode statique `formaterAutorisation` et une nouvelle section *Informations utiles*. Nouveau DTO `LigneLecture` (`composants.modele.ts`).
 - `libelles.ts` : clés de la décision 9 dans `LIBELLES.eleve`.
 - Tests unitaires :
   - `MigrationService` : ancien texte vers la précision avec une réponse `null` ; textes vides ; élève sans les anciens champs ; nouveaux champs initialisés ; fichier déjà à la nouvelle version non modifié ; `obtenirVersionCourante()` égale à la nouvelle version.

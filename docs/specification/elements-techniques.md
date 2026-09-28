@@ -163,6 +163,7 @@ Chaîne ordonnée d'étapes dans `MigrationService` ; chaque étape amène les d
 | `2026.09.4` | Source `recreation` des EDT calculés renommée `tempsHorsClasse` (sans doublon) ; champs pédagogiques retirés des temps des créneaux récréation et pause déjeuner |
 | `2026.09.5` | Champs `manualite` et `dispositifsMedicaux` retirés des élèves (abandonnés : aucun écran ne permettait de les saisir) |
 | `2026.09.6` | Absences récurrentes des élèves rendues valides (plage horaire désormais obligatoire) : heures inversées si la fin précède le début ; absence supprimée si une heure manque ou si les deux sont égales |
+| `2026.09.7` | Notes libres `notesDroitImage` et `notesAutorisationBaignade` des élèves remplacées par des autorisations structurées (`droitImage`, `autorisationBaignade`) : l'ancien texte devient la précision, la réponse n'est pas renseignée (`null`) ; ajout de `autorisationSortieReguliere` (vide), `portLunettes` et `notificationAesh` (`false`), `lateralite` (`null`) |
 
 Les migrations sont appliquées dans l'ordre jusqu'à atteindre la version courante de l'application.
 

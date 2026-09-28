@@ -15,7 +15,7 @@ related:
 
 ![04-eleves](../../../.maquettes/04-eleves.png)
 
-**Cohérence globale** : liste NOM Prénom triée à gauche, bouton CRÉER en haut, fiche en mode lecture avec MODIFIER + SUPPRIMER, sections identité/contacts/absences/cursus éditables inline, popin d'avertissement "modifications non enregistrées" — tout correspond.
+**Cohérence globale** : liste NOM Prénom triée à gauche, bouton CRÉER en haut, fiche en mode lecture avec MODIFIER + SUPPRIMER, sections identité/contacts/absences/cursus éditables inline (sections Notes administratives structurées et Informations utiles ajoutées par le plan 24, postérieures à la maquette), popin d'avertissement "modifications non enregistrées" — tout correspond.
 
 ---
 
@@ -144,10 +144,32 @@ Même organisation en lecture et en modification. Chaque section est séparée p
 
 | Champ | Mode lecture | Mode formulaire |
 |---|---|---|
-| Droit à l'image | Texte libre | `mc-textarea` |
-| Autorisation baignade | Texte libre | `mc-textarea` |
-| PPA | Texte libre | `mc-textarea` |
+| Droit à l'image | Autorisation (voir ci-dessous) | Autorisation (voir ci-dessous) |
+| Autorisation baignade | Autorisation | Autorisation |
+| Autorisation de sortie régulière | Autorisation | Autorisation |
+| Autres (PPA) | Texte libre | `mc-textarea` |
 | ESS | Texte libre | `mc-textarea` |
+
+**Autorisation** (`Autorisation`) : une réponse et une précision.
+- **Formulaire** : un `fieldset` par autorisation, dont la légende est le nom de l'autorisation. Il contient à gauche un `mc-radio-group` « Réponse » (**Accepté / Refusé / Sans réponse**) et à droite un `mc-input` « Précision » d'une ligne. Les deux s'empilent sur un écran étroit.
+  - **Aucune option n'est cochée par défaut** : la réponse vaut `null` et elle est **non renseignée**, ce qui est différent de « Sans réponse » (la famille n'a pas répondu).
+  - Le groupe radio est effaçable (`effacable`) : le bouton **EFFACER** remet la réponse à « non renseignée ».
+  - IDs : `champFormDroitImage`, `champFormBaignade`, `champFormSortieReguliere` (groupes radio), suffixés `Precision` pour le champ de précision.
+- **Lecture** : « Accepté — *précision* ». La réponse s'affiche seule si la précision est vide, et la précision seule si la réponse n'est pas renseignée. Une autorisation sans réponse ni précision n'est pas affichée.
+
+La section n'est affichée en lecture que si au moins une autorisation, PPA ou ESS est renseigné.
+
+### Section Informations utiles
+
+Dernière section de la fiche.
+
+| Champ | Mode lecture | Mode formulaire |
+|---|---|---|
+| Port de lunettes | « Port de lunettes » si coché | Case à cocher native (`champFormPortLunettes`, `mc-champ mc-champ--checkbox`) |
+| Notification AESH | « Notification AESH » si coché | Case à cocher native (`champFormNotificationAesh`) |
+| Latéralité | « Latéralité : Gaucher » si renseignée | `mc-radio-group` effaçable **Gaucher / Droitier** (`champFormLateralite`), sans valeur par défaut |
+
+En lecture, les informations sont affichées sous forme de liste (cases cochées, puis latéralité). La section est masquée si aucune case n'est cochée et que la latéralité n'est pas renseignée.
 
 ---
 

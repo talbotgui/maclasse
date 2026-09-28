@@ -52,7 +52,7 @@ Ces composants encapsulent les éléments natifs HTML pour centraliser le style 
 | `mc-input` | `<input>` | Champs texte, date, nombre, couleur dans tous les formulaires |
 | `mc-textarea` | `<textarea>` | Saisies libres longues (fiche élève, projet, séance, notes de la journée) |
 | `mc-select` | `<select>` | Listes déroulantes : type de créneau et de séance, jour d'un créneau, **fréquence d'un EDT et d'un EDT calculé**, **parité d'une absence récurrente**, champs de la fiche élève, popin d'export |
-| `mc-radio-group` | `<input type="radio">` groupés | Choix exclusifs : sexe de l'élève, mode de `mc-eleves-concernes` |
+| `mc-radio-group` | `<input type="radio">` groupés | Choix exclusifs : sexe de l'élève, mode de `mc-eleves-concernes`, réponses aux autorisations et latéralité de l'élève (effaçables) |
 | `mc-champ-heure` | `<input type="time">` | Saisie HH:MM (séances, temps de créneau, absences récurrentes, journée scolaire). Input `descriptionIds` (`aria-describedby` du champ natif, ex. message d'erreur de plage horaire) |
 
 ### Inputs de `mc-input`

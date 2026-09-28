@@ -72,6 +72,18 @@ export class SelecteursEleves extends SelecteursBase {
   /** Champ Niveau du nouveau cursus ajouté (index 2). */
   public readonly champNouveauCursusNiveau: Locator;
 
+  // --- Notes administratives et informations utiles ---
+  /** Option « Refusé » du droit à l'image. */
+  public readonly radioDroitImageRefuse: Locator;
+  /** Champ Précision du droit à l'image. */
+  public readonly champDroitImagePrecision: Locator;
+  /** Case à cocher Port de lunettes. */
+  public readonly casePortLunettes: Locator;
+  /** Option « Gaucher » de la latéralité. */
+  public readonly radioLateraliteGaucher: Locator;
+  /** Bouton EFFACER de la latéralité. */
+  public readonly btnEffacerLateralite: Locator;
+
   // --- Lecture seule ---
   /** Liste résumée affichant contacts en mode lecture. */
   public readonly listeResumeeContacts: Locator;
@@ -81,6 +93,10 @@ export class SelecteursEleves extends SelecteursBase {
   public readonly listeResumeeAbsencesPonct: Locator;
   /** Liste résumée affichant les cursus en mode lecture. */
   public readonly listeResumeeCursus: Locator;
+  /** Section Notes administratives en mode lecture. */
+  public readonly sectionNotesLecture: Locator;
+  /** Section Informations utiles en mode lecture. */
+  public readonly sectionInformationsUtilesLecture: Locator;
   /** Colonne gauche de l'écran (masquée à l'impression). */
   public readonly colonneGauche: Locator;
 
@@ -131,6 +147,15 @@ export class SelecteursEleves extends SelecteursBase {
     this.champNouvelleAbsencePonctuelleDate = page.locator('#champAbsPonctDate0-input');
     this.champNouvelleAbsencePonctuelleJustification = page.locator('#champAbsPonctJustif0');
     this.champNouveauCursusNiveau = page.locator('#champCursusNiveau2-input');
+    this.radioDroitImageRefuse = page.locator('#champFormDroitImage_refuse');
+    this.champDroitImagePrecision = page.locator('#champFormDroitImagePrecision-input');
+    this.casePortLunettes = page.locator('#champFormPortLunettes');
+    this.radioLateraliteGaucher = page.locator('#champFormLateralite_gaucher');
+    this.btnEffacerLateralite = page.locator('#btnEffacer_champFormLateralite');
+    this.sectionNotesLecture = page.locator('section[aria-labelledby="titreNotes"]');
+    this.sectionInformationsUtilesLecture = page.locator(
+      'section[aria-labelledby="titreInfosUtiles"]',
+    );
     this.listeResumeeContacts = page.locator('.fiche-eleve__liste-resumee-contacts');
     this.listeResumeeAbsencesRec = page.locator('.fiche-eleve__liste-resumee-absences-rec');
     this.listeResumeeAbsencesPonct = page.locator('.fiche-eleve__liste-resumee-absences-ponct');

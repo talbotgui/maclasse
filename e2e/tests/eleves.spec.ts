@@ -370,3 +370,38 @@ testAvecDonnees(
     await expect(eleves.btnEnregistrer).toBeEnabled();
   },
 );
+
+testAvecDonnees(
+  'E2E-139 — Autorisations et informations utiles saisies, affichées puis effacées',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
+
+    await entete.navEleves.click();
+    await eleves.selectionnerGratin();
+    await eleves.btnModifier.click();
+
+    await eleves.radioDroitImageRefuse.check();
+    await eleves.champDroitImagePrecision.fill('Pas de photo sur le site');
+    await eleves.casePortLunettes.check();
+    await eleves.radioLateraliteGaucher.check();
+    await eleves.btnEnregistrer.click();
+
+    await expect(eleves.sectionNotesLecture).toContainText(
+      "Droit à l'imageRefusé — Pas de photo sur le site",
+    );
+    await expect(eleves.sectionInformationsUtilesLecture).toContainText('Port de lunettes');
+    await expect(eleves.sectionInformationsUtilesLecture).toContainText('Latéralité : Gaucher');
+
+    // Latéralité remise à « non renseignée »
+    await eleves.btnModifier.click();
+    await expect(eleves.radioLateraliteGaucher).toBeChecked();
+    await eleves.btnEffacerLateralite.click();
+    await expect(eleves.radioLateraliteGaucher).not.toBeChecked();
+    await expect(eleves.btnEffacerLateralite).toHaveCount(0);
+    await eleves.btnEnregistrer.click();
+
+    await expect(eleves.sectionInformationsUtilesLecture).toContainText('Port de lunettes');
+    await expect(eleves.sectionInformationsUtilesLecture).not.toContainText('Latéralité');
+  },
+);

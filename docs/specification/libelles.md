@@ -29,12 +29,12 @@ related:
 | Section | Contenu | Exemples de clés |
 |---|---|---|
 | `dates` | Noms et initiales des jours, indexés comme `Date.getDay()` (0 = dimanche) | `nomsJours`, `initialeJours` |
-| `commun` | Libellés réutilisés dans plusieurs domaines : actions, états, messages génériques | `enregistrer`, `annuler`, `supprimer`, `chargement`, `rechercher`, `avertissementModifications`, `erreurPlageHoraire` |
+| `commun` | Libellés réutilisés dans plusieurs domaines : actions, états, messages génériques | `enregistrer`, `annuler`, `supprimer`, `chargement`, `rechercher`, `avertissementModifications`, `erreurPlageHoraire`, `effacer`, `ariaEffacerReponse` |
 | `entete` | Barre d'en-tête : titre, SAUVEGARDER / ANNULER / REFAIRE et leurs tooltips, recherche globale, thème, mode consultation du référentiel | `tooltipDerniereSauvegarde`, `tooltipPrefixeAnnuler`, `tooltipPrefixeRefaire`, `typesResultatRecherche` (`eleve` → « Élève », `projet` → « Projet »), `tooltipNavRestreinte` |
 | `navigation` | Libellés des liens de navigation vers chaque écran | `accueil`, `eleves`, `competences`, `parametrage` |
 | `demarrage` | Popin de démarrage : bienvenue, trois zones (nouveau, charger, référentiel), erreurs de chargement | `bienvenue`, `titreNouveau`, `texteNouveau`, `boutonCreer`, `titreCharger`, `titreReferentiel`, `boutonReferentiel`, `erreurMotDePasse`, `erreurVersionIncompatible` |
 | `accueil` | Écran d'accueil | `labelAujourdhui`, `aucunJournal`, `labelNbEleves` |
-| `eleve` | Écran Élèves : liste, fiche, formulaire (sections, champs, contacts, absences, cursus) | `sectionIdentite`, `sectionAbsencesRecurrentes`, `erreurHeuresAbsenceObligatoires`, `aucunEleve` |
+| `eleve` | Écran Élèves : liste, fiche, formulaire (sections, champs, contacts, absences, cursus) | `sectionIdentite`, `sectionAbsencesRecurrentes`, `erreurHeuresAbsenceObligatoires`, `aucunEleve`, `reponsesAutorisation` (`accepte`, `refuse`, `sansReponse`), `lateralites` (`gaucher`, `droitier`), `sectionInformationsUtiles` |
 | `projet` | Écran Projets : liste, fiche, formulaire, périodes | `sectionInfos`, `sectionPeriodes`, `aucunProjet` |
 | `competences` | Écran Compétences : panier, export, information sur les domaines actifs, arbre | `panierVide`, `boutonEnvoyerProjet`, `infoDomainesParametrage`, `erreurExport` |
 | `selecteurCompetences` | Composant `mc-selecteur-competences` | `placeholder`, `ariaSuggestions`, `ariaSupprimer` |

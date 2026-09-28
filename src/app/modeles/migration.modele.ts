@@ -39,6 +39,17 @@ export interface EleveV1 {
 }
 
 /**
+ * Champs d'un élève antérieurs à la version `2026.09.7`, remplacés par les autorisations
+ * structurées (`Eleve.droitImage`, `Eleve.autorisationBaignade`).
+ */
+export interface EleveV2 {
+  /** Notes relatives au droit à l'image (texte libre). */
+  notesDroitImage?: string;
+  /** Notes relatives à l'autorisation de baignade (texte libre). */
+  notesAutorisationBaignade?: string;
+}
+
+/**
  * Étape de migration versionnée : amène les données à `versionCible` si leur
  * version courante est antérieure.
  */

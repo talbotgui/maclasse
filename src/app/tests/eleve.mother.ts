@@ -1,6 +1,7 @@
 import {
   AbsencePonctuelle,
   AbsenceRecurrente,
+  Autorisation,
   Contact,
   CursusAnnee,
   Eleve,
@@ -35,10 +36,14 @@ export class EleveMother {
       absencesRecurrentes: [],
       absencesPonctuelles: [],
       cursus: [],
-      notesDroitImage: '',
-      notesAutorisationBaignade: '',
+      droitImage: AutorisationMother.vide(),
+      autorisationBaignade: AutorisationMother.vide(),
+      autorisationSortieReguliere: AutorisationMother.vide(),
       notesPPA: null,
       notesESS: null,
+      portLunettes: false,
+      notificationAesh: false,
+      lateralite: null,
       ...surcharge,
     };
   }
@@ -112,5 +117,13 @@ export class ContactMother {
       adressePostale: '1 rue des Écoles',
       ...surcharge,
     };
+  }
+}
+
+/** Fournit des instances d'{@link Autorisation} prêtes à l'emploi pour les tests. */
+export class AutorisationMother {
+  /** Retourne une autorisation non renseignée, sans précision, surchargée par {@link surcharge}. */
+  public static vide(surcharge: Partial<Autorisation> = {}): Autorisation {
+    return { reponse: null, precision: '', ...surcharge };
   }
 }

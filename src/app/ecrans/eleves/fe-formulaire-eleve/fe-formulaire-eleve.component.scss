@@ -34,6 +34,18 @@
     }
   }
 
+  // Autorisation : réponse (radios) à gauche, précision à droite ; empilées sur écran étroit
+  &__autorisation {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.75rem 1.5rem;
+
+    mc-input {
+      flex: 1 1 16rem;
+    }
+  }
+
   &__liste-sous-items {
     list-style: none;
     margin: 0.75rem 0 0;

@@ -8,6 +8,25 @@ import { FrequenceSemaine, JourSemaine } from './emploi-du-temps.modele';
 /** Sexe déclaré de l'élève. */
 export type Sexe = 'M' | 'F';
 
+/** Réponse de la famille à une demande d'autorisation. */
+export type ReponseAutorisation = 'accepte' | 'refuse' | 'sansReponse';
+
+/** Latéralité de l'élève. */
+export type Lateralite = 'gaucher' | 'droitier';
+
+/**
+ * Autorisation demandée à la famille (droit à l'image, baignade, sortie régulière…).
+ */
+export interface Autorisation {
+  /**
+   * Réponse de la famille, ou `null` si elle n'est pas renseignée
+   * (distinct de `'sansReponse'` : la famille n'a pas répondu).
+   */
+  reponse: ReponseAutorisation | null;
+  /** Précision libre sur une ligne (ex. : « sauf réseaux sociaux »). */
+  precision: string;
+}
+
 /**
  * Absence récurrente d'un élève sur un créneau hebdomadaire fixe
  * (ex. : orthophonie tous les vendredis matin des semaines paires).
@@ -109,14 +128,22 @@ export interface Eleve {
   absencesPonctuelles: AbsencePonctuelle[];
   /** Historique des années de scolarité précédentes. */
   cursus: CursusAnnee[];
-  /** Notes relatives au droit à l'image (texte libre). */
-  notesDroitImage: string;
-  /** Notes relatives à l'autorisation de baignade (texte libre). */
-  notesAutorisationBaignade: string;
+  /** Autorisation de droit à l'image. */
+  droitImage: Autorisation;
+  /** Autorisation de baignade. */
+  autorisationBaignade: Autorisation;
+  /** Autorisation de sortie régulière. */
+  autorisationSortieReguliere: Autorisation;
   /** Notes PPA (texte libre), ou `null`. */
   notesPPA: string | null;
   /** Notes ESS (texte libre), ou `null`. */
   notesESS: string | null;
+  /** `true` si l'élève porte des lunettes. */
+  portLunettes: boolean;
+  /** `true` si l'élève bénéficie d'une notification AESH. */
+  notificationAesh: boolean;
+  /** Latéralité de l'élève, ou `null` si elle n'est pas renseignée. */
+  lateralite: Lateralite | null;
 }
 
 /**

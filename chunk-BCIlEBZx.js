@@ -1,0 +1,1 @@
+var n=class{static validerPlageHoraire(e){let t=e.get(`heureDebut`)?.value,r=e.get(`heureFin`)?.value;return typeof t==`string`&&typeof r==`string`&&t&&r&&r<=t?{plageHoraireInvalide:!0}:null}static validerTexteNonVide(e){let t=e.value;return(typeof t==`string`?t.trim():``).length>0?null:{texteVide:!0}}};export{n as t};

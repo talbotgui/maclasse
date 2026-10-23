@@ -405,3 +405,44 @@ testAvecDonnees(
     await expect(eleves.sectionInformationsUtilesLecture).not.toContainText('Latéralité');
   },
 );
+
+testAvecDonnees(
+  'E2E-140 — Onglets de la fiche élève : clavier, désactivation en création et avertissement',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
+
+    await entete.navEleves.click();
+    await eleves.selectionnerMartinot();
+    await expect(eleves.ongletFicheAdministrative).toHaveAttribute('aria-selected', 'true');
+
+    // Flèche droite : focus sur Bilans sans le sélectionner ; Entrée le sélectionne
+    await eleves.ongletFicheAdministrative.focus();
+    await appAvecDonnees.keyboard.press('ArrowRight');
+    await expect(eleves.ongletBilans).toBeFocused();
+    await expect(eleves.ongletBilans).toHaveAttribute('aria-selected', 'false');
+    await appAvecDonnees.keyboard.press('Enter');
+    await expect(eleves.ongletBilans).toHaveAttribute('aria-selected', 'true');
+    await expect(eleves.panneauBilans).toBeVisible();
+
+    // L'onglet est conservé au changement d'élève
+    await eleves.selectionnerGratin();
+    await expect(eleves.ongletBilans).toHaveAttribute('aria-selected', 'true');
+
+    // En création, Bilans est désactivé et la fiche administrative est affichée
+    await eleves.btnCreerEleve.click();
+    await expect(eleves.ongletBilans).toBeDisabled();
+    await expect(eleves.ongletFicheAdministrative).toHaveAttribute('aria-selected', 'true');
+    await eleves.btnAnnulerFormulaire.click();
+
+    // Saisie en cours : changer d'onglet demande confirmation
+    await eleves.selectionnerGratin();
+    await eleves.ongletFicheAdministrative.click();
+    await eleves.btnModifier.click();
+    await eleves.ongletBilans.click();
+    await expect(eleves.btnAvertissementAnnuler).toBeVisible();
+    await eleves.btnAvertissementAnnuler.click();
+    await expect(eleves.ongletFicheAdministrative).toHaveAttribute('aria-selected', 'true');
+    await expect(eleves.btnEnregistrer).toBeVisible();
+  },
+);

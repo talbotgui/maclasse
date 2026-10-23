@@ -215,6 +215,67 @@ describe('EcranElevesComponent', () => {
     });
   });
 
+  describe('onglets', () => {
+    /** Onglet `role="tab"` rendu pour l'identifiant donné. */
+    const onglet = (id: string): HTMLButtonElement =>
+      fixture.nativeElement.querySelector(`#onglet${id}`) as HTMLButtonElement;
+
+    /** Panneau `role="tabpanel"` rendu pour l'identifiant donné. */
+    const panneau = (id: string): HTMLElement =>
+      fixture.nativeElement.querySelector(`#panneau${id}`) as HTMLElement;
+
+    it("n'affiche pas d'onglets sans élève sélectionné ni création", () => {
+      expect(onglet('FicheAdministrative')).toBeNull();
+    });
+
+    it("affiche la fiche administrative par défaut à la sélection d'un élève", () => {
+      (component as any).selectionnerEleve(alice);
+      fixture.detectChanges();
+
+      expect(onglet('FicheAdministrative').getAttribute('aria-selected')).toBe('true');
+      expect(panneau('FicheAdministrative').hidden).toBe(false);
+      expect(panneau('Bilans').hidden).toBe(true);
+      expect(fixture.nativeElement.querySelector('fe-fiche-eleve')).not.toBeNull();
+    });
+
+    it("affiche l'onglet Bilans et le conserve au changement d'élève", () => {
+      (component as any).selectionnerEleve(alice);
+      (component as any).selectionnerOnglet('Bilans');
+      (component as any).selectionnerEleve(bob);
+      fixture.detectChanges();
+
+      expect(onglet('Bilans').getAttribute('aria-selected')).toBe('true');
+      expect(panneau('Bilans').hidden).toBe(false);
+      expect(panneau('FicheAdministrative').hidden).toBe(true);
+    });
+
+    it("désactive l'onglet Bilans et revient à la fiche administrative en création", () => {
+      (component as any).selectionnerEleve(alice);
+      (component as any).selectionnerOnglet('Bilans');
+      (component as any).creerEleve();
+      fixture.detectChanges();
+
+      expect(onglet('Bilans').disabled).toBe(true);
+      expect((component as any).ongletActif()).toBe('FicheAdministrative');
+      expect(fixture.nativeElement.querySelector('fe-formulaire-eleve')).not.toBeNull();
+    });
+
+    it("avec édition active → affiche la popin avant de changer d'onglet", () => {
+      (component as any).selectionnerEleve(alice);
+      (component as any).activerEdition();
+
+      (component as any).selectionnerOnglet('Bilans');
+
+      expect((component as any).popinAvertissementVisible()).toBe(true);
+      expect((component as any).ongletActif()).toBe('FicheAdministrative');
+
+      (component as any).confirmerAvertissement();
+
+      expect((component as any).ongletActif()).toBe('Bilans');
+      expect((component as any).enModeEdition()).toBe(false);
+    });
+  });
+
   describe('confirmerNavigation', () => {
     it('retourne true immédiatement si pas en édition', async () => {
       const result = await component.confirmerNavigation();

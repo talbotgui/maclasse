@@ -1,0 +1,20 @@
+<div class="mc-onglets" role="tablist" [attr.aria-label]="libelle()">
+  @for (onglet of onglets(); track onglet.id) {
+    <button
+      #bouton
+      type="button"
+      role="tab"
+      class="mc-onglets__onglet"
+      [id]="'onglet' + onglet.id"
+      [class.mc-onglets__onglet--actif]="onglet.id === ongletActif()"
+      [attr.aria-selected]="onglet.id === ongletActif()"
+      [attr.aria-controls]="'panneau' + onglet.id"
+      [tabIndex]="onglet.id === ongletActif() ? 0 : -1"
+      [disabled]="onglet.desactive ?? false"
+      (click)="onSelection(onglet.id)"
+      (keydown)="naviguerAuClavier($event, $index)"
+    >
+      {{ onglet.libelle }}
+    </button>
+  }
+</div>

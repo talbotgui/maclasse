@@ -56,9 +56,23 @@ Deux colonnes côte à côte :
 
 ---
 
-## Colonne droite — Bandeau supérieur
+## Colonne droite — Onglets
 
-Présent dès qu'un élève est sélectionné ou qu'un formulaire de création est ouvert. Contient :
+Dès qu'un élève est sélectionné ou qu'un formulaire de création est ouvert, la colonne droite affiche une barre d'onglets `mc-onglets` (« Sections de l'élève ») :
+
+| Onglet | Contenu |
+|---|---|
+| **Fiche administrative** (`ongletFicheAdministrative`) | Bandeau, sections de la fiche et bouton IMPRIMER décrits ci-dessous, en lecture ou en formulaire |
+| **Bilans** (`ongletBilans`) | Bilans de l'élève par sous-domaine de compétences (voir [Onglet Bilans](#onglet-bilans)) |
+
+- La fiche administrative est l'onglet par défaut. L'onglet choisi est **conservé** au changement d'élève.
+- En **création** d'un élève, l'onglet Bilans est désactivé et la fiche administrative est affichée.
+- Changer d'onglet pendant une saisie non enregistrée affiche la **popin d'avertissement**.
+- Navigation clavier : ←/→, Début/Fin, Entrée/Espace (voir [`mc-onglets`](../composants-partages.md#mc-onglets)).
+
+## Fiche administrative — Bandeau supérieur
+
+Contient :
 
 ### Mode lecture seule
 
@@ -79,7 +93,7 @@ Présent dès qu'un élève est sélectionné ou qu'un formulaire de création e
 
 ---
 
-## Colonne droite — Sections de la fiche
+## Fiche administrative — Sections
 
 Même organisation en lecture et en modification. Chaque section est séparée par un séparateur léger et un titre.
 
@@ -182,11 +196,18 @@ En lecture, les informations sont affichées sous forme de liste (cases cochées
 
 ---
 
+## Onglet Bilans
+
+*Contenu livré par l'incrément 5 du [plan 25](../../plans/25-eleves-onglets-bilans.md).* En attendant, l'onglet affiche « Aucun bilan pour cet élève. ».
+
+---
+
 ## Popin d'avertissement (formulaire non enregistré)
 
-Déclenchée dans trois cas :
+Déclenchée dans quatre cas :
 - Clic sur un autre élève dans la liste
 - Clic sur le bouton CRÉER
+- Changement d'onglet
 - Navigation vers un autre écran
 
 Contenu :

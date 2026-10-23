@@ -682,6 +682,12 @@ button {
     display: none;
   }
 
+  // Barre d'onglets : seul le panneau affiché est imprimé. `!important` : le `display`
+  // du composant, encapsulé par Angular, est plus spécifique que ce sélecteur global.
+  .mc-onglets {
+    display: none !important;
+  }
+
   // Paramétrage : l'indicateur « Non enregistré » n'a pas de sens sur un tirage papier.
   .parametrage__pastille-modif {
     display: none;

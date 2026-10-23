@@ -126,6 +126,16 @@ Une séance du cahier journal se supprime par ✕, sans ce composant (suppressio
 - `ControlValueAccessor` : valeur `ElevesConcernes`
 - Utilisé dans : Cahier journal (formulaire de séance), Emploi du temps (formulaire de créneau et d'EDT calculé)
 
+### `mc-onglets`
+
+Barre d'onglets accessible (pattern WAI-ARIA *Tabs*, activation manuelle). Utilisée par l'écran Élèves (Fiche administrative / Bilans).
+
+- Inputs : `onglets` (`Onglet[]` : `id` en PascalCase, `libelle`, `desactive?`), `ongletActif`, `libelle` (nom accessible du `tablist`)
+- Output : `selection` (identifiant de l'onglet demandé). Le composant ne mémorise pas la sélection : c'est le parent qui l'applique, ou la refuse (ex. popin d'avertissement)
+- IDs : l'onglet `onglet<id>` contrôle le panneau `panneau<id>`, déclaré par le parent (`role="tabpanel"`, `aria-labelledby`, `[hidden]`)
+- Clavier : ←/→ en boucle et Début/Fin déplacent le focus (onglets désactivés ignorés) ; Entrée/Espace sélectionne. Seul l'onglet actif est dans l'ordre de tabulation
+- Impression : la barre est masquée (`@media print`), seul le panneau affiché est imprimé
+
 ### `mc-mini-calendrier`
 
 - Calendrier mensuel miniature navigable (mois précédent/suivant)

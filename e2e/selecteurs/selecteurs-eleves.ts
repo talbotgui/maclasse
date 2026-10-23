@@ -12,6 +12,14 @@ export class SelecteursEleves extends SelecteursBase {
   /** Message affiché quand la liste est vide. */
   public readonly messageListeVide: Locator;
 
+  // --- Onglets de la colonne droite ---
+  /** Onglet Fiche administrative. */
+  public readonly ongletFicheAdministrative: Locator;
+  /** Onglet Bilans. */
+  public readonly ongletBilans: Locator;
+  /** Panneau de l'onglet Bilans. */
+  public readonly panneauBilans: Locator;
+
   // --- Formulaire élève ---
   /** Champ Prénom dans le bandeau du formulaire. */
   public readonly champPrenom: Locator;
@@ -120,6 +128,10 @@ export class SelecteursEleves extends SelecteursBase {
     this.champRecherche = page.locator('#rechercheEleves input');
     this.listeEleves = page.locator('.eleves__liste');
     this.messageListeVide = page.locator('.eleves__liste-vide');
+
+    this.ongletFicheAdministrative = page.locator('#ongletFicheAdministrative');
+    this.ongletBilans = page.locator('#ongletBilans');
+    this.panneauBilans = page.locator('#panneauBilans');
 
     this.champPrenom = page.locator('#champFormPrenom input');
     this.champNom = page.locator('#champFormNom input');

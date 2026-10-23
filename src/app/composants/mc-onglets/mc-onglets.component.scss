@@ -1,0 +1,42 @@
+:host {
+  display: block;
+}
+
+.mc-onglets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  border-bottom: 2px solid var(--bordure);
+  margin-bottom: 1rem;
+}
+
+.mc-onglets__onglet {
+  margin-bottom: -2px;
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: none;
+  color: var(--texte-secondaire);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    color: var(--texte-principal);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--couleur-focus);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.mc-onglets__onglet--actif {
+  border-bottom-color: var(--couleur-primaire);
+  color: var(--couleur-primaire);
+}

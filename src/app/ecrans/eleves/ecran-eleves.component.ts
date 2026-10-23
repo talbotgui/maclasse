@@ -11,10 +11,12 @@ import { EleveService } from '../../services/sansEtat/eleve.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
 import { McChampRechercheComponent } from '../../composants/mc-champ-recherche/mc-champ-recherche.component';
 import { McChipFiltreComponent } from '../../composants/mc-chip-filtre/mc-chip-filtre.component';
+import { McOngletsComponent } from '../../composants/mc-onglets/mc-onglets.component';
 import { PopinAvertissementComponent } from '../../composants/popins/popin-avertissement/popin-avertissement.component';
 import { FeFicheEleveComponent } from './fe-fiche-eleve/fe-fiche-eleve.component';
 import { FeFormulaireEleveComponent } from './fe-formulaire-eleve/fe-formulaire-eleve.component';
 import type { Eleve } from '../../modeles/eleve.modele';
+import type { Onglet } from '../../modeles/composants.modele';
 
 /**
  * Écran de gestion des élèves.
@@ -28,6 +30,7 @@ import type { Eleve } from '../../modeles/eleve.modele';
     UpperCasePipe,
     McChampRechercheComponent,
     McChipFiltreComponent,
+    McOngletsComponent,
     PopinAvertissementComponent,
     FeFicheEleveComponent,
     FeFormulaireEleveComponent,
@@ -36,8 +39,20 @@ import type { Eleve } from '../../modeles/eleve.modele';
   styleUrl: './ecran-eleves.component.scss',
 })
 export class EcranElevesComponent extends EcranEditionGardeeBase {
+  /** Identifiant de l'onglet de la fiche administrative (identité, contacts, absences…). */
+  protected static readonly ONGLET_FICHE_ADMINISTRATIVE = 'FicheAdministrative';
+
+  /** Identifiant de l'onglet des bilans par sous-domaine de compétences. */
+  protected static readonly ONGLET_BILANS = 'Bilans';
+
   /** Constante centralisée des libellés. */
   protected readonly LIBELLES = LIBELLES;
+
+  /** Identifiant de l'onglet de la fiche administrative, exposé au template. */
+  protected readonly ongletFicheAdministrative = EcranElevesComponent.ONGLET_FICHE_ADMINISTRATIVE;
+
+  /** Identifiant de l'onglet des bilans, exposé au template. */
+  protected readonly ongletBilans = EcranElevesComponent.ONGLET_BILANS;
 
   /** Service de données : accès aux élèves et référentiels. */
   private readonly donneesService = inject(DonneesService);
@@ -54,6 +69,9 @@ export class EcranElevesComponent extends EcranEditionGardeeBase {
   /** Groupes filtrés actifs (IDs). */
   protected readonly groupesFiltres = signal<string[]>([]);
 
+  /** Onglet affiché dans la colonne droite, conservé lors d'un changement d'élève. */
+  protected readonly ongletActif = signal(EcranElevesComponent.ONGLET_FICHE_ADMINISTRATIVE);
+
   /** `true` si le focus doit se placer sur le bouton MODIFIER à la prochaine apparition de la fiche. */
   protected readonly focusModifierDemande = signal(false);
 
@@ -66,6 +84,19 @@ export class EcranElevesComponent extends EcranEditionGardeeBase {
     if (!id) return null;
     return this.donnees()?.classe.eleves.find((e) => e.id === id) ?? null;
   });
+
+  /** Onglets de la colonne droite ; les bilans sont indisponibles tant que l'élève n'est pas enregistré. */
+  protected readonly onglets = computed<Onglet[]>(() => [
+    {
+      id: EcranElevesComponent.ONGLET_FICHE_ADMINISTRATIVE,
+      libelle: LIBELLES.eleve.ongletFicheAdministrative,
+    },
+    {
+      id: EcranElevesComponent.ONGLET_BILANS,
+      libelle: LIBELLES.eleve.ongletBilans,
+      desactive: !this.eleveSelectionne(),
+    },
+  ]);
 
   /** Liste des groupes du référentiel. */
   protected readonly groupes = computed(() => this.donnees()?.referentiels.groupes ?? []);
@@ -102,6 +133,14 @@ export class EcranElevesComponent extends EcranEditionGardeeBase {
    */
   protected creerEleve(): void {
     this.executerOuAvertir(() => this.activerCreation());
+  }
+
+  /**
+   * Tente d'afficher un onglet. Affiche la popin si une édition est en cours.
+   * @param id Identifiant de l'onglet demandé.
+   */
+  protected selectionnerOnglet(id: string): void {
+    this.executerOuAvertir(() => this.ongletActif.set(id));
   }
 
   /**
@@ -164,6 +203,7 @@ export class EcranElevesComponent extends EcranEditionGardeeBase {
   /** Active le mode création (réinitialise la sélection). */
   private activerCreation(): void {
     this.contexteService.eleveSelectionne.set(null);
+    this.ongletActif.set(EcranElevesComponent.ONGLET_FICHE_ADMINISTRATIVE);
     this.enModeEdition.set(true);
   }
 }

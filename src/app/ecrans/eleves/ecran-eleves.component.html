@@ -52,29 +52,56 @@
       <p class="eleves__vide">{{ LIBELLES.eleve.aucunEleveSelectionne }}</p>
     }
 
-    @if (eleveSelectionne() && !enModeEdition()) {
-      <fe-fiche-eleve
-        [eleve]="eleveSelectionne()!"
-        [focusDemande]="focusModifierDemande()"
-        [groupes]="groupes()"
-        [statutsEleve]="statutsEleve()"
-        [typesContact]="typesContact()"
-        (modifier)="activerEdition()"
-        (supprimer)="supprimerEleve()"
-        (imprimer)="imprimer()"
+    @if (eleveSelectionne() || enModeEdition()) {
+      <mc-onglets
+        [libelle]="LIBELLES.eleve.ariaOnglets"
+        [onglets]="onglets()"
+        [ongletActif]="ongletActif()"
+        (selection)="selectionnerOnglet($event)"
       />
-    }
 
-    @if (enModeEdition()) {
-      <fe-formulaire-eleve
-        [focusDemande]="true"
-        [eleve]="eleveSelectionne()"
-        [groupes]="groupes()"
-        [statutsEleve]="statutsEleve()"
-        [typesContact]="typesContact()"
-        (enregistrer)="onEnregistrer($event)"
-        (annuler)="onAnnulerEdition()"
-      />
+      <div
+        role="tabpanel"
+        [id]="'panneau' + ongletFicheAdministrative"
+        [attr.aria-labelledby]="'onglet' + ongletFicheAdministrative"
+        [hidden]="ongletActif() !== ongletFicheAdministrative"
+      >
+        @if (eleveSelectionne() && !enModeEdition()) {
+          <fe-fiche-eleve
+            [eleve]="eleveSelectionne()!"
+            [focusDemande]="focusModifierDemande()"
+            [groupes]="groupes()"
+            [statutsEleve]="statutsEleve()"
+            [typesContact]="typesContact()"
+            (modifier)="activerEdition()"
+            (supprimer)="supprimerEleve()"
+            (imprimer)="imprimer()"
+          />
+        }
+
+        @if (enModeEdition()) {
+          <fe-formulaire-eleve
+            [focusDemande]="true"
+            [eleve]="eleveSelectionne()"
+            [groupes]="groupes()"
+            [statutsEleve]="statutsEleve()"
+            [typesContact]="typesContact()"
+            (enregistrer)="onEnregistrer($event)"
+            (annuler)="onAnnulerEdition()"
+          />
+        }
+      </div>
+
+      <div
+        role="tabpanel"
+        [id]="'panneau' + ongletBilans"
+        [attr.aria-labelledby]="'onglet' + ongletBilans"
+        [hidden]="ongletActif() !== ongletBilans"
+      >
+        @if (eleveSelectionne() && ongletActif() === ongletBilans) {
+          <p class="eleves__vide">{{ LIBELLES.eleve.aucunBilan }}</p>
+        }
+      </div>
     }
   </div>
 </div>

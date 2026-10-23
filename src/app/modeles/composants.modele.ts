@@ -80,3 +80,17 @@ export interface ResultatExportCompetences {
   /** Identifiant secondaire : index de période en string (mode projet) ou ID de séance (mode séance). */
   secondaireId: string;
 }
+
+/**
+ * Onglet de la barre d'onglets (`mc-onglets`).
+ * L'onglet a pour identifiant HTML `onglet<id>` et contrôle le panneau `panneau<id>`,
+ * que le composant parent déclare avec `role="tabpanel"`.
+ */
+export interface Onglet {
+  /** Identifiant de l'onglet, en PascalCase (suffixe des identifiants HTML). */
+  id: string;
+  /** Libellé affiché dans l'onglet. */
+  libelle: string;
+  /** `true` si l'onglet ne peut pas être sélectionné. */
+  desactive?: boolean;
+}

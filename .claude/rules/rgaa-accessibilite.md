@@ -40,6 +40,7 @@ les interactions clavier de la spec WAI-ARIA pour ce pattern.
 
 | Pattern | Touches obligatoires |
 |---|---|
+| `role="tablist"` | ←/→ onglet précédent/suivant (en boucle, onglets désactivés ignorés), Début/Fin ; activation manuelle par Entrée/Espace |
 | `role="tree"` | ↓/↑ nœud suivant/précédent, → déplier/descendre, ← replier/remonter, Début/Fin |
 | `role="listbox"` | ↓/↑ option suivante/précédente, Début/Fin |
 | `role="combobox"` | ↓/↑ ouvrir/naviguer, Entrée sélectionner, Échap fermer |
@@ -50,6 +51,8 @@ pour déplacer le focus (`.nativeElement.focus()`).
 
 Chaque attribut exigé par le rôle (`aria-selected` pour `treeitem`,
 `aria-expanded` pour nœuds non-feuilles, etc.) doit être présent.
+
+Les onglets passent par le composant partagé `mc-onglets` (`src/app/composants/mc-onglets/`). L'onglet `onglet<Id>` contrôle le panneau `panneau<Id>`, que le parent déclare avec `role="tabpanel"`, `aria-labelledby` et `[hidden]`.
 
 ## Contrôle qualité
 

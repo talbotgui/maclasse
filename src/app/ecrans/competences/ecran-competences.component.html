@@ -1,11 +1,13 @@
 <div class="competences">
   <!-- Zone centrale : sélecteur d'arbre (avec filtres intégrés) -->
   <div class="competences__arbre">
+    @if (filtrageDomainesApplique()) {
+      <p class="competences__arbre-info">{{ LIBELLES.competences.infoFiltrageDomaines }}</p>
+    }
     <mc-arbre-competences
       [competencesSelectionnees]="panier()"
       (selectionChange)="surSelectionChange($event)"
     />
-    <p class="competences__arbre-info">{{ LIBELLES.competences.infoDomainesParametrage }}</p>
   </div>
 
   <!-- Colonne droite : panier -->

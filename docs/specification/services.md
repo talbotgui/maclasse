@@ -76,12 +76,13 @@ Chaque service expose des méthodes de manipulation et de validation. Les mutati
 ### `CompetenceService`
 
 - `obtenirDomaines(): Competence[]` — nœuds de **niveau 1** (disciplines/domaines, ex. Français, Mathématiques), **filtrés selon `configuration.domainesActifs`** :
-  - `domainesActifs` absent ou vide : arbre complet
+  - `domainesActifs` absent ou vide, ou mode consultation du référentiel (`ContexteService.modeConsultationReferentiel`) : arbre complet
   - domaine de niveau 1 actif : tout son sous-arbre
   - seuls certains sous-domaines de niveau 2 actifs : le domaine est conservé avec ces seuls sous-domaines
   - C'est la source des chips de disciplines (`disciplinesIds` des séances et des temps de créneau) et de l'arbre de l'écran Compétences
+- `verifierFiltrageDomainesApplique()` — `true` si `obtenirDomaines()` restreint l'arbre (domaines actifs renseignés et hors mode consultation du référentiel) ; conditionne le message d'information de l'écran Compétences
 - `obtenirDomaineParId(id)` — résout un ID de discipline
-- `rechercherCompetences(terme)` — nœuds de tous niveaux dont le libellé contient le terme (insensible à la casse et aux accents)
+- `rechercherCompetences(terme)` — nœuds de tous niveaux dont le libellé contient le terme (insensible à la casse et aux accents), dans le périmètre de `obtenirDomaines()` (domaines actifs, ou arbre complet en mode consultation du référentiel)
 - `resoudreLibelle(id)` et `obtenirChemin(id)` — libellé complet et chemin d'une compétence dans l'arbre
 - `obtenirNoeudsDeNiveau(niveau)` — nœuds d'une profondeur donnée des domaines actifs (ex. niveau 3 = sous-domaines des bilans)
 - `obtenirFeuilles(id)` — feuilles du sous-arbre d'un nœud, le nœud lui-même exclu

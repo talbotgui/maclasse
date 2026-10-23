@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { CompetenceService } from './competence.service';
 import { DonneesService } from '../avecEtat/donnees.service';
+import { ContexteService } from '../avecEtat/contexte.service';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { CompetenceMother } from '../../tests/competence.mother';
 
@@ -32,6 +33,43 @@ describe('CompetenceService', () => {
       TestBed.configureTestingModule({});
       const s = TestBed.inject(CompetenceService);
       expect(s.obtenirDomaines()).toEqual([]);
+    });
+  });
+
+  describe('filtrage par domaines actifs', () => {
+    let contexteService: ContexteService;
+
+    beforeEach(() => {
+      contexteService = TestBed.inject(ContexteService);
+      const d = DonneesMother.base();
+      d.referentiels.competences = CompetenceMother.arbreSimple();
+      d.configuration.domainesActifs = ['MATH'];
+      donneesService.charger(d);
+    });
+
+    it('restreint l’arbre aux domaines actifs hors mode consultation', () => {
+      expect(service.verifierFiltrageDomainesApplique()).toBe(true);
+      expect(service.obtenirDomaines().map((c) => c.id)).toEqual(['MATH']);
+    });
+
+    it('retourne l’arbre complet en mode consultation du référentiel', () => {
+      contexteService.modeConsultationReferentiel.set(true);
+      expect(service.verifierFiltrageDomainesApplique()).toBe(false);
+      expect(service.obtenirDomaines().map((c) => c.id)).toEqual(['FR', 'MATH']);
+    });
+
+    it('ne filtre pas quand aucun domaine actif n’est configuré', () => {
+      const d = DonneesMother.base();
+      d.referentiels.competences = CompetenceMother.arbreSimple();
+      d.configuration.domainesActifs = [];
+      donneesService.charger(d);
+      expect(service.verifierFiltrageDomainesApplique()).toBe(false);
+    });
+
+    it('ne filtre pas sans données chargées', () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({});
+      expect(TestBed.inject(CompetenceService).verifierFiltrageDomainesApplique()).toBe(false);
     });
   });
 

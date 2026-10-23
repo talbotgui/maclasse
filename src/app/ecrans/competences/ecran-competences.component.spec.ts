@@ -8,6 +8,7 @@ import { ProjetMother, PeriodeMother } from '../../tests/projet.mother';
 import { SeanceMother } from '../../tests/cahier-journal.mother';
 import type { ResultatExportCompetences } from '../../composants/popins/popin-export-competences/popin-export-competences.component';
 import { DateUtils } from '../../utilitaires/date.utils';
+import { LIBELLES } from '../../libelles';
 
 describe('EcranCompetencesComponent', () => {
   let fixture: ComponentFixture<EcranCompetencesComponent>;
@@ -43,6 +44,37 @@ describe('EcranCompetencesComponent', () => {
     fixture = TestBed.createComponent(EcranCompetencesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  describe('message de filtrage des domaines', () => {
+    it('affiche le message quand des domaines actifs sont configurés', () => {
+      const d = DonneesMother.base();
+      d.configuration.domainesActifs = ['FR'];
+      donneesService.charger(d);
+      fixture.detectChanges();
+
+      const info = fixture.nativeElement.querySelector('.competences__arbre-info');
+      expect(info?.textContent.trim()).toBe(LIBELLES.competences.infoFiltrageDomaines);
+    });
+
+    it('masque le message en mode consultation du référentiel', () => {
+      const d = DonneesMother.base();
+      d.configuration.domainesActifs = ['FR'];
+      donneesService.charger(d);
+      contexteService.modeConsultationReferentiel.set(true);
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.competences__arbre-info')).toBeNull();
+    });
+
+    it('masque le message quand aucun domaine actif n’est configuré', () => {
+      const d = DonneesMother.base();
+      d.configuration.domainesActifs = [];
+      donneesService.charger(d);
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.competences__arbre-info')).toBeNull();
+    });
   });
 
   describe('panier / panierNonVide', () => {

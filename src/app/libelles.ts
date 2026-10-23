@@ -249,8 +249,8 @@ export const LIBELLES = {
     boutonVider: 'Vider la liste',
     boutonEnvoyerProjet: 'Envoyer vers un projet',
     boutonEnvoyerSeance: 'Envoyer vers une séance',
-    infoDomainesParametrage:
-      "Tous les domaines sont disponibles et activables dans l'écran Paramétrage.",
+    infoFiltrageDomaines:
+      "Seuls les domaines activés dans l'écran Paramétrage sont affichés. Les autres domaines du programme peuvent y être activés.",
     erreurExport:
       "L'export a échoué : la période ou la séance ciblée n'existe plus. Le panier a été conservé.",
     ariaAjouterAuPanier: 'Ajouter au panier : ',

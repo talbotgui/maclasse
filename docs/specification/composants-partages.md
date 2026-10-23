@@ -129,7 +129,7 @@ Une séance du cahier journal se supprime par ✕, sans ce composant (suppressio
 ### `mc-arbre-competences`
 
 - Arbre de compétences filtrable : champ `mc-champ-recherche` + chips de domaine `mc-chip-filtre` + arbre repliable avec navigation clavier WAI-ARIA Tree View (ArrowDown/Up/Left/Right/Home/End)
-- Affiche les domaines retournés par `CompetenceService.obtenirDomaines()` (domaines actifs)
+- Affiche les domaines retournés par `CompetenceService.obtenirDomaines()` (domaines actifs ; arbre complet en mode consultation du référentiel)
 - Utilisé dans : **écran Compétences uniquement** (placé dans `composants/` par choix assumé)
 
 ### `mc-eleves-concernes`

@@ -101,7 +101,7 @@ Choix des domaines de compétences utilisés dans la classe → `configuration.d
 - Cocher ou décocher un domaine coche ou décoche tous ses sous-domaines ; décocher un seul sous-domaine d'un domaine entièrement actif le décompose en ses autres sous-domaines
 - **ENREGISTRER** : `CommandeRemplacement` sur `configuration.domainesActifs`. Si tout est coché, la liste enregistrée est vide (= tous les domaines)
 - **ANNULER** : recharge la sélection enregistrée (tout coché si la liste est vide)
-- Effets : chips de disciplines (séances, temps de créneau), arbre et chips de l'écran Compétences, via `CompetenceService.obtenirDomaines()` (voir [services](../services.md#competenceservice))
+- Effets : chips de disciplines (séances, temps de créneau), arbre et chips de l'écran Compétences, via `CompetenceService.obtenirDomaines()` (voir [services](../services.md#competenceservice)) ; sans effet en mode consultation du référentiel, où l'arbre complet est affiché
 
 ---
 

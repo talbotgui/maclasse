@@ -36,7 +36,7 @@ related:
 | `accueil` | Écran d'accueil | `labelAujourdhui`, `aucunJournal`, `labelNbEleves` |
 | `eleve` | Écran Élèves : liste, fiche, formulaire (sections, champs, contacts, absences, cursus) | `sectionIdentite`, `sectionAbsencesRecurrentes`, `erreurHeuresAbsenceObligatoires`, `aucunEleve`, `reponsesAutorisation` (`accepte`, `refuse`, `sansReponse`), `lateralites` (`gaucher`, `droitier`), `sectionInformationsUtiles` |
 | `projet` | Écran Projets : liste, fiche, formulaire, périodes | `sectionInfos`, `sectionPeriodes`, `aucunProjet` |
-| `competences` | Écran Compétences : panier, export, information sur les domaines actifs, arbre | `panierVide`, `boutonEnvoyerProjet`, `infoDomainesParametrage`, `erreurExport` |
+| `competences` | Écran Compétences : panier, export, information sur les domaines actifs, arbre | `panierVide`, `boutonEnvoyerProjet`, `infoFiltrageDomaines`, `erreurExport` |
 | `selecteurCompetences` | Composant `mc-selecteur-competences` | `placeholder`, `ariaSuggestions`, `ariaSupprimer` |
 | `edt` | Écran Emploi du temps : listes, grille, formulaires d'EDT, de créneau et d'EDT calculé, types de créneau, sources, impression, conflits | `typesCreneau`, `joursLibelles`, `colonneHeure`, `boutonAjouterTemps`, `erreurNomObligatoire`, `prefixeDateDepuis`, `separateurPlageDates` |
 | `cahierJournal` | Écran Cahier journal : navigation, journée, notes, séances, formulaire, duplication | `boutonInitialiserVide`, `labelNotes`, `enteteAbsencesJour`, `erreurChampsObligatoires` |

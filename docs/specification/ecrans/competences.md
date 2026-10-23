@@ -3,7 +3,7 @@ name: competences
 description: Spécification détaillée de l'écran Compétences — arbre filtrable, panier et export vers projet/cahier journal
 metadata:
   type: project
-  updated: 2026-09-27
+  updated: 2026-10-23
 related:
   - specification/ecrans/vue-ensemble
   - specification/modeles-donnees
@@ -49,7 +49,8 @@ Le composant `mc-arbre-competences` intègre les trois sous-zones suivantes :
 ### Domaines actifs
 
 - L'arbre et les chips de domaine ne montrent que les **domaines actifs** : `CompetenceService.obtenirDomaines()` filtre l'arbre selon `configuration.domainesActifs` (tous les domaines si la liste est absente ou vide ; voir [services](../services.md#competenceservice))
-- Sous l'arbre, un paragraphe d'information renvoie au Paramétrage : *« Tous les domaines sont disponibles et activables dans l'écran Paramétrage. »* (`LIBELLES.competences.infoDomainesParametrage`) — les domaines se choisissent dans la section « Domaines de compétences » du [paramétrage](parametrage.md#section-domaines-de-compétences)
+- En **mode consultation du référentiel**, ce filtrage est désactivé : l'arbre complet du programme est affiché, quels que soient les `domainesActifs` des données d'exemple
+- Au-dessus de l'arbre, un paragraphe d'information rappelle le filtrage : *« Seuls les domaines activés dans l'écran Paramétrage sont affichés. Les autres domaines du programme peuvent y être activés. »* (`LIBELLES.competences.infoFiltrageDomaines`) — les domaines se choisissent dans la section « Domaines de compétences » du [paramétrage](parametrage.md#section-domaines-de-compétences). Ce paragraphe n'est affiché que lorsque le filtrage s'applique (`CompetenceService.verifierFiltrageDomainesApplique()`) : il est masqué si aucun domaine actif n'est configuré et en mode consultation du référentiel
 
 ### Arbre des compétences
 

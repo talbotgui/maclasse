@@ -7,6 +7,7 @@
 import { Injectable, computed, inject } from '@angular/core';
 import { Competence } from '../../modeles/referentiels.modele';
 import { DonneesService } from '../avecEtat/donnees.service';
+import { ContexteService } from '../avecEtat/contexte.service';
 import { TexteUtils } from '../../utilitaires/texte.utils';
 
 /**
@@ -17,6 +18,9 @@ import { TexteUtils } from '../../utilitaires/texte.utils';
 export class CompetenceService {
   /** Accès en lecture aux données de l'application. */
   private readonly donneesService = inject(DonneesService);
+
+  /** Contexte applicatif : mode consultation du référentiel, qui désactive le filtrage. */
+  private readonly contexteService = inject(ContexteService);
 
   /**
    * Cache de libellés normalisés pour la recherche, indexé par identifiant de compétence.
@@ -36,7 +40,8 @@ export class CompetenceService {
   /**
    * Retourne les nœuds de niveau 1 de l'arbre (domaines / disciplines),
    * filtrés selon `configuration.domainesActifs`.
-   * Si `domainesActifs` est absent ou vide, retourne l'arbre complet.
+   * Si `domainesActifs` est absent ou vide, ou en mode consultation du référentiel,
+   * retourne l'arbre complet.
    * Si un domaine N1 est actif, tout son sous-arbre est inclus.
    * Si seuls certains sous-domaines N2 sont actifs, seuls leurs sous-arbres sont inclus.
    * @returns Tableau des domaines filtrés, ou tableau vide si aucune donnée chargée.
@@ -44,16 +49,26 @@ export class CompetenceService {
   public obtenirDomaines(): Competence[] {
     const donnees = this.donneesService.donnees();
     const toutes = donnees?.referentiels.competences ?? [];
-    const actifs = donnees?.configuration.domainesActifs;
-    if (!actifs || actifs.length === 0) return toutes;
+    if (!this.verifierFiltrageDomainesApplique()) return toutes;
 
-    const actifsSet = new Set(actifs);
+    const actifsSet = new Set(donnees?.configuration.domainesActifs);
     return toutes
       .filter((d) => actifsSet.has(d.id) || d.enfants?.some((ss) => actifsSet.has(ss.id)))
       .map((d) => {
         if (actifsSet.has(d.id)) return d;
         return { ...d, enfants: d.enfants?.filter((ss) => actifsSet.has(ss.id)) };
       });
+  }
+
+  /**
+   * Indique si l'arbre est restreint aux domaines actifs : `configuration.domainesActifs`
+   * est renseigné et l'application n'est pas en mode consultation du référentiel.
+   * @returns `true` si `obtenirDomaines()` filtre l'arbre, `false` s'il le retourne complet.
+   */
+  public verifierFiltrageDomainesApplique(): boolean {
+    if (this.contexteService.modeConsultationReferentiel()) return false;
+    const actifs = this.donneesService.donnees()?.configuration.domainesActifs;
+    return !!actifs && actifs.length > 0;
   }
 
   /**

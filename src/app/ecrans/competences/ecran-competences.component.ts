@@ -52,6 +52,11 @@ export class EcranCompetencesComponent {
   /** Message d'erreur affiché si le dernier export a échoué, `null` sinon. */
   protected readonly erreurExport = signal<string | null>(null);
 
+  /** `true` si l'arbre est restreint aux domaines activés dans le Paramétrage. */
+  protected readonly filtrageDomainesApplique = computed(() =>
+    this.competenceService.verifierFiltrageDomainesApplique(),
+  );
+
   /** Panier courant depuis le contexte. */
   protected readonly panier = this.contexteService.panierCompetences;
 

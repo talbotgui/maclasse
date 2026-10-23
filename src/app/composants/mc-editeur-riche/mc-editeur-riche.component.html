@@ -14,6 +14,7 @@
         [attr.aria-label]="action.ariaLabel"
         [attr.aria-pressed]="estActionActive(action)"
         [disabled]="estDesactive()"
+        (mousedown)="$event.preventDefault()"
         (click)="basculerAction(action)"
       >
         {{ action.libelle }}

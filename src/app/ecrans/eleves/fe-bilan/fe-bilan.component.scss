@@ -1,0 +1,98 @@
+:host {
+  display: block;
+}
+
+.bilan {
+  border: 1px solid var(--bordure);
+  border-radius: 6px;
+  background: var(--fond-section);
+}
+
+.bilan__entete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.bilan__titre {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.bilan__bascule {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.25rem;
+  border: 0;
+  background: none;
+  color: var(--texte-principal);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 3px solid var(--couleur-focus);
+    outline-offset: 2px;
+  }
+}
+
+.bilan__date {
+  color: var(--texte-secondaire);
+  font-weight: 400;
+}
+
+.bilan__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.bilan__corps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.75rem;
+  border-top: 1px solid var(--bordure);
+
+  // `display: flex` l'emporterait sur l'attribut `hidden` (bilan replié).
+  &[hidden] {
+    display: none;
+  }
+}
+
+.bilan__textes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bilan__cadre {
+  padding: 0.75rem;
+  border: 1px solid var(--bordure);
+  border-radius: 4px;
+}
+
+.bilan__cadre-titre {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+  color: var(--texte-secondaire);
+}
+
+.bilan__vide {
+  margin: 0;
+  color: var(--texte-secondaire);
+}
+
+.bilan__commentaire {
+  white-space: pre-line;
+}

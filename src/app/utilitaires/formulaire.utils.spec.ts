@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { FormulaireUtils } from './formulaire.utils';
 
 describe('FormulaireUtils', () => {
@@ -73,6 +73,37 @@ describe('FormulaireUtils', () => {
       expect(FormulaireUtils.validerTexteNonVide(new FormControl(null))).toEqual({
         texteVide: true,
       });
+    });
+  });
+
+  describe('validerEvaluationsBilan', () => {
+    /**
+     * Construit un tableau de lignes d'évaluation portant les compétences données.
+     * @param ids Identifiants de compétence, une ligne par identifiant.
+     * @returns Tableau de groupes de contrôles.
+     */
+    const tableau = (ids: string[]): FormArray =>
+      new FormArray(ids.map((id) => new FormGroup({ competenceId: new FormControl(id) })));
+
+    it('accepte un tableau vide ou des compétences distinctes', () => {
+      expect(FormulaireUtils.validerEvaluationsBilan(tableau([]))).toBeNull();
+      expect(FormulaireUtils.validerEvaluationsBilan(tableau(['c1', 'c2']))).toBeNull();
+    });
+
+    it('signale une ligne sans compétence', () => {
+      expect(FormulaireUtils.validerEvaluationsBilan(tableau(['c1', '']))).toEqual({
+        evaluationSansCompetence: true,
+      });
+    });
+
+    it('signale une compétence évaluée deux fois', () => {
+      expect(FormulaireUtils.validerEvaluationsBilan(tableau(['c1', 'c1']))).toEqual({
+        competenceEnDouble: true,
+      });
+    });
+
+    it("ignore un contrôle qui n'est pas un tableau", () => {
+      expect(FormulaireUtils.validerEvaluationsBilan(new FormControl('x'))).toBeNull();
     });
   });
 });

@@ -110,9 +110,9 @@ Une séance du cahier journal se supprime par ✕, sans ce composant (suppressio
 - Permet la sélection mono ou multi-compétences
 - Inputs de restriction :
   - `niveau` (`number | null`) : ne propose que les nœuds de cette profondeur (1 = domaines), filtrés sur le chemin complet
-  - `racineId` (`string | null`) : ne propose que les **feuilles** du sous-arbre de ce nœud ; les chips de domaine sont masquées et toutes les feuilles sont proposées au focus ou au clic dans le champ, même saisie effacée
+  - `racineId` (`string | null`) : ne propose que les **feuilles** du sous-arbre de ce nœud ; les chips de domaine sont masquées et toutes les feuilles sont proposées au clic dans le champ ou à la flèche ↓ (pas au simple focus, pour qu'une ligne ajoutée ne s'ouvre pas d'elle-même), et restent proposées quand la saisie est effacée
   - `separateur` (défaut `' › '`) : séparateur du chemin complet affiché
-- Utilisé dans : Projets (période), Cahier journal (séance) ; destiné à l'onglet Bilans des Élèves (choix du sous-domaine avec `niveau` 3 et `' > '`, compétence d'une évaluation avec `racineId`)
+- Utilisé dans : Projets (période), Cahier journal (séance), onglet Bilans des Élèves (choix du sous-domaine avec `niveau` 3 et `' > '`, compétence d'une évaluation avec `racineId`)
 
 ### `mc-editeur-riche`
 
@@ -122,9 +122,9 @@ Une séance du cahier journal se supprime par ✕, sans ce composant (suppressio
 - Mises en forme : gras, italique, souligné, liste à puces, liste numérotée (titres, blocs de code et liens désactivés)
 - Inputs : `id` (préfixe des IDs), `label` (libellé visible)
 - IDs : zone éditable `<id>Saisie` (`role="textbox"`, `aria-multiline`, `aria-labelledby="<id>Libelle"`), libellé `<id>Libelle`, boutons `btn<Action>_<id>` (`Gras`, `Italique`, `Souligne`, `ListePuces`, `ListeNumerotee`)
-- Barre de mise en forme : groupe nommé « Mise en forme — <libellé> », état de chaque bouton exposé par `aria-pressed` ; le focus revient dans la zone après un clic, sans marquer le champ « touché » (seule une sortie du composant le fait)
+- Barre de mise en forme : groupe nommé « Mise en forme — <libellé> », état de chaque bouton exposé par `aria-pressed` ; un clic souris ne retire pas le focus de la zone (`mousedown` neutralisé, la mise en forme s'applique à la frappe suivante) et, au clavier, le focus revient dans la zone, sans marquer le champ « touché » (seule une sortie du composant le fait)
 - Désactivé : `contenteditable="false"` et `aria-disabled="true"` sur la zone
-- Destiné à : Élèves (onglet Bilans : Bilans, Besoins spécifiques, Moyens)
+- Utilisé dans : Élèves (onglet Bilans : Bilans, Besoins spécifiques, Moyens)
 
 ### `mc-arbre-competences`
 
@@ -240,4 +240,5 @@ Le comportement détaillé (mode consultation, SAUVEGARDER, tooltips ANNULER / R
 ## CSS mutualisés (non composants)
 
 - **Layout liste+détail** : classes CSS utilitaires (`mc-layout-liste-detail`, `mc-colonne-gauche`, `mc-colonne-droite`) appliquées dans les écrans Élèves et Projets pour obtenir un rendu visuel homogène sans composant dédié
+- **Bilans** : `mc-tableau-bilan` (tableau des évaluations, en lecture et en édition) et `mc-texte-riche` (HTML d'un `mc-editeur-riche` affiché en lecture, via `[innerHTML]` assaini par Angular)
 - Les autres classes globales réutilisables (`mc-chip`, `mc-popover-*`, `mc-liste-*`, `mc-fiche-*`, `mc-section-*`, `mc-disc-pill`, `mc-icone-conflit`…) sont listées dans `.claude/rules/scss-css.md` et définies dans `styles.scss`

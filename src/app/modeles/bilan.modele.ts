@@ -3,6 +3,8 @@
  * de compétences (nœud de niveau 3 de l'arbre des compétences).
  */
 
+import type { StatutAcquisition } from './referentiels.modele';
+
 /**
  * Évaluation d'une compétence évaluable (feuille du sous-domaine) dans un bilan.
  */
@@ -46,6 +48,46 @@ export interface SuiviSousDomaine {
   sousDomaineId: string;
   /** Bilans du sous-domaine, dans l'ordre d'affichage. */
   bilans: Bilan[];
+}
+
+/**
+ * Bilan en cours d'édition dans l'onglet Bilans de l'écran Élèves.
+ */
+export interface EditionBilan {
+  /** Sous-domaine du bilan. */
+  sousDomaineId: string;
+  /** Valeur de départ du formulaire. */
+  bilan: Bilan;
+  /** `true` pour un nouveau bilan, pas encore enregistré. */
+  nouveau: boolean;
+}
+
+/**
+ * Sous-domaine affiché avec ses bilans dans l'onglet Bilans de l'écran Élèves.
+ */
+export interface SectionSousDomaine {
+  /** Identifiant de la compétence de niveau 3. */
+  sousDomaineId: string;
+  /** Libellé complet `N1 > N2 > N3`, ou l'identifiant si le sous-domaine est introuvable. */
+  libelle: string;
+  /** Bilans dans l'ordre d'affichage, nouveau bilan en cours de saisie compris. */
+  bilans: Bilan[];
+  /** Nombre de bilans enregistrés (le nouveau bilan éventuel est placé après). */
+  nombreEnregistres: number;
+}
+
+/**
+ * Ligne du tableau des évaluations d'un bilan affiché en lecture.
+ */
+export interface LigneEvaluationLecture {
+  /** Identifiant de la ligne. */
+  id: string;
+  /** Libellé de la compétence, relatif au sous-domaine (ou son identifiant si introuvable). */
+  competence: string;
+  /** Statut d'acquisition, ou `null` si non renseigné ou inconnu. */
+  statut: StatutAcquisition | null;
+  /** Commentaire libre. */
+  commentaire: string;
 }
 
 /**

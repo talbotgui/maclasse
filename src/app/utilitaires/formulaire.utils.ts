@@ -38,4 +38,19 @@ export class FormulaireUtils {
     const texte = typeof valeur === 'string' ? valeur.trim() : '';
     return texte.length > 0 ? null : { texteVide: true };
   }
+
+  /**
+   * Valide le tableau des évaluations d'un bilan : chaque ligne porte une compétence
+   * (`competenceId` non vide) et une même compétence n'est évaluée qu'une fois.
+   * @param tableau Tableau de groupes portant chacun un contrôle `competenceId`.
+   * @returns `{ evaluationSansCompetence: true }` si une ligne n'a pas de compétence,
+   *   `{ competenceEnDouble: true }` si une compétence est évaluée plusieurs fois, `null` sinon.
+   */
+  public static validerEvaluationsBilan(tableau: AbstractControl): ValidationErrors | null {
+    const valeurs: unknown = tableau.value;
+    if (!Array.isArray(valeurs)) return null;
+    const ids = valeurs.map((ligne: { competenceId?: unknown }) => ligne.competenceId);
+    if (ids.some((id) => typeof id !== 'string' || !id)) return { evaluationSansCompetence: true };
+    return new Set(ids).size === ids.length ? null : { competenceEnDouble: true };
+  }
 }

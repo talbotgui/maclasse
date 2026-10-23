@@ -1,0 +1,130 @@
+<article class="bilan" [attr.aria-labelledby]="'btnBasculerBilan_' + bilan().id">
+  <div class="bilan__entete">
+    <h4 class="bilan__titre">
+      <button
+        [id]="'btnBasculerBilan_' + bilan().id"
+        type="button"
+        class="bilan__bascule"
+        [attr.aria-expanded]="deplie()"
+        [attr.aria-controls]="'corpsBilan_' + bilan().id"
+        (click)="onBasculer()"
+      >
+        <span class="bilan__chevron" aria-hidden="true">{{ deplie() ? '▾' : '▸' }}</span>
+        @if (bilan().date) {
+          <span class="bilan__date">{{ DateUtils.formaterDateCourt(bilan().date) }}</span>
+        }
+        <span>{{ titreAffiche() }}</span>
+      </button>
+    </h4>
+    <div class="bilan__actions">
+      <button
+        [id]="'btnModifierBilan_' + bilan().id"
+        type="button"
+        class="mc-btn-fantome mc-btn-sm"
+        [attr.aria-label]="LIBELLES.bilans.ariaModifier + titreAffiche()"
+        [disabled]="actionsDesactivees()"
+        [mcAutoFocus]="focusDemande()"
+        (click)="onModifier()"
+      >
+        {{ LIBELLES.commun.modifier }}
+      </button>
+      <button
+        [id]="'btnDupliquerBilan_' + bilan().id"
+        type="button"
+        class="mc-btn-fantome mc-btn-sm"
+        [attr.aria-label]="LIBELLES.bilans.ariaDupliquer + titreAffiche()"
+        [disabled]="actionsDesactivees()"
+        (click)="onDupliquer()"
+      >
+        {{ LIBELLES.commun.dupliquer }}
+      </button>
+      <button
+        [id]="'btnMonterBilan_' + bilan().id"
+        type="button"
+        class="mc-btn-fantome mc-btn-sm"
+        [attr.aria-label]="LIBELLES.bilans.ariaMonter + titreAffiche()"
+        [disabled]="actionsDesactivees() || !peutMonter()"
+        (click)="onMonter()"
+      >
+        {{ LIBELLES.bilans.boutonMonter }}
+      </button>
+      <button
+        [id]="'btnDescendreBilan_' + bilan().id"
+        type="button"
+        class="mc-btn-fantome mc-btn-sm"
+        [attr.aria-label]="LIBELLES.bilans.ariaDescendre + titreAffiche()"
+        [disabled]="actionsDesactivees() || !peutDescendre()"
+        (click)="onDescendre()"
+      >
+        {{ LIBELLES.bilans.boutonDescendre }}
+      </button>
+      <mc-bouton-destruction
+        [idBase]="'btnSupprimerBilan_' + bilan().id"
+        [petit]="true"
+        [desactive]="actionsDesactivees()"
+        (confirme)="onSupprimer()"
+      />
+    </div>
+  </div>
+
+  <div [id]="'corpsBilan_' + bilan().id" class="bilan__corps" [hidden]="!deplie()">
+    <div class="bilan__textes">
+      <section class="bilan__cadre">
+        <h5 class="bilan__cadre-titre">{{ LIBELLES.bilans.labelBilans }}</h5>
+        @if (bilan().bilans) {
+          <div class="mc-texte-riche" [innerHTML]="bilan().bilans"></div>
+        } @else {
+          <p class="bilan__vide">{{ LIBELLES.bilans.texteVide }}</p>
+        }
+      </section>
+      <section class="bilan__cadre">
+        <h5 class="bilan__cadre-titre">{{ LIBELLES.bilans.labelBesoinsSpecifiques }}</h5>
+        @if (bilan().besoinsSpecifiques) {
+          <div class="mc-texte-riche" [innerHTML]="bilan().besoinsSpecifiques"></div>
+        } @else {
+          <p class="bilan__vide">{{ LIBELLES.bilans.texteVide }}</p>
+        }
+      </section>
+      <section class="bilan__cadre">
+        <h5 class="bilan__cadre-titre">{{ LIBELLES.bilans.labelMoyens }}</h5>
+        @if (bilan().moyens) {
+          <div class="mc-texte-riche" [innerHTML]="bilan().moyens"></div>
+        } @else {
+          <p class="bilan__vide">{{ LIBELLES.bilans.texteVide }}</p>
+        }
+      </section>
+    </div>
+
+    <table class="mc-tableau-bilan">
+      <thead>
+        <tr>
+          <th scope="col">{{ LIBELLES.bilans.colonneCompetence }}</th>
+          <th scope="col">{{ LIBELLES.bilans.colonneEvaluation }}</th>
+          <th scope="col">{{ LIBELLES.bilans.colonneCommentaire }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (ligne of lignes(); track ligne.id) {
+          <tr>
+            <td>{{ ligne.competence }}</td>
+            <td>
+              @if (ligne.statut; as statut) {
+                <mc-badge-statut [statut]="statut" />
+                {{ statut.libelle }}
+              } @else {
+                {{ LIBELLES.bilans.texteVide }}
+              }
+            </td>
+            <td class="bilan__commentaire">{{ ligne.commentaire }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="3" class="mc-tableau-bilan__vide">
+              {{ LIBELLES.bilans.aucuneEvaluation }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</article>

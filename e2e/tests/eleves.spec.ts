@@ -446,3 +446,134 @@ testAvecDonnees(
     await expect(eleves.btnEnregistrer).toBeVisible();
   },
 );
+
+testAvecDonnees(
+  'E2E-141 — Bilans : ajouter un sous-domaine, saisir puis valider un bilan',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
+
+    await entete.navEleves.click();
+    await eleves.selectionnerMartinot();
+    await eleves.ongletBilans.click();
+    await expect(eleves.btnAjouterSousDomaine).toBeDisabled();
+
+    await eleves.champSousDomaine.fill('Respecter autrui');
+    await eleves.premiereSuggestionCompetence.click();
+    await eleves.btnAjouterSousDomaine.click();
+
+    // Nouveau bilan en édition, focus sur le titre, VALIDER inactif tant que le titre est vide
+    await expect(eleves.titresSousDomaines).toHaveCount(1);
+    await expect(eleves.titresSousDomaines).toHaveText(
+      'Enseignement moral et civique > Cycle 2 > Respecter autrui',
+    );
+    await expect(eleves.champTitreBilan).toBeFocused();
+    await expect(eleves.btnValiderBilan).toBeDisabled();
+    await expect(eleves.btnAjouterSousDomaine).toBeDisabled();
+
+    await eleves.champTitreBilan.fill('Bilan de rentrée');
+    await eleves.zoneTexteBilans.click();
+    await eleves.btnGrasBilans.click();
+    await appAvecDonnees.keyboard.type('Progrès nets');
+
+    // Évaluation : une ligne sans compétence bloque la validation
+    await eleves.btnAjouterEvaluation.click();
+    await expect(eleves.erreurBilan).toHaveText(
+      'Chaque évaluation doit porter sur une compétence.',
+    );
+    await expect(eleves.btnValiderBilan).toBeDisabled();
+    await eleves.champCompetenceEvaluation0.click();
+    await eleves.premiereSuggestionCompetence.click();
+    await eleves.selectStatutEvaluation0.selectOption('EC');
+    await eleves.champCommentaireEvaluation0.fill('À consolider');
+    await eleves.btnValiderBilan.click();
+
+    // Lecture : bilan déplié, texte riche et tableau sans colonne d'actions
+    await expect(eleves.basculesBilans).toHaveCount(1);
+    await expect(eleves.basculesBilans).toContainText('Bilan de rentrée');
+    await expect(eleves.basculesBilans).toHaveAttribute('aria-expanded', 'true');
+    await expect(eleves.corpsBilans.locator('strong')).toHaveText('Progrès nets');
+    await expect(eleves.tableauxBilans.locator('th')).toHaveCount(3);
+    await expect(eleves.tableauxBilans).toContainText('En cours');
+    await expect(eleves.tableauxBilans).toContainText('À consolider');
+    await expect(eleves.btnsModifierBilan).toBeFocused();
+    await expect(entete.btnAnnuler).toBeEnabled();
+  },
+);
+
+testAvecDonnees(
+  'E2E-142 — Bilans : annuler, dupliquer, monter puis supprimer',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
+
+    await entete.navEleves.click();
+    await eleves.selectionnerGratin();
+    await eleves.ongletBilans.click();
+
+    // Un nouveau bilan abandonné ne laisse aucun cadre
+    await eleves.champSousDomaine.fill('Respecter autrui');
+    await eleves.premiereSuggestionCompetence.click();
+    await eleves.btnAjouterSousDomaine.click();
+    await eleves.btnAnnulerBilan.click();
+    await expect(eleves.titresSousDomaines).toHaveCount(0);
+
+    await eleves.champSousDomaine.fill('Respecter autrui');
+    await eleves.premiereSuggestionCompetence.click();
+    await eleves.btnAjouterSousDomaine.click();
+    await eleves.champTitreBilan.fill('Premier');
+    await eleves.btnValiderBilan.click();
+
+    // Dupliquer ajoute une copie en fin de sous-domaine ; MONTER la place en tête
+    await eleves.btnsDupliquerBilan.nth(0).click();
+    await expect(eleves.basculesBilans).toHaveCount(2);
+    await expect(eleves.btnsMonterBilan.nth(0)).toBeDisabled();
+    await eleves.btnsModifierBilan.nth(1).click();
+    await eleves.champTitreBilan.fill('Copie');
+    await eleves.btnValiderBilan.click();
+    await eleves.btnsMonterBilan.nth(1).click();
+    await expect(eleves.basculesBilans.nth(0)).toContainText('Copie');
+    await expect(eleves.basculesBilans.nth(1)).toContainText('Premier');
+
+    // Tout déplier ouvre les deux bilans
+    await eleves.btnToutDeplier.click();
+    await expect(eleves.corpsBilans.nth(0)).toBeVisible();
+    await expect(eleves.corpsBilans.nth(1)).toBeVisible();
+
+    // Supprimer le dernier bilan fait disparaître le sous-domaine
+    await eleves.btnsSupprimerBilan.nth(0).click();
+    await eleves.btnConfirmerSuppressionBilan.click();
+    await eleves.btnsSupprimerBilan.nth(0).click();
+    await eleves.btnConfirmerSuppressionBilan.click();
+    await expect(eleves.titresSousDomaines).toHaveCount(0);
+  },
+);
+
+testAvecDonnees(
+  'E2E-143 — Bilans : avertissement en quittant un bilan en édition',
+  async ({ appAvecDonnees }) => {
+    const entete = new SelecteursEntete(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
+
+    await entete.navEleves.click();
+    await eleves.selectionnerMartinot();
+    await eleves.ongletBilans.click();
+    await eleves.champSousDomaine.fill('Respecter autrui');
+    await eleves.premiereSuggestionCompetence.click();
+    await eleves.btnAjouterSousDomaine.click();
+    await eleves.champTitreBilan.fill('Brouillon');
+
+    // Changer d'élève : ANNULER garde la saisie
+    await eleves.selectionnerGratin();
+    await expect(eleves.btnAvertissementAnnuler).toBeVisible();
+    await eleves.btnAvertissementAnnuler.click();
+    await expect(eleves.champTitreBilan).toHaveValue('Brouillon');
+
+    // Changer d'onglet : CONFIRMER abandonne la saisie
+    await eleves.ongletFicheAdministrative.click();
+    await eleves.btnAvertissementConfirmer.click();
+    await expect(eleves.ongletFicheAdministrative).toHaveAttribute('aria-selected', 'true');
+    await eleves.ongletBilans.click();
+    await expect(eleves.titresSousDomaines).toHaveCount(0);
+  },
+);

@@ -688,6 +688,19 @@ button {
     display: none !important;
   }
 
+  // Élèves, onglet Bilans : tous les bilans sont imprimés dépliés, sans le cadre d'ajout
+  // ni les actions. `!important` : sélecteurs de composant encapsulés plus spécifiques.
+  .onglet-bilans__ajout,
+  .onglet-bilans__sous-domaine-actions,
+  .bilan__actions,
+  .bilan__chevron {
+    display: none !important;
+  }
+
+  .bilan__corps[hidden] {
+    display: flex !important;
+  }
+
   // Paramétrage : l'indicateur « Non enregistré » n'a pas de sens sur un tirage papier.
   .parametrage__pastille-modif {
     display: none;
@@ -767,6 +780,48 @@ button {
 @media screen {
   .cj__notes-impression {
     display: none;
+  }
+}
+
+/* Tableau des évaluations d'un bilan (onglet Bilans des Élèves), en lecture et en édition. */
+.mc-tableau-bilan {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--bordure);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    font-weight: 600;
+    color: var(--texte-secondaire);
+  }
+}
+
+.mc-tableau-bilan__vide {
+  color: var(--texte-secondaire);
+  font-style: italic;
+}
+
+/* Texte riche (HTML produit par mc-editeur-riche) affiché en lecture. */
+.mc-texte-riche {
+  p,
+  ul,
+  ol {
+    margin: 0 0 0.5rem;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.25rem;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
   }
 }
 

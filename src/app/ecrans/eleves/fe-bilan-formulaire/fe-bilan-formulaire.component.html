@@ -1,0 +1,140 @@
+<fieldset class="bilan-form" [formGroup]="form">
+  <legend class="bilan-form__legende">
+    <mc-input
+      [id]="'champBilanTitre_' + bilan().id"
+      class="bilan-form__titre"
+      [label]="LIBELLES.bilans.labelTitre"
+      [required]="true"
+      [formControl]="form.controls.titre"
+      [mcAutoFocus]="focusDemande()"
+    />
+    <mc-input
+      [id]="'champBilanDate_' + bilan().id"
+      type="date"
+      [label]="LIBELLES.bilans.labelDate"
+      [formControl]="form.controls.date"
+    />
+  </legend>
+
+  <div class="bilan-form__actions">
+    <button
+      [id]="'btnValiderBilan_' + bilan().id"
+      type="button"
+      class="mc-btn-primaire mc-btn-sm"
+      [disabled]="!estFormulaireValide()"
+      (click)="onValider()"
+    >
+      {{ LIBELLES.bilans.boutonValider }}
+    </button>
+    <button
+      [id]="'btnAnnulerBilan_' + bilan().id"
+      type="button"
+      class="mc-btn-fantome mc-btn-sm"
+      (click)="onAnnuler()"
+    >
+      {{ LIBELLES.commun.annuler }}
+    </button>
+  </div>
+
+  @if (obtenirMessageErreur(); as message) {
+    <p [id]="'erreurBilan_' + bilan().id" class="bilan-form__erreur" role="alert">
+      {{ message }}
+    </p>
+  }
+
+  <div class="bilan-form__textes">
+    <mc-editeur-riche
+      [id]="'champBilanBilans_' + bilan().id"
+      [label]="LIBELLES.bilans.labelBilans"
+      [formControl]="form.controls.bilans"
+    />
+    <mc-editeur-riche
+      [id]="'champBilanBesoins_' + bilan().id"
+      [label]="LIBELLES.bilans.labelBesoinsSpecifiques"
+      [formControl]="form.controls.besoinsSpecifiques"
+    />
+    <mc-editeur-riche
+      [id]="'champBilanMoyens_' + bilan().id"
+      [label]="LIBELLES.bilans.labelMoyens"
+      [formControl]="form.controls.moyens"
+    />
+  </div>
+
+  <table class="mc-tableau-bilan">
+    <thead>
+      <tr>
+        <th scope="col">{{ LIBELLES.bilans.colonneCompetence }}</th>
+        <th scope="col">{{ LIBELLES.bilans.colonneEvaluation }}</th>
+        <th scope="col">{{ LIBELLES.bilans.colonneCommentaire }}</th>
+        <th scope="col">
+          <span class="sr-only">{{ LIBELLES.bilans.colonneActions }}</span>
+          <button
+            [id]="'btnAjouterEvaluation_' + bilan().id"
+            type="button"
+            class="mc-btn-ajouter"
+            [attr.aria-label]="LIBELLES.bilans.ariaAjouterEvaluation"
+            (click)="ajouterEvaluation()"
+          >
+            {{ LIBELLES.bilans.boutonAjouterEvaluation }}
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (ligne of lignes; track ligne; let i = $index) {
+        <tr [formGroup]="ligne">
+          <td>
+            <label class="sr-only" [for]="'rechercheCompetences_' + bilan().id + '_' + i">
+              {{ LIBELLES.bilans.ariaCompetence + (i + 1) }}
+            </label>
+            <mc-selecteur-competences
+              [contexteId]="'_' + bilan().id + '_' + i"
+              [racineId]="sousDomaineId()"
+              [multiSelection]="false"
+              [competencesSelectionnees]="obtenirSelectionLigne(ligne)"
+              [mcAutoFocus]="i === indexAFocaliser()"
+              (selectionChange)="choisirCompetence(ligne, $event)"
+            />
+          </td>
+          <td>
+            <select
+              [id]="'champEvaluationStatut_' + bilan().id + '_' + i"
+              class="mc-tableau-bilan__select"
+              formControlName="statutAcquisitionId"
+              [attr.aria-label]="LIBELLES.bilans.ariaEvaluation + (i + 1)"
+            >
+              <option value="">{{ LIBELLES.bilans.texteVide }}</option>
+              @for (option of optionsStatut(); track option.valeur) {
+                <option [value]="option.valeur">{{ option.libelle }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <textarea
+              [id]="'champEvaluationCommentaire_' + bilan().id + '_' + i"
+              class="mc-textarea"
+              rows="2"
+              formControlName="commentaire"
+              [attr.aria-label]="LIBELLES.bilans.ariaCommentaire + (i + 1)"
+            ></textarea>
+          </td>
+          <td>
+            <button
+              [id]="'btnSupprimerEvaluation_' + bilan().id + '_' + i"
+              type="button"
+              class="mc-btn-supprimer"
+              [attr.aria-label]="LIBELLES.commun.supprimer + ' ' + LIBELLES.bilans.ariaEvaluation + (i + 1)"
+              (click)="supprimerEvaluation(i)"
+            >
+              {{ LIBELLES.commun.supprimer }}
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="4" class="mc-tableau-bilan__vide">{{ LIBELLES.bilans.aucuneEvaluation }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</fieldset>

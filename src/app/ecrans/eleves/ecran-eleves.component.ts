@@ -15,6 +15,7 @@ import { McOngletsComponent } from '../../composants/mc-onglets/mc-onglets.compo
 import { PopinAvertissementComponent } from '../../composants/popins/popin-avertissement/popin-avertissement.component';
 import { FeFicheEleveComponent } from './fe-fiche-eleve/fe-fiche-eleve.component';
 import { FeFormulaireEleveComponent } from './fe-formulaire-eleve/fe-formulaire-eleve.component';
+import { FeOngletBilansComponent } from './fe-onglet-bilans/fe-onglet-bilans.component';
 import type { Eleve } from '../../modeles/eleve.modele';
 import type { Onglet } from '../../modeles/composants.modele';
 
@@ -34,6 +35,7 @@ import type { Onglet } from '../../modeles/composants.modele';
     PopinAvertissementComponent,
     FeFicheEleveComponent,
     FeFormulaireEleveComponent,
+    FeOngletBilansComponent,
   ],
   templateUrl: './ecran-eleves.component.html',
   styleUrl: './ecran-eleves.component.scss',
@@ -72,6 +74,9 @@ export class EcranElevesComponent extends EcranEditionGardeeBase {
   /** Onglet affiché dans la colonne droite, conservé lors d'un changement d'élève. */
   protected readonly ongletActif = signal(EcranElevesComponent.ONGLET_FICHE_ADMINISTRATIVE);
 
+  /** `true` si un bilan est en cours d'édition dans l'onglet Bilans. */
+  protected readonly bilanEnEdition = signal(false);
+
   /** `true` si le focus doit se placer sur le bouton MODIFIER à la prochaine apparition de la fiche. */
   protected readonly focusModifierDemande = signal(false);
 
@@ -104,6 +109,11 @@ export class EcranElevesComponent extends EcranEditionGardeeBase {
   /** Liste des statuts élève du référentiel. */
   protected readonly statutsEleve = computed(() => this.donnees()?.referentiels.statutsEleve ?? []);
 
+  /** Liste des statuts d'acquisition du référentiel. */
+  protected readonly statutsAcquisition = computed(
+    () => this.donnees()?.referentiels.statutsAcquisition ?? [],
+  );
+
   /** Liste des types de contact du référentiel. */
   protected readonly typesContact = computed(() => this.donnees()?.referentiels.typesContact ?? []);
 
@@ -133,6 +143,28 @@ export class EcranElevesComponent extends EcranEditionGardeeBase {
    */
   protected creerEleve(): void {
     this.executerOuAvertir(() => this.activerCreation());
+  }
+
+  /**
+   * Une saisie est en cours dans le formulaire de l'élève ou dans un bilan.
+   * @returns `true` si quitter la saisie demande confirmation.
+   */
+  protected override verifierEditionEnCours(): boolean {
+    return this.enModeEdition() || this.bilanEnEdition();
+  }
+
+  /** Abandonne le formulaire de l'élève et le bilan en cours d'édition. */
+  protected override abandonnerEdition(): void {
+    super.abandonnerEdition();
+    this.bilanEnEdition.set(false);
+  }
+
+  /**
+   * Mémorise l'état d'édition des bilans, signalé par l'onglet Bilans.
+   * @param enEdition `true` si un bilan est en édition.
+   */
+  protected traiterEditionBilan(enEdition: boolean): void {
+    this.bilanEnEdition.set(enEdition);
   }
 
   /**

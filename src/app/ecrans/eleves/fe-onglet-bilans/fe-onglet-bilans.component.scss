@@ -1,0 +1,89 @@
+:host {
+  display: block;
+}
+
+.onglet-bilans {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.onglet-bilans__entete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.onglet-bilans__titre {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.onglet-bilans__ajout {
+  min-width: 0;
+  margin: 0;
+  padding: 0.75rem 1rem 1rem;
+  border: 1px solid var(--bordure);
+  border-radius: 6px;
+  background: var(--fond-section);
+}
+
+.onglet-bilans__ajout-titre {
+  padding: 0 0.25rem;
+  font-weight: 600;
+}
+
+.onglet-bilans__ajout-ligne {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.onglet-bilans__selecteur {
+  flex: 1 1 20rem;
+  min-width: 0;
+}
+
+.onglet-bilans__sous-domaine {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.onglet-bilans__sous-domaine-entete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--bordure);
+}
+
+.onglet-bilans__sous-domaine-titre {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.onglet-bilans__sous-domaine-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.onglet-bilans__liste {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.onglet-bilans__vide {
+  margin: 0;
+  color: var(--texte-secondaire);
+  font-style: italic;
+}

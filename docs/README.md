@@ -58,7 +58,7 @@ Un plan par évolution ou chantier. La numérotation est historique ; le 13 est 
 | [22](plans/22-formulaires-reactive-forms.md) | Formulaires Élèves, Projets et Paramétrage en Reactive Forms (3 incréments, suivi des lignes par instance de `FormGroup`) | terminé le 2026-09-27 |
 | [23](plans/23-parametrage-saisies-identifiants-absences.md) | Paramétrage : saisies conservées au rechargement, identifiants figés et uniques, avertissement de navigation ; plage horaire des absences récurrentes | terminé le 2026-09-28 |
 | [24](plans/24-eleves-autorisations-informations-utiles.md) | Élèves : autorisations structurées (droit à l'image, baignade, sortie régulière) et section « Informations utiles » (lunettes, AESH, latéralité), migration 2026.09.7 | terminé le 2026-09-28 |
-| [25](plans/25-eleves-onglets-bilans.md) | Pluriels du menu ; Élèves en onglets (Fiche administrative / Bilans par sous-domaine, Tiptap) ; suppression PPI et bulletins (5 incréments) | en cours |
+| [25](plans/25-eleves-onglets-bilans.md) | Pluriels du menu ; Élèves en onglets (Fiche administrative / Bilans par sous-domaine, Tiptap) ; suppression PPI et bulletins (5 incréments) | terminé le 2026-10-23 |
 
 ## Audits
 

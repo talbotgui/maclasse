@@ -36,6 +36,32 @@ testAvecDonnees(
 );
 
 testAvecDonnees(
+  'RGAA-26 — AXE : élèves, onglet Bilans (ajout, édition, lecture)',
+  async ({ appAvecDonnees }) => {
+    const base = new SelecteursBase(appAvecDonnees);
+    const eleves = new SelecteursEleves(appAvecDonnees);
+    await base.navEleves.click();
+    await eleves.btnEleveMartinot.click();
+    await eleves.ongletBilans.click();
+    expect(await VerificateurAccessibilite.lister(appAvecDonnees), 'onglet vide').toEqual([]);
+
+    await eleves.champSousDomaine.fill('Respecter autrui');
+    await eleves.premiereSuggestionCompetence.click();
+    await eleves.btnAjouterSousDomaine.click();
+    await eleves.champTitreBilan.fill('Bilan AXE');
+    await eleves.btnAjouterEvaluation.click();
+    expect(await VerificateurAccessibilite.lister(appAvecDonnees), 'édition').toEqual([]);
+
+    await eleves.champCompetenceEvaluation0.click();
+    await eleves.premiereSuggestionCompetence.click();
+    await eleves.selectStatutEvaluation0.selectOption('A');
+    await eleves.btnValiderBilan.click();
+    await expect(eleves.tableauxBilans).toBeVisible();
+    expect(await VerificateurAccessibilite.lister(appAvecDonnees), 'lecture').toEqual([]);
+  },
+);
+
+testAvecDonnees(
   'RGAA-04 — AXE : projets (liste, formulaire de création)',
   async ({ appAvecDonnees }) => {
     const base = new SelecteursBase(appAvecDonnees);

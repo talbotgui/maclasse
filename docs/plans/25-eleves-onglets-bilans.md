@@ -13,7 +13,7 @@ related:
 
 # Plan 25 — Menu au pluriel + écran Élèves en onglets (Fiche administrative / Bilans)
 
-**Statut : en cours.** Analyse, décisions et plan validés le 2026-10-23. Incréments 1 à 4 réalisés le 2026-10-23.
+**Statut : terminé le 2026-10-23.** Analyse, décisions et plan validés le 2026-10-23 ; incréments 1 à 5 réalisés le 2026-10-23. Écarts au plan : `mc-onglets` et `mc-editeur-riche` dans `composants/` à la demande de l'utilisateur ; un nouveau bilan reste un brouillon d'écran jusqu'à VALIDER (`BilanService.enregistrerBilan`) ; dans un sous-arbre, la liste des compétences s'ouvre au clic ou à ↓ et non au focus (contrôle AXE) ; le cadre de sous-domaine est intégré à `fe-onglet-bilans` (pas de composant `fe-sous-domaine`) ; le sélecteur d'une ligne propose aussi les compétences déjà évaluées, le doublon étant bloqué par un message à VALIDER. Les bilans ajoutent environ 330 kB (90 kB compressés) au chunk paresseux de l'écran Élèves (Tiptap/ProseMirror).
 
 ## Contexte
 

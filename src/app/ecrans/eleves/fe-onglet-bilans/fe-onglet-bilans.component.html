@@ -1,0 +1,109 @@
+<div class="onglet-bilans">
+  <div class="onglet-bilans__entete">
+    <h2 class="onglet-bilans__titre">
+      {{ eleve().nom | uppercase }}&nbsp;{{ eleve().prenom }}
+    </h2>
+    <button
+      id="btnImprimerBilans"
+      type="button"
+      class="mc-btn-fantome"
+      [disabled]="sections().length === 0"
+      (click)="onImprimer()"
+    >
+      {{ LIBELLES.bilans.boutonImprimer }}
+    </button>
+  </div>
+
+  <fieldset class="onglet-bilans__ajout">
+    <legend class="onglet-bilans__ajout-titre">{{ LIBELLES.bilans.titreAjout }}</legend>
+    <label class="sr-only" for="rechercheCompetencesSousDomaine">
+      {{ LIBELLES.bilans.titreAjout }}
+    </label>
+    <div class="onglet-bilans__ajout-ligne">
+      <mc-selecteur-competences
+        class="onglet-bilans__selecteur"
+        contexteId="SousDomaine"
+        [niveau]="niveauSousDomaine"
+        [separateur]="separateurLibelle"
+        [multiSelection]="false"
+        [competencesSelectionnees]="sousDomaineChoisi() ? [sousDomaineChoisi()!] : []"
+        (selectionChange)="choisirSousDomaine($event)"
+      />
+      <button
+        id="btnAjouterSousDomaine"
+        type="button"
+        class="mc-btn-primaire"
+        [disabled]="!sousDomaineChoisi() || edition() !== null"
+        (click)="ajouterBilan()"
+      >
+        {{ LIBELLES.bilans.boutonAjouter }}
+      </button>
+    </div>
+  </fieldset>
+
+  @for (section of sections(); track section.sousDomaineId) {
+    <section
+      class="onglet-bilans__sous-domaine"
+      [attr.aria-label]="LIBELLES.bilans.ariaSousDomaine + section.libelle"
+    >
+      <div class="onglet-bilans__sous-domaine-entete">
+        <h3 [id]="'titreSousDomaine_' + section.sousDomaineId" class="onglet-bilans__sous-domaine-titre">
+          {{ section.libelle }}
+        </h3>
+        <div class="onglet-bilans__sous-domaine-actions">
+          <button
+            [id]="'btnToutDeplier_' + section.sousDomaineId"
+            type="button"
+            class="mc-btn-fantome mc-btn-sm"
+            (click)="deplierTout(section, true)"
+          >
+            {{ LIBELLES.bilans.boutonToutDeplier }}
+          </button>
+          <button
+            [id]="'btnToutReplier_' + section.sousDomaineId"
+            type="button"
+            class="mc-btn-fantome mc-btn-sm"
+            (click)="deplierTout(section, false)"
+          >
+            {{ LIBELLES.bilans.boutonToutReplier }}
+          </button>
+        </div>
+      </div>
+
+      <ul class="onglet-bilans__liste">
+        @for (bilan of section.bilans; track bilan.id; let i = $index) {
+          <li>
+            @if (estEnEdition(bilan.id)) {
+              <fe-bilan-formulaire
+                [bilan]="edition()!.bilan"
+                [sousDomaineId]="section.sousDomaineId"
+                [statutsAcquisition]="statutsAcquisition()"
+                [focusDemande]="true"
+                (valider)="validerBilan(section.sousDomaineId, $event)"
+                (annuler)="annulerEdition()"
+              />
+            } @else {
+              <fe-bilan
+                [bilan]="bilan"
+                [statutsAcquisition]="statutsAcquisition()"
+                [deplie]="deplies().has(bilan.id)"
+                [actionsDesactivees]="edition() !== null"
+                [peutMonter]="i > 0"
+                [peutDescendre]="i < section.nombreEnregistres - 1"
+                [focusDemande]="focusModifierId() === bilan.id"
+                (basculer)="basculerBilan(bilan.id)"
+                (modifier)="modifierBilan(section.sousDomaineId, bilan)"
+                (dupliquer)="dupliquerBilan(section.sousDomaineId, bilan.id)"
+                (monter)="deplacerBilan(section.sousDomaineId, bilan.id, -1)"
+                (descendre)="deplacerBilan(section.sousDomaineId, bilan.id, 1)"
+                (supprimer)="supprimerBilan(section.sousDomaineId, bilan.id)"
+              />
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  } @empty {
+    <p class="onglet-bilans__vide">{{ LIBELLES.eleve.aucunBilan }}</p>
+  }
+</div>

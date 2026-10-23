@@ -20,6 +20,54 @@ export class SelecteursEleves extends SelecteursBase {
   /** Panneau de l'onglet Bilans. */
   public readonly panneauBilans: Locator;
 
+  // --- Onglet Bilans (identifiants de bilan aléatoires : ciblage par préfixe et index fixe) ---
+  /** Champ de recherche du sous-domaine à ajouter. */
+  public readonly champSousDomaine: Locator;
+  /** Bouton AJOUTER du cadre « Ajouter un sous-domaine ». */
+  public readonly btnAjouterSousDomaine: Locator;
+  /** Première suggestion du sélecteur de compétences ouvert. */
+  public readonly premiereSuggestionCompetence: Locator;
+  /** Titres des cadres de sous-domaine. */
+  public readonly titresSousDomaines: Locator;
+  /** Bouton TOUT DÉPLIER du premier sous-domaine. */
+  public readonly btnToutDeplier: Locator;
+  /** Champ Titre du bilan en édition. */
+  public readonly champTitreBilan: Locator;
+  /** Zone éditable « Bilans » du bilan en édition. */
+  public readonly zoneTexteBilans: Locator;
+  /** Bouton Gras de l'éditeur « Bilans ». */
+  public readonly btnGrasBilans: Locator;
+  /** Bouton AJOUTER une évaluation du bilan en édition. */
+  public readonly btnAjouterEvaluation: Locator;
+  /** Champ compétence de la première évaluation. */
+  public readonly champCompetenceEvaluation0: Locator;
+  /** Liste du statut de la première évaluation. */
+  public readonly selectStatutEvaluation0: Locator;
+  /** Commentaire de la première évaluation. */
+  public readonly champCommentaireEvaluation0: Locator;
+  /** Bouton VALIDER du bilan en édition. */
+  public readonly btnValiderBilan: Locator;
+  /** Bouton ANNULER du bilan en édition. */
+  public readonly btnAnnulerBilan: Locator;
+  /** Message d'erreur du bilan en édition. */
+  public readonly erreurBilan: Locator;
+  /** Boutons de bascule des bilans en lecture (date et titre). */
+  public readonly basculesBilans: Locator;
+  /** Corps des bilans en lecture. */
+  public readonly corpsBilans: Locator;
+  /** Tableaux d'évaluations des bilans en lecture. */
+  public readonly tableauxBilans: Locator;
+  /** Boutons MODIFIER des bilans en lecture. */
+  public readonly btnsModifierBilan: Locator;
+  /** Boutons DUPLIQUER des bilans en lecture. */
+  public readonly btnsDupliquerBilan: Locator;
+  /** Boutons MONTER des bilans en lecture. */
+  public readonly btnsMonterBilan: Locator;
+  /** Boutons SUPPRIMER (premier état) des bilans en lecture. */
+  public readonly btnsSupprimerBilan: Locator;
+  /** Bouton CONFIRMER de la suppression d'un bilan. */
+  public readonly btnConfirmerSuppressionBilan: Locator;
+
   // --- Formulaire élève ---
   /** Champ Prénom dans le bandeau du formulaire. */
   public readonly champPrenom: Locator;
@@ -132,6 +180,36 @@ export class SelecteursEleves extends SelecteursBase {
     this.ongletFicheAdministrative = page.locator('#ongletFicheAdministrative');
     this.ongletBilans = page.locator('#ongletBilans');
     this.panneauBilans = page.locator('#panneauBilans');
+
+    this.champSousDomaine = page.locator('#rechercheCompetencesSousDomaine');
+    this.btnAjouterSousDomaine = page.locator('#btnAjouterSousDomaine');
+    this.premiereSuggestionCompetence = page.locator('.mc-selecteur-competences__option').first();
+    this.titresSousDomaines = page.locator('.onglet-bilans__sous-domaine-titre');
+    this.btnToutDeplier = page.locator('[id^="btnToutDeplier_"]').first();
+    this.champTitreBilan = page.locator('[id^="champBilanTitre_"][id$="-input"]');
+    this.zoneTexteBilans = page.locator('[id^="champBilanBilans_"][id$="Saisie"]');
+    this.btnGrasBilans = page.locator('[id^="btnGras_champBilanBilans_"]');
+    this.btnAjouterEvaluation = page.locator('[id^="btnAjouterEvaluation_"]');
+    this.champCompetenceEvaluation0 = page.locator('[id^="rechercheCompetences_"][id$="_0"]');
+    this.selectStatutEvaluation0 = page.locator('[id^="champEvaluationStatut_"][id$="_0"]');
+    this.champCommentaireEvaluation0 = page.locator(
+      '[id^="champEvaluationCommentaire_"][id$="_0"]',
+    );
+    this.btnValiderBilan = page.locator('[id^="btnValiderBilan_"]');
+    this.btnAnnulerBilan = page.locator('[id^="btnAnnulerBilan_"]');
+    this.erreurBilan = page.locator('[id^="erreurBilan_"]');
+    this.basculesBilans = page.locator('[id^="btnBasculerBilan_"]');
+    this.corpsBilans = page.locator('[id^="corpsBilan_"]');
+    this.tableauxBilans = page.locator('fe-bilan .mc-tableau-bilan');
+    this.btnsModifierBilan = page.locator('[id^="btnModifierBilan_"]');
+    this.btnsDupliquerBilan = page.locator('[id^="btnDupliquerBilan_"]');
+    this.btnsMonterBilan = page.locator('[id^="btnMonterBilan_"]');
+    this.btnsSupprimerBilan = page.locator(
+      '[id^="btnSupprimerBilan_"]:not([id$="_annuler"]):not([id$="_confirmer"]):not([id$="_desc"])',
+    );
+    this.btnConfirmerSuppressionBilan = page.locator(
+      '[id^="btnSupprimerBilan_"][id$="_confirmer"]',
+    );
 
     this.champPrenom = page.locator('#champFormPrenom input');
     this.champNom = page.locator('#champFormNom input');

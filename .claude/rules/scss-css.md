@@ -55,6 +55,8 @@ Vérifier dans `styles.scss` avant d'écrire du CSS de composant :
 | `mc-textarea` | Zone de texte standalone |
 | `mc-disc-pill` | Badge statique de discipline |
 | `mc-btn-ajouter` / `mc-btn-supprimer` | Boutons inline d'ajout/suppression |
+| `mc-tableau-bilan` / `mc-tableau-bilan__vide` | Tableau des évaluations d'un bilan (lecture et édition) |
+| `mc-texte-riche` | Affichage en lecture du HTML produit par `mc-editeur-riche` |
 
 ## Règles d'impression
 

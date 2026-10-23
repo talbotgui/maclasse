@@ -99,7 +99,12 @@
         [hidden]="ongletActif() !== ongletBilans"
       >
         @if (eleveSelectionne() && ongletActif() === ongletBilans) {
-          <p class="eleves__vide">{{ LIBELLES.eleve.aucunBilan }}</p>
+          <fe-onglet-bilans
+            [eleve]="eleveSelectionne()!"
+            [statutsAcquisition]="statutsAcquisition()"
+            (editionChange)="traiterEditionBilan($event)"
+            (imprimer)="imprimer()"
+          />
         }
       </div>
     }

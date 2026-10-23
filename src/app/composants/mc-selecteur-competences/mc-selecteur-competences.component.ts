@@ -158,8 +158,18 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
     this.estOuvert.set(!!valeur.trim() || !!this.racineId());
   }
 
-  /** Rouvre les suggestions (focus ou clic) si une saisie est présente, ou toujours dans un sous-arbre (`racineId`). */
+  /** Rouvre les suggestions si une saisie est déjà présente lors du focus. */
   protected surFocus(): void {
+    if (this.saisie().trim()) {
+      this.estOuvert.set(true);
+    }
+  }
+
+  /**
+   * Ouvre les suggestions au clic dans le champ : toujours dans un sous-arbre (`racineId`),
+   * sinon seulement si une saisie est présente.
+   */
+  protected surClic(): void {
     if (this.saisie().trim() || this.racineId()) {
       this.estOuvert.set(true);
     }

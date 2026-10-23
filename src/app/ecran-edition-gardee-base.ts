@@ -25,7 +25,7 @@ export abstract class EcranEditionGardeeBase implements AvecNavigationGardee {
    * @param action Action à exécuter (sélection d'un élément, ouverture de la création…).
    */
   protected executerOuAvertir(action: () => void): void {
-    if (this.enModeEdition()) {
+    if (this.verifierEditionEnCours()) {
       this.actionEnAttente = action;
       this.popinAvertissementVisible.set(true);
     } else {
@@ -43,7 +43,7 @@ export abstract class EcranEditionGardeeBase implements AvecNavigationGardee {
       this.actionEnAttente?.();
       this.actionEnAttente = null;
     }
-    this.enModeEdition.set(false);
+    this.abandonnerEdition();
   }
 
   /** Annule l'avertissement et reste sur le formulaire. */
@@ -54,6 +54,20 @@ export abstract class EcranEditionGardeeBase implements AvecNavigationGardee {
       this.resolveGarde = null;
     }
     this.actionEnAttente = null;
+  }
+
+  /**
+   * Indique si une saisie non enregistrée est en cours. Un écran qui porte d'autres
+   * saisies que le formulaire principal (ex. bilans des élèves) la redéfinit.
+   * @returns `true` si quitter la saisie demande confirmation.
+   */
+  protected verifierEditionEnCours(): boolean {
+    return this.enModeEdition();
+  }
+
+  /** Abandonne la saisie en cours après confirmation de la popin d'avertissement. */
+  protected abandonnerEdition(): void {
+    this.enModeEdition.set(false);
   }
 
   /** Active le mode édition de l'élément sélectionné. */
@@ -73,7 +87,7 @@ export abstract class EcranEditionGardeeBase implements AvecNavigationGardee {
    * @returns Promesse résolue à `true` pour autoriser la navigation.
    */
   public confirmerNavigation(): Promise<boolean> {
-    if (!this.enModeEdition()) return Promise.resolve(true);
+    if (!this.verifierEditionEnCours()) return Promise.resolve(true);
     return new Promise<boolean>((resolve) => {
       this.resolveGarde = resolve;
       this.popinAvertissementVisible.set(true);

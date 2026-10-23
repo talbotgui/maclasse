@@ -198,13 +198,74 @@ En lecture, les informations sont affichées sous forme de liste (cases cochées
 
 ## Onglet Bilans
 
-*Contenu livré par l'incrément 5 du [plan 25](../../plans/25-eleves-onglets-bilans.md).* En attendant, l'onglet affiche « Aucun bilan pour cet élève. ».
+Composant `fe-onglet-bilans`. Les bilans de l'élève sont regroupés par **sous-domaine**, compétence de niveau 3 de l'arbre (modèle : [bilans d'un élève](../modeles-donnees.md#bilans-dun-élève), service : [`BilanService`](../services.md#bilanservice)).
+
+### Bandeau
+
+- Titre `h2` : NOM Prénom de l'élève
+- Bouton **IMPRIMER LES BILANS** (`btnImprimerBilans`), inactif sans bilan : imprime l'onglet, tous les bilans dépliés, sans cadre d'ajout ni boutons (`@media print`)
+
+### Cadre « Ajouter un sous-domaine »
+
+- `mc-selecteur-competences` en sélection unique, limité au **niveau 3** des domaines actifs, libellé `Domaine > Niveau 2 > Sous-domaine` (champ `rechercheCompetencesSousDomaine`)
+- Bouton **AJOUTER** (`btnAjouterSousDomaine`), inactif sans sous-domaine choisi ou pendant l'édition d'un bilan
+- AJOUTER ouvre un **nouveau bilan en édition** à la fin du sous-domaine (le cadre du sous-domaine est créé s'il n'existe pas) : sans titre, daté du jour, focus sur le titre. C'est le seul point d'entrée pour créer un bilan, y compris un 2e bilan d'un sous-domaine déjà présent
+- Le nouveau bilan n'est **enregistré qu'à VALIDER** ; ANNULER le fait disparaître (avec son cadre s'il était seul), sans entrée UNDO
+
+### Cadre de sous-domaine
+
+- Titre `h3` : libellé complet du sous-domaine (son identifiant s'il n'est plus dans les domaines actifs)
+- Boutons **TOUT DÉPLIER** / **TOUT REPLIER** (`btnToutDeplier_<id>`, `btnToutReplier_<id>`)
+- Liste des bilans dans l'ordre enregistré ; le cadre disparaît avec son dernier bilan
+
+### Bilan en lecture (`fe-bilan`)
+
+Zone repliable, **repliée par défaut** (dépliée après VALIDER).
+
+| Élément | Détail |
+|---|---|
+| Bouton de bascule (`btnBasculerBilan_<id>`, `h4`) | Date et titre (« (sans titre) » par défaut), `aria-expanded`, `aria-controls="corpsBilan_<id>"` |
+| **MODIFIER** | Passe le bilan en édition ; reçoit le focus au retour d'édition |
+| **DUPLIQUER** | Copie du bilan ajoutée à la fin du sous-domaine (1 entrée UNDO) |
+| **MONTER** / **DESCENDRE** | Échange avec le bilan voisin, effet immédiat (1 entrée UNDO) ; désactivés aux extrémités |
+| **SUPPRIMER** | `mc-bouton-destruction [petit]="true"` |
+
+Corps : trois cadres **Bilans**, **Besoins spécifiques**, **Moyens** (HTML, « — » si vide) sur une ligne en écran large et empilés sous 900 px ; puis le tableau Compétence / Évaluation / Commentaire **sans colonne d'actions**. La compétence est affichée relativement au sous-domaine (niveaux 4 et suivants), l'évaluation par son badge (`mc-badge-statut`) et son libellé.
+
+Toutes les actions sont désactivées pendant l'édition d'un bilan : **un seul bilan est en édition à la fois**.
+
+### Bilan en édition (`fe-bilan-formulaire`, Reactive Forms)
+
+`fieldset` dont la légende porte les champs **Titre** (obligatoire) et **Date**.
+
+- **VALIDER** (inactif tant que le formulaire est invalide) enregistre le bilan (1 entrée UNDO) ; **ANNULER** abandonne la saisie
+- Messages `role="alert"` : titre obligatoire (une fois le champ modifié ou quitté), évaluation sans compétence, compétence évaluée deux fois
+- Trois `mc-editeur-riche` **Bilans**, **Besoins spécifiques**, **Moyens**, sur une ligne en écran large, empilés sous 900 px
+- Tableau des évaluations, lignes directement éditables :
+
+| Colonne | Contrôle |
+|---|---|
+| Compétence | `mc-selecteur-competences` limité aux **feuilles du sous-domaine**, ouvert au clic ou à ↓, libellé masqué « Compétence de la ligne N » ; une compétence déjà évaluée reste proposée, le doublon est signalé et bloque VALIDER |
+| Évaluation | `<select>` des statuts d'acquisition du paramétrage (« glyphe libellé »), option vide = non renseignée |
+| Commentaire | `<textarea>` simple |
+| Actions | En-tête : **AJOUTER** (nouvelle ligne, focus sur sa compétence) ; ligne : **SUPPRIMER** |
+
+### Focus et cohérence
+
+- Après VALIDER ou ANNULER d'un bilan enregistré : focus sur son bouton MODIFIER
+- Après ANNULER d'un nouveau bilan : focus sur le champ du cadre d'ajout
+- Après SUPPRIMER : focus sur le bouton de bascule du bilan suivant (ou précédent) du sous-domaine, sinon sur le champ du cadre d'ajout
+- Si le bilan modifié disparaît des données pendant la saisie (ANNULER de l'entête), l'édition se ferme ; un nouveau bilan, non enregistré, est conservé
+
+### Garde
+
+Un bilan en édition déclenche la popin d'avertissement au changement d'élève, d'onglet ou d'écran. CONFIRMER abandonne la saisie ; un changement d'élève replie aussi les bilans.
 
 ---
 
 ## Popin d'avertissement (formulaire non enregistré)
 
-Déclenchée dans quatre cas :
+Déclenchée par un formulaire de fiche administrative ou un bilan en cours d'édition, dans quatre cas :
 - Clic sur un autre élève dans la liste
 - Clic sur le bouton CRÉER
 - Changement d'onglet

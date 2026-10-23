@@ -276,6 +276,44 @@ describe('EcranElevesComponent', () => {
     });
   });
 
+  describe('bilan en édition', () => {
+    it('affiche l’onglet Bilans de l’élève sélectionné', () => {
+      (component as any).selectionnerEleve(alice);
+      (component as any).selectionnerOnglet('Bilans');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('fe-onglet-bilans')).not.toBeNull();
+    });
+
+    it('demande confirmation avant de changer d’élève, puis abandonne le bilan', () => {
+      (component as any).selectionnerEleve(alice);
+      (component as any).traiterEditionBilan(true);
+
+      (component as any).selectionnerEleve(bob);
+      expect((component as any).popinAvertissementVisible()).toBe(true);
+      expect(contexteService.eleveSelectionne()).toBe('e1');
+
+      (component as any).confirmerAvertissement();
+      expect(contexteService.eleveSelectionne()).toBe('e2');
+      expect((component as any).bilanEnEdition()).toBe(false);
+    });
+
+    it('protège la navigation vers un autre écran', async () => {
+      (component as any).traiterEditionBilan(true);
+      const promesse = component.confirmerNavigation();
+      expect((component as any).popinAvertissementVisible()).toBe(true);
+      (component as any).annulerAvertissement();
+      expect(await promesse).toBe(false);
+      expect((component as any).bilanEnEdition()).toBe(true);
+    });
+
+    it('ne demande plus de confirmation une fois l’édition terminée', () => {
+      (component as any).traiterEditionBilan(true);
+      (component as any).traiterEditionBilan(false);
+      (component as any).selectionnerEleve(bob);
+      expect((component as any).popinAvertissementVisible()).toBe(false);
+    });
+  });
+
   describe('confirmerNavigation', () => {
     it('retourne true immédiatement si pas en édition', async () => {
       const result = await component.confirmerNavigation();

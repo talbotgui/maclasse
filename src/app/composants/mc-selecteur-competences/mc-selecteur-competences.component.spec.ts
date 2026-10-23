@@ -325,19 +325,23 @@ describe('McSelecteurCompetencesComponent', () => {
       expect(libelles()).toEqual(['Français › Cycle 2 › Écrire']);
     });
 
-    it('niveau : rien n’est proposé sans saisie', () => {
+    it('niveau : rien n’est proposé sans saisie, même au clic', () => {
       hote.niveau.set(3);
       fixture.detectChanges();
-      champSaisie().dispatchEvent(new Event('focus'));
+      champSaisie().dispatchEvent(new Event('click'));
       fixture.detectChanges();
 
       expect(suggestions()).toHaveLength(0);
     });
 
-    it('racineId : propose toutes les feuilles du sous-arbre dès le focus, sans filtre de domaine', () => {
+    it('racineId : propose toutes les feuilles du sous-arbre au clic, sans filtre de domaine', () => {
       hote.racineId.set('FR-C2-L');
       fixture.detectChanges();
       champSaisie().dispatchEvent(new Event('focus'));
+      fixture.detectChanges();
+      expect(suggestions()).toHaveLength(0);
+
+      champSaisie().dispatchEvent(new Event('click'));
       fixture.detectChanges();
 
       expect(suggestions().map((o) => o.id)).toEqual([
@@ -360,7 +364,7 @@ describe('McSelecteurCompetencesComponent', () => {
       hote.racineId.set('FR-C2-L');
       hote.multi = false;
       fixture.detectChanges();
-      champSaisie().dispatchEvent(new Event('focus'));
+      champSaisie().dispatchEvent(new Event('click'));
       fixture.detectChanges();
       suggestions()[0].click();
       fixture.detectChanges();

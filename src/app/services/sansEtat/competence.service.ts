@@ -66,6 +66,37 @@ export class CompetenceService {
   }
 
   /**
+   * Liste les nœuds situés à une profondeur donnée des domaines actifs, dans l'ordre de l'arbre.
+   * @param niveau Profondeur depuis la racine (1 = domaines).
+   * @returns Nœuds de ce niveau, ou `[]` si aucun.
+   */
+  public obtenirNoeudsDeNiveau(niveau: number): Competence[] {
+    const resultats: Competence[] = [];
+    const parcourir = (noeud: Competence, profondeur: number): void => {
+      if (profondeur === niveau) resultats.push(noeud);
+      else noeud.enfants?.forEach((enfant) => parcourir(enfant, profondeur + 1));
+    };
+    this.obtenirDomaines().forEach((domaine) => parcourir(domaine, 1));
+    return resultats;
+  }
+
+  /**
+   * Liste les feuilles (nœuds sans enfant) situées sous un nœud, dans l'ordre de l'arbre.
+   * Le nœud lui-même n'est jamais retourné.
+   * @param id Identifiant du nœud racine du sous-arbre.
+   * @returns Feuilles du sous-arbre, ou `[]` si le nœud est introuvable ou sans enfant.
+   */
+  public obtenirFeuilles(id: string): Competence[] {
+    const feuilles: Competence[] = [];
+    const parcourir = (noeud: Competence): void => {
+      if (noeud.enfants?.length) noeud.enfants.forEach(parcourir);
+      else feuilles.push(noeud);
+    };
+    this.obtenirChemin(id).at(-1)?.enfants?.forEach(parcourir);
+    return feuilles;
+  }
+
+  /**
    * Recherche dans tous les nœuds de l'arbre dont le libellé contient le terme.
    * La recherche est insensible à la casse et aux accents.
    * Retourne un tableau vide si le terme est vide ou composé uniquement d'espaces.

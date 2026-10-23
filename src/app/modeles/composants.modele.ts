@@ -94,3 +94,22 @@ export interface Onglet {
   /** `true` si l'onglet ne peut pas être sélectionné. */
   desactive?: boolean;
 }
+
+/** Nom Tiptap d'une mise en forme proposée par `mc-editeur-riche` (marque ou nœud). */
+export type NomMiseEnFormeTiptap = 'bold' | 'italic' | 'underline' | 'bulletList' | 'orderedList';
+
+/**
+ * Mise en forme proposée par la barre d'outils de `mc-editeur-riche`.
+ */
+export interface ActionEditeurRiche {
+  /** Identifiant de la mise en forme, suffixe des IDs de bouton (ex. : `"Gras"`). */
+  id: string;
+  /** Nom de la marque ou du nœud Tiptap testé pour l'état actif (ex. : `"bold"`). */
+  nomTiptap: NomMiseEnFormeTiptap;
+  /** Texte visible du bouton. */
+  libelle: string;
+  /** Nom accessible du bouton, ou `null` si le texte visible suffit. */
+  ariaLabel: string | null;
+  /** Infobulle du bouton. */
+  titre: string;
+}

@@ -1,0 +1,55 @@
+:host {
+  display: block;
+}
+
+.mc-editeur-riche__libelle {
+  font-weight: 600;
+}
+
+.mc-editeur-riche__barre {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+[id^='btnGras_'] {
+  font-weight: 700;
+}
+
+[id^='btnItalique_'] {
+  font-style: italic;
+}
+
+[id^='btnSouligne_'] {
+  text-decoration: underline;
+}
+
+.mc-editeur-riche__bouton[aria-pressed='true'] {
+  background: var(--chip-actif);
+}
+
+.mc-editeur-riche__zone {
+  border: 1px solid var(--bordure);
+  border-radius: 4px;
+  background: var(--fond-section);
+
+  // Zone créée par Tiptap, hors du template : atteinte via ::ng-deep.
+  ::ng-deep .mc-editeur-riche__contenu {
+    min-height: 6rem;
+    padding: 0.5rem;
+    color: var(--texte-principal);
+
+    &:focus-visible {
+      outline: 3px solid var(--couleur-focus);
+      outline-offset: 2px;
+    }
+
+    p {
+      margin: 0 0 0.5rem;
+    }
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+}

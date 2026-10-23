@@ -124,4 +124,45 @@ describe('CompetenceService', () => {
       expect(service.resoudreLibelle('INCONNU')).toBe('');
     });
   });
+
+  describe('nœuds de niveau et feuilles', () => {
+    beforeEach(() => {
+      const d = DonneesMother.base();
+      d.referentiels.competences = CompetenceMother.arbreQuatreNiveaux();
+      donneesService.charger(d);
+    });
+
+    it('liste les nœuds de la profondeur demandée, dans l’ordre de l’arbre', () => {
+      expect(service.obtenirNoeudsDeNiveau(1).map((c) => c.id)).toEqual(['FR', 'MA']);
+      expect(service.obtenirNoeudsDeNiveau(3).map((c) => c.id)).toEqual([
+        'FR-C2-L',
+        'FR-C2-E',
+        'MA-C2-N',
+      ]);
+    });
+
+    it('ne retourne aucun nœud au-delà de la profondeur de l’arbre', () => {
+      expect(service.obtenirNoeudsDeNiveau(6)).toEqual([]);
+    });
+
+    it('ne liste que les nœuds des domaines actifs', () => {
+      const d = DonneesMother.base();
+      d.referentiels.competences = CompetenceMother.arbreQuatreNiveaux();
+      d.configuration.domainesActifs = ['MA'];
+      donneesService.charger(d);
+      expect(service.obtenirNoeudsDeNiveau(3).map((c) => c.id)).toEqual(['MA-C2-N']);
+    });
+
+    it('liste les feuilles d’un sous-arbre, y compris sous un nœud intermédiaire', () => {
+      expect(service.obtenirFeuilles('FR-C2-L').map((c) => c.id)).toEqual([
+        'FR-C2-L-1',
+        'FR-C2-L-2-1',
+      ]);
+    });
+
+    it('retourne une liste vide pour un nœud inconnu ou une feuille', () => {
+      expect(service.obtenirFeuilles('inconnu')).toEqual([]);
+      expect(service.obtenirFeuilles('FR-C2-L-1')).toEqual([]);
+    });
+  });
 });

@@ -108,7 +108,23 @@ Une séance du cahier journal se supprime par ✕, sans ce composant (suppressio
 
 - Sélecteur de compétences **autocomplete** : filtre par domaine via chips + champ de saisie avec suggestions (libellé complet « domaine › sous-domaine › … ») + compétences sélectionnées affichées en chips avec bouton de suppression (✕)
 - Permet la sélection mono ou multi-compétences
-- Utilisé dans : Projets (période), Cahier journal (séance)
+- Inputs de restriction :
+  - `niveau` (`number | null`) : ne propose que les nœuds de cette profondeur (1 = domaines), filtrés sur le chemin complet
+  - `racineId` (`string | null`) : ne propose que les **feuilles** du sous-arbre de ce nœud ; les chips de domaine sont masquées et toutes les feuilles sont proposées au focus ou au clic dans le champ, même saisie effacée
+  - `separateur` (défaut `' › '`) : séparateur du chemin complet affiché
+- Utilisé dans : Projets (période), Cahier journal (séance) ; destiné à l'onglet Bilans des Élèves (choix du sous-domaine avec `niveau` 3 et `' > '`, compétence d'une évaluation avec `racineId`)
+
+### `mc-editeur-riche`
+
+Éditeur de texte riche construit sur **Tiptap** (`@tiptap/core`, `@tiptap/starter-kit`), `ControlValueAccessor` dérivé de `ChampBase`.
+
+- Valeur : HTML (`getHTML()`) ; un document sans texte vaut `''`. Une valeur écrite par le FormControl n'est pas renvoyée (`emitUpdate: false`). Désactiver le contrôle rend la zone non modifiable et les boutons inactifs
+- Mises en forme : gras, italique, souligné, liste à puces, liste numérotée (titres, blocs de code et liens désactivés)
+- Inputs : `id` (préfixe des IDs), `label` (libellé visible)
+- IDs : zone éditable `<id>Saisie` (`role="textbox"`, `aria-multiline`, `aria-labelledby="<id>Libelle"`), libellé `<id>Libelle`, boutons `btn<Action>_<id>` (`Gras`, `Italique`, `Souligne`, `ListePuces`, `ListeNumerotee`)
+- Barre de mise en forme : groupe nommé « Mise en forme — <libellé> », état de chaque bouton exposé par `aria-pressed` ; le focus revient dans la zone après un clic, sans marquer le champ « touché » (seule une sortie du composant le fait)
+- Désactivé : `contenteditable="false"` et `aria-disabled="true"` sur la zone
+- Destiné à : Élèves (onglet Bilans : Bilans, Besoins spécifiques, Moyens)
 
 ### `mc-arbre-competences`
 

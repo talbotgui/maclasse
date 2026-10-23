@@ -211,3 +211,4 @@ Le fichier `styles.scss` contient :
 | Tests | Vitest ; instanciation directe si possible, `TestBed` si `inject()` requis ; Object Mothers dans `tests/` ; E2E Playwright |
 | Polices | Locales dans `public/fonts/`, jamais de CDN |
 | Couleurs | Variables CSS uniquement, jamais de couleur hardcodée |
+| Texte riche | **Tiptap** (`@tiptap/core`, `@tiptap/starter-kit`, et `@tiptap/pm` requis par le cœur), encapsulé dans `mc-editeur-riche` ; versions **exactes** dans `package.json` (une version n'est retenue qu'après au moins deux semaines de publication) |

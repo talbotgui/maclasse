@@ -12,6 +12,8 @@ import { ComposantBase } from '../../composant-base';
 import { McChipFiltreComponent } from '../mc-chip-filtre/mc-chip-filtre.component';
 import { CompetenceService } from '../../services/sansEtat/competence.service';
 import type { OptionAutoComplete } from '../../modeles/composants.modele';
+import type { Competence } from '../../modeles/referentiels.modele';
+import { TexteUtils } from '../../utilitaires/texte.utils';
 
 /**
  * Sélecteur de compétences compact en trois zones :
@@ -42,6 +44,22 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
   /** `true` pour autoriser la sélection de plusieurs compétences simultanément. */
   public readonly multiSelection: InputSignal<boolean> = input(true);
 
+  /**
+   * Restreint les suggestions aux nœuds de cette profondeur (1 = domaines), ou `null`
+   * pour proposer tous les nœuds.
+   */
+  public readonly niveau: InputSignal<number | null> = input<number | null>(null);
+
+  /**
+   * Restreint les suggestions aux feuilles du sous-arbre de ce nœud, ou `null` pour
+   * proposer tout l'arbre. Les filtres par domaine sont alors masqués et toutes les
+   * feuilles sont proposées dès l'ouverture, sans saisie.
+   */
+  public readonly racineId: InputSignal<string | null> = input<string | null>(null);
+
+  /** Séparateur des niveaux dans le chemin complet affiché d'une compétence. */
+  public readonly separateur: InputSignal<string> = input(' › ');
+
   /** Émis avec la liste mise à jour des identifiants sélectionnés. */
   protected readonly selectionChange: OutputEmitterRef<string[]> = output<string[]>();
 
@@ -60,18 +78,41 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
   /** Identifiants des domaines actifs dans le filtre (Set vide = tous affichés). */
   private readonly domainesFiltres = signal<Set<string>>(new Set());
 
-  /** Domaines de niveau 1 disponibles. */
-  protected readonly domaines = computed(() => this.competenceService.obtenirDomaines());
+  /** Domaines de niveau 1 disponibles pour le filtre ; aucun quand la recherche est limitée à un sous-arbre. */
+  protected readonly domaines = computed(() =>
+    this.racineId() ? [] : this.competenceService.obtenirDomaines(),
+  );
+
+  /**
+   * Compétences candidates quand la recherche est restreinte (`racineId` ou `niveau`),
+   * ou `null` si toutes les compétences de l'arbre sont proposées.
+   */
+  private readonly candidats = computed<Competence[] | null>(() => {
+    const racineId = this.racineId();
+    if (racineId) return this.competenceService.obtenirFeuilles(racineId);
+    const niveau = this.niveau();
+    return niveau === null ? null : this.competenceService.obtenirNoeudsDeNiveau(niveau);
+  });
 
   /**
    * Options d'autocomplétion filtrées selon la saisie et les domaines actifs.
-   * Vide si le champ de saisie est vide.
+   * Vide si le champ de saisie est vide, sauf dans un sous-arbre (`racineId`)
+   * où toutes les feuilles sont proposées.
    */
   protected readonly suggestions = computed<OptionAutoComplete[]>(() => {
     const terme = this.saisie().trim();
-    if (!terme) return [];
-
-    let resultats = this.competenceService.rechercherCompetences(terme);
+    const candidats = this.candidats();
+    let resultats: Competence[];
+    if (!terme) {
+      resultats = this.racineId() && candidats ? candidats : [];
+    } else if (candidats) {
+      const t = TexteUtils.normaliserPourRecherche(terme);
+      resultats = candidats.filter((c) =>
+        TexteUtils.normaliserPourRecherche(this.construireChemin(c.id)).includes(t),
+      );
+    } else {
+      resultats = this.competenceService.rechercherCompetences(terme);
+    }
 
     const filtres = this.domainesFiltres();
     if (filtres.size > 0) {
@@ -81,10 +122,7 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
       });
     }
 
-    return resultats.map((c) => ({
-      id: c.id,
-      libelle: this.competenceService.resoudreLibelle(c.id),
-    }));
+    return resultats.map((c) => ({ id: c.id, libelle: this.construireChemin(c.id) }));
   });
 
   /** Identifiant de l'option actuellement mise en évidence, ou `null`. */
@@ -100,11 +138,11 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
    */
   protected readonly competencesAffichees = computed(() =>
     this.competencesSelectionnees().map((id) => {
-      const chemin = this.competenceService.resoudreLibelle(id);
+      const cheminComplet = this.construireChemin(id);
       return {
         id,
-        libelleCourt: chemin.split(' › ').at(-1) ?? chemin,
-        cheminComplet: chemin,
+        libelleCourt: this.competenceService.obtenirChemin(id).at(-1)?.libelle ?? cheminComplet,
+        cheminComplet,
       };
     }),
   );
@@ -117,12 +155,12 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
     const valeur = (event.target as HTMLInputElement).value;
     this.saisie.set(valeur);
     this.indexFocalise.set(-1);
-    this.estOuvert.set(!!valeur.trim());
+    this.estOuvert.set(!!valeur.trim() || !!this.racineId());
   }
 
-  /** Rouvre les suggestions si une saisie est déjà présente lors du focus. */
+  /** Rouvre les suggestions (focus ou clic) si une saisie est présente, ou toujours dans un sous-arbre (`racineId`). */
   protected surFocus(): void {
-    if (this.saisie().trim()) {
+    if (this.saisie().trim() || this.racineId()) {
       this.estOuvert.set(true);
     }
   }
@@ -225,6 +263,18 @@ export class McSelecteurCompetencesComponent extends ComposantBase {
    */
   protected estDomaineFiltre(id: string): boolean {
     return this.domainesFiltres().has(id);
+  }
+
+  /**
+   * Construit le chemin complet d'une compétence avec le séparateur configuré.
+   * @param id Identifiant de la compétence.
+   * @returns Libellés du domaine jusqu'à la compétence, ou `''` si elle est introuvable.
+   */
+  private construireChemin(id: string): string {
+    return this.competenceService
+      .obtenirChemin(id)
+      .map((n) => n.libelle)
+      .join(this.separateur());
   }
 
   /** Ferme le panneau et réinitialise la saisie et le focus clavier. */

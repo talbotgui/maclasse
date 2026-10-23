@@ -83,6 +83,8 @@ Chaque service expose des méthodes de manipulation et de validation. Les mutati
 - `obtenirDomaineParId(id)` — résout un ID de discipline
 - `rechercherCompetences(terme)` — nœuds de tous niveaux dont le libellé contient le terme (insensible à la casse et aux accents)
 - `resoudreLibelle(id)` et `obtenirChemin(id)` — libellé complet et chemin d'une compétence dans l'arbre
+- `obtenirNoeudsDeNiveau(niveau)` — nœuds d'une profondeur donnée des domaines actifs (ex. niveau 3 = sous-domaines des bilans)
+- `obtenirFeuilles(id)` — feuilles du sous-arbre d'un nœud, le nœud lui-même exclu
 
 ### `BilanService`
 

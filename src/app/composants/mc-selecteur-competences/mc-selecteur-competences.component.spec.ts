@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { McSelecteurCompetencesComponent } from './mc-selecteur-competences.component';
@@ -16,6 +16,9 @@ import { CompetenceMother } from '../../tests/competence.mother';
     <mc-selecteur-competences
       [competencesSelectionnees]="selectionnes"
       [multiSelection]="multi"
+      [niveau]="niveau()"
+      [racineId]="racineId()"
+      [separateur]="separateur()"
       (selectionChange)="selectionnes = $event"
     />
   `,
@@ -27,6 +30,12 @@ class ComposantHote {
   public selectionnes: string[] = [];
   /** Mode de sélection. */
   public multi = true;
+  /** Profondeur des compétences proposées, ou `null` pour tout l'arbre. */
+  public readonly niveau = signal<number | null>(null);
+  /** Racine du sous-arbre dont les feuilles sont proposées, ou `null`. */
+  public readonly racineId = signal<string | null>(null);
+  /** Séparateur du chemin affiché. */
+  public readonly separateur = signal(' › ');
 }
 
 describe('McSelecteurCompetencesComponent', () => {
@@ -280,6 +289,112 @@ describe('McSelecteurCompetencesComponent', () => {
 
     it("n'affiche pas la zone chips si la sélection est vide", () => {
       expect(chipsSelection()).toHaveLength(0);
+    });
+  });
+
+  describe('recherche restreinte', () => {
+    beforeEach(() => {
+      const donneesService = TestBed.inject(DonneesService);
+      const d = DonneesMother.base();
+      d.referentiels.competences = CompetenceMother.arbreQuatreNiveaux();
+      donneesService.charger(d);
+      fixture.detectChanges();
+    });
+
+    /** Libellés des options proposées. */
+    const libelles = (): string[] => suggestions().map((o) => o.textContent?.trim() ?? '');
+
+    it('niveau : ne propose que les nœuds de cette profondeur, avec le séparateur choisi', () => {
+      hote.niveau.set(3);
+      hote.separateur.set(' > ');
+      fixture.detectChanges();
+      saisir('cycle');
+
+      expect(libelles()).toEqual([
+        'Français > Cycle 2 > Lire',
+        'Français > Cycle 2 > Écrire',
+        'Mathématiques > Cycle 2 > Nombres',
+      ]);
+    });
+
+    it('niveau : filtre sur le chemin complet, sans tenir compte des accents', () => {
+      hote.niveau.set(3);
+      fixture.detectChanges();
+      saisir('ecrire');
+
+      expect(libelles()).toEqual(['Français › Cycle 2 › Écrire']);
+    });
+
+    it('niveau : rien n’est proposé sans saisie', () => {
+      hote.niveau.set(3);
+      fixture.detectChanges();
+      champSaisie().dispatchEvent(new Event('focus'));
+      fixture.detectChanges();
+
+      expect(suggestions()).toHaveLength(0);
+    });
+
+    it('racineId : propose toutes les feuilles du sous-arbre dès le focus, sans filtre de domaine', () => {
+      hote.racineId.set('FR-C2-L');
+      fixture.detectChanges();
+      champSaisie().dispatchEvent(new Event('focus'));
+      fixture.detectChanges();
+
+      expect(suggestions().map((o) => o.id)).toEqual([
+        'optionComp_FR-C2-L-1',
+        'optionComp_FR-C2-L-2-1',
+      ]);
+      expect(fixture.debugElement.query(By.css('#filtreDomaine_FR'))).toBeNull();
+    });
+
+    it('racineId : garde toutes les feuilles proposées quand la saisie est effacée', () => {
+      hote.racineId.set('FR-C2-L');
+      fixture.detectChanges();
+      saisir('mots');
+      saisir('');
+
+      expect(suggestions()).toHaveLength(2);
+    });
+
+    it('racineId : rouvre les suggestions au clic après une sélection', () => {
+      hote.racineId.set('FR-C2-L');
+      hote.multi = false;
+      fixture.detectChanges();
+      champSaisie().dispatchEvent(new Event('focus'));
+      fixture.detectChanges();
+      suggestions()[0].click();
+      fixture.detectChanges();
+      expect(suggestions()).toHaveLength(0);
+
+      champSaisie().dispatchEvent(new Event('click'));
+      fixture.detectChanges();
+
+      expect(suggestions()).toHaveLength(2);
+    });
+
+    it('racineId : filtre les feuilles selon la saisie', () => {
+      hote.racineId.set('FR-C2-L');
+      fixture.detectChanges();
+      saisir('mots');
+
+      expect(suggestions().map((o) => o.id)).toEqual(['optionComp_FR-C2-L-1']);
+    });
+
+    it('affiche le libellé court dans la chip et le chemin complet dans le nom du bouton ×', () => {
+      hote.niveau.set(3);
+      hote.separateur.set(' > ');
+      fixture.detectChanges();
+      saisir('lire');
+      suggestions()[0].click();
+      fixture.detectChanges();
+
+      expect(hote.selectionnes).toEqual(['FR-C2-L']);
+
+      const chip = chipsSelection()[0].nativeElement as HTMLElement;
+      expect(chip.querySelector('span')?.textContent).toBe('Lire');
+      expect(chip.querySelector('button')?.getAttribute('aria-label')).toContain(
+        'Français > Cycle 2 > Lire',
+      );
     });
   });
 });

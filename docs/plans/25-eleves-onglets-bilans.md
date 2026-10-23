@@ -13,7 +13,7 @@ related:
 
 # Plan 25 — Menu au pluriel + écran Élèves en onglets (Fiche administrative / Bilans)
 
-**Statut : en cours.** Analyse, décisions et plan validés le 2026-10-23. Incréments 1 à 3 réalisés le 2026-10-23.
+**Statut : en cours.** Analyse, décisions et plan validés le 2026-10-23. Incréments 1 à 4 réalisés le 2026-10-23.
 
 ## Contexte
 

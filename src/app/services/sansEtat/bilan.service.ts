@@ -28,7 +28,7 @@ export class BilanService {
   public static readonly SEPARATEUR_LIBELLE = ' > ';
 
   /** Profondeur, depuis la racine, des sous-domaines dans l'arbre des compétences. */
-  private static readonly NIVEAU_SOUS_DOMAINE = 3;
+  public static readonly NIVEAU_SOUS_DOMAINE = 3;
 
   /** Accès aux données de l'application et soumission des commandes. */
   private readonly donneesService = inject(DonneesService);
@@ -41,20 +41,9 @@ export class BilanService {
    * @returns Sous-domaines avec leur libellé complet `N1 > N2 > N3`.
    */
   public obtenirSousDomaines(): SousDomaineDisponible[] {
-    const resultats: SousDomaineDisponible[] = [];
-    const parcourir = (noeud: Competence, chemin: string[]): void => {
-      const cheminCourant = [...chemin, noeud.libelle];
-      if (cheminCourant.length === BilanService.NIVEAU_SOUS_DOMAINE) {
-        resultats.push({
-          id: noeud.id,
-          libelle: cheminCourant.join(BilanService.SEPARATEUR_LIBELLE),
-        });
-        return;
-      }
-      noeud.enfants?.forEach((enfant) => parcourir(enfant, cheminCourant));
-    };
-    this.competenceService.obtenirDomaines().forEach((domaine) => parcourir(domaine, []));
-    return resultats;
+    return this.competenceService
+      .obtenirNoeudsDeNiveau(BilanService.NIVEAU_SOUS_DOMAINE)
+      .map((noeud) => ({ id: noeud.id, libelle: this.obtenirLibelleSousDomaine(noeud.id) }));
   }
 
   /**
@@ -75,15 +64,7 @@ export class BilanService {
    * @returns Feuilles du sous-arbre, ou `[]` si le sous-domaine est introuvable.
    */
   public obtenirCompetencesEvaluables(sousDomaineId: string): Competence[] {
-    const sousDomaine = this.competenceService.obtenirChemin(sousDomaineId).at(-1);
-    if (!sousDomaine) return [];
-    const feuilles: Competence[] = [];
-    const parcourir = (noeud: Competence): void => {
-      if (noeud.enfants?.length) noeud.enfants.forEach(parcourir);
-      else feuilles.push(noeud);
-    };
-    sousDomaine.enfants?.forEach(parcourir);
-    return feuilles;
+    return this.competenceService.obtenirFeuilles(sousDomaineId);
   }
 
   /**

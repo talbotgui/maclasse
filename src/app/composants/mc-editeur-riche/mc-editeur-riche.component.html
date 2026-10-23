@@ -1,0 +1,24 @@
+<div class="mc-champ mc-editeur-riche">
+  <span [id]="id() + 'Libelle'" class="mc-editeur-riche__libelle">{{ label() }}</span>
+  <div
+    class="mc-editeur-riche__barre"
+    role="group"
+    [attr.aria-label]="LIBELLES.editeurRiche.ariaBarreOutils + ' — ' + label()"
+  >
+    @for (action of actions; track action.id) {
+      <button
+        type="button"
+        class="mc-btn-fantome mc-btn-xs mc-editeur-riche__bouton"
+        [id]="'btn' + action.id + '_' + id()"
+        [title]="action.titre"
+        [attr.aria-label]="action.ariaLabel"
+        [attr.aria-pressed]="estActionActive(action)"
+        [disabled]="estDesactive()"
+        (click)="basculerAction(action)"
+      >
+        {{ action.libelle }}
+      </button>
+    }
+  </div>
+  <div #zone class="mc-editeur-riche__zone"></div>
+</div>

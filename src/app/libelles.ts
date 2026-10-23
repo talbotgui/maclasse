@@ -54,6 +54,21 @@ export const LIBELLES = {
       'Pour accéder à ces fonctionnalités, créer un jeu de données après avoir recharger la page',
   },
 
+  /** Libellés de l'éditeur de texte riche (`mc-editeur-riche`). */
+  editeurRiche: {
+    ariaBarreOutils: 'Mise en forme',
+    gras: 'G',
+    ariaGras: 'Gras',
+    italique: 'I',
+    ariaItalique: 'Italique',
+    souligne: 'S',
+    ariaSouligne: 'Souligné',
+    listePuces: 'Puces',
+    titreListePuces: 'Liste à puces',
+    listeNumerotee: 'Numéros',
+    titreListeNumerotee: 'Liste numérotée',
+  },
+
   /** Libellés de la navigation principale. */
   navigation: {
     accueil: 'Accueil',

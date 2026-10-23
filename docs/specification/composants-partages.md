@@ -82,7 +82,7 @@ Ces composants encapsulent les éléments natifs HTML pour centraliser le style 
 | Composant | Description | Utilisé dans |
 |---|---|---|
 | `mc-chip-filtre` | Chip cliquable avec état actif/inactif, libellé | Filtres (Élèves, Projets, arbre des compétences), disciplines (séance, temps de créneau), sources d'un EDT calculé, jours ouvrés (Paramétrage), sélections multiples des formulaires |
-| `mc-badge-statut` | Affiche un statut d'acquisition avec glyphe, couleur de texte et fond | Paramétrage : aperçu en temps réel du barème. Destiné aussi à PPI, Bulletin et Tableau de bord (phase 2) |
+| `mc-badge-statut` | Affiche un statut d'acquisition avec glyphe, couleur de texte et fond | Paramétrage : aperçu en temps réel du barème. Destiné aussi au Tableau de bord (phase 2) |
 | `mc-champ-recherche` | Input texte avec icône loupe et bouton reset ; `delaiMs` optionnel pour différer l'émission | Élèves, Projets, `mc-arbre-competences`, recherche globale de l'entête (300 ms) |
 | `mc-bouton-destruction` | Bouton SUPPRIMER qui se masque au clic pour afficher ANNULER + CONFIRMER (pas de popin) | Fiche élève et fiche projet, périodes et lignes des formulaires, propriétés d'un EDT, créneau et temps d'un créneau, EDT calculé, référentiels du paramétrage |
 | `mc-pastilles-eleves-concernes` | Pastilles statiques `.mc-disc-pill` du périmètre d'une séance ou d'un temps de créneau : « Classe », groupes ou élèves (libellés résolus via `DonneesService`) ; rien pour un périmètre absent | Cahier journal (liste des séances), Emploi du temps (cellules de la grille) |

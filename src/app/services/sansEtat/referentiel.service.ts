@@ -47,15 +47,18 @@ export class ReferentielService {
   }
 
   /**
-   * Indique si un statut d'acquisition est référencé dans un PPI ou un bulletin.
+   * Indique si un statut d'acquisition est référencé par une évaluation d'un bilan d'élève.
    * @param id Identifiant du statut.
    */
   public estStatutAcquisitionUtilise(id: string): boolean {
-    const d = this.donneesService.donnees();
-    if (!d) return false;
     return (
-      d.ppi.some((p) => p.competencesEntrees.some((c) => c.evaluation === id)) ||
-      d.bulletins.some((b) => b.competencesEvaluees.some((c) => c.evaluation === id))
+      this.donneesService
+        .donnees()
+        ?.classe.eleves.some((e) =>
+          e.suivisSousDomaines.some((s) =>
+            s.bilans.some((b) => b.evaluations.some((ev) => ev.statutAcquisitionId === id)),
+          ),
+        ) ?? false
     );
   }
 
@@ -80,16 +83,15 @@ export class ReferentielService {
   }
 
   /**
-   * Indique si une période est référencée dans un projet ou un bulletin.
-   * La période est identifiée par son nom (clé métier utilisée dans les projets et bulletins).
+   * Indique si une période est référencée dans un projet.
+   * La période est identifiée par son nom (clé métier utilisée dans les projets).
    * @param nom Nom de la période.
    */
   public estPeriodeUtilisee(nom: string): boolean {
-    const d = this.donneesService.donnees();
-    if (!d) return false;
     return (
-      d.projets.some((p) => p.periodes.some((pp) => pp.periodeNom === nom)) ||
-      d.bulletins.some((b) => b.periode === nom)
+      this.donneesService
+        .donnees()
+        ?.projets.some((p) => p.periodes.some((pp) => pp.periodeNom === nom)) ?? false
     );
   }
 

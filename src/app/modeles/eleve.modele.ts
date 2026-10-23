@@ -3,6 +3,7 @@
  * leur cursus et leurs absences.
  */
 
+import { SuiviSousDomaine } from './bilan.modele';
 import { FrequenceSemaine, JourSemaine } from './emploi-du-temps.modele';
 
 /** Sexe déclaré de l'élève. */
@@ -114,8 +115,8 @@ export interface Eleve {
   dateArrivee: string;
   /** Référence vers un `StatutEleve` (ex. : `"DC"` pour dans la classe). */
   statut: string;
-  /** Notes de bilans scolaires ou psychologiques (texte libre). */
-  bilans: string;
+  /** Notes de bilans externes, scolaires ou psychologiques (texte libre). */
+  bilansExternes: string;
   /** Informations d'accueil de l'élève (texte libre). */
   accueil: string;
   /** Informations sur un dispositif d'inclusion, ou `null`. */
@@ -144,6 +145,8 @@ export interface Eleve {
   notificationAesh: boolean;
   /** Latéralité de l'élève, ou `null` si elle n'est pas renseignée. */
   lateralite: Lateralite | null;
+  /** Bilans de l'élève, regroupés par sous-domaine de compétences. */
+  suivisSousDomaines: SuiviSousDomaine[];
 }
 
 /**

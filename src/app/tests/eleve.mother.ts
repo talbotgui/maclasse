@@ -29,7 +29,7 @@ export class EleveMother {
       dateNaissance: '2015-01-01',
       dateArrivee: '2025-09-01',
       statut: 'DC',
-      bilans: '',
+      bilansExternes: '',
       accueil: '',
       inclusion: null,
       contacts: [],
@@ -44,6 +44,7 @@ export class EleveMother {
       portLunettes: false,
       notificationAesh: false,
       lateralite: null,
+      suivisSousDomaines: [],
       ...surcharge,
     };
   }

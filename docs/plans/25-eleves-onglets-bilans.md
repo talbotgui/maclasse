@@ -13,7 +13,7 @@ related:
 
 # Plan 25 — Menu au pluriel + écran Élèves en onglets (Fiche administrative / Bilans)
 
-**Statut : en cours.** Analyse, décisions et plan validés le 2026-10-23. Incrément 1 en cours.
+**Statut : en cours.** Analyse, décisions et plan validés le 2026-10-23. Incréments 1 et 2 réalisés le 2026-10-23.
 
 ## Contexte
 
@@ -208,6 +208,13 @@ Un bilan en édition non validé déclenche `popin-avertissement` dans trois cas
   - avertissement en quittant un bilan en édition.
 - Charger un fichier antérieur pour contrôler la migration : `bilansExternes` est conservé, `ppi` et `bulletins` disparaissent.
 - Contrôle manuel avec `npm start` : rendu en écran large et étroit, aperçu d'impression de l'onglet Bilans.
+
+## Risques et points d'attention (relecture de l'incrément 2)
+
+- **Séparateur des libellés** : les sous-domaines utilisent `>` (`BilanService.SEPARATEUR_LIBELLE`), comme dans la demande. `CompetenceService.resoudreLibelle` garde `›` pour les autres écrans.
+- **Niveau du sous-domaine** : `BilanService` ne vérifie pas qu'un identifiant est bien de niveau 3. C'est l'écran qui garantit ce niveau, puisque le choix se fait parmi `obtenirSousDomaines()`.
+- **Compétence désactivée ou supprimée** : un suivi ou une évaluation peut pointer vers une compétence hors des domaines actifs, ou retirée du référentiel. Le libellé résolu est alors vide. L'écran (incrément 5) affiche l'identifiant en repli.
+- **Protection du référentiel** : rien n'empêche de modifier l'arbre des compétences alors que des bilans y font référence. Hors périmètre.
 
 ## Écartés
 - Lien bilan ↔ période.

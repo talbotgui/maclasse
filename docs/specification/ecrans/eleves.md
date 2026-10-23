@@ -93,7 +93,7 @@ Même organisation en lecture et en modification. Chaque section est séparée p
 | Niveau | Valeur texte | `mc-input` texte |
 | Groupes | Liste des groupes | Chips sélectionnables/désélectionnables (un chip par groupe du référentiel) |
 | Statut | Libellé du statut | `mc-select` (valeurs issues de `referentiels.statutsEleve`) |
-| Bilans | Texte libre | `mc-textarea` |
+| Bilans externes | Texte libre | `mc-textarea` (`champFormBilansExternes`) |
 | Accueil | Texte libre | `mc-textarea` |
 | Inclusion | Texte libre | `mc-textarea` |
 

@@ -55,7 +55,7 @@ maclasse/
         │   ├── emploi-du-temps.modele.ts       # EDT, créneaux, temps, types communs (JourSemaine, ElevesConcernes…)
         │   ├── emploi-du-temps-calcule.modele.ts # Définition d'EDT calculé, CreneauCalcule (non persisté)
         │   ├── cahier-journal.modele.ts
-        │   ├── ppi-bulletin.modele.ts          # Ppi, Bulletin (phase 2)
+        │   ├── bilan.modele.ts                 # SuiviSousDomaine, Bilan, EvaluationBilan
         │   ├── migration.modele.ts             # Étape de migration, ancien format de créneau
         │   ├── recherche.modele.ts             # ResultatRecherche
         │   ├── composants.modele.ts            # DTO d'affichage des composants (options, cases de calendrier, nœuds d'arbre…)

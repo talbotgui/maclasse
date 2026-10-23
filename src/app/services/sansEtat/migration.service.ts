@@ -7,7 +7,14 @@ import { Injectable } from '@angular/core';
 import { DonneesApplication } from '../../modeles/donnees-application.modele';
 import { CreneauEdt } from '../../modeles/emploi-du-temps.modele';
 import { Eleve } from '../../modeles/eleve.modele';
-import { CreneauEdtV1, EleveV1, EleveV2, EtapeMigration } from '../../modeles/migration.modele';
+import {
+  CreneauEdtV1,
+  DonneesApplicationV1,
+  EleveV1,
+  EleveV2,
+  EleveV3,
+  EtapeMigration,
+} from '../../modeles/migration.modele';
 import { SourceEdtCalcule } from '../../modeles/emploi-du-temps-calcule.modele';
 
 /**
@@ -44,6 +51,10 @@ export class MigrationService {
     {
       versionCible: '2026.09.7',
       appliquer: (donnees) => this.structurerAutorisationsEtInformationsUtiles(donnees),
+    },
+    {
+      versionCible: '2026.10.1',
+      appliquer: (donnees) => this.introduireBilansParSousDomaine(donnees),
     },
   ];
 
@@ -121,6 +132,23 @@ export class MigrationService {
         if (!annee.id) annee.id = crypto.randomUUID();
       }
     }
+  }
+
+  /**
+   * Prépare les bilans par sous-domaine : renomme le texte libre `bilans` des élèves en
+   * `bilansExternes`, initialise `suivisSousDomaines` à vide et retire les collections
+   * `ppi` et `bulletins`, jamais alimentées. Un champ déjà présent est conservé. Idempotent.
+   * @param donnees Données à muter (déjà clonées par l'appelant).
+   */
+  private introduireBilansParSousDomaine(donnees: DonneesApplication): void {
+    for (const eleve of donnees.classe.eleves as (Eleve & EleveV3)[]) {
+      eleve.bilansExternes ??= eleve.bilans ?? '';
+      eleve.suivisSousDomaines ??= [];
+      delete eleve.bilans;
+    }
+    const anciennes = donnees as DonneesApplication & DonneesApplicationV1;
+    delete anciennes.ppi;
+    delete anciennes.bulletins;
   }
 
   /**

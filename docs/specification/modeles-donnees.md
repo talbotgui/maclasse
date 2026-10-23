@@ -20,9 +20,7 @@ related:
   emploisDuTemps: EmploiDuTemps[],
   emploisDuTempsCalcules: EmploiDuTempsCalcule[],
   projets: Projet[],
-  cahierJournal: JourneeJournal[],
-  ppi: Ppi[],           // phase 2, non implémenté
-  bulletins: Bulletin[] // phase 2, non implémenté
+  cahierJournal: JourneeJournal[]
 }
 ```
 
@@ -86,7 +84,7 @@ ElevesConcernes {
   dateNaissance: string,        // ISO date
   dateArrivee: string,          // ISO date
   statut: string,               // ref: StatutEleve.id (DC/DE/HE)
-  bilans: string,               // texte libre
+  bilansExternes: string,       // texte libre (bilans scolaires ou psychologiques extérieurs)
   accueil: string,              // texte libre
   inclusion: string | null,     // texte libre
   contacts: Contact[],
@@ -100,7 +98,8 @@ ElevesConcernes {
   notesESS: string | null,      // texte libre
   portLunettes: boolean,
   notificationAesh: boolean,
-  lateralite: 'gaucher' | 'droitier' | null   // null = non renseignée
+  lateralite: 'gaucher' | 'droitier' | null,  // null = non renseignée
+  suivisSousDomaines: SuiviSousDomaine[]       // bilans par sous-domaine de compétences
 }
 ```
 
@@ -179,7 +178,7 @@ ElevesConcernes {
 ```
 {
   id: string,     // UUID
-  nom: string,    // ex: "Période 1" — clé métier référencée par ProjetPeriode.periodeNom et Bulletin.periode
+  nom: string,    // ex: "Période 1" — clé métier référencée par ProjetPeriode.periodeNom
   debut: string,  // ISO date
   fin: string     // ISO date
 }
@@ -393,50 +392,42 @@ TypeSourceCalculee = 'recreation' | 'pauseDejeuner' | 'tempsClasse' | 'absenceRe
 
 `conflitDetecte` est un champ **dérivé** mais persisté : il est recalculé à chaque ENREGISTRER du formulaire de séance (voir [cahier-journal](ecrans/cahier-journal.md)) et affiche l'icône ⚠ dans la liste des séances.
 
-## PPI (Projet Pédagogique Individuel) — phase 2, non implémenté
+## Bilans d'un élève
+
+Définis dans `bilan.modele.ts`. Les bilans d'un élève sont regroupés par **sous-domaine**, c'est-à-dire par compétence de **niveau 3** de l'arbre (ex. `Activités physiques > Cycle 1 > Agir dans l'espace…`). Ils sont affichés et saisis dans l'onglet Bilans de l'écran [Élèves](ecrans/eleves.md).
+
+### SuiviSousDomaine
 
 ```
 {
-  id: string,
-  eleveId: string,
-  competencesEntrees: PpiCompetence[]
+  sousDomaineId: string,   // ref: Competence.id de niveau 3
+  bilans: Bilan[]          // ordre du tableau = ordre d'affichage (Monter / Descendre)
 }
 ```
 
-### PpiCompetence
+Un suivi n'existe que tant qu'il contient au moins un bilan : il est créé à l'enregistrement du premier bilan du sous-domaine et retiré à la suppression du dernier.
+
+### Bilan
 
 ```
 {
-  competenceId: string,
-  dateInitiale: string,       // ISO date
-  constatInitial: string,     // saisie libre
-  actionsInitiales: string,   // saisie libre
-  evaluation: string,         // ref: statutsAcquisition
-  dateMaj: string,            // ISO date
-  constatMaj: string,         // saisie libre
-  actionsMaj: string          // saisie libre
+  id: string,                  // UUID
+  date: string,                // ISO date, date du jour à la création
+  titre: string,               // saisi par l'enseignant, sans valeur par défaut
+  bilans: string,              // HTML (éditeur riche)
+  besoinsSpecifiques: string,  // HTML (éditeur riche)
+  moyens: string,              // HTML (éditeur riche)
+  evaluations: EvaluationBilan[]
 }
 ```
 
-## Bulletin — phase 2, non implémenté
+### EvaluationBilan
 
 ```
 {
-  id: string,
-  eleveId: string,
-  periode: string,            // ref: periodes
-  competencesEvaluees: BulletinCompetence[]
-  // contenu détaillé à définir ultérieurement
-}
-```
-
-### BulletinCompetence
-
-```
-{
-  competenceId: string,
-  evaluation: string,         // ref: statutsAcquisition
-  appreciationPublique: string,  // saisie libre
-  appreciationPrivee: string     // saisie libre
+  id: string,                          // UUID
+  competenceId: string,                // ref: feuille du sous-domaine ('' tant que non choisie)
+  statutAcquisitionId: string | null   // ref: StatutAcquisition.id ; null = non renseignée
+  commentaire: string                  // texte libre
 }
 ```

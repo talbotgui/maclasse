@@ -14,6 +14,11 @@ import {
 import { DonneesMother } from '../../tests/donnees.mother';
 import { EdtCalculeMother } from '../../tests/emploi-du-temps-calcule.mother';
 import { EleveMother } from '../../tests/eleve.mother';
+import {
+  BilanMother,
+  EvaluationBilanMother,
+  SuiviSousDomaineMother,
+} from '../../tests/bilan.mother';
 import { EdtMother, CreneauMother } from '../../tests/emploi-du-temps.mother';
 
 describe('ReferentielService', () => {
@@ -131,7 +136,7 @@ describe('ReferentielService', () => {
     });
   });
 
-  /** Retourne true si la période est référencée dans un projet ou un bulletin. */
+  /** Retourne true si la période est référencée dans un projet. */
   describe('estPeriodeUtilisee', () => {
     it('retourne false sans données', () => {
       expect(service.estPeriodeUtilisee('Période 1')).toBe(false);
@@ -157,13 +162,6 @@ describe('ReferentielService', () => {
       });
       donneesService.charger(d);
       expect(service.estPeriodeUtilisee('Période 1')).toBe(true);
-    });
-
-    it('retourne true si période utilisée dans un bulletin', () => {
-      const d = DonneesMother.base();
-      d.bulletins.push({ id: 'b1', eleveId: 'e1', periode: 'Période 2', competencesEvaluees: [] });
-      donneesService.charger(d);
-      expect(service.estPeriodeUtilisee('Période 2')).toBe(true);
     });
 
     it('retourne false si période non utilisée', () => {
@@ -372,51 +370,25 @@ describe('ReferentielService', () => {
     });
   });
 
-  /** Retourne true si le statut est utilisé dans un PPI ou un bulletin. */
+  /** Retourne true si le statut est utilisé par une évaluation d'un bilan d'élève. */
   describe('estStatutAcquisitionUtilise', () => {
     it('retourne false sans données', () => {
       expect(service.estStatutAcquisitionUtilise('A')).toBe(false);
     });
 
-    it('retourne true si statut utilisé dans un PPI', () => {
-      const d = DonneesMother.base();
-      d.ppi.push({
-        id: 'ppi1',
-        eleveId: 'e1',
-        competencesEntrees: [
-          {
-            competenceId: 'c1',
-            dateInitiale: '2025-09-01',
-            constatInitial: '',
-            actionsInitiales: '',
-            evaluation: 'A',
-            dateMaj: '2025-10-01',
-            constatMaj: '',
-            actionsMaj: '',
-          },
-        ],
+    it("retourne true si le statut évalue une compétence d'un bilan", () => {
+      const bilan = BilanMother.base('b1', {
+        evaluations: [EvaluationBilanMother.base('ev1', { statutAcquisitionId: 'EC' })],
       });
-      donneesService.charger(d);
-      expect(service.estStatutAcquisitionUtilise('A')).toBe(true);
-    });
-
-    it('retourne true si statut utilisé dans un bulletin', () => {
-      const d = DonneesMother.base();
-      d.bulletins.push({
-        id: 'b1',
-        eleveId: 'e1',
-        periode: 'P1',
-        competencesEvaluees: [
-          {
-            competenceId: 'c1',
-            evaluation: 'EC',
-            appreciationPublique: '',
-            appreciationPrivee: '',
-          },
-        ],
-      });
-      donneesService.charger(d);
+      donneesService.charger(
+        DonneesMother.avecEleves([
+          EleveMother.base('e1', 'MARTIN', 'Paul', {
+            suivisSousDomaines: [SuiviSousDomaineMother.avecBilans('FR-C2-L', [bilan])],
+          }),
+        ]),
+      );
       expect(service.estStatutAcquisitionUtilise('EC')).toBe(true);
+      expect(service.estStatutAcquisitionUtilise('A')).toBe(false);
     });
   });
 });

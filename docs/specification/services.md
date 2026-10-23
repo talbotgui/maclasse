@@ -84,6 +84,19 @@ Chaque service expose des méthodes de manipulation et de validation. Les mutati
 - `rechercherCompetences(terme)` — nœuds de tous niveaux dont le libellé contient le terme (insensible à la casse et aux accents)
 - `resoudreLibelle(id)` et `obtenirChemin(id)` — libellé complet et chemin d'une compétence dans l'arbre
 
+### `BilanService`
+
+Bilans des élèves, regroupés par sous-domaine (compétence de niveau 3). Chaque mutation est **une** `CommandeModification` de l'élève, donc une entrée UNDO :
+
+- `obtenirSousDomaines()` : nœuds de niveau 3 des domaines actifs (`CompetenceService.obtenirDomaines()`), avec le libellé complet `N1 > N2 > N3`
+- `obtenirLibelleSousDomaine(id)` : libellé complet d'un sous-domaine
+- `obtenirCompetencesEvaluables(sousDomaineId)` : feuilles du sous-arbre (compétences proposées dans le tableau d'évaluations)
+- `creerBilanVierge()` (daté du jour, sans titre) et `creerEvaluationVierge()` : valeurs non enregistrées, servant de brouillon à l'écran
+- `enregistrerBilan(eleveId, sousDomaineId, bilan)` : remplace le bilan s'il existe, sinon l'ajoute en dernière position (crée le suivi au besoin)
+- `supprimerBilan(…)` : retire aussi le suivi devenu vide
+- `dupliquerBilan(…)` : copie en dernière position, nouveaux identifiants (bilan et évaluations)
+- `deplacerBilan(…, -1 | 1)` : échange avec le bilan voisin ; sans effet aux extrémités
+
 ### `ProjetService`
 
 - CRUD projet (`creerProjet`, `modifierProjet`, `supprimerProjet`) → via commande à `DonneesService`
@@ -144,10 +157,10 @@ Chaque service expose des méthodes de manipulation et de validation. Les mutati
 | Méthode | Valeur utilisée si référencée par |
 |---|---|
 | `estGroupeUtilise(id)` | un élève, un temps de créneau EDT, un **EDT calculé** ou une séance du cahier journal |
-| `estStatutAcquisitionUtilise(id)` | un PPI ou un bulletin |
+| `estStatutAcquisitionUtilise(id)` | une évaluation d'un bilan d'élève |
 | `estStatutEleveUtilise(id)` | un élève |
 | `estTypeContactUtilise(id)` | un contact d'élève |
-| `estPeriodeUtilisee(nom)` | une période de projet ou un bulletin — la période est identifiée par son **nom** (`ProjetPeriode.periodeNom`, `Bulletin.periode`) |
+| `estPeriodeUtilisee(nom)` | une période de projet — la période est identifiée par son **nom** (`ProjetPeriode.periodeNom`) |
 
 - CRUD des groupes, statuts d'acquisition, statuts d'élève, types de contact, périodes et **jours fériés** → via commande à `DonneesService`
 - `modifierConfigEmploiDuTemps(…)` → via `CommandeRemplacement`

@@ -57,9 +57,9 @@
       <dt>{{ LIBELLES.eleve.labelStatut }}</dt>
       <dd>{{ obtenirLibelleStatut(eleve().statut) || '—' }}</dd>
 
-      @if (eleve().bilans) {
-        <dt>{{ LIBELLES.eleve.labelBilans }}</dt>
-        <dd class="fiche-eleve__texte-long">{{ eleve().bilans }}</dd>
+      @if (eleve().bilansExternes) {
+        <dt>{{ LIBELLES.eleve.labelBilansExternes }}</dt>
+        <dd class="fiche-eleve__texte-long">{{ eleve().bilansExternes }}</dd>
       }
       @if (eleve().accueil) {
         <dt>{{ LIBELLES.eleve.labelAccueil }}</dt>

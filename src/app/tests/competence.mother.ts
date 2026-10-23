@@ -23,6 +23,64 @@ export class CompetenceMother {
     };
   }
 
+  /**
+   * Retourne un arbre à 4 niveaux comme le référentiel par défaut (domaine > cycle >
+   * sous-domaine > compétence) : Français (`FR`) > Cycle 2 (`FR-C2`) > sous-domaines
+   * Lire (`FR-C2-L`, deux feuilles dont une sous un nœud intermédiaire) et Écrire
+   * (`FR-C2-E`, une feuille) ; Mathématiques (`MA`) > Cycle 2 (`MA-C2`) > Nombres
+   * (`MA-C2-N`, une feuille).
+   */
+  public static arbreQuatreNiveaux(): Competence[] {
+    return [
+      {
+        id: 'FR',
+        libelle: 'Français',
+        enfants: [
+          {
+            id: 'FR-C2',
+            libelle: 'Cycle 2',
+            enfants: [
+              {
+                id: 'FR-C2-L',
+                libelle: 'Lire',
+                enfants: [
+                  { id: 'FR-C2-L-1', libelle: 'Identifier des mots' },
+                  {
+                    id: 'FR-C2-L-2',
+                    libelle: 'Comprendre',
+                    enfants: [{ id: 'FR-C2-L-2-1', libelle: 'Comprendre un texte lu' }],
+                  },
+                ],
+              },
+              {
+                id: 'FR-C2-E',
+                libelle: 'Écrire',
+                enfants: [{ id: 'FR-C2-E-1', libelle: 'Copier un texte' }],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'MA',
+        libelle: 'Mathématiques',
+        enfants: [
+          {
+            id: 'MA-C2',
+            libelle: 'Cycle 2',
+            enfants: [
+              {
+                id: 'MA-C2-N',
+                libelle: 'Nombres',
+                enfants: [{ id: 'MA-C2-N-1', libelle: 'Dénombrer' }],
+              },
+            ],
+          },
+        ],
+      },
+    ];
+  }
+
   public static arbreSimple(): Competence[] {
     return [
       {

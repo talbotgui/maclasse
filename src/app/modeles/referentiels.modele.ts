@@ -37,7 +37,7 @@ export interface StatutAcquisition {
 
 /**
  * Période de l'année scolaire (ex. : "Période 1").
- * Utilisée pour structurer les projets et les bulletins.
+ * Utilisée pour structurer les projets.
  */
 export interface Periode {
   /** Identifiant unique de la période. */

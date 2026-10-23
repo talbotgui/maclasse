@@ -50,6 +50,25 @@ export interface EleveV2 {
 }
 
 /**
+ * Champ d'un élève antérieur à la version `2026.10.1`, renommé en `Eleve.bilansExternes`.
+ */
+export interface EleveV3 {
+  /** Notes de bilans scolaires ou psychologiques (texte libre). */
+  bilans?: string;
+}
+
+/**
+ * Collections racine antérieures à la version `2026.10.1`, jamais alimentées
+ * et retirées du format de données.
+ */
+export interface DonneesApplicationV1 {
+  /** Projets pédagogiques individualisés (format abandonné). */
+  ppi?: unknown[];
+  /** Bulletins d'évaluation (format abandonné). */
+  bulletins?: unknown[];
+}
+
+/**
  * Étape de migration versionnée : amène les données à `versionCible` si leur
  * version courante est antérieure.
  */

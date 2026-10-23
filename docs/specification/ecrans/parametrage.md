@@ -123,7 +123,7 @@ Ces sections affichent une liste d'éléments éditables inline.
 
 ### Identifiant saisi (Barème, Statuts élève, Types de contact)
 
-Ces trois sections ont un champ « Identifiant » saisi par l'utilisateur, clé de référence des élèves (`Eleve.statut`), des contacts (`Contact.type`) et, à terme, des PPI et bulletins.
+Ces trois sections ont un champ « Identifiant » saisi par l'utilisateur, clé de référence des élèves (`Eleve.statut`), des contacts (`Contact.type`) et des évaluations de bilans (`EvaluationBilan.statutAcquisitionId`).
 
 - **Ligne enregistrée** : identifiant en **lecture seule** (`mc-input` `lectureSeule`, fond distinct), infobulle *« L'identifiant d'une valeur enregistrée ne peut pas être modifié. »* et même texte masqué visuellement (`desc{Champ}{i}`, relié par `aria-describedby`). Le libellé, le glyphe et les couleurs restent modifiables. Un identifiant mal saisi se corrige en supprimant l'entrée tant qu'elle n'est pas utilisée. Une ligne dont l'entrée disparaît des données en restant modifiée (voir Comportement commun) redevient non enregistrée : son identifiant redevient éditable
 - **Ligne non enregistrée** : identifiant **obligatoire** et **unique** dans la section, sans tenir compte de la casse ni des espaces en bordure, face aux entrées enregistrées **et** aux autres lignes de la section (deux nouvelles lignes « X » et « x » sont toutes deux en erreur)
@@ -139,7 +139,7 @@ Ces trois sections ont un champ « Identifiant » saisi par l'utilisateur, clé 
 | Date de début | `mc-input` type date |
 | Date de fin | `mc-input` type date |
 
-> Utilisé par : `ProjetPeriode.periodeNom` et `Bulletin.periode` (référence par le **nom**), bornes du mini-calendrier du cahier journal
+> Utilisé par : `ProjetPeriode.periodeNom` (référence par le **nom**), bornes du mini-calendrier du cahier journal
 
 ### Section "Groupes"
 
@@ -160,7 +160,7 @@ Ces trois sections ont un champ « Identifiant » saisi par l'utilisateur, clé 
 | Couleur fond | `mc-input` type color |
 | Aperçu | `mc-badge-statut` en temps réel (mis à jour à la frappe) |
 
-> Utilisé par : `PpiCompetence.evaluation`, `BulletinCompetence.evaluation` (phase 2)
+> Utilisé par : `EvaluationBilan.statutAcquisitionId` (bilans des élèves)
 
 ### Section "Statuts élève"
 

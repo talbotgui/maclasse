@@ -8,8 +8,8 @@ Description de l'application telle que conçue et implémentée.
 
 | Document | Contenu |
 |---|---|
-| [description-generale](specification/description-generale.md) | SPA Angular hors ligne, mono-utilisateur, ZIP chiffré AES-GCM, périmètre fonctionnel (PPI, bulletins, tableau de bord en phase 2) |
-| [modeles-donnees](specification/modeles-donnees.md) | Structure JSON : configuration, référentiels, enseignant, classe, élèves, EDT, projets, cahier journal, PPI, bulletins |
+| [description-generale](specification/description-generale.md) | SPA Angular hors ligne, mono-utilisateur, ZIP chiffré AES-GCM, périmètre fonctionnel (tableau de bord en phase 2) |
+| [modeles-donnees](specification/modeles-donnees.md) | Structure JSON : configuration, référentiels, enseignant, classe, élèves, EDT, projets, cahier journal, bilans des élèves |
 | [architecture-applicative](specification/architecture-applicative.md) | Structure des dossiers, nommage, fichiers racine, décisions techniques |
 | [elements-techniques](specification/elements-techniques.md) | Gardes, classes de base, utilitaires, pattern Commande, versions du JSON, persistance, routing, `@media print`, recherche globale |
 | [services](specification/services.md) | `DonneesService`, `ContexteService`, services métier, `MigrationService`, `SauvegardeAutoService`, `ChiffrementService` |

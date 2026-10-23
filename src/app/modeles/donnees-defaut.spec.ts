@@ -14,7 +14,6 @@ import type {
   Enseignant,
 } from './donnees-application.modele';
 import type { JourSemaine } from './emploi-du-temps.modele';
-import type { Bulletin, Ppi } from './ppi-bulletin.modele';
 import type { Projet } from './projet.modele';
 import type { Referentiels } from './referentiels.modele';
 import { MigrationService } from '../services/sansEtat/migration.service';
@@ -30,8 +29,6 @@ const _checkConfig = donneesDefaut.configuration satisfies ConfigApplication;
 const _checkEnseignant = donneesDefaut.enseignant satisfies Enseignant;
 const _checkReferentiels = donneesDefaut.referentiels satisfies Record<keyof Referentiels, unknown>;
 const _checkProjets = donneesDefaut.projets satisfies Record<keyof Projet, unknown>[];
-const _checkPpi = donneesDefaut.ppi satisfies Ppi[];
-const _checkBulletins = donneesDefaut.bulletins satisfies Bulletin[];
 
 /** Regex d'une date au format ISO 8601 (`YYYY-MM-DD`). */
 const REGEX_DATE_ISO = /^\d{4}-\d{2}-\d{2}$/;
@@ -56,8 +53,6 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
       expect(Array.isArray(donnees.emploisDuTemps)).toBe(true);
       expect(Array.isArray(donnees.projets)).toBe(true);
       expect(Array.isArray(donnees.cahierJournal)).toBe(true);
-      expect(Array.isArray(donnees.ppi)).toBe(true);
-      expect(Array.isArray(donnees.bulletins)).toBe(true);
     });
   });
 

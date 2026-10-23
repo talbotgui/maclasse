@@ -31,8 +31,6 @@ export class DonneesMother {
       emploisDuTempsCalcules: [],
       projets: [],
       cahierJournal: [],
-      ppi: [],
-      bulletins: [],
       ...surcharge,
     };
   }

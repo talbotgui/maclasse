@@ -9,6 +9,7 @@ import {
   CursusAnneeMother,
   EleveMother,
 } from '../../../tests/eleve.mother';
+import { BilanMother, SuiviSousDomaineMother } from '../../../tests/bilan.mother';
 import { LIBELLES } from '../../../libelles';
 import type { Eleve } from '../../../modeles/eleve.modele';
 
@@ -368,6 +369,24 @@ describe('FeFormulaireEleveComponent', () => {
 
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy.mock.calls[0][0]).toEqual(eleve);
+    });
+
+    it("conserve les bilans de l'élève et émet les bilans externes saisis", () => {
+      const suivis = [SuiviSousDomaineMother.avecBilans('FR-C2-L', [BilanMother.base('b1')])];
+      fixture.componentRef.setInput(
+        'eleve',
+        EleveMother.base('e1', 'MARTIN', 'Alice', { suivisSousDomaines: suivis }),
+      );
+      fixture.detectChanges();
+      (component as any).form.controls.bilansExternes.setValue('Bilan orthophonique');
+      const spy = vi.spyOn((component as any).enregistrer, 'emit');
+
+      (component as any).onEnregistrer();
+
+      const emis = spy.mock.calls[0][0] as Eleve;
+      expect(emis.bilansExternes).toBe('Bilan orthophonique');
+      expect(emis.suivisSousDomaines).toEqual(suivis);
+      expect(emis.suivisSousDomaines).not.toBe(suivis);
     });
 
     it('émet inclusion, notes PPA et ESS vides à null', () => {

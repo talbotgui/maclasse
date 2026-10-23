@@ -11,7 +11,7 @@ import {
   EleveMother,
 } from '../../tests/eleve.mother';
 import type { AbsenceRecurrente, Eleve } from '../../modeles/eleve.modele';
-import type { EleveV2 } from '../../modeles/migration.modele';
+import type { DonneesApplicationV1, EleveV2, EleveV3 } from '../../modeles/migration.modele';
 import { PeriodeMother, ProjetMother } from '../../tests/projet.mother';
 import { SourceEdtCalcule } from '../../modeles/emploi-du-temps-calcule.modele';
 
@@ -20,10 +20,11 @@ describe('MigrationService', () => {
 
   describe('version supportée', () => {
     it('la version courante est celle de la dernière étape de migration', () => {
-      expect(service.obtenirVersionCourante()).toBe('2026.09.7');
+      expect(service.obtenirVersionCourante()).toBe('2026.10.1');
     });
 
     it('accepte la version courante et les versions antérieures', () => {
+      expect(service.estVersionSupportee('2026.10.1')).toBe(true);
       expect(service.estVersionSupportee('2026.09.7')).toBe(true);
       expect(service.estVersionSupportee('2026.09.6')).toBe(true);
       expect(service.estVersionSupportee('2026.09.1')).toBe(true);
@@ -31,14 +32,14 @@ describe('MigrationService', () => {
     });
 
     it('refuse une version plus récente', () => {
-      expect(service.estVersionSupportee('2026.09.8')).toBe(false);
-      expect(service.estVersionSupportee('2026.10.1')).toBe(false);
+      expect(service.estVersionSupportee('2026.10.2')).toBe(false);
+      expect(service.estVersionSupportee('2026.11.1')).toBe(false);
       expect(service.estVersionSupportee('2027.01.1')).toBe(false);
     });
 
     it('compare les segments numériquement et non comme du texte', () => {
-      expect(service.estVersionSupportee('2026.09.10')).toBe(false);
-      expect(service.estVersionSupportee('2026.09.03')).toBe(true);
+      expect(service.estVersionSupportee('2026.10.10')).toBe(false);
+      expect(service.estVersionSupportee('2026.10.01')).toBe(true);
     });
 
     it('ne prend pas une version illisible pour une version future', () => {
@@ -48,7 +49,7 @@ describe('MigrationService', () => {
 
     it('tolère un nombre de segments différent', () => {
       expect(service.estVersionSupportee('2026.09')).toBe(true);
-      expect(service.estVersionSupportee('2026.09.7.1')).toBe(false);
+      expect(service.estVersionSupportee('2026.10.1.1')).toBe(false);
     });
   });
 
@@ -299,7 +300,7 @@ describe('MigrationService', () => {
         classe: { niveau: 'CM2', annee: 'CM2', eleves: [eleve as Eleve] },
       });
       const migrees = service.migrer(donnees);
-      expect(migrees.version).toBe('2026.09.7');
+      expect(migrees.version).toBe(service.obtenirVersionCourante());
       return migrees.classe.eleves[0];
     };
 
@@ -349,6 +350,64 @@ describe('MigrationService', () => {
       });
       const donnees = DonneesMother.base({
         version: '2026.09.7',
+        classe: { niveau: 'CM2', annee: 'CM2', eleves: [structuredClone(eleve)] },
+      });
+
+      expect(service.migrer(donnees).classe.eleves[0]).toEqual(eleve);
+    });
+  });
+
+  describe('introduction des bilans par sous-domaine', () => {
+    /**
+     * Migre depuis la version `2026.09.7` un élève dépourvu des champs introduits
+     * en `2026.10.1`, complété par les anciens champs fournis.
+     * @param anciensChamps Champs antérieurs à ajouter à l'élève.
+     * @returns Données migrées.
+     */
+    const migrerDepuis2026097 = (anciensChamps: EleveV3): DonneesApplication => {
+      const eleve = { ...EleveMother.base('e1', 'MARTIN', 'Alice'), ...anciensChamps } as Partial<
+        Eleve & EleveV3
+      >;
+      delete eleve.bilansExternes;
+      delete eleve.suivisSousDomaines;
+      const donnees: DonneesApplication & DonneesApplicationV1 = {
+        ...DonneesMother.base({
+          version: '2026.09.7',
+          classe: { niveau: 'CM2', annee: 'CM2', eleves: [eleve as Eleve] },
+        }),
+        ppi: [],
+        bulletins: [],
+      };
+      const migrees = service.migrer(donnees);
+      expect(migrees.version).toBe('2026.10.1');
+      return migrees;
+    };
+
+    it('ancien texte bilans → bilansExternes, ancien champ retiré', () => {
+      const migre = migrerDepuis2026097({ bilans: 'Bilan orthophonique' }).classe.eleves[0];
+
+      expect(migre.bilansExternes).toBe('Bilan orthophonique');
+      expect(Object.keys(migre)).not.toContain('bilans');
+    });
+
+    it('élève sans ancien texte → bilansExternes vide, suivis vides', () => {
+      const migre = migrerDepuis2026097({}).classe.eleves[0];
+
+      expect(migre.bilansExternes).toBe('');
+      expect(migre.suivisSousDomaines).toEqual([]);
+    });
+
+    it('collections ppi et bulletins retirées', () => {
+      const migrees = migrerDepuis2026097({});
+
+      expect(Object.keys(migrees)).not.toContain('ppi');
+      expect(Object.keys(migrees)).not.toContain('bulletins');
+    });
+
+    it('fichier déjà en 2026.10.1 → élève non modifié', () => {
+      const eleve = EleveMother.base('e1', 'MARTIN', 'Alice', { bilansExternes: 'Bilan' });
+      const donnees = DonneesMother.base({
+        version: '2026.10.1',
         classe: { niveau: 'CM2', annee: 'CM2', eleves: [structuredClone(eleve)] },
       });
 

@@ -23,15 +23,13 @@ related:
 | Domaine | Description |
 |---|---|
 | Référentiels | Identité enseignant, niveau de classe, barème de notes = `statutsAcquisition` (personnalisable : libellé, glyphe, couleur), compétences EN (domaines actifs choisis dans le Paramétrage), périodes, groupes, statuts élève, types de contact, jours fériés, config EDT |
-| Élèves | Fiche élève complète, contacts, absences, cursus, notes administratives |
+| Élèves | Fiche administrative (identité, contacts, absences, cursus, notes administratives) et bilans par sous-domaine de compétences (textes riches et évaluations) |
 | Projets pédagogiques | Projets par période avec compétences associées et liste d'élèves |
 | Emploi du temps | Emplois du temps hebdomadaires (fréquence, dates, créneaux à temps multiples) et emplois du temps calculés en lecture seule |
 | Cahier journal | Séances journalières avec horaires, discipline, compétences, déroulement, notes de la journée |
-| PPI | **Phase 2, non implémenté.** Projet Pédagogique Individuel par élève : compétences travaillées avec constat/actions/évaluation à deux dates |
-| Bulletins | **Phase 2, non implémenté.** Évaluation par compétence + appréciation publique + appréciation privée |
-| Tableau de bord | **Phase 2, non implémenté.** Agrégation PPI + bulletins + projets pour visualiser les compétences d'un élève |
+| Tableau de bord | **Phase 2, non implémenté.** Agrégation des bilans et des projets pour visualiser les compétences d'un élève |
 
-Pour la phase 2, seuls les modèles (`Ppi`, `Bulletin`) et les tableaux racine `ppi` et `bulletins` du JSON existent ; aucun écran ne les exploite.
+Les modèles `Ppi` et `Bulletin` de la phase 2, jamais exploités, ont été retirés par le [plan 25](../plans/25-eleves-onglets-bilans.md) : le suivi individualisé passe par les bilans des élèves.
 
 ## Contraintes techniques
 

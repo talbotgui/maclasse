@@ -134,7 +134,7 @@ interface FormulaireEleve {
   /** Référence vers un `StatutEleve`. */
   statut: FormControl<string>;
   /** Bilans. */
-  bilans: FormControl<string>;
+  bilansExternes: FormControl<string>;
   /** Accueil. */
   accueil: FormControl<string>;
   /** Inclusion, chaîne vide si non renseignée. */
@@ -273,7 +273,7 @@ export class FeFormulaireEleveComponent {
     dateNaissance: new FormControl('', { nonNullable: true }),
     dateArrivee: new FormControl('', { nonNullable: true }),
     statut: new FormControl('', { nonNullable: true }),
-    bilans: new FormControl('', { nonNullable: true }),
+    bilansExternes: new FormControl('', { nonNullable: true }),
     accueil: new FormControl('', { nonNullable: true }),
     inclusion: new FormControl('', { nonNullable: true }),
     contacts: new FormArray<FormGroup<FormulaireContact>>([]),
@@ -551,7 +551,7 @@ export class FeFormulaireEleveComponent {
       dateNaissance: valeurs.dateNaissance,
       dateArrivee: valeurs.dateArrivee,
       statut: valeurs.statut,
-      bilans: valeurs.bilans,
+      bilansExternes: valeurs.bilansExternes,
       accueil: valeurs.accueil,
       inclusion: valeurs.inclusion || null,
       contacts: valeurs.contacts,
@@ -572,6 +572,8 @@ export class FeFormulaireEleveComponent {
       portLunettes: valeurs.portLunettes,
       notificationAesh: valeurs.notificationAesh,
       lateralite: valeurs.lateralite,
+      // Les bilans ne sont pas saisis dans ce formulaire : ceux de l'élève sont conservés
+      suivisSousDomaines: structuredClone(this.eleve()?.suivisSousDomaines ?? []),
     });
   }
 
@@ -623,7 +625,7 @@ export class FeFormulaireEleveComponent {
     c.dateNaissance.reset(eleve.dateNaissance, sansEmission);
     c.dateArrivee.reset(eleve.dateArrivee, sansEmission);
     c.statut.reset(eleve.statut, sansEmission);
-    c.bilans.reset(eleve.bilans, sansEmission);
+    c.bilansExternes.reset(eleve.bilansExternes, sansEmission);
     c.accueil.reset(eleve.accueil, sansEmission);
     c.inclusion.reset(eleve.inclusion ?? '', sansEmission);
     c.droitImage.reset({ ...eleve.droitImage }, sansEmission);
@@ -752,7 +754,7 @@ export class FeFormulaireEleveComponent {
       dateNaissance: '',
       dateArrivee: '',
       statut: '',
-      bilans: '',
+      bilansExternes: '',
       accueil: '',
       inclusion: null,
       contacts: [],
@@ -767,6 +769,7 @@ export class FeFormulaireEleveComponent {
       portLunettes: false,
       notificationAesh: false,
       lateralite: null,
+      suivisSousDomaines: [],
     };
   }
 }

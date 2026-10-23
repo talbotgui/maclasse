@@ -25,7 +25,7 @@ Ce document décrit ce qui est commun à tous les écrans. Le détail de chaque 
 | Cahiers journaux | `/cahier-journal` | [cahier-journal](cahier-journal.md) |
 | Paramétrage | `/parametrage` | [parametrage](parametrage.md) |
 
-Écrans de phase 2, non implémentés : PPI (Projet Pédagogique Individuel), Bulletins, Tableau de bord de progression.
+Écran de phase 2, non implémenté : Tableau de bord de progression.
 
 Gardes et routes : voir [elements-techniques](../elements-techniques.md#routing-angular).
 

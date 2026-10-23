@@ -9,7 +9,6 @@ import { EmploiDuTempsCalcule } from './emploi-du-temps-calcule.modele';
 import { JourneeJournal } from './cahier-journal.modele';
 import { Projet } from './projet.modele';
 import { Referentiels } from './referentiels.modele';
-import { Bulletin, Ppi } from './ppi-bulletin.modele';
 
 /**
  * Paramètres de configuration de l'application choisis par l'enseignant.
@@ -71,8 +70,4 @@ export interface DonneesApplication {
   projets: Projet[];
   /** Entrées du cahier journal, une par journée scolaire. */
   cahierJournal: JourneeJournal[];
-  /** Projets Pédagogiques Individualisés (domaine à construire). */
-  ppi: Ppi[];
-  /** Bulletins d'évaluation (domaine à construire). */
-  bulletins: Bulletin[];
 }

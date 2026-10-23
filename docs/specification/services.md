@@ -94,9 +94,9 @@ Bilans des élèves, regroupés par sous-domaine (compétence de niveau 3). Chaq
 - `obtenirLibelleSousDomaine(id)` : libellé complet d'un sous-domaine
 - `obtenirCompetencesEvaluables(sousDomaineId)` : feuilles du sous-arbre (compétences proposées dans le tableau d'évaluations)
 - `creerBilanVierge()` (daté du jour, sans titre) et `creerEvaluationVierge()` : valeurs non enregistrées, servant de brouillon à l'écran
-- `enregistrerBilan(eleveId, sousDomaineId, bilan)` : remplace le bilan s'il existe, sinon l'ajoute en dernière position (crée le suivi au besoin)
+- `enregistrerBilan(eleveId, sousDomaineId, bilan)` : date le bilan du jour, puis le remplace s'il existe, sinon l'ajoute en dernière position (crée le suivi au besoin)
 - `supprimerBilan(…)` : retire aussi le suivi devenu vide
-- `dupliquerBilan(…)` : copie en dernière position, nouveaux identifiants (bilan et évaluations)
+- `dupliquerBilan(…)` : copie en dernière position, datée du jour, nouveaux identifiants (bilan et évaluations)
 - `deplacerBilan(…, -1 | 1)` : échange avec le bilan voisin ; sans effet aux extrémités
 
 ### `ProjetService`

@@ -92,8 +92,9 @@ export class BilanService {
   }
 
   /**
-   * Enregistre un bilan : le remplace s'il existe déjà dans le sous-domaine, sinon l'ajoute
-   * en dernière position (le suivi du sous-domaine est créé s'il n'existe pas).
+   * Enregistre un bilan, daté du jour de l'enregistrement : le remplace s'il existe déjà
+   * dans le sous-domaine, sinon l'ajoute en dernière position (le suivi du sous-domaine
+   * est créé s'il n'existe pas).
    * Sans effet si l'élève est introuvable.
    * @param eleveId Identifiant de l'élève.
    * @param sousDomaineId Identifiant du sous-domaine du bilan.
@@ -106,9 +107,10 @@ export class BilanService {
         suivi = { sousDomaineId, bilans: [] };
         suivis.push(suivi);
       }
+      const enregistre = { ...structuredClone(bilan), date: DateUtils.dateAujourdhui() };
       const index = suivi.bilans.findIndex((b) => b.id === bilan.id);
-      if (index === -1) suivi.bilans.push(structuredClone(bilan));
-      else suivi.bilans[index] = structuredClone(bilan);
+      if (index === -1) suivi.bilans.push(enregistre);
+      else suivi.bilans[index] = enregistre;
       return true;
     });
   }
@@ -133,7 +135,8 @@ export class BilanService {
   }
 
   /**
-   * Duplique un bilan en dernière position de son sous-domaine, avec de nouveaux identifiants.
+   * Duplique un bilan en dernière position de son sous-domaine, avec de nouveaux identifiants
+   * et la date du jour.
    * Sans effet si l'élève ou le bilan est introuvable.
    * @param eleveId Identifiant de l'élève.
    * @param sousDomaineId Identifiant du sous-domaine du bilan.
@@ -147,6 +150,7 @@ export class BilanService {
       suivi.bilans.push({
         ...structuredClone(source),
         id: crypto.randomUUID(),
+        date: DateUtils.dateAujourdhui(),
         evaluations: source.evaluations.map((ev) => ({ ...ev, id: crypto.randomUUID() })),
       });
       return true;

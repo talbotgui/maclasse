@@ -37,8 +37,6 @@ interface FormulaireEvaluation {
 
 /** Contrôles du formulaire d'un bilan. */
 interface FormulaireBilan {
-  /** Date du bilan au format ISO. */
-  date: FormControl<string>;
   /** Titre du bilan (obligatoire). */
   titre: FormControl<string>;
   /** Texte riche du bilan. */
@@ -52,7 +50,7 @@ interface FormulaireBilan {
 }
 
 /**
- * Édition d'un bilan dans un `fieldset` : date et titre en légende, VALIDER / ANNULER,
+ * Édition d'un bilan dans un `fieldset` : titre en légende, VALIDER / ANNULER,
  * trois éditeurs riches et le tableau des évaluations directement éditable.
  * Le formulaire est initialisé une seule fois depuis `bilan` : le composant est recréé
  * à chaque passage en édition.
@@ -95,7 +93,6 @@ export class FeBilanFormulaireComponent implements OnInit {
 
   /** Formulaire du bilan. */
   protected readonly form = new FormGroup<FormulaireBilan>({
-    date: new FormControl('', { nonNullable: true }),
     titre: new FormControl('', {
       nonNullable: true,
       validators: [FormulaireUtils.validerTexteNonVide],
@@ -137,7 +134,6 @@ export class FeBilanFormulaireComponent implements OnInit {
     );
     this.form.reset(
       {
-        date: bilan.date,
         titre: bilan.titre,
         bilans: bilan.bilans,
         besoinsSpecifiques: bilan.besoinsSpecifiques,
@@ -228,7 +224,8 @@ export class FeBilanFormulaireComponent implements OnInit {
     const valeurs = this.form.getRawValue();
     this.valider.emit({
       id: this.bilan().id,
-      date: valeurs.date,
+      // Date conservée telle quelle : l'enregistrement la remplace par celle du jour
+      date: this.bilan().date,
       titre: valeurs.titre.trim(),
       bilans: valeurs.bilans,
       besoinsSpecifiques: valeurs.besoinsSpecifiques,

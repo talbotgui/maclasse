@@ -209,7 +209,7 @@ Composant `fe-onglet-bilans`. Les bilans de l'élève sont regroupés par **sous
 
 - `mc-selecteur-competences` en sélection unique, limité au **niveau 3** des domaines actifs, libellé `Domaine > Niveau 2 > Sous-domaine` (champ `rechercheCompetencesSousDomaine`)
 - Bouton **AJOUTER** (`btnAjouterSousDomaine`), inactif sans sous-domaine choisi ou pendant l'édition d'un bilan
-- AJOUTER ouvre un **nouveau bilan en édition** à la fin du sous-domaine (le cadre du sous-domaine est créé s'il n'existe pas) : sans titre, daté du jour, focus sur le titre. C'est le seul point d'entrée pour créer un bilan, y compris un 2e bilan d'un sous-domaine déjà présent
+- AJOUTER ouvre un **nouveau bilan en édition** à la fin du sous-domaine (le cadre du sous-domaine est créé s'il n'existe pas) : sans titre, focus sur le titre. C'est le seul point d'entrée pour créer un bilan, y compris un 2e bilan d'un sous-domaine déjà présent
 - Le nouveau bilan n'est **enregistré qu'à VALIDER** ; ANNULER le fait disparaître (avec son cadre s'il était seul), sans entrée UNDO
 
 ### Cadre de sous-domaine
@@ -226,7 +226,7 @@ Zone repliable, **repliée par défaut** (dépliée après VALIDER).
 |---|---|
 | Bouton de bascule (`btnBasculerBilan_<id>`, `h4`) | Date et titre (« (sans titre) » par défaut), `aria-expanded`, `aria-controls="corpsBilan_<id>"` |
 | **MODIFIER** | Passe le bilan en édition ; reçoit le focus au retour d'édition |
-| **DUPLIQUER** | Copie du bilan ajoutée à la fin du sous-domaine (1 entrée UNDO) |
+| **DUPLIQUER** | Copie du bilan, **datée du jour**, ajoutée à la fin du sous-domaine (1 entrée UNDO) |
 | **MONTER** / **DESCENDRE** | Échange avec le bilan voisin, effet immédiat (1 entrée UNDO) ; désactivés aux extrémités |
 | **SUPPRIMER** | `mc-bouton-destruction [petit]="true"` |
 
@@ -236,7 +236,9 @@ Toutes les actions sont désactivées pendant l'édition d'un bilan : **un seul 
 
 ### Bilan en édition (`fe-bilan-formulaire`, Reactive Forms)
 
-`fieldset` dont la légende porte les champs **Titre** (obligatoire) et **Date**.
+`fieldset` dont la légende porte le champ **Titre** (obligatoire). La date **n'est pas saisissable** : c'est celle du jour du dernier clic sur VALIDER.
+
+- VALIDER et ANNULER sont alignés à droite
 
 - **VALIDER** (inactif tant que le formulaire est invalide) enregistre le bilan (1 entrée UNDO) ; **ANNULER** abandonne la saisie
 - Messages `role="alert"` : titre obligatoire (une fois le champ modifié ou quitté), évaluation sans compétence, compétence évaluée deux fois

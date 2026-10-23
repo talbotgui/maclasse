@@ -2,17 +2,10 @@
   <legend class="bilan-form__legende">
     <mc-input
       [id]="'champBilanTitre_' + bilan().id"
-      class="bilan-form__titre"
       [label]="LIBELLES.bilans.labelTitre"
       [required]="true"
       [formControl]="form.controls.titre"
       [mcAutoFocus]="focusDemande()"
-    />
-    <mc-input
-      [id]="'champBilanDate_' + bilan().id"
-      type="date"
-      [label]="LIBELLES.bilans.labelDate"
-      [formControl]="form.controls.date"
     />
   </legend>
 

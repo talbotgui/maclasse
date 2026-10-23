@@ -22,13 +22,10 @@
   padding: 0 0.5rem;
 }
 
-.bilan-form__titre {
-  flex: 1 1 16rem;
-}
-
 .bilan-form__actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 0.5rem;
 }
 

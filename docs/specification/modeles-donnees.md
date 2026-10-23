@@ -412,7 +412,7 @@ Un suivi n'existe que tant qu'il contient au moins un bilan : il est créé à l
 ```
 {
   id: string,                  // UUID
-  date: string,                // ISO date, date du jour à la création
+  date: string,                // ISO date, jour du dernier enregistrement (VALIDER) ou de la duplication
   titre: string,               // saisi par l'enseignant, sans valeur par défaut
   bilans: string,              // HTML (éditeur riche)
   besoinsSpecifiques: string,  // HTML (éditeur riche)

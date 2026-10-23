@@ -55,7 +55,8 @@ describe('FeBilanFormulaireComponent', () => {
   describe('chargement', () => {
     it('charge le bilan et ses évaluations dans le formulaire', () => {
       expect(form().controls.titre.value).toBe('Bilan initial');
-      expect(form().controls.date.value).toBe('2026-10-01');
+      expect(form().controls.date).toBeUndefined();
+      expect(fixture.nativeElement.querySelector('input[type="date"]')).toBeNull();
       expect(form().controls.bilans.value).toBe('<p>Progrès réguliers</p>');
       expect((component as any).lignes).toHaveLength(1);
       expect((component as any).lignes[0].controls.statutAcquisitionId.value).toBe('');

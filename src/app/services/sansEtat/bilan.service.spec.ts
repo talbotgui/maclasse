@@ -104,7 +104,9 @@ describe('BilanService', () => {
     it("crée le suivi du sous-domaine au premier bilan, avec le libellé d'UNDO dédié", () => {
       service.enregistrerBilan('e1', 'FR-C2-L', BilanMother.base('b1'));
       expect(suivis()).toEqual([
-        SuiviSousDomaineMother.avecBilans('FR-C2-L', [BilanMother.base('b1')]),
+        SuiviSousDomaineMother.avecBilans('FR-C2-L', [
+          BilanMother.base('b1', { date: DateUtils.dateAujourdhui() }),
+        ]),
       ]);
       expect(donneesService.libelleSommetUndo()).toBe(LIBELLES.commandes.enregistrementBilan);
     });
@@ -124,6 +126,10 @@ describe('BilanService', () => {
       ]);
       service.enregistrerBilan('e1', 'FR-C2-L', BilanMother.base('b1', { titre: 'Modifié' }));
       expect(suivis()[0].bilans.map((b) => b.titre)).toEqual(['Modifié', 'Bilan b2']);
+      expect(suivis()[0].bilans.map((b) => b.date)).toEqual([
+        DateUtils.dateAujourdhui(),
+        '2026-10-01',
+      ]);
     });
 
     it("est annulable : l'UNDO retire le suivi créé", () => {
@@ -183,6 +189,7 @@ describe('BilanService', () => {
       const copie = bilans[2];
       expect(copie.id).not.toBe('b1');
       expect(copie.titre).toBe(source.titre);
+      expect(copie.date).toBe(DateUtils.dateAujourdhui());
       expect(copie.evaluations).toHaveLength(1);
       expect(copie.evaluations[0].id).not.toBe('ev1');
       expect(copie.evaluations[0].commentaire).toBe('Fluide');

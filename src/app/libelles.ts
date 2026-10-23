@@ -83,7 +83,6 @@ export const LIBELLES = {
     ariaDescendre: 'Descendre le bilan : ',
     ariaModifier: 'Modifier le bilan : ',
     ariaDupliquer: 'Dupliquer le bilan : ',
-    labelDate: 'Date',
     labelTitre: 'Titre',
     labelBilans: 'Bilans',
     labelBesoinsSpecifiques: 'Besoins spécifiques',

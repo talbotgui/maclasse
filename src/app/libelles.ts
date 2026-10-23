@@ -60,8 +60,8 @@ export const LIBELLES = {
     eleves: 'Élèves',
     projets: 'Projets',
     competences: 'Compétences',
-    emploiDuTemps: 'Emploi du temps',
-    cahierJournal: 'Cahier journal',
+    emploiDuTemps: 'Emplois du temps',
+    cahierJournal: 'Cahiers journaux',
     parametrage: 'Paramétrage',
   },
 
@@ -217,7 +217,8 @@ export const LIBELLES = {
 
   /** Libellés de l'écran Emploi du temps. */
   edt: {
-    titre: 'Emploi du temps',
+    titre: 'Emplois du temps',
+    titreFormulaire: 'Emploi du temps',
     titreListeEdt: 'Mes emplois du temps',
     titreListeEdtCalcules: 'Mes emplois du temps calculés',
     boutonCreerEdtCalcule: 'Créer un emploi du temps calculé',
@@ -287,7 +288,7 @@ export const LIBELLES = {
 
   /** Libellés de l'écran Cahier journal. */
   cahierJournal: {
-    titre: 'Cahier journal',
+    titre: 'Cahiers journaux',
     boutonInitialiserVide: 'Initialiser une journée vide',
     boutonInitialiserEdt: "Initialiser depuis l'emploi du temps",
     boutonSupprimerJournee: 'Supprimer la journée',

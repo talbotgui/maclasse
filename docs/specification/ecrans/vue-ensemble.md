@@ -21,8 +21,8 @@ Ce document décrit ce qui est commun à tous les écrans. Le détail de chaque 
 | Élèves | `/eleves` | [eleves](eleves.md) |
 | Projets | `/projets` | [projets](projets.md) |
 | Compétences | `/competences` | [competences](competences.md) |
-| Emploi du temps | `/emploi-du-temps` | [emploi-du-temps](emploi-du-temps.md) |
-| Cahier journal | `/cahier-journal` | [cahier-journal](cahier-journal.md) |
+| Emplois du temps | `/emploi-du-temps` | [emploi-du-temps](emploi-du-temps.md) |
+| Cahiers journaux | `/cahier-journal` | [cahier-journal](cahier-journal.md) |
 | Paramétrage | `/parametrage` | [parametrage](parametrage.md) |
 
 Écrans de phase 2, non implémentés : PPI (Projet Pédagogique Individuel), Bulletins, Tableau de bord de progression.

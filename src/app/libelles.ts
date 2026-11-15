@@ -36,6 +36,11 @@ export const LIBELLES = {
     ariaEffacerReponse: 'Effacer la réponse : ',
   },
 
+  /** Libellés des marges des pages imprimées. */
+  impression: {
+    entete: 'Application Ma Classe',
+  },
+
   /** Libellés de la barre d'en-tête. */
   entete: {
     titre: 'MaClasse',

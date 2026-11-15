@@ -298,4 +298,15 @@ describe('DateUtils', () => {
       expect(DateUtils.formaterHeure(new Date(2026, 5, 9, 10, 5))).toBe('10:05');
     });
   });
+
+  /** Produit une date et une heure courtes avec zéros initiaux. */
+  describe('formaterDateHeure', () => {
+    it('formate en DD/MM/YYYY HH:MM', () => {
+      expect(DateUtils.formaterDateHeure(new Date(2026, 10, 15, 14, 32))).toBe('15/11/2026 14:32');
+    });
+
+    it('ajoute les zéros initiaux au jour, au mois, à l\'heure et aux minutes', () => {
+      expect(DateUtils.formaterDateHeure(new Date(2026, 0, 5, 8, 7))).toBe('05/01/2026 08:07');
+    });
+  });
 });

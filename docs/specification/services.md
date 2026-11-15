@@ -190,6 +190,11 @@ Bilans des élèves, regroupés par sous-domaine (compétence de niveau 3). Chaq
 - `arreter()`, `timerActif`
 - Utilisé pour les sauvegardes manuelles (entête) comme automatiques : aucune popin tant que le mot de passe est connu
 
+### `ImpressionService`
+
+- `preparerMarges(maintenant = new Date())` : pose sur `<html>` les variables CSS `--mc-impression-entete` (`LIBELLES.impression.entete`) et `--mc-impression-date` (`DateUtils.formaterDateHeure`), lues par les zones de marge `@page` de `styles.scss`
+- Appelé par le composant racine `App` à l'événement `window:beforeprint` (voir [elements-techniques](elements-techniques.md#impression-media-print))
+
 ### `RechercheGlobaleService`
 
 - `rechercher(terme)` : parcourt les élèves (« NOM Prénom ») puis les projets (nom), insensible à la casse et aux accents ; tableau vide si le terme est vide

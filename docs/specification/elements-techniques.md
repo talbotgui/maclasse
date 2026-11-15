@@ -226,6 +226,12 @@ Tous les composants d'écran sont chargés en **lazy loading** via `loadComponen
 - Une règle CSS `@media print` **masque la colonne gauche** (navigation + filtres) et les champs et boutons de l'entête dans tous ces écrans
 - Le bloc `@media print` de `styles.scss` est la seule source de vérité : les SCSS de composant ne gèrent pas l'impression
 - Les règles globales qui masquent un élément stylé par un composant portent `!important` : sans cela, le sélecteur du composant (suffixé par Angular d'un attribut `[_ngcontent-xxx]`) est plus spécifique et l'emporte
+- Les marges de toutes les pages imprimées sont définies par une règle `@page` générale (zones de marge CSS) qui remplace l'entête et le pied de page du navigateur (titre du document, URL) :
+  - entête centré : « Application Ma Classe » (`LIBELLES.impression.entete`)
+  - pied de page à gauche : date et heure de l'impression (`DD/MM/YYYY HH:MM`)
+  - pied de page à droite : numéro de page / nombre de pages
+- Le CSS ne pouvant ni lire `LIBELLES` ni calculer l'heure, le composant racine `App` écoute `window:beforeprint` (bouton IMPRIMER comme Ctrl+P) et appelle `ImpressionService.preparerMarges()`, qui pose les variables `--mc-impression-entete` et `--mc-impression-date` sur `<html>`
+- Les zones de marge sont prises en charge par Chrome et Edge (version 131 et suivantes), qui masquent alors leur propre entête et pied de page. Les pages nommées (`edt-paysage`) en héritent
 - L'emploi du temps s'imprime en paysage sur une page unique (page nommée `edt-paysage`, voir [emploi-du-temps](ecrans/emploi-du-temps.md#bouton-imprimer))
 
 ---

@@ -669,6 +669,30 @@ button {
 }
 
 @media print {
+  // Entête et pied de page de toutes les impressions, à la place de ceux du navigateur
+  // (titre, URL, date) : Chrome les masque dès qu'une zone de marge a un contenu.
+  // Les variables sont posées au beforeprint par ImpressionService ; les pages nommées
+  // (edt-paysage) héritent de ces zones.
+  @page {
+    @top-center {
+      content: var(--mc-impression-entete, '');
+      font-family: 'Roboto', sans-serif;
+      font-size: 9pt;
+    }
+
+    @bottom-left {
+      content: var(--mc-impression-date, '');
+      font-family: 'Roboto', sans-serif;
+      font-size: 9pt;
+    }
+
+    @bottom-right {
+      content: counter(page) ' / ' counter(pages);
+      font-family: 'Roboto', sans-serif;
+      font-size: 9pt;
+    }
+  }
+
   .mc-colonne-gauche {
     display: none !important;
   }
@@ -793,6 +817,7 @@ button {
   // (layout à 3 colonnes propre à cet écran, sans équivalent dans mc-colonne-gauche/droite).
   // `!important` : les règles du composant, suffixées par Angular d'un attribut
   // [_ngcontent-xxx], sont plus spécifiques que ces sélecteurs globaux.
+  // Marge minimale pour loger l'entête et le pied de page (9pt) de la règle @page générale.
   @page edt-paysage {
     size: A4 landscape;
     margin: 10mm;

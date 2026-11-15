@@ -211,6 +211,16 @@ export class DateUtils {
   }
 
   /**
+   * Formate un objet `Date` en date et heure courtes françaises (heure locale).
+   * Exemple : `new Date(2026, 10, 15, 14, 32)` → `"15/11/2026 14:32"`.
+   * @param date Objet `Date` à formater.
+   * @returns Date et heure au format `DD/MM/YYYY HH:MM`.
+   */
+  public static formaterDateHeure(date: Date): string {
+    return `${DateUtils.formaterDateCourt(DateUtils.formaterDateIso(date))} ${DateUtils.formaterHeure(date)}`;
+  }
+
+  /**
    * Ajoute un nombre d'heures entières à une heure `HH:MM`, avec wrap modulo 24h.
    * Exemple : `'23:00'` + 1 → `'00:00'`.
    * @param hhmm Heure de départ au format `HH:MM`.

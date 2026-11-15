@@ -11539,3 +11539,9 @@ Désactive ce filtrage quand l'utilisateur accède à l'application pour exclusi
   2. `src/app/services/sansEtat/competence.service.ts` : la méthode privée utilisée par la recherche `rechercherCompetences`, le cache de libellés et `obtenirChemin` s'appuie sur `obtenirDomaines()`. Le périmètre de recherche change donc en mode consultation. C'est voulu, mais l'effet n'est pas mentionné dans `services.md`.
   3. `src/app/ecrans/competences/ecran-competences.component.ts` : le `computed` `filtrageDomainesApplique` appelle une méthode du service qui lit des signaux. Cela fonctionne et la réactivité est correcte. Si la méthode avait été un `computed` du service, l'intention aurait été plus directe. C'est une préférence de style, rien d'obligatoire.
 </agent-message>
+---
+2026-11-15 20:23:02 [Sans titre] Le jeu de données par défaut ne contient pas de données dans l'onglet BILAN des élèves. Crée un jeu de données pour chacun
+---
+2026-11-15 20:31:20 [Jeu de données BILAN élèves] laisse un élève sans bilan pour les tests E2E et renseigne les autres
+---
+2026-11-15 20:36:46 [Sans titre] Dans l'onglet BILAN de l'écran ELEVE, dans la DIV. le composant "mc-selecteur-competences" est utilisé mais le "mc-selecteur-competences__chip mc-chip" peut être très très long en fonction du texte qu'il contient. Si c'est le cas, la mise en forme devient totalement incohérente. Il faut qu'il soit possible d'afficher le libellé d'une compétence sur plusieurs lignes. Que proposes-tu ?

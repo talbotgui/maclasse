@@ -1,5 +1,6 @@
 :host {
   display: flex;
+  min-width: 0;
   flex-direction: column;
   gap: 0.75rem;
 }
@@ -111,9 +112,19 @@
 
 .mc-selecteur-competences__chip {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.25rem;
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: normal;
+  text-align: left;
+  border-radius: 0.75rem;
   font-size: 0.8125rem;
+
+  > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
 }
 
 .mc-selecteur-competences__chip-supprimer {
@@ -130,6 +141,7 @@
   font-size: 0.75rem;
   cursor: pointer;
   flex-shrink: 0;
+  margin-top: 0.0625rem;
 
   &:hover {
     background-color: color-mix(in srgb, var(--couleur-primaire) 20%, transparent);

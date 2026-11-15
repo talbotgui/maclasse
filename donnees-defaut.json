@@ -57,7 +57,8 @@
         "notesPPA": null,
         "notesESS": null,
         "absencesRecurrentes": [],
-        "absencesPonctuelles": []
+        "absencesPonctuelles": [],
+        "suivisSousDomaines": []
       },
       {
         "id": "a2b3c4d5-e6f7-8901-bcde-f12345678901",
@@ -94,7 +95,97 @@
         "notesPPA": null,
         "notesESS": null,
         "absencesRecurrentes": [],
-        "absencesPonctuelles": []
+        "absencesPonctuelles": [],
+        "suivisSousDomaines": [
+          {
+            "sousDomaineId": "FR-CM1-1",
+            "bilans": [
+              {
+                "id": "aabbd5f4-2bb7-5863-baa9-66d591f02689",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Lecture <strong>fluide et expressive</strong>. Léonie lit volontiers devant la classe.</p>",
+                "besoinsSpecifiques": "<p>Aucun besoin particulier ; à nourrir avec des textes plus longs.</p>",
+                "moyens": "<ul><li>Rallye lecture niveau 3</li><li>Lecture offerte aux CP le vendredi</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "8f3c82f4-9fa4-5563-ab20-eac6b108e51c",
+                    "competenceId": "FR-CM1-1-1",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "5a55c009-4a76-5c09-9a34-6c21f54f8f10",
+                    "competenceId": "FR-CM1-1-4",
+                    "statutAcquisitionId": "A",
+                    "commentaire": "118 mots/min"
+                  },
+                  {
+                    "id": "b769012d-8631-535b-9840-ecb1ec5204fe",
+                    "competenceId": "FR-CM1-1-5",
+                    "statutAcquisitionId": "A",
+                    "commentaire": "Très expressive"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "sousDomaineId": "MAT-CM1-1",
+            "bilans": [
+              {
+                "id": "75f1de28-b265-5b9b-af50-4ecc1b2366cd",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Numération maîtrisée jusqu'à 999 999. Quelques hésitations sur les représentations.</p>",
+                "besoinsSpecifiques": "<p>Passer plus facilement du tableau de numération à l'écriture en lettres.</p>",
+                "moyens": "<ul><li>Exercices de passage entre représentations</li><li>Jeu du nombre mystère</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "a2fd1af7-ea73-599c-8734-9251573a0107",
+                    "competenceId": "MAT-CM1-1-4",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "f5c66256-6ab7-5b15-9d22-1f90bdf2dfd4",
+                    "competenceId": "MAT-CM1-1-5",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "37732a67-fb1d-5e7b-8b40-cba0767007b7",
+                    "competenceId": "MAT-CM1-1-6",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "Écriture en lettres à revoir"
+                  }
+                ]
+              },
+              {
+                "id": "d09309e6-53a4-52a3-9f7b-1421ff401219",
+                "date": "2026-11-06",
+                "titre": "Point de mi-période",
+                "bilans": "<p>Les représentations sont désormais acquises.</p>",
+                "besoinsSpecifiques": "",
+                "moyens": "<p>Poursuite du jeu du nombre mystère en autonomie.</p>",
+                "evaluations": [
+                  {
+                    "id": "acd8e263-0aa6-5f03-a18e-501c47034d41",
+                    "competenceId": "MAT-CM1-1-6",
+                    "statutAcquisitionId": "A",
+                    "commentaire": "Progrès nets"
+                  },
+                  {
+                    "id": "40ad3ec5-8633-5f79-83e8-071e95c89911",
+                    "competenceId": "MAT-CM1-1-7",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "b3c4d5e6-f7a8-9012-cdef-123456789012",
@@ -159,7 +250,124 @@
             "paritesSemaine": "lesDeux"
           }
         ],
-        "absencesPonctuelles": []
+        "absencesPonctuelles": [],
+        "suivisSousDomaines": [
+          {
+            "sousDomaineId": "FR-CM2-5",
+            "bilans": [
+              {
+                "id": "ff3792aa-718f-5204-837d-ecc2d1e91cbf",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Jean identifie le verbe mais confond <strong>sujet et complément</strong>.</p><p>Tendance à recopier les réponses du voisin.</p>",
+                "besoinsSpecifiques": "<p>Travail individuel sans aide extérieure ; reprise des bases du CM1.</p>",
+                "moyens": "<ul><li>Place isolée lors des évaluations</li><li>Fiches de manipulation des groupes de mots</li><li>Aide personnalisée le mardi midi</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "05c0531f-1215-57f2-94a9-c43181693d9d",
+                    "competenceId": "FR-CM2-5-1",
+                    "statutAcquisitionId": "NA",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "8cca512d-7939-5807-bd1f-aa05e46d3612",
+                    "competenceId": "FR-CM2-5-4",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "Groupe verbal repéré"
+                  },
+                  {
+                    "id": "4a819b2f-9b56-5b9b-99f2-88d6ebc7e659",
+                    "competenceId": "FR-CM2-5-6",
+                    "statutAcquisitionId": "NE",
+                    "commentaire": "Non abordé"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "sousDomaineId": "MAT-CM2-1",
+            "bilans": [
+              {
+                "id": "2a711961-a83f-5c8d-bd7a-8f78d5e42617",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Lecture des grands nombres fragile au-delà du million.</p>",
+                "besoinsSpecifiques": "<p>Manipuler le tableau de numération ; ralentir pour se relire.</p>",
+                "moyens": "<ul><li>Tableau de numération plastifié</li><li>Dictées de nombres hebdomadaires</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "4206cf43-7a23-5d09-99d3-72edaa65912a",
+                    "competenceId": "MAT-CM2-1-2",
+                    "statutAcquisitionId": "NA",
+                    "commentaire": "Confusions sur les zéros"
+                  },
+                  {
+                    "id": "fcc80cf0-edce-568b-b20e-bf1e8511e716",
+                    "competenceId": "MAT-CM2-1-4",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "21d6d52d-93b3-5503-bfae-920d2a00130e",
+                    "competenceId": "MAT-CM2-1-5",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": ""
+                  }
+                ]
+              },
+              {
+                "id": "7bb42193-ea80-57a7-83f0-42148fc5f241",
+                "date": "2026-11-13",
+                "titre": "Bilan intermédiaire",
+                "bilans": "<p>Des <em>progrès encourageants</em> grâce au tableau de numération.</p>",
+                "besoinsSpecifiques": "<p>Gagner en autonomie : le tableau reste indispensable.</p>",
+                "moyens": "<p>Maintien de l'aide personnalisée jusqu'à la fin de la période 2.</p>",
+                "evaluations": [
+                  {
+                    "id": "6d5dca3a-01cb-50c2-bc80-3f2c60ab3aa2",
+                    "competenceId": "MAT-CM2-1-2",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "Progrès"
+                  },
+                  {
+                    "id": "c8d97a5d-74f1-537c-9873-6ee14b0f2263",
+                    "competenceId": "MAT-CM2-1-6",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "sousDomaineId": "FR-CM2-2",
+            "bilans": [
+              {
+                "id": "5885a1bf-4c5e-5a5d-9b49-d39341467f9d",
+                "date": "2026-11-06",
+                "titre": "Production d'écrits",
+                "bilans": "<p>Textes très courts, souvent inachevés.</p>",
+                "besoinsSpecifiques": "<p>Disposer d'un cadre d'écriture et d'un lexique de départ.</p>",
+                "moyens": "<ul><li>Boîte à mots</li><li>Écriture à deux avec un tuteur</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "2b0f3eb7-0879-5eb0-809a-b2204ad0b484",
+                    "competenceId": "FR-CM2-2-1",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "bd9cc300-5771-5c65-a5c2-6ed7a84e01b1",
+                    "competenceId": "FR-CM2-2-7",
+                    "statutAcquisitionId": "NA",
+                    "commentaire": "Dialogue non ponctué"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "c4d5e6f7-a8b9-0123-defa-234567890123",
@@ -203,7 +411,97 @@
         "notesPPA": null,
         "notesESS": null,
         "absencesRecurrentes": [],
-        "absencesPonctuelles": []
+        "absencesPonctuelles": [],
+        "suivisSousDomaines": [
+          {
+            "sousDomaineId": "FR-CM1-2",
+            "bilans": [
+              {
+                "id": "f6d024be-c6da-5cbc-bff1-8d7e95d1db1f",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Idées nombreuses et originales, mais copie peu soignée et lente.</p>",
+                "besoinsSpecifiques": "<p>Améliorer la qualité de la copie ; terminer les productions.</p>",
+                "moyens": "<ul><li>Copie fractionnée par groupes de mots</li><li>Temps d'écriture limité et minuté</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "d1963ab6-b181-52b6-82f2-6e0ffda96f0a",
+                    "competenceId": "FR-CM1-2-1",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "Idées riches"
+                  },
+                  {
+                    "id": "6d9aa6c6-c79b-5264-bcc3-df677c833a63",
+                    "competenceId": "FR-CM1-2-2",
+                    "statutAcquisitionId": "NA",
+                    "commentaire": "Copie lettre à lettre"
+                  },
+                  {
+                    "id": "4ad7c2cf-eec0-513a-9177-4f04e979a363",
+                    "competenceId": "FR-CM1-2-7",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "sousDomaineId": "EMC-CM1-1",
+            "bilans": [
+              {
+                "id": "7ea9f4bc-1cf2-52f8-9100-5df2485bf2fc",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Titeuf coupe souvent la parole et a du mal à accepter les remarques.</p>",
+                "besoinsSpecifiques": "<p>Apprendre à attendre son tour et à exprimer un désaccord calmement.</p>",
+                "moyens": "<ul><li>Bâton de parole en conseil d'élèves</li><li>Contrat de comportement hebdomadaire</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "9c8b685e-9bcc-54bb-b835-517906c6c3b9",
+                    "competenceId": "EMC-CM1-1-3",
+                    "statutAcquisitionId": "NA",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "3812dc7b-1cde-544f-a67b-011183f7c9f0",
+                    "competenceId": "EMC-CM1-1-4",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "05d82701-2f44-5363-a9c7-646126df4766",
+                    "competenceId": "EMC-CM1-1-5",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": ""
+                  }
+                ]
+              },
+              {
+                "id": "69fc4693-4152-58c8-b3fb-cd343289da3d",
+                "date": "2026-11-13",
+                "titre": "Suivi du contrat",
+                "bilans": "<p>Le contrat de comportement porte ses fruits : <strong>moins d'interruptions</strong>.</p>",
+                "besoinsSpecifiques": "",
+                "moyens": "<p>Contrat reconduit avec un objectif de plus.</p>",
+                "evaluations": [
+                  {
+                    "id": "d38420b1-c7c8-5b19-b9be-825850f6d30a",
+                    "competenceId": "EMC-CM1-1-3",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "En progrès"
+                  },
+                  {
+                    "id": "0ca9e4b8-187d-51ba-a7e3-30f729b512d2",
+                    "competenceId": "EMC-CM1-1-4",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "d5e6f7a8-b9c0-1234-efab-345678901234",
@@ -259,7 +557,75 @@
         "notesPPA": null,
         "notesESS": null,
         "absencesRecurrentes": [],
-        "absencesPonctuelles": []
+        "absencesPonctuelles": [],
+        "suivisSousDomaines": [
+          {
+            "sousDomaineId": "MAT-CM2-3",
+            "bilans": [
+              {
+                "id": "2eb234c7-8559-5895-be0e-1b055e9da57f",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Très à l'aise avec les outils géométriques, constructions précises.</p>",
+                "besoinsSpecifiques": "<p>Justifier ses constructions avec le vocabulaire adapté.</p>",
+                "moyens": "<ul><li>Programmes de construction à rédiger</li><li>Défis géométriques en binôme</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "45f1f139-5846-5018-99bf-c0d5d40e1b13",
+                    "competenceId": "MAT-CM2-3-1",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "Vocabulaire à fixer"
+                  },
+                  {
+                    "id": "283c46db-6d5d-58e9-9d8f-77b16172816f",
+                    "competenceId": "MAT-CM2-3-2",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "b11f221e-5ccb-522b-9fb2-7852b3e9e81b",
+                    "competenceId": "MAT-CM2-3-4",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "74f2a1bf-43e1-57b3-a6b8-362617d27e73",
+                    "competenceId": "MAT-CM2-3-5",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "sousDomaineId": "FR-CM2-3",
+            "bilans": [
+              {
+                "id": "bf5f202c-a4a1-55aa-bd0b-e2a57223f234",
+                "date": "2026-11-06",
+                "titre": "Exposé sur les inventions",
+                "bilans": "<p>Exposé vivant et bien documenté.</p>",
+                "besoinsSpecifiques": "<p>Organiser son propos : introduction et conclusion manquent.</p>",
+                "moyens": "<p>Grille de préparation d'exposé.</p>",
+                "evaluations": [
+                  {
+                    "id": "15a9fdf7-1803-5883-809b-837637aef3e5",
+                    "competenceId": "FR-CM2-3-6",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "Plan à structurer"
+                  },
+                  {
+                    "id": "6ac23574-a067-50ce-a33a-91856e37c9c2",
+                    "competenceId": "FR-CM2-3-1",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "e6f7a8b9-c0d1-2345-fabc-456789012345",
@@ -303,7 +669,75 @@
         "notesPPA": null,
         "notesESS": null,
         "absencesRecurrentes": [],
-        "absencesPonctuelles": []
+        "absencesPonctuelles": [],
+        "suivisSousDomaines": [
+          {
+            "sousDomaineId": "FR-CM1-3",
+            "bilans": [
+              {
+                "id": "f7c411fd-190f-500d-aaa4-07892352acf6",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Nana participe beaucoup à l'oral, avec enthousiasme.</p>",
+                "besoinsSpecifiques": "<p>Écouter les autres jusqu'au bout avant de répondre.</p>",
+                "moyens": "<ul><li>Reformulation de la parole d'un camarade</li><li>Rôle de gardienne du temps en débat</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "a86b489e-a997-5c11-89a2-b050514dab03",
+                    "competenceId": "FR-CM1-3-1",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "e16a4d53-5730-56b6-ad5a-562667c19a64",
+                    "competenceId": "FR-CM1-3-3",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "47ae5bb6-69ea-5eec-9ece-8a58360db4c2",
+                    "competenceId": "FR-CM1-3-6",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "sousDomaineId": "MAT-CM1-2",
+            "bilans": [
+              {
+                "id": "96ab2e96-6a7a-5d0b-ab99-eab575251720",
+                "date": "2026-11-06",
+                "titre": "Mesures de longueurs",
+                "bilans": "<p>Les unités sont connues ; les conversions restent hésitantes.</p>",
+                "besoinsSpecifiques": "<p>Utiliser un tableau de conversion.</p>",
+                "moyens": "<p>Ateliers de mesure dans la cour.</p>",
+                "evaluations": [
+                  {
+                    "id": "cb1a51b6-fb79-5ccd-ae76-abb7c5256243",
+                    "competenceId": "MAT-CM1-2-1",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "650f8e6f-e8ec-5712-8dc3-b730a3784bdc",
+                    "competenceId": "MAT-CM1-2-2",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "Conversions"
+                  },
+                  {
+                    "id": "22a455d2-f4c4-5ee5-8b28-69e13f5930b3",
+                    "competenceId": "MAT-CM1-2-7",
+                    "statutAcquisitionId": "NE",
+                    "commentaire": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "f7a8b9c0-d1e2-3456-abcd-567890123456",
@@ -360,7 +794,102 @@
         "notesPPA": null,
         "notesESS": null,
         "absencesRecurrentes": [],
-        "absencesPonctuelles": []
+        "absencesPonctuelles": [],
+        "suivisSousDomaines": [
+          {
+            "sousDomaineId": "FR-CM1-1",
+            "bilans": [
+              {
+                "id": "4d2aa67b-2f10-589d-aab2-d0c7b76dc7b4",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Lecture silencieuse efficace, mais Cédric n'ose pas lire à voix haute.</p>",
+                "besoinsSpecifiques": "<p>Prendre confiance pour lire devant un groupe.</p>",
+                "moyens": "<ul><li>Lecture à voix haute en petit groupe</li><li>Enregistrement audio de ses lectures</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "06259ec8-dc2c-5ca6-80d1-b94134273d0f",
+                    "competenceId": "FR-CM1-1-1",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "323e3331-5c74-5644-b3ae-d6719ed4b8e4",
+                    "competenceId": "FR-CM1-1-5",
+                    "statutAcquisitionId": "NA",
+                    "commentaire": "Grande timidité"
+                  },
+                  {
+                    "id": "f1249f99-05f7-5c05-ab6e-f3135754c066",
+                    "competenceId": "FR-CM1-1-7",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "Voix trop faible"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "sousDomaineId": "MAT-CM1-1",
+            "bilans": [
+              {
+                "id": "fcc1d431-62ff-55e4-a6a5-7b0f28cc771b",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Bonnes connaissances, mais perd le fil des consignes longues.</p>",
+                "besoinsSpecifiques": "<p>Découper les consignes en étapes.</p>",
+                "moyens": "<p>Surlignage des consignes, consignes reformulées à l'oral.</p>",
+                "evaluations": [
+                  {
+                    "id": "9717a51a-4783-5678-8096-67b28c885b85",
+                    "competenceId": "MAT-CM1-1-3",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "8dd592b5-894a-5a71-8102-a620d443cdde",
+                    "competenceId": "MAT-CM1-1-5",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "5f23eb90-c1b5-5f0e-8e8d-8bfd3d81fb27",
+                    "competenceId": "MAT-CM1-1-1",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "Consignes longues"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "sousDomaineId": "EMC-CM1-3",
+            "bilans": [
+              {
+                "id": "02570826-d337-5532-953e-c1244d51c0c1",
+                "date": "2026-11-13",
+                "titre": "Vie de la classe",
+                "bilans": "<p>Cédric s'investit discrètement dans le projet de jardin.</p>",
+                "besoinsSpecifiques": "<p>Oser donner son avis en conseil d'élèves.</p>",
+                "moyens": "<p>Responsabilité de la classe confiée sur la période 2.</p>",
+                "evaluations": [
+                  {
+                    "id": "a9bc4d6a-ee10-56a3-9da4-0fa6b7f33da9",
+                    "competenceId": "EMC-CM1-3-5",
+                    "statutAcquisitionId": "A",
+                    "commentaire": "Projet jardin"
+                  },
+                  {
+                    "id": "1c90b153-e1fb-523e-8b61-2ec3cc7b6dfc",
+                    "competenceId": "EMC-CM1-3-7",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "a8b9c0d1-e2f3-4567-bcde-678901234567",
@@ -425,7 +954,69 @@
             "paritesSemaine": "lesDeux"
           }
         ],
-        "absencesPonctuelles": []
+        "absencesPonctuelles": [],
+        "suivisSousDomaines": [
+          {
+            "sousDomaineId": "FR-CM2-1",
+            "bilans": [
+              {
+                "id": "13a0291b-2fb8-5ea1-a1a0-3da48e079d16",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Yakari est accueilli en <strong>inclusion</strong> sur les temps de lecture.</p><p>Il prend plaisir à écouter et à lire des récits.</p>",
+                "besoinsSpecifiques": "<p>Lecture fluide à consolider ; textes adaptés en longueur.</p>",
+                "moyens": "<ul><li>Textes aérés en police agrandie</li><li>Lecture en binôme avec un pair</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "c977f9da-0364-574c-92cc-929bd4502f68",
+                    "competenceId": "FR-CM2-1-1",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "0e4f9fcb-e259-5a83-aa75-e5ff926ab25d",
+                    "competenceId": "FR-CM2-1-3",
+                    "statutAcquisitionId": "NA",
+                    "commentaire": "72 mots/min"
+                  },
+                  {
+                    "id": "fe84c695-1989-5d7a-b77b-e4cb977b46dc",
+                    "competenceId": "FR-CM2-1-6",
+                    "statutAcquisitionId": "A",
+                    "commentaire": "Beaucoup de plaisir"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "sousDomaineId": "MAT-CM2-2",
+            "bilans": [
+              {
+                "id": "5b8d3ff7-2ebd-53f1-9b3d-1ef085431c83",
+                "date": "2026-11-06",
+                "titre": "Aires et angles",
+                "bilans": "<p>Comparaison d'aires réussie par superposition.</p>",
+                "besoinsSpecifiques": "<p>Passer de la manipulation au calcul.</p>",
+                "moyens": "<p>Matériel de pavage et quadrillages.</p>",
+                "evaluations": [
+                  {
+                    "id": "5477d7fc-9690-52fa-96e5-f63209e0e9f9",
+                    "competenceId": "MAT-CM2-2-1",
+                    "statutAcquisitionId": "A",
+                    "commentaire": "Par superposition"
+                  },
+                  {
+                    "id": "22aa7be3-8a0f-567f-a64e-7256b054ea10",
+                    "competenceId": "MAT-CM2-2-5",
+                    "statutAcquisitionId": "NE",
+                    "commentaire": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "b9c0d1e2-f3a4-5678-cdef-789012345678",
@@ -474,7 +1065,69 @@
         "notesPPA": null,
         "notesESS": null,
         "absencesRecurrentes": [],
-        "absencesPonctuelles": []
+        "absencesPonctuelles": [],
+        "suivisSousDomaines": [
+          {
+            "sousDomaineId": "FR-CM2-2",
+            "bilans": [
+              {
+                "id": "149e7706-2a93-5d28-bba2-5dbbf738ba2d",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Productions écrites riches, structurées et soignées.</p>",
+                "besoinsSpecifiques": "<p>Aucun besoin particulier ; proposer des défis d'écriture.</p>",
+                "moyens": "<ul><li>Atelier d'écriture de nouvelles</li><li>Correspondance avec une classe partenaire</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "2c3b397f-d6a7-56e5-bddc-0967a0903481",
+                    "competenceId": "FR-CM2-2-1",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "efbb52ae-0301-5385-831f-f316752f8229",
+                    "competenceId": "FR-CM2-2-4",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "5ae0a0cf-3b18-53d6-a5b8-0fb4d3d87cda",
+                    "competenceId": "FR-CM2-2-7",
+                    "statutAcquisitionId": "A",
+                    "commentaire": "Dialogues réussis"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "sousDomaineId": "MAT-CM2-4",
+            "bilans": [
+              {
+                "id": "9be738f2-6dab-54ef-a0a0-b9682c12c530",
+                "date": "2026-11-13",
+                "titre": "Proportionnalité",
+                "bilans": "<p>Martine repère les situations de proportionnalité mais <em>se précipite</em> dans les calculs.</p>",
+                "besoinsSpecifiques": "<p>Vérifier la vraisemblance de ses résultats.</p>",
+                "moyens": "<p>Problèmes à étapes avec auto-correction.</p>",
+                "evaluations": [
+                  {
+                    "id": "d9a0dda0-af90-5a04-9dc9-7a9fe6c7ec2f",
+                    "competenceId": "MAT-CM2-4-1",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "2b6f9c35-56b2-571e-bbfa-68e9a6174d65",
+                    "competenceId": "MAT-CM2-4-2",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "Erreurs de calcul"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "c0d1e2f3-a4b5-6789-defa-890123456789",
@@ -524,7 +1177,75 @@
         "notesPPA": null,
         "notesESS": null,
         "absencesRecurrentes": [],
-        "absencesPonctuelles": []
+        "absencesPonctuelles": [],
+        "suivisSousDomaines": [
+          {
+            "sousDomaineId": "FR-CM2-1",
+            "bilans": [
+              {
+                "id": "5f1d2729-368b-548d-8006-3ac0fae8a199",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Lecture correcte, mais la compréhension des textes longs reste fragile.</p>",
+                "besoinsSpecifiques": "<p>Construire des stratégies de compréhension.</p>",
+                "moyens": "<ul><li>Questionnaires de compréhension guidés</li><li>Résumé oral de chaque chapitre</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "3f9cd1f6-224f-55df-bcef-40f09016c691",
+                    "competenceId": "FR-CM2-1-1",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "14ca5d00-3915-5836-b641-90550daf0dcf",
+                    "competenceId": "FR-CM2-1-3",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "105 mots/min"
+                  },
+                  {
+                    "id": "69abc85d-9976-51b7-a08f-9ee8270d0dff",
+                    "competenceId": "FR-CM2-1-7",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "Textes longs"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "sousDomaineId": "MAT-CM2-1",
+            "bilans": [
+              {
+                "id": "2c66abdb-97f6-5b80-a6d2-afe9dc274742",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Grands nombres bien maîtrisés.</p>",
+                "besoinsSpecifiques": "",
+                "moyens": "<p>Exercices d'approfondissement.</p>",
+                "evaluations": [
+                  {
+                    "id": "db07b440-eb4d-5e05-a2fd-c4bb69af98a9",
+                    "competenceId": "MAT-CM2-1-1",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "262ade35-da6c-5593-add2-9bd4be5404b7",
+                    "competenceId": "MAT-CM2-1-5",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "31ad0d6f-d0a1-52f0-bc78-0f045e369f74",
+                    "competenceId": "MAT-CM2-1-7",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "d1e2f3a4-b5c6-7890-efab-901234567890",
@@ -577,7 +1298,97 @@
             "paritesSemaine": "impaire"
           }
         ],
-        "absencesPonctuelles": []
+        "absencesPonctuelles": [],
+        "suivisSousDomaines": [
+          {
+            "sousDomaineId": "FR-CM1-4",
+            "bilans": [
+              {
+                "id": "db65c7f2-8322-5f7e-9141-249620a7f351",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Ariol a un vocabulaire riche à l'oral, qu'il réinvestit peu à l'écrit.</p>",
+                "besoinsSpecifiques": "<p>Réutiliser les mots appris dans ses productions.</p>",
+                "moyens": "<ul><li>Carnet de vocabulaire personnel</li><li>Jeux de synonymes et d'antonymes</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "a678cfde-a09a-5106-b9b0-4b33319f7f72",
+                    "competenceId": "FR-CM1-4-2",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "7aed0ad1-1e3e-5c21-a7e3-c9d2ab504f59",
+                    "competenceId": "FR-CM1-4-5",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "7049931a-9ba5-545e-9f3e-27046bfc3d0b",
+                    "competenceId": "FR-CM1-4-6",
+                    "statutAcquisitionId": "NA",
+                    "commentaire": "Peu réinvesti à l'écrit"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "sousDomaineId": "MAT-CM1-3",
+            "bilans": [
+              {
+                "id": "109320e4-8586-5562-8b8b-c7113a186434",
+                "date": "2026-10-16",
+                "titre": "Bilan de période 1",
+                "bilans": "<p>Tracés imprécis ; l'équerre est mal positionnée.</p>",
+                "besoinsSpecifiques": "<p>Gagner en précision dans l'usage des instruments.</p>",
+                "moyens": "<ul><li>Guide de positionnement de l'équerre</li><li>Tracés sur papier pointé</li></ul>",
+                "evaluations": [
+                  {
+                    "id": "575df56f-c271-5cef-93a8-fc3e1297e41c",
+                    "competenceId": "MAT-CM1-3-2",
+                    "statutAcquisitionId": "NA",
+                    "commentaire": "Équerre"
+                  },
+                  {
+                    "id": "7689a96d-27ff-55dd-ade4-97aaa043cd75",
+                    "competenceId": "MAT-CM1-3-5",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": ""
+                  },
+                  {
+                    "id": "3ec50dfd-eae2-501c-bbae-d5012bd5ce94",
+                    "competenceId": "MAT-CM1-3-6",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": ""
+                  }
+                ]
+              },
+              {
+                "id": "cda29a6a-e714-51c4-812f-4bc8849fa294",
+                "date": "2026-11-13",
+                "titre": "Point de mi-période",
+                "bilans": "<p>L'équerre est mieux utilisée, la perpendicularité est acquise.</p>",
+                "besoinsSpecifiques": "<p>Poursuivre sur le parallélisme.</p>",
+                "moyens": "<p>Tracés sur papier pointé, puis sur papier blanc.</p>",
+                "evaluations": [
+                  {
+                    "id": "f3bc503d-5d4f-5e60-95fa-e625bcdde35f",
+                    "competenceId": "MAT-CM1-3-2",
+                    "statutAcquisitionId": "EC",
+                    "commentaire": "Progrès"
+                  },
+                  {
+                    "id": "8bfb4d12-b010-5edf-aba3-b046f113e70a",
+                    "competenceId": "MAT-CM1-3-5",
+                    "statutAcquisitionId": "A",
+                    "commentaire": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -9419,7 +10230,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["F"]
+          "disciplinesIds": ["FR"]
         },
         {
           "id": "aa000001-0000-4000-8000-000000000002",
@@ -9437,7 +10248,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["M"]
+          "disciplinesIds": ["MAT"]
         },
         {
           "id": "aa000001-0000-4000-8000-000000000003",
@@ -9461,7 +10272,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["F"]
+          "disciplinesIds": ["FR"]
         },
         {
           "id": "aa000001-0000-4000-8000-000000000005",
@@ -9485,7 +10296,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["M"]
+          "disciplinesIds": ["MAT"]
         },
         {
           "id": "aa000001-0000-4000-8000-000000000007",
@@ -9503,7 +10314,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["F"]
+          "disciplinesIds": ["FR"]
         }
       ]
     },
@@ -9527,7 +10338,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["M"]
+          "disciplinesIds": ["MAT"]
         },
         {
           "id": "aa000002-0000-4000-8000-000000000002",
@@ -9545,7 +10356,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["F"]
+          "disciplinesIds": ["FR"]
         },
         {
           "id": "aa000002-0000-4000-8000-000000000003",
@@ -9569,7 +10380,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["M"]
+          "disciplinesIds": ["MAT"]
         },
         {
           "id": "aa000002-0000-4000-8000-000000000005",
@@ -9593,7 +10404,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["F"]
+          "disciplinesIds": ["FR"]
         },
         {
           "id": "aa000002-0000-4000-8000-000000000007",
@@ -9611,7 +10422,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["M"]
+          "disciplinesIds": ["MAT"]
         }
       ]
     },
@@ -9635,7 +10446,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["F"]
+          "disciplinesIds": ["FR"]
         },
         {
           "id": "aa000004-0000-4000-8000-000000000002",
@@ -9653,7 +10464,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["M"]
+          "disciplinesIds": ["MAT"]
         },
         {
           "id": "aa000004-0000-4000-8000-000000000003",
@@ -9677,7 +10488,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["F"]
+          "disciplinesIds": ["FR"]
         },
         {
           "id": "aa000004-0000-4000-8000-000000000005",
@@ -9701,7 +10512,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["M"]
+          "disciplinesIds": ["MAT"]
         },
         {
           "id": "aa000004-0000-4000-8000-000000000007",
@@ -9719,7 +10530,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["F"]
+          "disciplinesIds": ["FR"]
         }
       ]
     },
@@ -9743,7 +10554,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["M"]
+          "disciplinesIds": ["MAT"]
         },
         {
           "id": "aa000005-0000-4000-8000-000000000002",
@@ -9761,7 +10572,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["F"]
+          "disciplinesIds": ["FR"]
         },
         {
           "id": "aa000005-0000-4000-8000-000000000003",
@@ -9785,7 +10596,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["M"]
+          "disciplinesIds": ["MAT"]
         },
         {
           "id": "aa000005-0000-4000-8000-000000000005",
@@ -9809,7 +10620,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["F"]
+          "disciplinesIds": ["FR"]
         },
         {
           "id": "aa000005-0000-4000-8000-000000000007",
@@ -9827,7 +10638,7 @@
             "elevesIds": []
           },
           "type": "pedagogique",
-          "disciplinesIds": ["M"]
+          "disciplinesIds": ["MAT"]
         }
       ]
     }
@@ -9997,7 +10808,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10011,7 +10822,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10032,7 +10843,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10046,7 +10857,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10067,7 +10878,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10081,7 +10892,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10102,7 +10913,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10116,7 +10927,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10130,7 +10941,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10144,7 +10955,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10165,7 +10976,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10179,7 +10990,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10200,7 +11011,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10214,7 +11025,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10235,7 +11046,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10249,7 +11060,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10263,7 +11074,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10277,7 +11088,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10298,7 +11109,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10312,7 +11123,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10333,7 +11144,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10347,7 +11158,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10368,7 +11179,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10382,7 +11193,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10396,7 +11207,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10410,7 +11221,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10431,7 +11242,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10445,7 +11256,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10466,7 +11277,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10480,7 +11291,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10501,7 +11312,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10515,7 +11326,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10529,7 +11340,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10543,7 +11354,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10564,7 +11375,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10578,7 +11389,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10599,7 +11410,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10613,7 +11424,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10634,7 +11445,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10648,7 +11459,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10671,7 +11482,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10685,7 +11496,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10706,7 +11517,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10720,7 +11531,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10741,7 +11552,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10755,7 +11566,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10776,7 +11587,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10790,7 +11601,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10804,7 +11615,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10818,7 +11629,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10839,7 +11650,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10853,7 +11664,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10874,7 +11685,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10888,7 +11699,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10909,7 +11720,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10923,7 +11734,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10937,7 +11748,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10951,7 +11762,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10972,7 +11783,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -10986,7 +11797,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11007,7 +11818,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11021,7 +11832,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11042,7 +11853,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11056,7 +11867,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11070,7 +11881,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11084,7 +11895,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11105,7 +11916,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11119,7 +11930,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11140,7 +11951,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11154,7 +11965,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11175,7 +11986,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11189,7 +12000,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11203,7 +12014,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11217,7 +12028,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11238,7 +12049,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11252,7 +12063,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11273,7 +12084,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11287,7 +12098,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11308,7 +12119,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11322,7 +12133,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11345,7 +12156,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11359,7 +12170,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11380,7 +12191,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11394,7 +12205,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11415,7 +12226,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11429,7 +12240,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11450,7 +12261,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11464,7 +12275,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11478,7 +12289,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11492,7 +12303,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11513,7 +12324,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11527,7 +12338,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11548,7 +12359,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11562,7 +12373,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11583,7 +12394,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11597,7 +12408,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11611,7 +12422,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11625,7 +12436,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11646,7 +12457,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11660,7 +12471,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11681,7 +12492,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11695,7 +12506,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11716,7 +12527,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11730,7 +12541,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11744,7 +12555,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11758,7 +12569,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11779,7 +12590,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11793,7 +12604,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11814,7 +12625,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11828,7 +12639,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11849,7 +12660,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11863,7 +12674,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11877,7 +12688,7 @@
           "heureDebut": "08:30",
           "heureFin": "09:15",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11891,7 +12702,7 @@
           "heureDebut": "09:15",
           "heureFin": "10:00",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11912,7 +12723,7 @@
           "heureDebut": "10:15",
           "heureFin": "11:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11926,7 +12737,7 @@
           "heureDebut": "11:00",
           "heureFin": "11:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11947,7 +12758,7 @@
           "heureDebut": "13:15",
           "heureFin": "14:00",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11961,7 +12772,7 @@
           "heureDebut": "14:00",
           "heureFin": "14:45",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11982,7 +12793,7 @@
           "heureDebut": "15:00",
           "heureFin": "15:45",
           "type": "pedagogique",
-          "disciplinesIds": ["F"],
+          "disciplinesIds": ["FR"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],
@@ -11996,7 +12807,7 @@
           "heureDebut": "15:45",
           "heureFin": "16:30",
           "type": "pedagogique",
-          "disciplinesIds": ["M"],
+          "disciplinesIds": ["MAT"],
           "elevesConcernes": {
             "type": "classe",
             "groupes": [],

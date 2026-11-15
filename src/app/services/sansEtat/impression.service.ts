@@ -18,7 +18,7 @@ export class ImpressionService {
   /** Variable CSS lue par la zone `@top-center` : libellé de l'entête. */
   public static readonly VARIABLE_ENTETE = '--mc-impression-entete';
 
-  /** Variable CSS lue par la zone `@bottom-left` : date et heure de l'impression. */
+  /** Variable CSS lue par la zone `@bottom-left` : date de l'impression. */
   public static readonly VARIABLE_DATE = '--mc-impression-date';
 
   /** Caractères à échapper dans une chaîne CSS entre guillemets doubles. */
@@ -49,7 +49,7 @@ export class ImpressionService {
 
   /**
    * Prépare l'impression (événement `beforeprint`) : pose sur la racine du document
-   * l'entête (« Application Ma Classe - titre ») et l'horodatage, puis remplace
+   * l'entête (« Application Ma Classe - titre ») et la date, puis remplace
    * `document.title` par le titre, proposé par le navigateur comme nom du PDF.
    * @param maintenant Instant de l'impression (heure courante par défaut).
    */
@@ -65,7 +65,9 @@ export class ImpressionService {
     );
     style.setProperty(
       ImpressionService.VARIABLE_DATE,
-      ImpressionService.convertirEnChaineCss(DateUtils.formaterDateHeure(maintenant)),
+      ImpressionService.convertirEnChaineCss(
+        DateUtils.formaterDateCourt(DateUtils.formaterDateIso(maintenant)),
+      ),
     );
     if (titre && this.titreAvantImpression === null) {
       this.titreAvantImpression = document.title;

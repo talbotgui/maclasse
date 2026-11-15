@@ -25,7 +25,7 @@ export class App {
   /** Service qui alimente l'entête et le pied de page des impressions. */
   private readonly impressionService = inject(ImpressionService);
 
-  /** Pose l'entête, l'horodatage et le titre du document lus à l'impression. */
+  /** Pose l'entête, la date et le titre du document lus à l'impression. */
   protected preparerImpression(): void {
     this.impressionService.preparerImpression();
   }

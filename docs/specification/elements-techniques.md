@@ -228,7 +228,7 @@ Tous les composants d'écran sont chargés en **lazy loading** via `loadComponen
 - Les règles globales qui masquent un élément stylé par un composant portent `!important` : sans cela, le sélecteur du composant (suffixé par Angular d'un attribut `[_ngcontent-xxx]`) est plus spécifique et l'emporte
 - Les marges de toutes les pages imprimées sont définies par une règle `@page` générale (zones de marge CSS) qui remplace l'entête et le pied de page du navigateur (titre du document, URL) :
   - entête centré : « Application Ma Classe - <titre du document> », ou « Application Ma Classe » seul sans titre (`LIBELLES.impression`)
-  - pied de page à gauche : date et heure de l'impression (`DD/MM/YYYY HH:MM`)
+  - pied de page à gauche : date de l'impression (`JJ/MM/AAAA`), sans l'heure
   - pied de page à droite : numéro de page / nombre de pages
 - Marge fixe de 10 mm (`@page`), pour que les zones aient toujours de la place
 - Titre du document selon l'écran affiché (vide → pas de titre) :

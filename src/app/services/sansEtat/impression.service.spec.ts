@@ -115,15 +115,15 @@ describe('ImpressionService', () => {
   });
 
   describe('pied de page', () => {
-    it("pose la date et l'heure fournies en chaîne CSS", () => {
+    it("pose la date fournie, sans l'heure, en chaîne CSS", () => {
       service.preparerImpression(new Date(2026, 10, 15, 14, 32));
-      expect(lireVariable(ImpressionService.VARIABLE_DATE)).toBe('"15/11/2026 14:32"');
+      expect(lireVariable(ImpressionService.VARIABLE_DATE)).toBe('"15/11/2026"');
     });
 
-    it("utilise l'heure courante par défaut", () => {
-      const avant = DateUtils.formaterDateHeure(new Date());
+    it('utilise la date du jour par défaut', () => {
+      const avant = DateUtils.formaterDateCourt(DateUtils.dateAujourdhui());
       service.preparerImpression();
-      const apres = DateUtils.formaterDateHeure(new Date());
+      const apres = DateUtils.formaterDateCourt(DateUtils.dateAujourdhui());
       expect([`"${avant}"`, `"${apres}"`]).toContain(lireVariable(ImpressionService.VARIABLE_DATE));
     });
   });

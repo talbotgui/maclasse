@@ -193,7 +193,7 @@ Bilans des élèves, regroupés par sous-domaine (compétence de niveau 3). Chaq
 ### `ImpressionService`
 
 - `suivreTitre(titre: Signal<string>)` : enregistre le titre du document imprimé de l'écran affiché ; à appeler dans un contexte d'injection (constructeur d'écran), l'enregistrement est retiré à la destruction de l'écran (`DestroyRef`). Le signal n'est lu qu'au début de l'impression
-- `preparerImpression(maintenant = new Date())` : pose sur `<html>` les variables CSS `--mc-impression-entete` (« Application Ma Classe - titre », ou le libellé seul sans titre) et `--mc-impression-date` (`DateUtils.formaterDateHeure`), lues par les zones de marge `@page` de `styles.scss` ; remplace `document.title` par le titre s'il n'est pas vide
+- `preparerImpression(maintenant = new Date())` : pose sur `<html>` les variables CSS `--mc-impression-entete` (« Application Ma Classe - titre », ou le libellé seul sans titre) et `--mc-impression-date` (date du jour `JJ/MM/AAAA`, sans l'heure), lues par les zones de marge `@page` de `styles.scss` ; remplace `document.title` par le titre s'il n'est pas vide
 - `terminerImpression()` : restaure `document.title`
 - Appelés par le composant racine `App` aux événements `window:beforeprint` et `window:afterprint` (voir [elements-techniques](elements-techniques.md#impression-media-print))
 

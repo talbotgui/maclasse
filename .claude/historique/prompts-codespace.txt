@@ -11545,3 +11545,38 @@ Désactive ce filtrage quand l'utilisateur accède à l'application pour exclusi
 2026-11-15 20:31:20 [Jeu de données BILAN élèves] laisse un élève sans bilan pour les tests E2E et renseigne les autres
 ---
 2026-11-15 20:36:46 [Sans titre] Dans l'onglet BILAN de l'écran ELEVE, dans la DIV. le composant "mc-selecteur-competences" est utilisé mais le "mc-selecteur-competences__chip mc-chip" peut être très très long en fonction du texte qu'il contient. Si c'est le cas, la mise en forme devient totalement incohérente. Il faut qu'il soit possible d'afficher le libellé d'une compétence sur plusieurs lignes. Que proposes-tu ?
+---
+2026-11-15 20:49:56 [Mc-selecteur-competences chips multiligne] Ok pour la modification CSS et la largeur fixe du tableau me convient.
+---
+2026-11-15 20:56:33 [Sans titre] Il est nécessaire de revoir l'impression du cahier journal car le contenu de chaque temps n'est pas imprimé. Peux-tu, en mode IMPRESSION uniquement, afficher les détails de chaque temps en lecture seule (pas de champs de saisie). La mise en forme de ces données de détails doit être la plus dense possible.
+Attention, il ne faut pas qu'un temps soit découper par un saut de page.
+Que me proposes-tu ?
+---
+2026-11-15 20:59:31 [Impression du cahier journal] - Le libellé des compétences doit être un chemin complet
+- pas d'icône de conflit
+---
+2026-11-15 21:11:04 [Impression du cahier journal] corrige ces données
+---
+2026-11-15 21:12:45 [Sans titre] Dans l'impression des bilans et des projets (et des autres impressions certainement), le pied de page contient l'URL du site et je souhaite la voir disparaitre. Je veux garder l'index et le nombre de page dans le pied de page.
+
+L'entête contient la date, l'heure et le libellé "MaClasse". Je souhaite que la date et l'heure soit en pied de page à la place de l'URL et que l'entête ne contienne que "Application Ma Classe".
+
+Ne modifie rien car une autre session est en cours de développement
+---
+2026-11-15 21:17:31 [Sans titre] dans l'onglet BILAN de l'écran ELEVE, à l'impression, la date de saisie présente avant les mots "Période du" ne doivent pas être affiché. Modifie directement le code
+---
+2026-11-15 21:21:26 [Pied de page des impressions] démarre
+---
+2026-11-15 21:37:03 [Sans titre] Dans l'impression du cahier journal, réduit la taille des chip des élèves/groupes/"toute la classe" et la marge autour.
+---
+2026-11-15 21:40:15 [Chips du cahier journal imprimé] oui, vas-y
+---
+2026-11-15 21:43:32 [Pied de page des impressions] finalement, l'entête ne me convient pas. Ajoute, après "Application Ma Classe", la chaine " - " puis le titre du document sur les modèles :
+- "Bilan NOM Prénom"
+- "Cahier journal du dd/MM/YYYY"
+- "Projet NOM_PROJET"
+- ...
+---
+2026-11-15 21:45:30 [Pied de page des impressions] oui pour tout, avec l'option du nom du PDF
+---
+2026-11-15 21:52:42 [Pied de page des impressions] retire aussi l'heure présente en pied de page

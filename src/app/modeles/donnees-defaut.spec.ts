@@ -226,6 +226,29 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
       }
     });
 
+    it('les disciplinesIds des séances et des temps EDT référencent des domaines de niveau 1', () => {
+      const domainesIds = new Set(donnees.referentiels.competences.map((d) => d.id));
+      for (const journee of donnees.cahierJournal) {
+        for (const seance of journee.seances) {
+          for (const id of seance.disciplinesIds ?? []) {
+            expect(domainesIds.has(id), `discipline "${id}" de la séance ${seance.id}`).toBe(true);
+          }
+        }
+      }
+      const migrees = new MigrationService().migrer(
+        structuredClone(donnees) as unknown as DonneesApplication,
+      );
+      for (const edt of migrees.emploisDuTemps) {
+        for (const creneau of edt.creneaux) {
+          for (const temps of creneau.temps) {
+            for (const id of temps.disciplinesIds ?? []) {
+              expect(domainesIds.has(id), `discipline "${id}" du temps ${temps.id}`).toBe(true);
+            }
+          }
+        }
+      }
+    });
+
     it('les elevesIds des projets référencent des élèves existants', () => {
       const elevesIds = new Set(donnees.classe.eleves.map((e) => e.id));
       for (const projet of donnees.projets) {

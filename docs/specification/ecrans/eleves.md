@@ -203,7 +203,7 @@ Composant `fe-onglet-bilans`. Les bilans de l'élève sont regroupés par **sous
 ### Bandeau
 
 - Titre `h2` : NOM Prénom de l'élève
-- Bouton **IMPRIMER LES BILANS** (`btnImprimerBilans`), inactif sans bilan : imprime l'onglet, tous les bilans dépliés, sans cadre d'ajout ni boutons (`@media print`)
+- Bouton **IMPRIMER LES BILANS** (`btnImprimerBilans`), inactif sans bilan : imprime l'onglet, tous les bilans dépliés, sans cadre d'ajout, ni boutons, ni date de saisie devant le titre (`@media print`)
 
 ### Cadre « Ajouter un sous-domaine »
 

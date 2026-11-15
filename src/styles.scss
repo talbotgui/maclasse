@@ -688,12 +688,14 @@ button {
     display: none !important;
   }
 
-  // Élèves, onglet Bilans : tous les bilans sont imprimés dépliés, sans le cadre d'ajout
-  // ni les actions. `!important` : sélecteurs de composant encapsulés plus spécifiques.
+  // Élèves, onglet Bilans : tous les bilans sont imprimés dépliés, sans le cadre d'ajout,
+  // ni les actions, ni la date de saisie. `!important` : sélecteurs de composant encapsulés
+  // plus spécifiques.
   .onglet-bilans__ajout,
   .onglet-bilans__sous-domaine-actions,
   .bilan__actions,
-  .bilan__chevron {
+  .bilan__chevron,
+  .bilan__date {
     display: none !important;
   }
 

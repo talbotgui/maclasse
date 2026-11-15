@@ -507,8 +507,9 @@ testAvecDonnees(
     const entete = new SelecteursEntete(appAvecDonnees);
     const eleves = new SelecteursEleves(appAvecDonnees);
 
+    // Martinot est le seul élève sans bilan dans les données d'exemple
     await entete.navEleves.click();
-    await eleves.selectionnerGratin();
+    await eleves.selectionnerMartinot();
     await eleves.ongletBilans.click();
 
     // Un nouveau bilan abandonné ne laisse aucun cadre

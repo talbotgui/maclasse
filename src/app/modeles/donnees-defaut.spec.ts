@@ -15,7 +15,7 @@ import type {
 } from './donnees-application.modele';
 import type { JourSemaine } from './emploi-du-temps.modele';
 import type { Projet } from './projet.modele';
-import type { Referentiels } from './referentiels.modele';
+import type { Competence, Referentiels } from './referentiels.modele';
 import { MigrationService } from '../services/sansEtat/migration.service';
 
 // Si un champ requis est ajouté à DonneesApplication sans être répercuté dans le JSON,
@@ -235,6 +235,98 @@ describe('donnees-defaut.json — cohérence modèle/données', () => {
           );
         }
       }
+    });
+  });
+
+  /** Les bilans d'exemple référencent des sous-domaines, compétences et statuts existants. */
+  describe('Bilans par sous-domaine', () => {
+    /** Sous-domaines (nœuds de niveau 3) du référentiel, indexés par identifiant. */
+    const sousDomaines = new Map<string, Competence>(
+      donnees.referentiels.competences
+        .flatMap((domaine) => domaine.enfants ?? [])
+        .flatMap((niveau2) => niveau2.enfants ?? [])
+        .map((sousDomaine) => [sousDomaine.id, sousDomaine]),
+    );
+
+    /** Suivis de tous les élèves, avec le nom de l'élève pour les messages d'erreur. */
+    const suivis = donnees.classe.eleves.flatMap((eleve) =>
+      (eleve.suivisSousDomaines ?? []).map((suivi) => ({ nom: eleve.nom, suivi })),
+    );
+
+    it('chaque élève sauf Martinot (réservé aux tests E2E) a au moins un bilan', () => {
+      for (const eleve of donnees.classe.eleves) {
+        const nombre = (eleve.suivisSousDomaines ?? []).length;
+        if (eleve.nom === 'Martinot') {
+          expect(nombre, `bilans de ${eleve.nom}`).toBe(0);
+        } else {
+          expect(nombre, `bilans de ${eleve.nom}`).toBeGreaterThan(0);
+        }
+      }
+    });
+
+    it('chaque suivi porte sur un sous-domaine de niveau 3 et contient au moins un bilan', () => {
+      for (const { nom, suivi } of suivis) {
+        expect(sousDomaines.has(suivi.sousDomaineId), `${suivi.sousDomaineId} de ${nom}`).toBe(
+          true,
+        );
+        expect(suivi.bilans.length, `bilans ${suivi.sousDomaineId} de ${nom}`).toBeGreaterThan(0);
+      }
+    });
+
+    it('les dates des bilans sont valides', () => {
+      for (const { nom, suivi } of suivis) {
+        for (const bilan of suivi.bilans) {
+          expect(bilan.date, `date du bilan "${bilan.titre}" de ${nom}`).toMatch(REGEX_DATE_ISO);
+        }
+      }
+    });
+
+    it('les évaluations portent sur des feuilles du sous-domaine, sans doublon, avec un statut valide', () => {
+      const statutsValides = new Set(donnees.referentiels.statutsAcquisition.map((s) => s.id));
+      for (const { nom, suivi } of suivis) {
+        const feuilles = new Set<string>();
+        const aParcourir = [...(sousDomaines.get(suivi.sousDomaineId)?.enfants ?? [])];
+        while (aParcourir.length > 0) {
+          const noeud = aParcourir.pop() as Competence;
+          if (noeud.enfants?.length) aParcourir.push(...noeud.enfants);
+          else feuilles.add(noeud.id);
+        }
+        for (const bilan of suivi.bilans) {
+          const competences = bilan.evaluations.map((e) => e.competenceId);
+          expect(new Set(competences).size, `doublon dans "${bilan.titre}" de ${nom}`).toBe(
+            competences.length,
+          );
+          for (const evaluation of bilan.evaluations) {
+            expect(
+              feuilles.has(evaluation.competenceId),
+              `${evaluation.competenceId} de ${nom}`,
+            ).toBe(true);
+            expect(
+              statutsValides.has(evaluation.statutAcquisitionId ?? ''),
+              `statut de ${evaluation.competenceId} de ${nom}`,
+            ).toBe(true);
+          }
+        }
+      }
+    });
+
+    it('les IDs des bilans et des évaluations sont uniques globalement', () => {
+      const bilans = suivis.flatMap(({ suivi }) => suivi.bilans);
+      const idsBilans = bilans.map((b) => b.id);
+      const idsEvaluations = bilans.flatMap((b) => b.evaluations.map((e) => e.id));
+      expect(new Set(idsBilans).size, 'IDs bilans dupliqués').toBe(idsBilans.length);
+      expect(new Set(idsEvaluations).size, 'IDs évaluations dupliqués').toBe(idsEvaluations.length);
+    });
+
+    it('les bilans sont conservés par la migration', () => {
+      const migrees = new MigrationService().migrer(
+        structuredClone(donnees) as unknown as DonneesApplication,
+      );
+      const avant = suivis.flatMap(({ suivi }) => suivi.bilans).length;
+      const apres = migrees.classe.eleves
+        .flatMap((e) => e.suivisSousDomaines)
+        .flatMap((s) => s.bilans).length;
+      expect(apres).toBe(avant);
     });
   });
 

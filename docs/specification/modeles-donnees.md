@@ -407,6 +407,8 @@ Définis dans `bilan.modele.ts`. Les bilans d'un élève sont regroupés par **s
 
 Un suivi n'existe que tant qu'il contient au moins un bilan : il est créé à l'enregistrement du premier bilan du sous-domaine et retiré à la suppression du dernier.
 
+Dans les données d'exemple (`donnees-defaut.json`), chaque élève a 1 à 3 sous-domaines de français, de mathématiques ou d'EMC de son niveau, avec 1 ou 2 bilans chacun. **Boule Martinot** est volontairement laissé sans bilan : les tests E2E de l'onglet Bilans partent de cet élève vide. `donnees-defaut.spec.ts` contrôle la cohérence de ces bilans (sous-domaines de niveau 3, compétences feuilles du sous-domaine, statuts existants, identifiants uniques).
+
 ### Bilan
 
 ```

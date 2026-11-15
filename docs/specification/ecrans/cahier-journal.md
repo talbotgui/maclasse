@@ -175,6 +175,7 @@ Formulaire inline de la colonne gauche (champ date + CONFIRMER / ANNULER), ouver
 - **Détails des séances pédagogiques** en lecture seule : une liste `<dl class="cj__details-impression">` (masquée à l'écran) sous les objectifs de chaque carte, avec uniquement les champs renseignés, dans l'ordre Disciplines, Compétences, Déroulement, Ressources, Description (libellés `cahierJournal.label*`). Mise en forme dense : grille libellé / valeur, police 9 pt ; disciplines et compétences sur une ligne, séparées par « ; » ; textes libres avec leurs retours à la ligne
   - Disciplines : libellé du domaine de niveau 1 ; compétences : **chemin complet** (`CompetenceService.resoudreLibelle`, ex. « Français › CM1 › Lecture › … ») ; calculés par le `computed` `libellesImpression` (carte id de séance → libellés). Un identifiant introuvable dans l'arbre filtré par les domaines actifs est ignoré
   - Récréations et pauses déjeuner : inchangées (ligne fine)
+- **Chips des élèves concernés** (élèves, groupes, « Toute la classe ») compactes dans l'entête de séance : police 0,6875rem, marge intérieure réduite, écarts entre chips et avec le titre resserrés (`.cj__seance-entete` dans le `@media print` de `styles.scss`) ; les chips de l'EDT ne sont pas concernées
 - **Pas de coupure d'un temps par un saut de page** : conteneurs de l'écran remis en flux normal (`display: block`, sans hauteur ni défilement) et `break-inside: avoid` sur chaque ligne de séance (`.cj__ligne`) et sur les notes ; seul un temps plus haut qu'une page entière peut être coupé
 
 ---

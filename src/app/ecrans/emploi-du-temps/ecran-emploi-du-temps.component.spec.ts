@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, beforeAll, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { EcranEmploiDuTempsComponent } from './ecran-emploi-du-temps.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
+import { ImpressionService } from '../../services/sansEtat/impression.service';
 import { LIBELLES } from '../../libelles';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { EdtMother, CreneauMother } from '../../tests/emploi-du-temps.mother';
@@ -869,7 +870,7 @@ describe('EcranEmploiDuTempsComponent', () => {
         }),
       );
       expect((component as any).titreImpression()).toBe(
-        `Période 1 (01/09/2026-18/10/2026 / ${LIBELLES.edt.frequencePaire})`,
+        `${LIBELLES.impression.titreEmploiDuTemps}Période 1 (01/09/2026-18/10/2026 / ${LIBELLES.edt.frequencePaire})`,
       );
     });
 
@@ -878,7 +879,7 @@ describe('EcranEmploiDuTempsComponent', () => {
         EdtMother.base({ nom: 'Période 1', dateDebut: '2026-09-01', frequence: 'impaire' }),
       );
       expect((component as any).titreImpression()).toBe(
-        `Période 1 (${LIBELLES.edt.prefixeDateDepuis}01/09/2026 / ${LIBELLES.edt.frequenceImpaire})`,
+        `${LIBELLES.impression.titreEmploiDuTemps}Période 1 (${LIBELLES.edt.prefixeDateDepuis}01/09/2026 / ${LIBELLES.edt.frequenceImpaire})`,
       );
     });
 
@@ -887,14 +888,14 @@ describe('EcranEmploiDuTempsComponent', () => {
         EdtMother.base({ nom: 'Période 1', dateFin: '2026-10-18' }),
       );
       expect((component as any).titreImpression()).toBe(
-        `Période 1 (${LIBELLES.edt.prefixeDateJusquau}18/10/2026 / ${LIBELLES.edt.frequenceLesDeux})`,
+        `${LIBELLES.impression.titreEmploiDuTemps}Période 1 (${LIBELLES.edt.prefixeDateJusquau}18/10/2026 / ${LIBELLES.edt.frequenceLesDeux})`,
       );
     });
 
     it('titre sans date', () => {
       (component as any).selectionnerEdt(EdtMother.base({ nom: 'Période 1' }));
       expect((component as any).titreImpression()).toBe(
-        `Période 1 (${LIBELLES.edt.frequenceLesDeux})`,
+        `${LIBELLES.impression.titreEmploiDuTemps}Période 1 (${LIBELLES.edt.frequenceLesDeux})`,
       );
     });
 
@@ -903,7 +904,7 @@ describe('EcranEmploiDuTempsComponent', () => {
         EdtCalculeMother.base({ nom: 'Vue A', dateDebut: '2026-09-01', dateFin: '2026-10-18' }),
       );
       expect((component as any).titreImpression()).toBe(
-        `Vue A (01/09/2026-18/10/2026 / ${LIBELLES.edt.frequenceLesDeux})`,
+        `${LIBELLES.impression.titreEmploiDuTemps}Vue A (01/09/2026-18/10/2026 / ${LIBELLES.edt.frequenceLesDeux})`,
       );
     });
 
@@ -911,21 +912,17 @@ describe('EcranEmploiDuTempsComponent', () => {
       expect((component as any).titreImpression()).toBe('');
     });
 
-    it("remplace le titre du document au beforeprint et le restaure à l'afterprint", () => {
+    it("fournit son titre au service d'impression pour le titre du document", () => {
+      const impressionService = TestBed.inject(ImpressionService);
       (component as any).selectionnerEdt(EdtMother.base({ nom: 'Période 1' }));
       fixture.detectChanges();
 
-      window.dispatchEvent(new Event('beforeprint'));
-      expect(document.title).toBe(`Période 1 (${LIBELLES.edt.frequenceLesDeux})`);
+      impressionService.preparerImpression();
+      expect(document.title).toBe(
+        `${LIBELLES.impression.titreEmploiDuTemps}Période 1 (${LIBELLES.edt.frequenceLesDeux})`,
+      );
 
-      window.dispatchEvent(new Event('afterprint'));
-      expect(document.title).toBe(titreApplication);
-    });
-
-    it('ne modifie pas le titre du document sans EDT affiché', () => {
-      window.dispatchEvent(new Event('beforeprint'));
-      expect(document.title).toBe(titreApplication);
-      window.dispatchEvent(new Event('afterprint'));
+      impressionService.terminerImpression();
       expect(document.title).toBe(titreApplication);
     });
 

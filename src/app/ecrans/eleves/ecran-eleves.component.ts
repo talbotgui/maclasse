@@ -8,6 +8,7 @@ import { EcranEditionGardeeBase } from '../../ecran-edition-gardee-base';
 import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { EleveService } from '../../services/sansEtat/eleve.service';
+import { ImpressionService } from '../../services/sansEtat/impression.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
 import { McChampRechercheComponent } from '../../composants/mc-champ-recherche/mc-champ-recherche.component';
 import { McChipFiltreComponent } from '../../composants/mc-chip-filtre/mc-chip-filtre.component';
@@ -65,6 +66,9 @@ export class EcranElevesComponent extends EcranEditionGardeeBase {
   /** Contexte applicatif : élève sélectionné. */
   private readonly contexteService = inject(ContexteService);
 
+  /** Service d'impression : reçoit le titre du document imprimé. */
+  private readonly impressionService = inject(ImpressionService);
+
   /** Terme de recherche textuel courant. */
   protected readonly termeRecherche = signal('');
 
@@ -88,6 +92,17 @@ export class EcranElevesComponent extends EcranEditionGardeeBase {
     const id = this.contexteService.eleveSelectionne();
     if (!id) return null;
     return this.donnees()?.classe.eleves.find((e) => e.id === id) ?? null;
+  });
+
+  /** Titre du document imprimé : « Fiche » ou « Bilan » selon l'onglet, suivi de « NOM Prénom ». */
+  private readonly titreImpression = computed<string>(() => {
+    const eleve = this.eleveSelectionne();
+    if (!eleve) return '';
+    const prefixe =
+      this.ongletActif() === EcranElevesComponent.ONGLET_BILANS
+        ? LIBELLES.impression.titreBilan
+        : LIBELLES.impression.titreFiche;
+    return `${prefixe}${eleve.nom.toUpperCase()} ${eleve.prenom}`;
   });
 
   /** Onglets de la colonne droite ; les bilans sont indisponibles tant que l'élève n'est pas enregistré. */
@@ -127,6 +142,12 @@ export class EcranElevesComponent extends EcranEditionGardeeBase {
     }
     return eleves;
   });
+
+  /** Enregistre le titre du document imprimé auprès du service d'impression. */
+  public constructor() {
+    super();
+    this.impressionService.suivreTitre(this.titreImpression);
+  }
 
   /**
    * Tente de sélectionner un élève.

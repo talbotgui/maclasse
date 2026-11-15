@@ -39,6 +39,14 @@ export const LIBELLES = {
   /** Libellés des marges des pages imprimées. */
   impression: {
     entete: 'Application Ma Classe',
+    /** Séparateur entre le libellé de l'entête et le titre du document imprimé. */
+    separateurTitre: ' - ',
+    /** Préfixes du titre du document imprimé, suivis du nom de l'élément affiché. */
+    titreFiche: 'Fiche ',
+    titreBilan: 'Bilan ',
+    titreProjet: 'Projet ',
+    titreCahierJournal: 'Cahier journal du ',
+    titreEmploiDuTemps: 'Emploi du temps ',
   },
 
   /** Libellés de la barre d'en-tête. */

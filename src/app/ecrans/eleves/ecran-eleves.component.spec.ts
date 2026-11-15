@@ -3,6 +3,8 @@ import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { EcranElevesComponent } from './ecran-eleves.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
+import { ImpressionService } from '../../services/sansEtat/impression.service';
+import { LIBELLES } from '../../libelles';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { EleveMother } from '../../tests/eleve.mother';
 import type { Eleve } from '../../modeles/eleve.modele';
@@ -337,6 +339,35 @@ describe('EcranElevesComponent', () => {
       (component as any).annulerAvertissement();
 
       expect(await promesse).toBe(false);
+    });
+  });
+
+  describe('titre du document imprimé', () => {
+    it('vide sans élève sélectionné', () => {
+      expect((component as any).titreImpression()).toBe('');
+    });
+
+    it('« Fiche NOM Prénom » sur l’onglet Fiche administrative', () => {
+      contexteService.eleveSelectionne.set(alice.id);
+      expect((component as any).titreImpression()).toBe(
+        `${LIBELLES.impression.titreFiche}MARTIN Alice`,
+      );
+    });
+
+    it('« Bilan NOM Prénom » sur l’onglet Bilans', () => {
+      contexteService.eleveSelectionne.set(alice.id);
+      (component as any).ongletActif.set((component as any).ongletBilans);
+      expect((component as any).titreImpression()).toBe(
+        `${LIBELLES.impression.titreBilan}MARTIN Alice`,
+      );
+    });
+
+    it("est fourni au service d'impression", () => {
+      contexteService.eleveSelectionne.set(alice.id);
+      const impressionService = TestBed.inject(ImpressionService);
+      impressionService.preparerImpression();
+      expect(document.title).toBe(`${LIBELLES.impression.titreFiche}MARTIN Alice`);
+      impressionService.terminerImpression();
     });
   });
 });

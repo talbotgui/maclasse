@@ -212,16 +212,16 @@ La grille d'un EDT calculé a la même structure (colonne Heure, plages horaires
 - **Seule la grille est imprimée** : colonne gauche, colonne droite, bandeau des absences, icônes de conflit, boutons « + » et ligne AJOUTER sont masqués (`@media print` de `styles.scss`)
 - **Orientation paysage** imposée (A4, marges 10 mm) via la page nommée `edt-paysage`, propre à cet écran
 - **Page unique** : au `beforeprint`, la grille est mesurée à la largeur imprimable et réduite par un facteur `zoom` ≤ 1 (variable CSS `--edt-echelle-impression`) pour tenir en hauteur ; facteur remis à 1 au `afterprint`
-- **Titre du document** (`document.title`) remplacé pendant l'impression, puis restauré. Il apparaît dans l'en-tête d'impression du navigateur et comme nom du PDF proposé :
+- **Titre du document imprimé**, affiché dans l'entête « Application Ma Classe - titre » et repris comme `document.title` (nom du PDF proposé) pendant l'impression, par `ImpressionService` (voir [elements-techniques](../elements-techniques.md#impression-media-print)) :
 
 | Dates renseignées | Titre |
 |---|---|
-| Début et fin | `nom (01/09/2026-18/10/2026 / Semaines paires)` |
-| Début seul | `nom (à partir du 01/09/2026 / Semaines paires)` |
-| Fin seule | `nom (jusqu'au 18/10/2026 / Semaines paires)` |
-| Aucune | `nom (Semaines paires)` |
+| Début et fin | `Emploi du temps nom (01/09/2026-18/10/2026 / Semaines paires)` |
+| Début seul | `Emploi du temps nom (à partir du 01/09/2026 / Semaines paires)` |
+| Fin seule | `Emploi du temps nom (jusqu'au 18/10/2026 / Semaines paires)` |
+| Aucune | `Emploi du temps nom (Semaines paires)` |
 
-S'applique aussi aux EDT calculés. Sans EDT affiché, le titre n'est pas modifié.
+S'applique aussi aux EDT calculés. Sans EDT affiché, pas de titre : l'entête est « Application Ma Classe » seul et `document.title` n'est pas modifié.
 
 ---
 

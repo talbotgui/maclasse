@@ -18,6 +18,7 @@ import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { EmploiDuTempsService } from '../../services/sansEtat/emploi-du-temps.service';
 import { CompetenceService } from '../../services/sansEtat/competence.service';
 import { EmploiDuTempsCalculeService } from '../../services/sansEtat/emploi-du-temps-calcule.service';
+import { ImpressionService } from '../../services/sansEtat/impression.service';
 import { EdtFormulaireComponent } from './edt-formulaire/edt-formulaire.component';
 import { EdtcFormulaireComponent } from './edtc-formulaire/edtc-formulaire.component';
 import { McPastillesElevesConcernesComponent } from '../../composants/mc-pastilles-eleves-concernes/mc-pastilles-eleves-concernes.component';
@@ -208,6 +209,9 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   /** Service des compétences pour charger les domaines racine. */
   private readonly competenceService = inject(CompetenceService);
 
+  /** Service d'impression : reçoit le titre du document imprimé. */
+  private readonly impressionService = inject(ImpressionService);
+
   /** EDT affiché dans la grille (peut différer de l'EDT en cours d'édition). */
   protected readonly edtSelectionne = signal<EmploiDuTemps | null>(null);
 
@@ -273,9 +277,6 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   /** Tableau de la grille, mesuré pour ajuster l'impression à une page. */
   private readonly grilleTableau = viewChild<ElementRef<HTMLElement>>('grilleTableau');
 
-  /** Titre du document mémorisé au début de l'impression, restauré à la fin ; `null` hors impression. */
-  private titreAvantImpression: string | null = null;
-
   /** Résolution de la promesse de navigation (garde CanDeactivate). */
   private resolveGarde: ((result: boolean) => void) | null = null;
 
@@ -307,10 +308,16 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
     () => this.edtSelectionne()?.nom ?? this.edtCalculeSelectionne()?.nom ?? '',
   );
 
-  /** Titre du document pendant l'impression (métadonnées de l'EDT affiché), vide sans EDT affiché. */
-  protected readonly titreImpression = computed<string>(() => {
+  /**
+   * Titre du document imprimé : « Emploi du temps » suivi des métadonnées de l'EDT affiché,
+   * vide sans EDT affiché.
+   */
+  private readonly titreImpression = computed<string>(() => {
     const edt = this.edtSelectionne() ?? this.edtCalculeSelectionne();
-    return edt ? EcranEmploiDuTempsComponent.formaterTitreImpression(edt) : '';
+    return edt
+      ? LIBELLES.impression.titreEmploiDuTemps +
+          EcranEmploiDuTempsComponent.formaterTitreImpression(edt)
+      : '';
   });
 
   /** Liste complète des EDT depuis le store. */
@@ -407,6 +414,11 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
     }
     return ids;
   });
+
+  /** Enregistre le titre du document imprimé auprès du service d'impression. */
+  public constructor() {
+    this.impressionService.suivreTitre(this.titreImpression);
+  }
 
   /**
    * Retourne les temps (avec leur créneau parent) à l'intersection d'un jour et d'une plage horaire.
@@ -639,17 +651,12 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
   }
 
   /**
-   * Prépare l'impression (bouton IMPRIMER ou Ctrl+P) : remplace le titre du document par
-   * les métadonnées de l'EDT affiché et réduit la grille pour qu'elle tienne sur une page.
+   * Prépare l'impression (bouton IMPRIMER ou Ctrl+P) : réduit la grille pour qu'elle tienne
+   * sur une page (le titre du document est géré par `ImpressionService`).
    * La grille est mesurée avec les styles écran à la largeur imprimable : les éléments
    * masqués à l'impression sont encore comptés, l'estimation est donc prudente.
    */
   protected preparerImpression(): void {
-    const titre = this.titreImpression();
-    if (titre) {
-      this.titreAvantImpression = document.title;
-      document.title = titre;
-    }
     const conteneur = this.grilleConteneur()?.nativeElement;
     if (!conteneur) return;
     conteneur.style.width = `${EcranEmploiDuTempsComponent.LARGEUR_IMPRIMABLE_PX}px`;
@@ -663,12 +670,8 @@ export class EcranEmploiDuTempsComponent implements AvecNavigationGardee {
     );
   }
 
-  /** Termine l'impression : restaure le titre du document et l'échelle de la grille. */
+  /** Termine l'impression : restaure l'échelle de la grille. */
   protected terminerImpression(): void {
-    if (this.titreAvantImpression !== null) {
-      document.title = this.titreAvantImpression;
-      this.titreAvantImpression = null;
-    }
     this.grilleConteneur()?.nativeElement.style.removeProperty(
       EcranEmploiDuTempsComponent.VARIABLE_ECHELLE_IMPRESSION,
     );

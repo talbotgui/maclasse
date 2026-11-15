@@ -930,4 +930,19 @@ describe('EcranCahierJournalComponent', () => {
       expect(contexteService.jourCourantCahierJournal()).toBe('2026-04-10');
     });
   });
+
+  describe('titre du document imprimé', () => {
+    it('« Cahier journal du JJ/MM/AAAA » pour la date sélectionnée', () => {
+      expect((component as any).titreImpression()).toBe(
+        `${LIBELLES.impression.titreCahierJournal}${DateUtils.formaterDateCourt(dateTest)}`,
+      );
+    });
+
+    it('suit le changement de date sélectionnée', () => {
+      (component as any).dateSelectionnee.set('2026-03-02');
+      expect((component as any).titreImpression()).toBe(
+        `${LIBELLES.impression.titreCahierJournal}02/03/2026`,
+      );
+    });
+  });
 });

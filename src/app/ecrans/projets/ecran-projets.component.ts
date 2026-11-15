@@ -8,6 +8,7 @@ import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
 import { ProjetService } from '../../services/sansEtat/projet.service';
+import { ImpressionService } from '../../services/sansEtat/impression.service';
 import { CompetenceService } from '../../services/sansEtat/competence.service';
 import { McChampRechercheComponent } from '../../composants/mc-champ-recherche/mc-champ-recherche.component';
 import { McChipFiltreComponent } from '../../composants/mc-chip-filtre/mc-chip-filtre.component';
@@ -46,6 +47,9 @@ export class EcranProjetsComponent extends EcranEditionGardeeBase {
   /** Service métier des projets. */
   private readonly projetService = inject(ProjetService);
 
+  /** Service d'impression : reçoit le titre du document imprimé. */
+  private readonly impressionService = inject(ImpressionService);
+
   /** Service de compétences pour le filtrage par domaine. */
   private readonly competenceService = inject(CompetenceService);
 
@@ -60,6 +64,12 @@ export class EcranProjetsComponent extends EcranEditionGardeeBase {
     const id = this.contexteService.projetSelectionne();
     if (!id) return null;
     return this.donneesService.donnees()?.projets.find((p) => p.id === id) ?? null;
+  });
+
+  /** Titre du document imprimé : « Projet » suivi du nom du projet sélectionné. */
+  private readonly titreImpression = computed<string>(() => {
+    const projet = this.projetSelectionne();
+    return projet ? LIBELLES.impression.titreProjet + projet.nom : '';
   });
 
   /** `true` si le focus doit se placer sur le bouton MODIFIER à la prochaine apparition de la fiche. */
@@ -85,6 +95,12 @@ export class EcranProjetsComponent extends EcranEditionGardeeBase {
     }
     return projets;
   });
+
+  /** Enregistre le titre du document imprimé auprès du service d'impression. */
+  public constructor() {
+    super();
+    this.impressionService.suivreTitre(this.titreImpression);
+  }
 
   /**
    * Tente de sélectionner un projet.

@@ -672,8 +672,11 @@ button {
   // Entête et pied de page de toutes les impressions, à la place de ceux du navigateur
   // (titre, URL, date) : Chrome les masque dès qu'une zone de marge a un contenu.
   // Les variables sont posées au beforeprint par ImpressionService ; les pages nommées
-  // (edt-paysage) héritent de ces zones.
+  // (edt-paysage) héritent de ces zones. La marge fixe garantit la place des zones,
+  // quels que soient les réglages par défaut du navigateur.
   @page {
+    margin: 10mm;
+
     @top-center {
       content: var(--mc-impression-entete, '');
       font-family: 'Roboto', sans-serif;

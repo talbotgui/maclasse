@@ -7,7 +7,8 @@ import { ImpressionService } from './services/sansEtat/impression.service';
  * Composant racine de l'application MaClasse.
  * Layout : en-tête (intégré à l'étape 9) + vue courante via `<router-outlet>`.
  * Le thème actif est appliqué par `ContexteService` lui-même (construction et `basculerTheme()`).
- * Avant toute impression (bouton IMPRIMER ou Ctrl+P), alimente les marges des pages imprimées.
+ * Avant toute impression (bouton IMPRIMER ou Ctrl+P), alimente les marges des pages imprimées
+ * et le titre du document ; le restaure après.
  */
 @Component({
   selector: 'app-root',
@@ -17,14 +18,20 @@ import { ImpressionService } from './services/sansEtat/impression.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(window:beforeprint)': 'preparerImpression()',
+    '(window:afterprint)': 'terminerImpression()',
   },
 })
 export class App {
   /** Service qui alimente l'entête et le pied de page des impressions. */
   private readonly impressionService = inject(ImpressionService);
 
-  /** Pose le libellé d'entête et l'horodatage lus par les marges `@page` de `styles.scss`. */
+  /** Pose l'entête, l'horodatage et le titre du document lus à l'impression. */
   protected preparerImpression(): void {
-    this.impressionService.preparerMarges();
+    this.impressionService.preparerImpression();
+  }
+
+  /** Restaure le titre du document après l'impression. */
+  protected terminerImpression(): void {
+    this.impressionService.terminerImpression();
   }
 }

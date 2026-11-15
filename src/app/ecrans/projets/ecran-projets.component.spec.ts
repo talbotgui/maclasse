@@ -3,6 +3,7 @@ import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { EcranProjetsComponent } from './ecran-projets.component';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
+import { LIBELLES } from '../../libelles';
 import { DonneesMother } from '../../tests/donnees.mother';
 import { ProjetMother } from '../../tests/projet.mother';
 import type { Projet } from '../../modeles/projet.modele';
@@ -199,6 +200,20 @@ describe('EcranProjetsComponent', () => {
       (component as any).annulerAvertissement();
 
       expect(await promesse).toBe(false);
+    });
+  });
+
+  describe('titre du document imprimé', () => {
+    it('vide sans projet sélectionné', () => {
+      contexteService.projetSelectionne.set(null);
+      expect((component as any).titreImpression()).toBe('');
+    });
+
+    it('« Projet nom » avec un projet sélectionné', () => {
+      contexteService.projetSelectionne.set(p1.id);
+      expect((component as any).titreImpression()).toBe(
+        `${LIBELLES.impression.titreProjet}Sciences`,
+      );
     });
   });
 });

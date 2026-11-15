@@ -19,6 +19,7 @@ import { LIBELLES } from '../../libelles';
 import { DonneesService } from '../../services/avecEtat/donnees.service';
 import { ContexteService } from '../../services/avecEtat/contexte.service';
 import { CahierJournalService } from '../../services/sansEtat/cahier-journal.service';
+import { ImpressionService } from '../../services/sansEtat/impression.service';
 import { CompetenceService } from '../../services/sansEtat/competence.service';
 import { DateUtils } from '../../utilitaires/date.utils';
 import { McMiniCalendrierComponent } from '../../composants/mc-mini-calendrier/mc-mini-calendrier.component';
@@ -72,6 +73,9 @@ export class EcranCahierJournalComponent implements AvecNavigationGardee {
   /** Contexte applicatif : mémorise le dernier jour consulté entre changements d'écran. */
   private readonly contexteService = inject(ContexteService);
 
+  /** Service d'impression : reçoit le titre du document imprimé. */
+  private readonly impressionService = inject(ImpressionService);
+
   /**
    * Date actuellement sélectionnée dans le calendrier.
    * Initialisée depuis `ContexteService.jourCourantCahierJournal` si un jour a déjà été
@@ -79,6 +83,12 @@ export class EcranCahierJournalComponent implements AvecNavigationGardee {
    */
   protected readonly dateSelectionnee = signal<string>(
     this.contexteService.jourCourantCahierJournal() ?? DateUtils.dateAujourdhui(),
+  );
+
+  /** Titre du document imprimé : « Cahier journal du » suivi de la date sélectionnée (JJ/MM/AAAA). */
+  private readonly titreImpression = computed<string>(
+    () =>
+      LIBELLES.impression.titreCahierJournal + DateUtils.formaterDateCourt(this.dateSelectionnee()),
   );
 
   /** Identifiant de la séance sélectionnée pour modification (`null` si aucune). */
@@ -251,6 +261,7 @@ export class EcranCahierJournalComponent implements AvecNavigationGardee {
    * pendant la saisie (aucune commande n'est émise avant le blur).
    */
   public constructor() {
+    this.impressionService.suivreTitre(this.titreImpression);
     effect(() => {
       this.notesControl.setValue(this.notesJournee(), { emitEvent: false });
       this.cdr.markForCheck();

@@ -57,3 +57,16 @@ export interface JourneeJournal {
   /** Séances de la journée, triées par heure de début. */
   seances: Seance[];
 }
+
+/**
+ * Libellés résolus d'une séance pédagogique, affichés uniquement à l'impression
+ * du cahier journal (les identifiants persistés ne sont pas lisibles sur papier).
+ */
+export interface LibellesImpressionSeance {
+  /** Libellés des disciplines travaillées (domaines de niveau 1). */
+  disciplines: string[];
+  /** Chemins complets des compétences travaillées (ex. : `"Français › Lecture › Comprendre un texte"`). */
+  competences: string[];
+  /** `true` si au moins un détail est à imprimer (disciplines, compétences, déroulement, ressources ou description). */
+  aDetails: boolean;
+}

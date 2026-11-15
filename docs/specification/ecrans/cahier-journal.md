@@ -3,7 +3,7 @@ name: cahier-journal
 description: Spécification détaillée de l'écran Cahier journal — navigation par date, liste de séances, formulaire de séance inséré dans la liste
 metadata:
   type: project
-  updated: 2026-09-27
+  updated: 2026-11-15
 related:
   - specification/ecrans/vue-ensemble
   - specification/modeles-donnees
@@ -171,7 +171,11 @@ Formulaire inline de la colonne gauche (champ date + CONFIRMER / ANNULER), ouver
 ## Impression
 
 - Bouton IMPRIMER de la colonne gauche → `window.print()`
-- Colonne gauche, contrôles des séances, boutons « + » (dont la ligne de tête) et bouton de repli des notes masqués (`@media print`) ; les notes sont imprimées sous forme de paragraphe
+- Colonne gauche, contrôles des séances, icône ⚠ de conflit, boutons « + » (dont la ligne de tête), bouton de repli des notes et formulaire de séance éventuellement ouvert masqués (`@media print` de `styles.scss`) ; les notes sont imprimées sous forme de paragraphe (jamais le champ de saisie)
+- **Détails des séances pédagogiques** en lecture seule : une liste `<dl class="cj__details-impression">` (masquée à l'écran) sous les objectifs de chaque carte, avec uniquement les champs renseignés, dans l'ordre Disciplines, Compétences, Déroulement, Ressources, Description (libellés `cahierJournal.label*`). Mise en forme dense : grille libellé / valeur, police 9 pt ; disciplines et compétences sur une ligne, séparées par « ; » ; textes libres avec leurs retours à la ligne
+  - Disciplines : libellé du domaine de niveau 1 ; compétences : **chemin complet** (`CompetenceService.resoudreLibelle`, ex. « Français › CM1 › Lecture › … ») ; calculés par le `computed` `libellesImpression` (carte id de séance → libellés). Un identifiant introuvable dans l'arbre filtré par les domaines actifs est ignoré
+  - Récréations et pauses déjeuner : inchangées (ligne fine)
+- **Pas de coupure d'un temps par un saut de page** : conteneurs de l'écran remis en flux normal (`display: block`, sans hauteur ni défilement) et `break-inside: avoid` sur chaque ligne de séance (`.cj__ligne`) et sur les notes ; seul un temps plus haut qu'une page entière peut être coupé
 
 ---
 

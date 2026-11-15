@@ -273,18 +273,3 @@
     border-bottom: 1px solid var(--bordure);
   }
 }
-
-@media print {
-  .cj__gauche {
-    display: none;
-  }
-
-  .cj {
-    grid-template-columns: 1fr;
-    display: block;
-  }
-
-  .cj__seance-controles {
-    display: none;
-  }
-}

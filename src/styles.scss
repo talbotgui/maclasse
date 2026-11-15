@@ -713,12 +713,9 @@ button {
 
   // Cahier journal : à l'impression, remplacer le champ de saisie des notes
   // par un simple paragraphe lisible (voir .cj__notes-impression plus bas).
-  .cj__notes-saisie {
-    display: none;
-  }
-
   // `!important` : les règles du composant, suffixées par Angular d'un attribut
   // [_ngcontent-xxx], sont plus spécifiques que ces sélecteurs globaux.
+  .cj__notes-saisie,
   .cj__bascule-notes,
   .cj__ligne-ajout-debut {
     display: none !important;
@@ -729,6 +726,65 @@ button {
     margin: 0;
     padding: 0.25rem 1rem 0.5rem;
     white-space: pre-wrap;
+  }
+
+  // Cahier journal : colonne gauche, contrôles de séance, icône de conflit et formulaire
+  // de séance éventuellement ouvert ne s'impriment pas.
+  .cj__gauche,
+  .cj__seance-controles,
+  .cj__seance-entete .mc-icone-conflit,
+  cj-formulaire-seance {
+    display: none !important;
+  }
+
+  // Conteneurs en flux normal : sans hauteur fixe ni défilement, toute la journée s'imprime,
+  // et la fragmentation en pages s'applique (break-inside est peu fiable dans flex/grid).
+  ecran-cahier-journal,
+  .cj,
+  .cj__droite,
+  .cj__seances-liste {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .cj__entete {
+    break-after: avoid;
+  }
+
+  .cj__notes {
+    break-inside: avoid;
+  }
+
+  // Un temps n'est jamais coupé par un saut de page (sauf s'il dépasse une page entière).
+  // `:not` : la ligne de tête porte aussi `.cj__ligne` et doit rester masquée.
+  .cj__ligne:not(.cj__ligne-ajout-debut) {
+    display: block !important;
+    margin-bottom: 0.5rem;
+    break-inside: avoid;
+  }
+
+  // Détails d'une séance pédagogique en lecture seule, mise en forme dense :
+  // libellé à gauche, valeur à droite.
+  .cj__details-impression {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: 0.0625rem 0.5rem;
+    margin: 0;
+    padding: 0.25rem 0.75rem 0.375rem;
+    font-size: 9pt;
+    line-height: 1.25;
+
+    dt {
+      font-weight: 600;
+      color: var(--texte-secondaire);
+    }
+
+    dd {
+      margin: 0;
+      white-space: pre-wrap;
+      color: var(--texte-principal);
+    }
   }
 
   // Emploi du temps : seule la grille centrale s'imprime, en paysage et sur une page
@@ -775,10 +831,11 @@ button {
   }
 }
 
-// Cahier journal : le paragraphe de notes n'est visible qu'à l'impression
-// (voir le bloc @media print ci-dessus). Masqué à l'écran.
+// Cahier journal : le paragraphe de notes et les détails des séances ne sont visibles
+// qu'à l'impression (voir le bloc @media print ci-dessus). Masqués à l'écran.
 @media screen {
-  .cj__notes-impression {
+  .cj__notes-impression,
+  .cj__details-impression {
     display: none;
   }
 }

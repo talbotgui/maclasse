@@ -28,7 +28,11 @@ import { PopinAvertissementComponent } from '../../composants/popins/popin-avert
 import { PopinWarningsAbsencesComponent } from '../../composants/popins/popin-warnings-absences/popin-warnings-absences.component';
 import { CjFormulaireSeanceComponent } from './cj-formulaire-seance/cj-formulaire-seance.component';
 import type { AvecNavigationGardee } from '../../gardes/modifications-non-enregistrees.garde';
-import type { Seance, JourneeJournal } from '../../modeles/cahier-journal.modele';
+import type {
+  Seance,
+  JourneeJournal,
+  LibellesImpressionSeance,
+} from '../../modeles/cahier-journal.modele';
 import type { Competence, JourFerie } from '../../modeles/referentiels.modele';
 import type { JourSemaine, TypeCreneau } from '../../modeles/emploi-du-temps.modele';
 
@@ -185,6 +189,32 @@ export class EcranCahierJournalComponent implements AvecNavigationGardee {
   protected readonly domaines = computed<Competence[]>(() =>
     this.competenceService.obtenirDomaines(),
   );
+
+  /**
+   * Libellés des disciplines et chemins complets des compétences de chaque séance
+   * pédagogique, indexés par identifiant de séance, pour le bloc de détails imprimé.
+   * Les identifiants introuvables dans l'arbre (domaine inactif, compétence supprimée) sont ignorés.
+   */
+  protected readonly libellesImpression = computed<Map<string, LibellesImpressionSeance>>(() => {
+    const carte = new Map<string, LibellesImpressionSeance>();
+    for (const seance of this.seances()) {
+      if (seance.type !== 'pedagogique') continue;
+      const disciplines = (seance.disciplinesIds ?? [])
+        .map((id) => this.competenceService.obtenirDomaineParId(id)?.libelle ?? '')
+        .filter((libelle) => libelle !== '');
+      const competences = (seance.competencesIds ?? [])
+        .map((id) => this.competenceService.resoudreLibelle(id))
+        .filter((libelle) => libelle !== '');
+      const aDetails =
+        disciplines.length > 0 ||
+        competences.length > 0 ||
+        !!seance.deroulement ||
+        !!seance.ressources ||
+        !!seance.description;
+      carte.set(seance.id, { disciplines, competences, aDetails });
+    }
+    return carte;
+  });
 
   /** Libellé formaté de la date sélectionnée. */
   protected readonly dateFormatee = computed<string>(() =>

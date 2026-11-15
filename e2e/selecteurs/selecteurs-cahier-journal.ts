@@ -30,6 +30,12 @@ export class SelecteursCahierJournal extends SelecteursBase {
   public readonly btnImprimerCj: Locator;
   /** Bouton SUPPRIMER JOURNÉE. */
   public readonly btnSupprimerJournee: Locator;
+  /** Colonne gauche (navigation et actions de journée), masquée à l'impression. */
+  public readonly colonneGauche: Locator;
+  /** Ligne de tête de la liste des séances (bouton « + » de début), masquée à l'impression. */
+  public readonly ligneAjoutDebut: Locator;
+  /** Bloc de détails imprimé de la première séance qui en possède un. */
+  public readonly detailsImpressionPremiereSeance: Locator;
 
   // --- Mini-formulaire de duplication de journée ---
   /** Champ date cible dans le mini-formulaire de duplication. */
@@ -123,6 +129,9 @@ export class SelecteursCahierJournal extends SelecteursBase {
     this.btnDupliquerJournee = page.locator('#btnDupliquerJournee');
     this.btnImprimerCj = page.locator('#btnImprimerCj');
     this.btnSupprimerJournee = page.locator('#btnSupprimerJournee');
+    this.colonneGauche = page.locator('.cj__gauche');
+    this.ligneAjoutDebut = page.locator('.cj__ligne-ajout-debut');
+    this.detailsImpressionPremiereSeance = page.locator('.cj__details-impression').first();
 
     this.inputDateDuplication = page.locator('#inputDateDuplication');
     this.btnConfirmerDuplication = page.locator('#btnConfirmerDuplication');

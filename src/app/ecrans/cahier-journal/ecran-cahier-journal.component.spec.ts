@@ -7,6 +7,7 @@ import { CahierJournalService } from '../../services/sansEtat/cahier-journal.ser
 import { DonneesMother } from '../../tests/donnees.mother';
 import { SeanceMother } from '../../tests/cahier-journal.mother';
 import { EleveMother } from '../../tests/eleve.mother';
+import { CompetenceMother } from '../../tests/competence.mother';
 import { DateUtils } from '../../utilitaires/date.utils';
 import { LIBELLES } from '../../libelles';
 import type { Seance } from '../../modeles/cahier-journal.modele';
@@ -646,6 +647,104 @@ describe('EcranCahierJournalComponent', () => {
 
     it('obtenirLibelleType retourne le libellé de la récréation', () => {
       expect((component as any).obtenirLibelleType('recreation')).toBe(LIBELLES.edt.typeRecreation);
+    });
+  });
+
+  describe('détails des séances pour l’impression', () => {
+    /**
+     * Recharge les données avec l'arbre de compétences simple et les séances fournies,
+     * puis relance le rendu.
+     * @param seances Séances de la journée testée.
+     */
+    const chargerAvecCompetences = (seances: Seance[]): void => {
+      const base = DonneesMother.base();
+      donneesService.charger(
+        DonneesMother.base({
+          referentiels: { ...base.referentiels, competences: CompetenceMother.arbreSimple() },
+          cahierJournal: [{ id: 'j1', date: dateTest, seances }],
+        }),
+      );
+      fixture.detectChanges();
+    };
+
+    it('résout les libellés des disciplines et les chemins complets des compétences', () => {
+      chargerAvecCompetences([
+        SeanceMother.pedagogique({
+          disciplinesIds: ['FR', 'MATH'],
+          competencesIds: ['FR-LECT-1', 'MATH-NB'],
+        }),
+      ]);
+
+      const libelles = (component as any).libellesImpression().get('s1');
+      expect(libelles.disciplines).toEqual(['Français', 'Mathématiques']);
+      expect(libelles.competences).toEqual([
+        'Français › Lecture › Comprendre un texte lu',
+        'Mathématiques › Nombres et calculs',
+      ]);
+    });
+
+    it('ignore les identifiants introuvables dans l’arbre', () => {
+      chargerAvecCompetences([
+        SeanceMother.pedagogique({ disciplinesIds: ['INCONNU'], competencesIds: ['INCONNU'] }),
+      ]);
+
+      const libelles = (component as any).libellesImpression().get('s1');
+      expect(libelles.disciplines).toEqual([]);
+      expect(libelles.competences).toEqual([]);
+    });
+
+    it('n’indexe pas les séances non pédagogiques', () => {
+      chargerAvecCompetences([SeanceMother.recreation()]);
+
+      expect((component as any).libellesImpression().has('s2')).toBe(false);
+    });
+
+    it('rend uniquement les champs renseignés, avec leur libellé', () => {
+      chargerAvecCompetences([
+        SeanceMother.pedagogique({
+          disciplinesIds: ['FR'],
+          competencesIds: ['FR-LECT-1', 'FR-LECT-2'],
+          deroulement: 'Lecture silencieuse',
+          ressources: '',
+          description: 'Album',
+        }),
+      ]);
+
+      const dl = fixture.nativeElement.querySelector('.cj__details-impression') as HTMLElement;
+      const termes = Array.from(dl.querySelectorAll('dt')).map((dt) => dt.textContent?.trim());
+      const valeurs = Array.from(dl.querySelectorAll('dd')).map((dd) => dd.textContent?.trim());
+      expect(termes).toEqual([
+        LIBELLES.cahierJournal.labelDisciplines,
+        LIBELLES.cahierJournal.labelCompetences,
+        LIBELLES.cahierJournal.labelDeroulement,
+        LIBELLES.cahierJournal.labelDescription,
+      ]);
+      expect(valeurs).toEqual([
+        'Français',
+        'Français › Lecture › Comprendre un texte lu ; Français › Lecture › Lire à voix haute',
+        'Lecture silencieuse',
+        'Album',
+      ]);
+    });
+
+    it('rend le bloc quand seules les ressources sont renseignées', () => {
+      chargerAvecCompetences([SeanceMother.pedagogique({ ressources: 'Manuel p. 12' })]);
+
+      const libelles = (component as any).libellesImpression().get('s1');
+      expect(libelles.aDetails).toBe(true);
+      const dl = fixture.nativeElement.querySelector('.cj__details-impression') as HTMLElement;
+      expect(dl.querySelector('dt')?.textContent?.trim()).toBe(
+        LIBELLES.cahierJournal.labelRessources,
+      );
+      expect(dl.querySelector('dd')?.textContent?.trim()).toBe('Manuel p. 12');
+    });
+
+    it('ne rend pas le bloc de détails d’une séance sans détail', () => {
+      chargerAvecCompetences([SeanceMother.pedagogique(), SeanceMother.recreation()]);
+
+      expect((component as any).libellesImpression().get('s1').aDetails).toBe(false);
+
+      expect(fixture.nativeElement.querySelector('.cj__details-impression')).toBeNull();
     });
   });
 

@@ -433,9 +433,27 @@ testAvecDonnees('E2E-79 — Imprimer la journée du cahier journal', async ({ ap
   await expect(cj.btnImprimerCj).toBeVisible();
   await expect(cj.btnImprimerCj).toBeEnabled();
 
-  // La boîte d'impression n'est pas testable en headless —
-  // vérifier que la journée reste accessible (non masquée par @media print)
-  await expect(cj.btnSupprimerJournee).toBeVisible();
+  // Les détails des séances ne s'affichent pas à l'écran
+  await expect(cj.detailsImpressionPremiereSeance).toBeHidden();
+
+  // La boîte d'impression n'est pas testable en headless : on émule le média print.
+  // Colonne gauche et contrôles masqués, détails en lecture seule affichés
+  // (séance 08:30 « Lecture – Compréhension de texte » : compétences et description).
+  await appAvecDonnees.emulateMedia({ media: 'print' });
+  await expect(cj.colonneGauche).toBeHidden();
+  await expect(cj.btnModifierPremierSeance).toBeHidden();
+  await expect(cj.ligneAjoutDebut).toBeHidden();
+  await expect(cj.detailsImpressionPremiereSeance).toBeVisible();
+  await expect(cj.detailsImpressionPremiereSeance).toContainText(
+    'Français › CM1 › Lecture › Développer des stratégies de compréhension',
+  );
+  await expect(cj.detailsImpressionPremiereSeance).toContainText(
+    'Extrait de roman jeunesse : identifier le schéma narratif.',
+  );
+
+  await appAvecDonnees.emulateMedia({ media: 'screen' });
+  await expect(cj.colonneGauche).toBeVisible();
+  await expect(cj.detailsImpressionPremiereSeance).toBeHidden();
 });
 
 testAvecDonnees(

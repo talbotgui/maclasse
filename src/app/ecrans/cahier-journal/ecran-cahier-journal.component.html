@@ -292,6 +292,33 @@
               @if (seance.type === 'pedagogique' && seance.objectifs) {
                 <p class="cj__seance-objectifs">{{ seance.objectifs }}</p>
               }
+
+              <!-- Détails en lecture seule, visibles uniquement à l'impression (styles.scss) -->
+              @let libelles = libellesImpression().get(seance.id);
+              @if (libelles?.aDetails) {
+                <dl class="cj__details-impression">
+                  @if (libelles.disciplines.length > 0) {
+                    <dt>{{ LIBELLES.cahierJournal.labelDisciplines }}</dt>
+                    <dd>{{ libelles.disciplines.join(' ; ') }}</dd>
+                  }
+                  @if (libelles.competences.length > 0) {
+                    <dt>{{ LIBELLES.cahierJournal.labelCompetences }}</dt>
+                    <dd>{{ libelles.competences.join(' ; ') }}</dd>
+                  }
+                  @if (seance.deroulement) {
+                    <dt>{{ LIBELLES.cahierJournal.labelDeroulement }}</dt>
+                    <dd>{{ seance.deroulement }}</dd>
+                  }
+                  @if (seance.ressources) {
+                    <dt>{{ LIBELLES.cahierJournal.labelRessources }}</dt>
+                    <dd>{{ seance.ressources }}</dd>
+                  }
+                  @if (seance.description) {
+                    <dt>{{ LIBELLES.cahierJournal.labelDescription }}</dt>
+                    <dd>{{ seance.description }}</dd>
+                  }
+                </dl>
+              }
             </article>
 
             <button
